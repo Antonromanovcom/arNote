@@ -6,8 +6,8 @@
     <session-factory>
         <property name="connection.url">jdbc:postgresql://localhost:5432/postgres</property>
         <property name="connection.driver_class">org.postgresql.Driver</property>
-        <mapping class="com.antonromanov.temprest.utils.EventEntity"/>
-        <mapping class="com.antonromanov.temprest.utils.JournalfilterEntity"/>
+        <mapping class="com.antonromanov.arnote.utils.EventEntity"/>
+        <mapping class="com.antonromanov.arnote.utils.JournalfilterEntity"/>
         <!-- <property name="connection.username"/> -->
         <!-- <property name="connection.password"/> -->
 
