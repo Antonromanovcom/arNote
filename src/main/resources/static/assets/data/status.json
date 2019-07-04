@@ -1,0 +1,15 @@
+{
+  "who": null,
+  "isAcOn": true,
+  "isLanOn": false,
+  "lastTemperature": -15,
+  "lastHumidity": 48,
+  "serverTime": "12:05:19",
+  "lastContactTime": "12:05:19",
+  "current": 0,
+  "amperage": 0,
+  "power": 0,
+  "consuming": 0,
+  "logged": null,
+  "lastContactDate": "04/04/2019"
+}
