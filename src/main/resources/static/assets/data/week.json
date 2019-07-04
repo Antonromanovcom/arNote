@@ -1,0 +1,22 @@
+[
+  {
+    "measureDate": "16/03/2019",
+    "dayTemp": -5.9,
+    "nightTemp": -26
+  },
+  {
+    "measureDate": "17/03/2019",
+    "dayTemp": -15,
+    "nightTemp": 25.8
+  },
+  {
+    "measureDate": "18/03/2019",
+    "dayTemp": 26.4,
+    "nightTemp": 25.8
+  },
+  {
+    "measureDate": "18/03/2019",
+    "dayTemp": 15,
+    "nightTemp": 25.8
+  }
+]
