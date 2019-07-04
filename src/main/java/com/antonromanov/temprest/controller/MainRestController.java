@@ -10,7 +10,9 @@ import com.antonromanov.temprest.service.MainService;
 import com.antonromanov.temprest.utils.JSONTemplate;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -117,12 +119,26 @@ public class MainRestController {
 		return "TESTED";
 	}
 
+	@CrossOrigin(origins = "*")
 	@GetMapping("/testrefs")
-	public String testRefCursor() {
+	public ResponseEntity<String> testRefCursor() {
 
 		userDao.testRefCursors();
 
-		return "REF CURSORS TESTED";
+		List<String> todayList = new ArrayList<>();
+		LOGGER.info("========= TEST ============== ");
+		todayList.add("111");
+		todayList.add("aaaa");
+		String result = createGsonBuilder().toJson(todayList);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setCacheControl("no-cache");
+
+		ResponseEntity<String> responseEntity = new ResponseEntity<String>(result, headers, HttpStatus.OK);
+		LOGGER.info("RESPONSE: " + responseEntity.toString());
+
+		return responseEntity;
 	}
 
 
@@ -141,6 +157,9 @@ public class MainRestController {
 		List<Temperature> todayList = mainService.getTodayMeasures();
 		LOGGER.info("========= TODAY MEASURES LIST ============== ");
 		createResponseJson(todayList.size(), at2am, at8am, at14, at19, request);
+
+
+
 
 		return createGoodResponse(todayList);
 	}

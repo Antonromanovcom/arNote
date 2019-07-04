@@ -1,0 +1,36 @@
+14:13:15.424 [restartedMain] WARN  console_logger  - THREAD MANAGER HAS STARTED. T I M E ====== null
+14:13:15.431 [pool-1-thread-1] WARN  console_logger  - TIMEOUT TEST:  true
+14:13:15.438 [pool-1-thread-1] INFO  console_logger  - MainParametrs: AC {null},LAN {null}, IS LOGGED {false}
+14:13:43.178 [http-nio-8080-exec-2] INFO  console_logger  - ========= ALL MEASURES LIST ============== 
+14:13:43.182 [http-nio-8080-exec-2] INFO  console_logger  - GETTING REQUEST FROM:  0:0:0:0:0:0:0:1
+14:13:43.185 [http-nio-8080-exec-2] INFO  console_logger  - RESULT:  {"AllTemperatures":1,"NightPost":false,"MorningPost":false,"DayPost":false,"EveningPost":false,"ip":"0:0:0:0:0:0:0:1"}
+14:13:43.207 [http-nio-8080-exec-2] INFO  console_logger  - RESPONSE: <200 OK OK,[{"id":2,"name":"from Arduino Home","temperature":14.0,"dateCreated":"20/06/2019","timeCreated":"14:55:04","status":"{\"AllTemperatures\":0,\"NightPost\":false,\"MorningPost\":false,\"DayPost\":true,\"EveningPost\":false,\"ip\":\"0:0:0:0:0:0:0:1\"}"}],[Content-Type:"application/json", Cache-Control:"no-cache"]>
+15:47:08.374 [http-nio-8080-exec-4] INFO  console_logger  - ========= GET STATUS ============== 
+15:47:08.396 [http-nio-8080-exec-3] INFO  console_logger  - ========= TODAY MEASURES LIST ============== 
+15:47:08.396 [http-nio-8080-exec-3] INFO  console_logger  - GETTING REQUEST FROM:  0:0:0:0:0:0:0:1
+15:47:08.396 [http-nio-8080-exec-3] INFO  console_logger  - RESULT:  {"AllTemperatures":0,"NightPost":false,"MorningPost":false,"DayPost":false,"EveningPost":false,"ip":"0:0:0:0:0:0:0:1"}
+15:47:08.396 [http-nio-8080-exec-3] INFO  console_logger  - RESPONSE: <200 OK OK,[],[Content-Type:"application/json", Cache-Control:"no-cache"]>
+15:51:21.850 [restartedMain] WARN  console_logger  - THREAD MANAGER HAS STARTED. T I M E ====== null
+15:51:21.858 [pool-1-thread-1] WARN  console_logger  - TIMEOUT TEST:  true
+15:51:21.864 [pool-1-thread-1] INFO  console_logger  - MainParametrs: AC {null},LAN {null}, IS LOGGED {false}
+15:51:41.492 [http-nio-8080-exec-2] INFO  console_logger  - ========= GET STATUS ============== 
+15:51:41.512 [http-nio-8080-exec-1] INFO  console_logger  - ========= TODAY MEASURES LIST ============== 
+15:51:41.517 [http-nio-8080-exec-1] INFO  console_logger  - GETTING REQUEST FROM:  0:0:0:0:0:0:0:1
+15:51:41.521 [http-nio-8080-exec-1] INFO  console_logger  - RESULT:  {"AllTemperatures":0,"NightPost":false,"MorningPost":false,"DayPost":false,"EveningPost":false,"ip":"0:0:0:0:0:0:0:1"}
+15:51:41.534 [http-nio-8080-exec-1] INFO  console_logger  - RESPONSE: <200 OK OK,[],[Content-Type:"application/json", Cache-Control:"no-cache"]>
+16:00:57.587 [restartedMain] WARN  console_logger  - THREAD MANAGER HAS STARTED. T I M E ====== null
+16:00:57.596 [pool-1-thread-1] WARN  console_logger  - TIMEOUT TEST:  true
+16:00:57.604 [pool-1-thread-1] INFO  console_logger  - MainParametrs: AC {null},LAN {null}, IS LOGGED {false}
+16:02:20.953 [restartedMain] WARN  console_logger  - THREAD MANAGER HAS STARTED. T I M E ====== null
+16:02:20.962 [pool-1-thread-1] WARN  console_logger  - TIMEOUT TEST:  true
+16:02:20.970 [pool-1-thread-1] INFO  console_logger  - MainParametrs: AC {null},LAN {null}, IS LOGGED {false}
+16:33:00.869 [restartedMain] WARN  console_logger  - THREAD MANAGER HAS STARTED. T I M E ====== null
+16:33:00.875 [pool-1-thread-1] WARN  console_logger  - TIMEOUT TEST:  true
+16:33:00.882 [pool-1-thread-1] INFO  console_logger  - MainParametrs: AC {null},LAN {null}, IS LOGGED {false}
+16:39:33.493 [restartedMain] WARN  console_logger  - THREAD MANAGER HAS STARTED. T I M E ====== null
+16:39:33.500 [pool-1-thread-1] WARN  console_logger  - TIMEOUT TEST:  true
+16:39:33.507 [pool-1-thread-1] INFO  console_logger  - MainParametrs: AC {null},LAN {null}, IS LOGGED {false}
+16:39:44.133 [http-nio-8080-exec-1] INFO  console_logger  - ========= TEST ============== 
+16:39:44.141 [http-nio-8080-exec-1] INFO  console_logger  - RESPONSE: <200 OK OK,["111","aaaa"],[Content-Type:"application/json", Cache-Control:"no-cache"]>
+16:40:35.811 [http-nio-8080-exec-2] INFO  console_logger  - ========= TEST ============== 
+16:40:35.812 [http-nio-8080-exec-2] INFO  console_logger  - RESPONSE: <200 OK OK,["111","aaaa"],[Content-Type:"application/json", Cache-Control:"no-cache"]>
