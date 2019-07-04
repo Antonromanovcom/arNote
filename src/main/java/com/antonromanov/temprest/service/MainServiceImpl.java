@@ -1,7 +1,6 @@
 package com.antonromanov.temprest.service;
 
 
-import com.antonromanov.temprest.livecontrolthread.MainParameters;
 import com.antonromanov.temprest.model.DailyReport;
 import com.antonromanov.temprest.model.Logs;
 import com.antonromanov.temprest.model.Status;
@@ -40,11 +39,6 @@ public class MainServiceImpl implements MainService {
      */
     @Autowired
     private LogsRepository logsRepository;
-
-    /**
-     * Основные параметры живучести.
-     */
-    MainParameters mainParametrs = new MainParameters();
 
 
     /**
@@ -136,39 +130,7 @@ public class MainServiceImpl implements MainService {
         return checkDayNight(temperaturesForMonth);
     }
 
-    /**
-     * Выдать состояние мониторинга.
-     *
-     *
-     * @return
-     */
-    @Override
-    public Status getGlobalStatus() {
 
-        Status status = new Status(getLastContact220(), getLastContactLan(),
-                    getLastLog().getLasttemperature(),
-                    getLastLog().getLasthumidity(),
-                    getLastLog().getServertime(),
-                    mainParametrs.getLastPingTime(),
-                    0,
-                    0,
-                    0,
-                    0,
-                    getLastLog().getLastсontactdate());
-
-        return status;
-    }
-
-    /**
-     * Выдать глобальные параметры текущего мониторинга.
-     *
-     *
-     * @return
-     */
-    @Override
-    public MainParameters getMainParametrs() {
-        return this.mainParametrs;
-    }
 
     /**
      * Выдать время последнего пинга.
@@ -257,61 +219,4 @@ public class MainServiceImpl implements MainService {
     }
 
 
-
-
-
-    /**
-     * Добавить статус (это будет делать Ардуина).
-     *
-     * @param log
-     * @return
-     */
-    @Override
-    public List<Logs> addLog(Status log) throws ParseException {
-
-        //Логгируем (добавляем) время сервера
-        Date date = new Date();
-        Time time = new Time(date.getTime());
-        log.setServerTime(time);
-
-        // todo: этот пиздец переделать надо
-        if (log.isLogged()){
-            log.setLogged(true);
-        } else {
-            log.setLogged(false);
-        }
-
-
-        mainParametrs.setJustStartedSituation(false);
-        mainParametrs.setLastPingTime(time);
-        mainParametrs.setStatus(log);
-        mainParametrs.setAcStatus(true);
-        mainParametrs.setLanStatus(true);
-        if (log.getWho()==null) log.setWho("REST");
-        if (isBlank(log.getWho())) log.setWho("REST");
-
-        // TODO:  нам вот здесь хорошо бы проверить на ноль что-нибудь (надо подумать что: скорее всего даты)
-        // TODO:  у нас два одинаковых энтити - лог и статус - на хера????? Возникает путаница
-
-        logsRepository.save(new Logs(log));
-        return logsRepository.findAll();
-    }
-
-	@Override
-	public void addLog2(Status log) {
-		//Логгируем (добавляем) время сервера
-		Date date = new Date();
-		Time time = new Time(date.getTime());
-		log.setServerTime(time);
-		mainParametrs.setJustStartedSituation(false);
-		mainParametrs.setLastPingTime(time);
-		mainParametrs.setStatus(log);
-		mainParametrs.setAcStatus(true);
-		mainParametrs.setLanStatus(true);
-		if (log.getWho()==null) log.setWho("REST");
-		if (isBlank(log.getWho())) log.setWho("REST");
-
-		// TODO:  нам вот здесь хорошо бы проверить на ноль что-нибудь (надо подумать что: скорее всего даты)
-		logsRepository.save(new Logs(log));
-	}
 }
