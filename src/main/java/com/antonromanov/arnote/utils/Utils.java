@@ -38,38 +38,6 @@ public class Utils {
 	}
 
 	/**
-	 * Проверяем заданное время это дневная температура или ночная
-	 *
-	 * @param temperatureList
-	 * @return
-	 */
-	public static List<DailyReport> checkDayNight(ArrayList<Temperature> temperatureList) {
-
-		Double dayTemp = 999.0;
-		Double nightTemp = 999.0;
-		List<DailyReport> weeklyReport = new ArrayList<>();
-
-		if (!temperatureList.isEmpty()) {
-			for (Temperature temp : temperatureList) {
-				if (temp.getTimeCreated() != null) {
-					if (isBetween(temp.getTimeCreated().toLocalTime(), LocalTime.of(13, 0), LocalTime.of(15, 0))) { // если дневное
-						dayTemp = temp.getTemperature();
-					}
-					if (isBetween(temp.getTimeCreated().toLocalTime(), LocalTime.of(1, 0), LocalTime.of(3, 0))) { // если дневное
-						nightTemp = temp.getTemperature();
-					}
-					if ((dayTemp != 999.0) && (nightTemp != 999.0)) {
-						weeklyReport.add(new DailyReport(temp.getDateCreated(), dayTemp, nightTemp));
-						dayTemp = 999.0;
-						nightTemp = 999.0;
-					}
-				}
-			}
-		}
-		return weeklyReport;
-	}
-
-	/**
 	 * Конвертим SQL-TIME в LOCALTIME
 	 *
 	 * @param time
@@ -95,26 +63,7 @@ public class Utils {
 
 	}
 
-	/**
-	 * Проверяем, что в БД не залоггировали уже температуру
-	 *
-	 * @param temperatureList
-	 * @return
-	 */
-	public static Boolean isAlreadyWriten(List<Temperature> temperatureList, int startHour, int endHour) {
 
-		if ((!temperatureList.isEmpty())||(temperatureList!=null)) {
-
-			for (Temperature temperature : temperatureList) {
-
-				if ((isBetween(temperature.getTimeCreated().toLocalTime(), LocalTime.of(startHour, 0), LocalTime.of(endHour, 0)))) {
-					return true;
-				}
-			}
-
-		}
-		return false;
-	}
 
 	/**
 	 * Проверяем ip
@@ -206,51 +155,6 @@ public class Utils {
 		return gson;
 	}
 
-	/**
-	 * Создаем хороший (200 OK) response
-	 */
-	public static ResponseEntity<String> createGoodResponse(Collection collection) {
-		String result = createGsonBuilder().toJson(collection);
-		return getResponseString(result);
-	}
-
-	/**
-	 * Создаем хороший (200 OK) response для статуса
-	 **/
-	public static ResponseEntity<String> createGoodResponse4Status(Status status) {
-		String result = createGsonBuilder().toJson(status);
-		return getResponseString(result);
-	}
-
-	/**
-	 * Подготовим ResponseEntity
-	 *
-	 * @param result
-	 * @return
-	 */
-	private static ResponseEntity<String> getResponseString(String result){
-		ResponseEntity<String> responseEntity = new ResponseEntity<String>(result, prepareHeaders(), HttpStatus.OK);
-		LOGGER.info("RESPONSE: " + responseEntity.toString());
-		return responseEntity;
-
-	}
-
-
-
-	/**
-	 * Создаем статуса для Телеграмм Бота
-	 **/
-	public static String createBotStatus(Status status) {
-		return createGsonBuilder().toJson(status);
-	}
-
-
-	private static HttpHeaders prepareHeaders(){
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setCacheControl("no-cache");
-		return headers;
-	}
 
 
 }

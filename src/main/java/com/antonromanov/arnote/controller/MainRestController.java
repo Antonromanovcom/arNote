@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import static com.antonromanov.arnote.utils.Utils.*;
 
@@ -29,17 +28,6 @@ public class MainRestController {
 	 */
 	@Autowired
 	MainService mainService;
-
-
-	/**
-	 * Глобальные флаги, чтобы отсекать пинги не в нужное время и чтобы в нужное время был только один пинг,
-	 * ибо кидаться мы с ардуины будем каждые 15 минут.
-	 */
-	private boolean at2am = false;
-	private boolean at8am = false;
-	private boolean at14 = false;
-	private boolean at19 = false;
-
 
 
 
@@ -64,12 +52,8 @@ public class MainRestController {
 	@GetMapping("/testrefs")
 	public ResponseEntity<String> testRefCursor() {
 
-		///userDao.testRefCursors();
-
-		List<String> todayList = new ArrayList<>();
+		List<Wish> todayList = mainService.getAllWishes();
 		LOGGER.info("========= TEST ============== ");
-		todayList.add("111");
-		todayList.add("aaaa");
 		String result = createGsonBuilder().toJson(todayList);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -83,18 +67,7 @@ public class MainRestController {
 	}
 
 
-	/**
-	 * Выплюнуть в http все логи.
-	 *
-	 * @return
-	 */
-	@GetMapping("/alllogs")
-	public ResponseEntity<String> getAllLogs(HttpServletRequest request) {
 
-		List<Wish> allLogsList = mainService.getAllLogs();
-		LOGGER.info("============ ALL LOGS LIST ============== ");
-		return createGoodResponse(allLogsList);
-	}
 
 
 }

@@ -11,17 +11,7 @@ import java.util.List;
 public interface MainService {
 
 
-	List<Wish> getAllLogs(); // все логи
-
-	Time getLastContactTime(); // время последнего контакта
-
-	Boolean getLastContact220();  // AC статус последнего контакта
-
-	Boolean getLastContactLan();  // LAN статус последнего контакта
-
-	Boolean getLastContactLogged();  // Пинг залогирован или нет?
-
-	Wish getLastLog(); // получить последний пинг (лог)
+	List<Wish> getAllWishes(); // все логи
 
 	void updateLastLog(Wish log); // обновить последний пинг (лог) новыми данными
 

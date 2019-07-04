@@ -59,9 +59,5 @@ public final class JSONTemplate {
 		return getJson().toString();
 	}
 
-	public String parseListOfObjects(List<Temperature> list) {
 
-		return gson.toJson(list);
-
-	}
 }
