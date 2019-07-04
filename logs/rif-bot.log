@@ -34,3 +34,6 @@
 16:39:44.141 [http-nio-8080-exec-1] INFO  console_logger  - RESPONSE: <200 OK OK,["111","aaaa"],[Content-Type:"application/json", Cache-Control:"no-cache"]>
 16:40:35.811 [http-nio-8080-exec-2] INFO  console_logger  - ========= TEST ============== 
 16:40:35.812 [http-nio-8080-exec-2] INFO  console_logger  - RESPONSE: <200 OK OK,["111","aaaa"],[Content-Type:"application/json", Cache-Control:"no-cache"]>
+16:55:08.097 [restartedMain] WARN  console_logger  - THREAD MANAGER HAS STARTED. T I M E ====== null
+16:55:08.113 [pool-1-thread-1] WARN  console_logger  - TIMEOUT TEST:  true
+16:55:08.125 [pool-1-thread-1] INFO  console_logger  - MainParametrs: AC {null},LAN {null}, IS LOGGED {false}

@@ -4838,3 +4838,451 @@
   "message" : "HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)",
   "context" : "default"
 }
+{
+  "timestamp" : "2019-07-04 - 13:41:31.291Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 housekeeper",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:42:01.293Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 housekeeper",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:42:31.295Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 housekeeper",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Pool stats (total=10, active=0, idle=10, waiting=0)",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:54:46.926Z",
+  "level" : "INFO",
+  "thread" : "restartedMain",
+  "logger" : "com.Application",
+  "message" : "Starting Application on DESKTOP-DECTVLC with PID 19144 (C:\\CODING\\GIT\\arNote\\target\\classes started by Anton Romanov in C:\\CODING\\GIT\\arNote)",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:54:46.963Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.Application",
+  "message" : "Running with Spring Boot v2.1.3.RELEASE, Spring v5.1.5.RELEASE",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:54:46.965Z",
+  "level" : "INFO",
+  "thread" : "restartedMain",
+  "logger" : "com.Application",
+  "message" : "No active profile set, falling back to default profiles: default",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.147Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "Driver class org.postgresql.Driver found in Thread context class loader org.springframework.boot.devtools.restart.classloader.RestartClassLoader@d49eff3",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.467Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "HikariPool-1 - configuration:",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.472Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "allowPoolSuspension.............false",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.472Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "autoCommit......................true",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.473Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "catalog.........................none",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.478Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "connectionInitSql...............none",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.478Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "connectionTestQuery.............none",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.478Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "connectionTimeout...............30000",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.479Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "dataSource......................none",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.482Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "dataSourceClassName.............none",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.483Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "dataSourceJNDI..................none",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.485Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "dataSourceProperties............{password=<masked>}",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.486Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "driverClassName.................\"org.postgresql.Driver\"",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.492Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "healthCheckProperties...........{}",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.492Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "healthCheckRegistry.............none",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.493Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "idleTimeout.....................600000",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.493Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "initializationFailTimeout.......1",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.493Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "isolateInternalQueries..........false",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.494Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "jdbcUrl.........................jdbc:postgresql://localhost:5432/postgres",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.494Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "leakDetectionThreshold..........0",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.495Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "maxLifetime.....................1800000",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.495Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "maximumPoolSize.................10",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.496Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "metricRegistry..................none",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.496Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "metricsTrackerFactory...........none",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.496Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "minimumIdle.....................10",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.497Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "password........................<masked>",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.497Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "poolName........................\"HikariPool-1\"",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.498Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "readOnly........................false",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.498Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "registerMbeans..................false",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.503Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "scheduledExecutor...............none",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.503Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "schema..........................none",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.504Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "threadFactory...................internal",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.504Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "transactionIsolation............default",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.505Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "username........................\"postgres\"",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.505Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariConfig",
+  "message" : "validationTimeout...............5000",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.506Z",
+  "level" : "INFO",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariDataSource",
+  "message" : "HikariPool-1 - Starting...",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.782Z",
+  "level" : "DEBUG",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@385f3f77",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.786Z",
+  "level" : "INFO",
+  "thread" : "restartedMain",
+  "logger" : "com.zaxxer.hikari.HikariDataSource",
+  "message" : "HikariPool-1 - Start completed.",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:01.888Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 housekeeper",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Pool stats (total=1, active=0, idle=1, waiting=0)",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:02.076Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 connection adder",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@59ce2534",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:02.211Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 connection adder",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5709c07d",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:02.376Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 connection adder",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@53364e44",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:02.530Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 connection adder",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1634ca46",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:02.665Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 connection adder",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3e7baa31",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:02.798Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 connection adder",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@27689fab",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:02.959Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 connection adder",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@46cda16c",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:03.133Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 connection adder",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@761b3509",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:03.264Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 connection adder",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@155223d9",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:03.265Z",
+  "level" : "DEBUG",
+  "thread" : "HikariPool-1 connection adder",
+  "logger" : "com.zaxxer.hikari.pool.HikariPool",
+  "message" : "HikariPool-1 - After adding stats (total=10, active=0, idle=10, waiting=0)",
+  "context" : "default"
+}
+{
+  "timestamp" : "2019-07-04 - 13:55:15.199Z",
+  "level" : "INFO",
+  "thread" : "restartedMain",
+  "logger" : "com.Application",
+  "message" : "Started Application in 28.855 seconds (JVM running for 33.435)",
+  "context" : "default"
+}
