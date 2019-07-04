@@ -1,22 +1,15 @@
 package com.antonromanov.arnote.service;
 
 
-import com.antonromanov.arnote.model.DailyReport;
-import com.antonromanov.arnote.model.Logs;
-import com.antonromanov.arnote.model.Temperature;
+import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.repositoty.LogsRepository;
-import com.antonromanov.arnote.repositoty.TemperatureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.text.ParseException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+
 import java.sql.Time;
 import java.util.*;
-
-import static com.antonromanov.arnote.utils.Utils.checkDayNight;
 
 
 /**
@@ -25,29 +18,11 @@ import static com.antonromanov.arnote.utils.Utils.checkDayNight;
 @Service
 public class MainServiceImpl implements MainService {
 
-
-
-    /**
-     * Репозиторий температуры
-     */
-    @Autowired
-    private TemperatureRepository usersRepository;
-
     /**
      * Репозиторий логов живучести
      */
     @Autowired
     private LogsRepository logsRepository;
-
-
-    /**
-     * Получить все логи температур.
-     * @return
-     */
-    @Override
-    public List<Temperature> getAll() {
-        return usersRepository.findAll();
-    }
 
     /**
      * Выплюнуть все логи живучести.
@@ -55,80 +30,10 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public List<Logs> getAllLogs() {
+    public List<Wish> getAllLogs() {
 
         return logsRepository.findAll();
     }
-
-	/**
-	 * Добавить температуру.
-	 *
-	 * @param temp
-	 * @param status
-	 * @return
-	 */
-	@Override
-    public List<Temperature> addMeasure(Double temp, String status) {
-        usersRepository.save(new Temperature(temp, status));
-        return usersRepository.findAll();
-    }
-
-
-    /**
-     * Выдать стаистику по сегодня.
-     *
-     * @return
-     * @throws ParseException
-     */
-    @Override
-    public List<Temperature> getTodayMeasures() throws ParseException {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-
-        return usersRepository.getTodayMeasures(new SimpleDateFormat("yyyy-MM-dd").parse(dateFormat.format(date)));
-    }
-
-    /**
-     * Выдать статистику по неделе текущей.
-     *
-     * @return
-     * @throws ParseException
-     */
-    @Override
-    public List<DailyReport> getWeeklyDayReport() throws ParseException {
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date currentDate = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(currentDate);
-        c.add(Calendar.DATE, -7);
-        Date currentDateWeekAgo = c.getTime();
-        ArrayList<Temperature> temperaturesForWeek = new ArrayList<>();
-        temperaturesForWeek.addAll(usersRepository.getWeekMeasures(new SimpleDateFormat("yyyy-MM-dd").parse(dateFormat.format(currentDateWeekAgo))));
-        return checkDayNight(temperaturesForWeek);
-    }
-
-    /**
-     * Выдать статистику за этот месяц.
-     *
-     *
-     * @return
-     * @throws ParseException
-     */
-    @Override
-    public List<DailyReport> getMonthDayReport() throws ParseException {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date currentDate = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(currentDate);
-        c.add(Calendar.DATE, -30);
-        Date currentDateWeekAgo = c.getTime();
-        ArrayList<Temperature> temperaturesForMonth = new ArrayList<>();
-        temperaturesForMonth.addAll(usersRepository.getWeekMeasures(new SimpleDateFormat("yyyy-MM-dd").parse(dateFormat.format(currentDateWeekAgo))));
-
-        return checkDayNight(temperaturesForMonth);
-    }
-
 
 
     /**
@@ -193,7 +98,7 @@ public class MainServiceImpl implements MainService {
      * @return - Logs
      */
     @Override
-    public Logs getLastLog() {
+    public Wish getLastLog() {
         return (logsRepository.getLastPingedEntry3(new PageRequest(0, 1, Sort.Direction.DESC, "servertime"))).get(0);
     }
 
@@ -202,10 +107,6 @@ public class MainServiceImpl implements MainService {
      *
      * @return
      */
-    @Override
-    public Temperature getLastTemp() {
-        return (usersRepository.getLastPingedEntry(new PageRequest(0, 1, Sort.Direction.DESC, "timeCreated" ))).get(0);
-    }
 
 
     /**
@@ -213,7 +114,7 @@ public class MainServiceImpl implements MainService {
      *
      */
     @Override
-    public void updateLastLog(Logs log) {
+    public void updateLastLog(Wish log) {
       logsRepository.save(log);
     }
 

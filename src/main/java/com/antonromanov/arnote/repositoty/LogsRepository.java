@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.repositoty;
 
-import com.antonromanov.arnote.model.Logs;
+import com.antonromanov.arnote.model.Wish;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,17 +13,17 @@ import java.util.List;
  * А так же вольтаж, ампраж и прочее....
  */
 @Repository
-public interface LogsRepository extends JpaRepository<Logs, Integer>{
+public interface LogsRepository extends JpaRepository<Wish, Integer>{
 
   
     @Query(value="select l from Logs l order by l.lastсontactdate DESC")
-    List<Logs> getLastPingedEntry(Pageable pageable);
+    List<Wish> getLastPingedEntry(Pageable pageable);
 
     @Query(value="select l from Logs l order by l.lastсontactdate DESC, l.lastсontacttime DESC")
-    List<Logs> getLastPingedEntry2();
+    List<Wish> getLastPingedEntry2();
 
     @Query(value="select l from Logs l order by l.lastсontactdate DESC, l.lastсontacttime DESC")
-    List<Logs> getLastPingedEntry3(Pageable pageable);
+    List<Wish> getLastPingedEntry3(Pageable pageable);
 
 
 

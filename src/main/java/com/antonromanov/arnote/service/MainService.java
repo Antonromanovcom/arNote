@@ -1,9 +1,8 @@
 package com.antonromanov.arnote.service;
 
 
-import com.antonromanov.arnote.model.DailyReport;
-import com.antonromanov.arnote.model.Logs;
-import com.antonromanov.arnote.model.Temperature;
+import com.antonromanov.arnote.model.Wish;
+
 import java.text.ParseException;
 import java.sql.Time;
 import java.util.List;
@@ -12,17 +11,7 @@ import java.util.List;
 public interface MainService {
 
 
-	List<Temperature> getAll(); // список всех измерений (пока с одного датчика)
-
-	List<Logs> getAllLogs(); // все логи
-
-	List<Temperature> addMeasure(Double temp, String status); // добавить измерение
-
-	List<Temperature> getTodayMeasures() throws ParseException; //статистика по сегодня
-
-	List<DailyReport> getWeeklyDayReport() throws ParseException; // недельная статистика
-
-	List<DailyReport> getMonthDayReport() throws ParseException; // статистика за месяц
+	List<Wish> getAllLogs(); // все логи
 
 	Time getLastContactTime(); // время последнего контакта
 
@@ -32,11 +21,9 @@ public interface MainService {
 
 	Boolean getLastContactLogged();  // Пинг залогирован или нет?
 
-	Logs getLastLog(); // получить последний пинг (лог)
+	Wish getLastLog(); // получить последний пинг (лог)
 
-	Temperature getLastTemp(); // получить последнюю запись о температуре
-
-	void updateLastLog(Logs log); // обновить последний пинг (лог) новыми данными
+	void updateLastLog(Wish log); // обновить последний пинг (лог) новыми данными
 
 
 
