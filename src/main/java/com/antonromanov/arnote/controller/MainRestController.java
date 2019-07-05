@@ -24,7 +24,7 @@ import static com.antonromanov.arnote.utils.Utils.*;
  * Основной REST-контроллер приложения.
  */
 @RestController
-@RequestMapping("/rest/users")
+@RequestMapping("/rest/wishes")
 public class MainRestController extends ControllerBase {
 
 	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
@@ -68,23 +68,19 @@ public class MainRestController extends ControllerBase {
 	}
 
 	@CrossOrigin(origins = "*")
-	@GetMapping("/testrefs")
-	public ResponseEntity<String> testRefCursor() {
+	@GetMapping
+	public ResponseEntity<String> gelAllWishes(HttpServletResponse resp) {
 
-		List<Wish> todayList = mainService.getAllWishes();
-		DTO dto = new DTO();
-		dto.list.addAll(todayList);
-		LOGGER.info("========= TEST ============== ");
-		String result = createGsonBuilder().toJson(dto);
-		LOGGER.info("PAYLOAD: " + result);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setCacheControl("no-cache");
+		return $do(s -> {
 
-		ResponseEntity<String> responseEntity = new ResponseEntity<String>(result, headers, HttpStatus.OK);
-		LOGGER.info("RESPONSE: " + responseEntity.toString());
-
-		return responseEntity;
+			List<Wish> todayList = mainService.getAllWishes();
+			DTO dto = new DTO();
+			dto.list.addAll(todayList);
+			LOGGER.info("============== GET ALL WISHES ============== ");
+			String result = createGsonBuilder().toJson(dto);
+			LOGGER.info("PAYLOAD: " + result);
+			return $prepareResponse(result);
+		}, null, resp);
 	}
 
 	@CrossOrigin(origins = "*")
@@ -111,6 +107,14 @@ public class MainRestController extends ControllerBase {
 	@CrossOrigin(origins = "*")
 	@PostMapping("/add")
 	public ResponseEntity<String> addWish(@RequestBody String requestParam, HttpServletRequest request, HttpServletResponse resp) {
+
+
+
+
+
+
+
+
 
 		LOGGER.info("========= ADD WISH ============== ");
 		LOGGER.info("PAYLOAD: " + requestParam);

@@ -4,7 +4,7 @@ import com.antonromanov.arnote.Exceptions.JsonNullException;
 import com.antonromanov.arnote.Exceptions.JsonParseException;
 import com.antonromanov.arnote.Exceptions.SaveNewWishException;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpOutputMessage;
+import org.springframework.http.*;
 import org.springframework.http.server.ServletServerHttpResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,6 +22,22 @@ public class ControllerBase {
 			return null;
 		}
 	}
+
+
+	protected ResponseEntity<String> $prepareResponse(String responseBody){
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setCacheControl("no-cache");
+
+		ResponseEntity<String> responseEntity = new ResponseEntity<String>(responseBody, headers, HttpStatus.OK);
+		LOGGER.info("RESPONSE: " + responseEntity.toString());
+
+		return responseEntity;
+	}
+
+
+
+
 
 	public static void prepareError(Exception ex, HttpOutputMessage outputMessage) {
 		prepareError(ex, ((ServletServerHttpResponse)outputMessage).getServletResponse());
