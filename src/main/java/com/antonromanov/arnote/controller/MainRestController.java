@@ -5,6 +5,7 @@ import com.antonromanov.arnote.Exceptions.JsonParseException;
 import com.antonromanov.arnote.Exceptions.SaveNewWishException;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.service.MainService;
+import com.antonromanov.arnote.utils.ControllerBase;
 import lombok.Data;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-
 import static com.antonromanov.arnote.utils.Utils.*;
 
 
@@ -26,7 +25,7 @@ import static com.antonromanov.arnote.utils.Utils.*;
  */
 @RestController
 @RequestMapping("/rest/users")
-public class MainRestController {
+public class MainRestController extends ControllerBase {
 
 	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
 
@@ -50,8 +49,14 @@ public class MainRestController {
 
 
 	@GetMapping("/daotest")
-	public String testDao() {
-		return "OK";
+	public String testDao(HttpServletResponse resp) {
+		String str = "0111";
+		return $do(s -> {
+			String r = str + " 145";
+			System.out.println(r);
+			//throw new JsonNullException("gbgf");
+			return r;
+		}, str, resp);
 	}
 
 	@GetMapping("/testinsert")
