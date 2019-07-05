@@ -52,7 +52,7 @@ public class MainServiceImpl implements MainService {
      *
      */
     @Override
-    public void updateLastLog(Wish log) {
+    public void updateWish(Wish log) {
       logsRepository.save(log);
     }
 

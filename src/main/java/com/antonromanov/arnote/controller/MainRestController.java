@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import static com.antonromanov.arnote.utils.Utils.*;
 
@@ -79,6 +81,30 @@ public class MainRestController {
 		headers.setCacheControl("no-cache");
 
 		ResponseEntity<String> responseEntity = new ResponseEntity<String>(result, headers, HttpStatus.OK);
+		LOGGER.info("RESPONSE: " + responseEntity.toString());
+
+		return responseEntity;
+	}
+
+	@CrossOrigin(origins = "*")
+	@PutMapping("/update")
+	public ResponseEntity<String> updateWish(@RequestBody String requestParam, HttpServletRequest request, HttpServletResponse resp) {
+
+		//List<Wish> todayList = mainService.getAllWishes();
+		//DTO dto = new DTO();
+		//dto.list.addAll(todayList);
+		LOGGER.info("========= UPDATE WISH ============== ");
+		LOGGER.info("PAYLOAD: " + requestParam);
+
+	//	mainService.updateLastLog();
+
+		/*String result = createGsonBuilder().toJson(dto);
+		LOGGER.info("PAYLOAD: " + result);*/
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setCacheControl("no-cache");
+
+		ResponseEntity<String> responseEntity = new ResponseEntity<String>(null, headers, HttpStatus.OK);
 		LOGGER.info("RESPONSE: " + responseEntity.toString());
 
 		return responseEntity;

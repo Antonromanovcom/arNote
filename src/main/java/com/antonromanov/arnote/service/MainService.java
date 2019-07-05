@@ -13,7 +13,7 @@ public interface MainService {
 
 	List<Wish> getAllWishes(); // все логи
 
-	void updateLastLog(Wish log); // обновить последний пинг (лог) новыми данными
+	void updateWish(Wish log); // обновить последний пинг (лог) новыми данными
 
 
 
