@@ -3,19 +3,15 @@ package com.antonromanov.arnote.utils;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Collection;
+import java.util.Optional;
 
+import com.antonromanov.arnote.model.Wish;
+import com.antonromanov.arnote.Exceptions.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 
 
 /**
@@ -62,7 +58,6 @@ public class Utils {
 		return result;
 
 	}
-
 
 
 	/**
@@ -121,7 +116,6 @@ public class Utils {
 	}
 
 
-
 	/**
 	 * Формируем ответный JSON
 	 */
@@ -155,6 +149,43 @@ public class Utils {
 		return gson;
 	}
 
+	/**
+	 * Конвертим пришедший json в новый WISH
+	 */
+	public static Wish parseJsonToWish(String json) throws JsonParseException, JsonNullException {
+
+		if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
+			throw new JsonNullException("JSON - пустой");
+		}
+
+		Wish wishAfterParse;
+
+		try {
+			wishAfterParse = new Wish(
+					JSONTemplate.fromString(json).get("wish").getAsString(),
+					JSONTemplate.fromString(json).get("price").getAsInt(),
+					JSONTemplate.fromString(json).get("priority").getAsInt(),
+					JSONTemplate.fromString(json).get("archive").getAsBoolean(),
+					JSONTemplate.fromString(json).get("description").getAsString(),
+					JSONTemplate.fromString(json).get("url").getAsString()
+			);
+		} catch (Exception e) {
+			throw new JsonParseException(json);
+		}
+
+		return wishAfterParse;
+
+
+	}
+
+	public static Optional<Wish> getParsedWish(String json) throws JsonParseException, JsonNullException {
+
+		try {
+			return Optional.ofNullable(parseJsonToWish(json));
+		} catch (final JsonParseException | JsonNullException e) {
+			return Optional.empty();
+		}
+	}
 
 
 }

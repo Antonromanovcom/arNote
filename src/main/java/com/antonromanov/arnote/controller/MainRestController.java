@@ -1,5 +1,8 @@
 package com.antonromanov.arnote.controller;
 
+import com.antonromanov.arnote.Exceptions.JsonNullException;
+import com.antonromanov.arnote.Exceptions.JsonParseException;
+import com.antonromanov.arnote.Exceptions.SaveNewWishException;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.service.MainService;
 import lombok.Data;
@@ -11,10 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+
 import static com.antonromanov.arnote.utils.Utils.*;
 
 
@@ -30,14 +33,12 @@ public class MainRestController {
 
 	@Data
 	private class DTO {
+		private List<Wish> list = new ArrayList<>();
+	}
 
-
-		private List<Wish> list= new ArrayList<>();
-
-
-//		private Integer price;
-//		private Integer priority;
-
+	@Data
+	private class ErrorDTO {
+		private String error;
 	}
 
 
@@ -48,20 +49,15 @@ public class MainRestController {
 	MainService mainService;
 
 
-
 	@GetMapping("/daotest")
 	public String testDao() {
-
-	//	Logs user = new Logs(145);
-	//	userDao.create(user);
-
 		return "OK";
 	}
 
 	@GetMapping("/testinsert")
 	public String testInsert() {
 
-	//	userDao.testInsert();
+		//	userDao.testInsert();
 
 		return "TESTED";
 	}
@@ -90,16 +86,13 @@ public class MainRestController {
 	@PutMapping("/update")
 	public ResponseEntity<String> updateWish(@RequestBody String requestParam, HttpServletRequest request, HttpServletResponse resp) {
 
-		//List<Wish> todayList = mainService.getAllWishes();
-		//DTO dto = new DTO();
-		//dto.list.addAll(todayList);
 		LOGGER.info("========= UPDATE WISH ============== ");
 		LOGGER.info("PAYLOAD: " + requestParam);
 
-	//	mainService.updateLastLog();
-
+		//	mainService.updateLastLog();
 		/*String result = createGsonBuilder().toJson(dto);
 		LOGGER.info("PAYLOAD: " + result);*/
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setCacheControl("no-cache");
@@ -110,8 +103,52 @@ public class MainRestController {
 		return responseEntity;
 	}
 
+	@CrossOrigin(origins = "*")
+	@PostMapping("/add")
+	public ResponseEntity<String> addWish(@RequestBody String requestParam, HttpServletRequest request, HttpServletResponse resp) {
+
+		LOGGER.info("========= ADD WISH ============== ");
+		LOGGER.info("PAYLOAD: " + requestParam);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setCacheControl("no-cache");
 
 
+		Wish newWish = null;
+		ResponseEntity<String> responseEntity;
+		ErrorDTO errorDTO = new ErrorDTO();
+
+		try {
+			newWish = Optional.ofNullable(mainService.addWish(parseJsonToWish(requestParam))).orElseThrow(SaveNewWishException::new);
+
+			String result = createGsonBuilder().toJson(newWish);
+			LOGGER.info("PAYLOAD: " + result);
+
+			responseEntity = new ResponseEntity<String>(result, headers, HttpStatus.OK);
+			LOGGER.info("RESPONSE: " + responseEntity.toString());
+
+		} catch (JsonParseException | JsonNullException e) {
+
+			errorDTO.setError(e.getMessage());
+			String result = createGsonBuilder().toJson(errorDTO);
+			LOGGER.info("PAYLOAD: " + result);
+
+			responseEntity = new ResponseEntity<String>(result, headers, HttpStatus.BAD_REQUEST);
+			LOGGER.info("RESPONSE: " + responseEntity.toString());
+		} catch (SaveNewWishException e){
+
+			errorDTO.setError("Невозможно сохранить желание!");
+			String result = createGsonBuilder().toJson(errorDTO);
+			LOGGER.info("PAYLOAD: " + result);
+
+			responseEntity = new ResponseEntity<String>(result, headers, HttpStatus.BAD_REQUEST);
+			LOGGER.info("RESPONSE: " + responseEntity.toString());
+		}
+
+
+		return responseEntity;
+	}
 
 
 }

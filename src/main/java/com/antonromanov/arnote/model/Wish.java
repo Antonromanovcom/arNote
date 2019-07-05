@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString(exclude = "id")
 @EqualsAndHashCode
 @Table(name = "wishes", schema = "arnote", catalog = "postgres")
@@ -36,5 +37,13 @@ public class Wish {
     @Column(name = "url", nullable = true, length = 1024)
     private String url;
 
+    public Wish(String wish, Integer price, Integer priority, Boolean ac, String description, String url) {
+        this.wish = wish;
+        this.price = price;
+        this.priority = priority;
+        this.ac = ac;
+        this.description = description;
+        this.url = url;
+    }
 }
 
