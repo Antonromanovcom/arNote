@@ -4,8 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Date;
-import java.util.Optional;
-
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.Exceptions.*;
 import com.google.gson.Gson;
@@ -14,12 +12,16 @@ import com.google.gson.JsonObject;
 import org.slf4j.LoggerFactory;
 
 
+
+
 /**
  * Тут собраны основные утлилиты.
  */
 public class Utils {
 
 	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
+
+	public enum ParseType {ADD, EDIT}
 
 	/**
 	 * Определяет лижит ли указанное время между двумя заданными.
@@ -152,7 +154,9 @@ public class Utils {
 	/**
 	 * Конвертим пришедший json в новый WISH
 	 */
-	public static Wish parseJsonToWish(String json) throws Exception {
+	public static Wish parseJsonToWish(ParseType parseType, String json) throws Exception {
+//	public static Wish parseJsonToWish(String json) throws Exception {
+
 
 		if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
 			throw new JsonNullException("JSON - пустой");
@@ -161,14 +165,27 @@ public class Utils {
 		Wish wishAfterParse;
 
 		try {
-			wishAfterParse = new Wish(
-					JSONTemplate.fromString(json).get("wish").getAsString(),
-					JSONTemplate.fromString(json).get("price").getAsInt(),
-					JSONTemplate.fromString(json).get("priority").getAsInt(),
-					JSONTemplate.fromString(json).get("archive").getAsBoolean(),
-					JSONTemplate.fromString(json).get("description").getAsString(),
-					JSONTemplate.fromString(json).get("url").getAsString()
-			);
+
+			if (parseType == ParseType.EDIT){
+				wishAfterParse = new Wish(
+						JSONTemplate.fromString(json).get("id").getAsLong(),
+						JSONTemplate.fromString(json).get("wish").getAsString(),
+						JSONTemplate.fromString(json).get("price").getAsInt(),
+						JSONTemplate.fromString(json).get("priority").getAsInt(),
+						JSONTemplate.fromString(json).get("archive").getAsBoolean(),
+						JSONTemplate.fromString(json).get("description").getAsString(),
+						JSONTemplate.fromString(json).get("url").getAsString()
+				);
+			} else {
+				wishAfterParse = new Wish(
+						JSONTemplate.fromString(json).get("wish").getAsString(),
+						JSONTemplate.fromString(json).get("price").getAsInt(),
+						JSONTemplate.fromString(json).get("priority").getAsInt(),
+						JSONTemplate.fromString(json).get("archive").getAsBoolean(),
+						JSONTemplate.fromString(json).get("description").getAsString(),
+						JSONTemplate.fromString(json).get("url").getAsString()
+				);
+			}
 		} catch (Exception e) {
 			throw new JsonParseException(json);
 		}

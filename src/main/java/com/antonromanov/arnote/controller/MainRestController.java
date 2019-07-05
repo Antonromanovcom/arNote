@@ -84,29 +84,29 @@ public class MainRestController extends ControllerBase {
 	}
 
 	@CrossOrigin(origins = "*")
-	@PutMapping("/update")
+	@PutMapping
 	public ResponseEntity<String> updateWish(@RequestBody String requestParam, HttpServletRequest request, HttpServletResponse resp) {
 
-		LOGGER.info("========= UPDATE WISH ============== ");
-		LOGGER.info("PAYLOAD: " + requestParam);
+		return $do(s -> {
 
-		//	mainService.updateLastLog();
-		/*String result = createGsonBuilder().toJson(dto);
-		LOGGER.info("PAYLOAD: " + result);*/
+			LOGGER.info("========= UPDATE WISH ============== ");
+			LOGGER.info("PAYLOAD: " + requestParam);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setCacheControl("no-cache");
+			mainService.updateWish(parseJsonToWish(ParseType.EDIT, requestParam));
 
-		ResponseEntity<String> responseEntity = new ResponseEntity<String>(null, headers, HttpStatus.OK);
-		LOGGER.info("RESPONSE: " + responseEntity.toString());
+			String result = "";
+			LOGGER.info("PAYLOAD: " + result);
 
-		return responseEntity;
+			return $prepareResponse(result);
+
+		}, requestParam, resp);
+
+
 	}
 
 	@CrossOrigin(origins = "*")
-	@PostMapping("/add")
-	public ResponseEntity<String> addWish(@RequestBody String requestParam, HttpServletRequest request, HttpServletResponse resp) {
+	@PostMapping
+	public ResponseEntity<String> addWish(@RequestBody String requestParam, HttpServletResponse resp) {
 
 
 		return $do(s -> {
@@ -114,60 +114,14 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("========= ADD WISH ============== ");
 			LOGGER.info("PAYLOAD: " + requestParam);
 
-			Wish newWish = null;
-			ErrorDTO errorDTO = new ErrorDTO(); // ????
-			newWish = mainService.addWish(parseJsonToWish(requestParam));
+			Wish newWish;
+			newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam));
 
 			String result = createGsonBuilder().toJson(newWish);
 			LOGGER.info("PAYLOAD: " + result);
 
 			return $prepareResponse(result);
 
-
-		}, null, resp);
-
-
-
-
-
-
-
-/*
-
-
-
-
-
-		try {
-			newWish = Optional.ofNullable(mainService.addWish(parseJsonToWish(requestParam))).orElseThrow(SaveNewWishException::new);
-
-			String result = createGsonBuilder().toJson(newWish);
-			LOGGER.info("PAYLOAD: " + result);
-
-			responseEntity = new ResponseEntity<String>(result, headers, HttpStatus.OK);
-			LOGGER.info("RESPONSE: " + responseEntity.toString());
-
-		} catch (JsonParseException | JsonNullException e) {
-
-			errorDTO.setError(e.getMessage());
-			String result = createGsonBuilder().toJson(errorDTO);
-			LOGGER.info("PAYLOAD: " + result);
-
-			responseEntity = new ResponseEntity<String>(result, headers, HttpStatus.BAD_REQUEST);
-			LOGGER.info("RESPONSE: " + responseEntity.toString());
-		} catch (SaveNewWishException e){
-
-			errorDTO.setError("Невозможно сохранить желание!");
-			String result = createGsonBuilder().toJson(errorDTO);
-			LOGGER.info("PAYLOAD: " + result);
-
-			responseEntity = new ResponseEntity<String>(result, headers, HttpStatus.BAD_REQUEST);
-			LOGGER.info("RESPONSE: " + responseEntity.toString());
-		}
-
-
-		return responseEntity;*/
+		}, requestParam, resp);
 	}
-
-
 }
