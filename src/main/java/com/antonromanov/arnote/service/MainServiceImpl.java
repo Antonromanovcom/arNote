@@ -28,9 +28,8 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public Wish addWish(Wish wish)  {
-        Wish newWish = logsRepository.saveAndFlush(wish);
-        return newWish;
+    public Wish addWish(Wish wish) {
+        return logsRepository.saveAndFlush(wish);
     }
 
 

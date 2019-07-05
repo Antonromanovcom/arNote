@@ -36,9 +36,6 @@ public class ControllerBase {
 	}
 
 
-
-
-
 	public static void prepareError(Exception ex, HttpOutputMessage outputMessage) {
 		prepareError(ex, ((ServletServerHttpResponse)outputMessage).getServletResponse());
 	}
@@ -62,7 +59,7 @@ public class ControllerBase {
 
 
 	protected interface SomeProcess<T, E> {
-		T aplly(E req) throws JsonNullException;
+		T aplly(E req) throws Exception;
 	}
 
 

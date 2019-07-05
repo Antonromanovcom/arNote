@@ -152,7 +152,7 @@ public class Utils {
 	/**
 	 * Конвертим пришедший json в новый WISH
 	 */
-	public static Wish parseJsonToWish(String json) throws JsonParseException, JsonNullException {
+	public static Wish parseJsonToWish(String json) throws Exception {
 
 		if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
 			throw new JsonNullException("JSON - пустой");
@@ -178,14 +178,14 @@ public class Utils {
 
 	}
 
-	public static Optional<Wish> getParsedWish(String json) throws JsonParseException, JsonNullException {
+	/*public static Optional<Wish> getParsedWish(String json) throws JsonParseException, JsonNullException {
 
 		try {
 			return Optional.ofNullable(parseJsonToWish(json));
 		} catch (final JsonParseException | JsonNullException e) {
 			return Optional.empty();
 		}
-	}
+	}*/
 
 
 }

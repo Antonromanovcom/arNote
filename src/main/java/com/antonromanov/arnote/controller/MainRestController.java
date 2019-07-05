@@ -109,6 +109,22 @@ public class MainRestController extends ControllerBase {
 	public ResponseEntity<String> addWish(@RequestBody String requestParam, HttpServletRequest request, HttpServletResponse resp) {
 
 
+		return $do(s -> {
+
+			LOGGER.info("========= ADD WISH ============== ");
+			LOGGER.info("PAYLOAD: " + requestParam);
+
+			Wish newWish = null;
+			ErrorDTO errorDTO = new ErrorDTO(); // ????
+			newWish = mainService.addWish(parseJsonToWish(requestParam));
+
+			String result = createGsonBuilder().toJson(newWish);
+			LOGGER.info("PAYLOAD: " + result);
+
+			return $prepareResponse(result);
+
+
+		}, null, resp);
 
 
 
@@ -116,17 +132,11 @@ public class MainRestController extends ControllerBase {
 
 
 
-		LOGGER.info("========= ADD WISH ============== ");
-		LOGGER.info("PAYLOAD: " + requestParam);
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setCacheControl("no-cache");
+/*
 
 
-		Wish newWish = null;
-		ResponseEntity<String> responseEntity;
-		ErrorDTO errorDTO = new ErrorDTO();
+
+
 
 		try {
 			newWish = Optional.ofNullable(mainService.addWish(parseJsonToWish(requestParam))).orElseThrow(SaveNewWishException::new);
@@ -156,7 +166,7 @@ public class MainRestController extends ControllerBase {
 		}
 
 
-		return responseEntity;
+		return responseEntity;*/
 	}
 
 

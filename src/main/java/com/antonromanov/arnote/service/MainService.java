@@ -10,9 +10,9 @@ import java.util.List;
 public interface MainService {
 
 
-	List<Wish> getAllWishes(); // все логи
+	List<Wish> getAllWishes();
 
-	void updateWish(Wish log); // обновить последний пинг (лог) новыми данными
+	void updateWish(Wish log);
 
 	Wish addWish(Wish parseJsonToWish);
 }
