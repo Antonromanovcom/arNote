@@ -23,6 +23,54 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 
 /***/ }),
 
+/***/ "./src/app/app-routing/app-routing.module.ts":
+/*!***************************************************!*\
+  !*** ./src/app/app-routing/app-routing.module.ts ***!
+  \***************************************************/
+/*! exports provided: AppRoutingModule */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppRoutingModule", function() { return AppRoutingModule; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _ui_layout_edit_edit_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../ui/layout/edit/edit.component */ "./src/app/ui/layout/edit/edit.component.ts");
+
+
+
+
+
+var routes = [
+    {
+        path: '',
+        component: _ui_layout_edit_edit_component__WEBPACK_IMPORTED_MODULE_4__["EditComponent"],
+    },
+];
+var AppRoutingModule = /** @class */ (function () {
+    function AppRoutingModule() {
+    }
+    AppRoutingModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
+            declarations: [],
+            imports: [
+                _angular_router__WEBPACK_IMPORTED_MODULE_3__["RouterModule"].forRoot(routes),
+                _angular_common__WEBPACK_IMPORTED_MODULE_2__["CommonModule"]
+            ],
+            exports: [
+                _angular_router__WEBPACK_IMPORTED_MODULE_3__["RouterModule"]
+            ]
+        })
+    ], AppRoutingModule);
+    return AppRoutingModule;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/app.component.css":
 /*!***********************************!*\
   !*** ./src/app/app.component.css ***!
@@ -41,7 +89,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<app-layout>\n  <h1>hbh {{title}}</h1>\n</app-layout>\n"
+module.exports = "<!--<router-outlet></router-outlet>-->\n<app-layout>\n  <h1>hbh {{title}}</h1>\n</app-layout>\n"
 
 /***/ }),
 
@@ -92,8 +140,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
 /* harmony import */ var _ui_ui_module__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ui/ui.module */ "./src/app/ui/ui.module.ts");
-/* harmony import */ var _clr_angular__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @clr/angular */ "./node_modules/@clr/angular/fesm5/clr-angular.js");
-/* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/platform-browser/animations */ "./node_modules/@angular/platform-browser/fesm5/animations.js");
+/* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/platform-browser/animations */ "./node_modules/@angular/platform-browser/fesm5/animations.js");
+/* harmony import */ var angular_font_awesome__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! angular-font-awesome */ "./node_modules/angular-font-awesome/dist/angular-font-awesome.es5.js");
+/* harmony import */ var _app_routing_app_routing_module__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./app-routing/app-routing.module */ "./src/app/app-routing/app-routing.module.ts");
+
 
 
 
@@ -111,8 +161,9 @@ var AppModule = /** @class */ (function () {
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
-                _clr_angular__WEBPACK_IMPORTED_MODULE_5__["ClarityModule"],
-                _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_6__["BrowserAnimationsModule"],
+                _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_5__["BrowserAnimationsModule"],
+                angular_font_awesome__WEBPACK_IMPORTED_MODULE_6__["AngularFontAwesomeModule"],
+                _app_routing_app_routing_module__WEBPACK_IMPORTED_MODULE_7__["AppRoutingModule"],
                 _ui_ui_module__WEBPACK_IMPORTED_MODULE_4__["UiModule"]
             ],
             providers: [],
@@ -120,6 +171,33 @@ var AppModule = /** @class */ (function () {
         })
     ], AppModule);
     return AppModule;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/dto/wish.ts":
+/*!*****************************!*\
+  !*** ./src/app/dto/wish.ts ***!
+  \*****************************/
+/*! exports provided: Wish */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Wish", function() { return Wish; });
+var Wish = /** @class */ (function () {
+    function Wish(id, wish, price, priority, archive, description, url) {
+        this.id = id;
+        this.wish = wish;
+        this.price = price;
+        this.priority = priority;
+        this.archive = archive;
+        this.description = description;
+        this.url = url;
+    }
+    return Wish;
 }());
 
 
@@ -149,11 +227,83 @@ var HttpService = /** @class */ (function () {
     HttpService.prototype.getData = function (url) {
         return this.http.get(url);
     };
+    HttpService.prototype.sendData = function (wish, url) {
+        var httpOptions = {
+            headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
+                'Content-Type': 'application/json'
+            })
+        };
+        return this.http.post(url, wish, httpOptions);
+    };
+    HttpService.prototype.updateWish = function (wish, url) {
+        var httpOptions = {
+            headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
+                'Content-Type': 'application/json'
+            })
+        };
+        return this.http.put(url, wish, httpOptions);
+    };
     HttpService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])(),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"]])
     ], HttpService);
     return HttpService;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/ui/layout/edit/edit.component.css":
+/*!***************************************************!*\
+  !*** ./src/app/ui/layout/edit/edit.component.css ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3VpL2xheW91dC9lZGl0L2VkaXQuY29tcG9uZW50LmNzcyJ9 */"
+
+/***/ }),
+
+/***/ "./src/app/ui/layout/edit/edit.component.html":
+/*!****************************************************!*\
+  !*** ./src/app/ui/layout/edit/edit.component.html ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<p>\n  edit works!\n</p>\n"
+
+/***/ }),
+
+/***/ "./src/app/ui/layout/edit/edit.component.ts":
+/*!**************************************************!*\
+  !*** ./src/app/ui/layout/edit/edit.component.ts ***!
+  \**************************************************/
+/*! exports provided: EditComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditComponent", function() { return EditComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+
+
+var EditComponent = /** @class */ (function () {
+    function EditComponent() {
+    }
+    EditComponent.prototype.ngOnInit = function () {
+    };
+    EditComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            selector: 'app-edit',
+            template: __webpack_require__(/*! ./edit.component.html */ "./src/app/ui/layout/edit/edit.component.html"),
+            styles: [__webpack_require__(/*! ./edit.component.css */ "./src/app/ui/layout/edit/edit.component.css")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+    ], EditComponent);
+    return EditComponent;
 }());
 
 
@@ -233,7 +383,7 @@ var LayoutComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".content-container {\r\n  background: #0c5460;\r\n}\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvdWkvbGF5b3V0L21haW4vbWFpbi5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsbUJBQW1CO0FBQ3JCIiwiZmlsZSI6InNyYy9hcHAvdWkvbGF5b3V0L21haW4vbWFpbi5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmNvbnRlbnQtY29udGFpbmVyIHtcclxuICBiYWNrZ3JvdW5kOiAjMGM1NDYwO1xyXG59XHJcbiJdfQ== */"
+module.exports = "\r\n::ng-deep clr-icon:hover {\r\n  background:#53ea93;\r\n}\r\n\r\n\r\n/*.btn-primary:hover {*/\r\n\r\n\r\n/*background:#53ea93;*/\r\n\r\n\r\n/*}*/\r\n\r\n\r\n.fas .fa-arrow-up{\r\n  background: #0c5460;\r\n}\r\n\r\n\r\n.fa, .fas:hover {\r\n  background: aqua;\r\n}\r\n\r\n\r\n:host{\r\n\r\n}\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvdWkvbGF5b3V0L21haW4vbWFpbi5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFDQTtFQUNFLGtCQUFrQjtBQUNwQjs7O0FBR0EsdUJBQXVCOzs7QUFDckIsc0JBQXNCOzs7QUFDeEIsSUFBSTs7O0FBSUo7RUFDRSxtQkFBbUI7QUFDckI7OztBQUVBO0VBQ0UsZ0JBQWdCO0FBQ2xCOzs7QUFDQTs7QUFFQSIsImZpbGUiOiJzcmMvYXBwL3VpL2xheW91dC9tYWluL21haW4uY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIlxyXG46Om5nLWRlZXAgY2xyLWljb246aG92ZXIge1xyXG4gIGJhY2tncm91bmQ6IzUzZWE5MztcclxufVxyXG5cclxuXHJcbi8qLmJ0bi1wcmltYXJ5OmhvdmVyIHsqL1xyXG4gIC8qYmFja2dyb3VuZDojNTNlYTkzOyovXHJcbi8qfSovXHJcblxyXG5cclxuXHJcbi5mYXMgLmZhLWFycm93LXVwe1xyXG4gIGJhY2tncm91bmQ6ICMwYzU0NjA7XHJcbn1cclxuXHJcbi5mYSwgLmZhczpob3ZlciB7XHJcbiAgYmFja2dyb3VuZDogYXF1YTtcclxufVxyXG46aG9zdHtcclxuXHJcbn1cclxuIl19 */"
 
 /***/ }),
 
@@ -244,7 +394,7 @@ module.exports = ".content-container {\r\n  background: #0c5460;\r\n}\r\n\r\n/*#
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"content-container\">\n  <div class=\"content-area\">\n    <ng-content></ng-content>\n\n    <div class=\"clr-row\">\n    <div class=\"clr-col-12\">\n    <table class=\"table\">\n      <thead>\n      <tr>\n        <th>Желание</th>\n        <th>Цена</th>\n        <th>Приоритет</th>\n        <th>.</th>\n        <th>.</th>\n        <th>Ред.</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr *ngFor=\"let item of wishes\">\n        <td style=\"width: 50%\"> {{item.name}} </td>\n        <td style=\"width: 10%\"> 100 000 </td>\n        <td > {{item.priority}} </td>\n        <td style=\"width: 5%\">  <clr-icon shape=\"upload\" (click)=\"up($event, item)\"></clr-icon> </td>\n        <td style=\"width: 5%\"> <clr-icon shape=\"download\" (click)=\"down($event, item)\"></clr-icon> </td>\n        <td > <clr-icon shape=\"edit\" (click)=\"down($event, item)\"></clr-icon> </td>\n      </tr>\n      <td style=\"width: 50%\"> ИТОГО </td>\n      <td style=\"width: 10%\"> 100 000 </td>\n      <td > - </td>\n      <td style=\"width: 5%\">  - </td>\n      <td style=\"width: 5%\"> - </td>\n      <td > <clr-icon shape=\"edit\" (click)=\"down($event, item)\"></clr-icon> </td>\n      <tr>\n      </tr>\n      </tbody>\n    </table>\n    </div>\n    </div>\n\n    <clr-button (_click)=\"test()\"> T E S T </clr-button>\n    <button class=\"btn btn-primary\" (click)=\"test()\">Primary</button>\n    <span class=\"label label-info\">{{testData}}</span>\n\n\n  </div>\n  <app-sidebar class=\"sidenav\"></app-sidebar>\n</div>\n"
+module.exports = "<div class=\"content-container\">\n  <div class=\"content-area\">\n    <ng-content>\n    </ng-content>\n\n    <div class=\"clr-row\">\n    <div class=\"clr-col-12\">\n    <table class=\"table\">\n      <thead>\n      <tr>\n        <th>Желание</th>\n        <th>Цена</th>\n        <th>Приоритет</th>\n        <th>.</th>\n        <th>.</th>\n        <th>Ред.</th>\n      </tr>\n      </thead>\n      <tbody>\n      <tr *ngFor=\"let item of wishes\">\n        <td style=\"width: 50%\"> {{item.wish}} </td>\n        <td style=\"width: 10%\"> {{item.price}} </td>\n        <td > {{item.priority}} </td>\n        <td style=\"width: 5%\">  <clr-icon shape=\"upload\" (click)=\"up($event, item)\"></clr-icon> </td>\n        <td style=\"width: 5%\"> <clr-icon shape=\"download\" (click)=\"down($event, item)\"></clr-icon> </td>\n        <td > <clr-icon shape=\"edit\" (click)=\"openEditWish($event, item, 1)\"></clr-icon> </td>\n      </tr>\n      <td style=\"width: 50%\"> ИТОГО </td>\n      <td style=\"width: 10%\"> 100 000 </td>\n      <td > - </td>\n      <td style=\"width: 5%\">  - </td>\n      <td style=\"width: 5%\"> - </td>\n      <td > <i class=\"fas fa-arrow-up\"></i> </td>\n      <tr>\n      </tr>\n      </tbody>\n    </table>\n    </div>\n    </div>\n\n    <button class=\"btn btn-primary\" (click)=\"openEditWish($event, item, 2)\"> Добавить </button>\n    <button class=\"btn btn-secondary\" (click)=\"getWishes()\"> Обновить </button>\n    <span class=\"label label-info\">{{testData}}</span>\n\n    <clr-modal [(clrModalOpen)]=\"isEdit\">\n      <h3 class=\"modal-title\">{{isEditableTransacion ? 'Редактировать сервис' : 'Добавить сервис'}}</h3>\n      <div class=\"modal-body\">\n        <form clrForm [formGroup]=\"form\">\n\n\n          <!--ПОЛЕ ID-->\n\n          <clr-input-container>\n\n            <label #label for=\"id\" class=\"input-label clr-col-12\">id</label>\n            <input type=\"id\" clrInput formControlName=\"id\" id=\"id\" name=\"id\" autocomplete=\"off\" readonly required size=\"50\">\n          </clr-input-container>\n\n          <!--ПОЛЕ ИМЯ-->\n\n\n          <clr-input-container>\n\n            <label #label for=\"name\" class=\"input-label clr-col-12\">Название</label>\n            <input type=\"text\"\n                   clrInput\n                   formControlName=\"name\"\n                   id=\"name\"\n                   name=\"name\"\n                   autocomplete=\"off\" required size=\"100\">\n\n            <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n          </clr-input-container>\n\n          <!--ПОЛЕ ОПИСАНИЕ-->\n\n          <clr-input-container>\n            <label #label for=\"description\" class=\"input-label clr-col-12\">Описание</label>\n            <input type=\"text\"\n                   clrInput\n                   formControlName=\"description\"\n                   id=\"description\"\n                   name=\"description\"\n                   autocomplete=\"off\" required size=\"100\">\n            <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n          </clr-input-container>\n\n          <!--ПОЛЕ URL-->\n\n          <clr-input-container>\n            <label #label for=\"url\" class=\"input-label clr-col-12\">URL</label>\n            <input type=\"url\"\n                   clrInput\n                   formControlName=\"url\"\n                   id=\"url\"\n                   name=\"url\"\n                   autocomplete=\"off\" required size=\"100\">\n            <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n            <clr-control-error *clrIfError=\"'pattern'\">Некорректный форма url</clr-control-error>\n          </clr-input-container>\n\n          <!--ПОЛЕ PRIORITY-->\n\n          <clr-input-container>\n            <label #label for=\"priority\" class=\"input-label clr-col-12\">Приоритет</label>\n            <input type=\"text\"\n                   clrInput\n                   formControlName=\"priority\"\n                   id=\"priority\"\n                   name=\"priority\"\n                   autocomplete=\"off\">\n            <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n          </clr-input-container>\n\n          <!--ПОЛЕ PRICE-->\n\n          <clr-input-container>\n            <label #label for=\"price\" class=\"input-label clr-col-12\">Цена</label>\n            <input type=\"text\"\n                   clrInput\n                   formControlName=\"price\"\n                   id=\"price\"\n                   name=\"price\"\n                   autocomplete=\"off\">\n          </clr-input-container>\n        </form>\n        <!--<clr-checkbox-wrapper>-->\n          <!--<input type=\"checkbox\" clrCheckbox [(ngModel)]=\"enabled\"  name=\"options\" />-->\n          <!--<label>Включен</label>-->\n        <!--</clr-checkbox-wrapper>-->\n        <button type=\"button\" (click)=\"addEditService()\" class=\"btn btn-primary mt-1\">Сохранить</button>\n      </div>\n    </clr-modal>\n\n\n   <!-- <h1>Login</h1>\n\n    <form clrForm [formGroup]=\"form\" (ngSubmit)=\"submit()\">\n      <clr-input-container>\n        <label>Email</label>\n        <input clrInput formControlName=\"email\" type=\"email\" />\n        &lt;!&ndash;<clr-control-error *clrIfError=\"required\">Email Required</clr-control-error>&ndash;&gt;\n      </clr-input-container>\n\n      <button class=\"btn\">Login</button>\n    </form>-->\n\n\n\n  </div>\n\n  <app-sidebar class=\"sidenav\"></app-sidebar>\n</div>\n"
 
 /***/ }),
 
@@ -261,30 +411,58 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _service_http_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../service/http.service */ "./src/app/service/http.service.ts");
+/* harmony import */ var _dto_wish__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../dto/wish */ "./src/app/dto/wish.ts");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+
+
 
 
 
 var MainComponent = /** @class */ (function () {
-    function MainComponent(httpService) {
+    function MainComponent(httpService, fb) {
         this.httpService = httpService;
+        this.fb = fb;
         this.localJson = 'assets/data.json';
-        this.testJson = 'http://localhost:8080/rest/users/testrefs';
+        this._apiUrl = 'http://localhost:8080/rest/wishes';
+        this.apiUrl = '/rest/wishes';
+        // updateWish = 'http://localhost:8080/rest/users/update';
         this.testData = '';
+        this.isEdit = false;
+        this.isEditMode = false;
         this.wishes = [];
-        this.po = [1, 2, 3, 4, 5];
+        this.form = this.fb.group({
+            id: ['', []],
+            name: ['', [
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required,
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].maxLength(160),
+                ]],
+            description: ['', [
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required,
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].maxLength(1024),
+                ]],
+            url: ['', [
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required,
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/),
+                ]],
+            priority: ['', [
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required,
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].pattern(/^[0-9]+$/)
+                ]],
+            price: ['', [
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required,
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].pattern(/^[0-9]+$/)
+                ]]
+        });
     }
     MainComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.httpService.getData(this.localJson).subscribe(function (data) {
-            _this.wishes = data['userList'];
-            _this.wishes.sort(function (a, b) { return a.priority - b.priority; });
-        });
+        /* this.httpService.getData(this.localJson).subscribe(data => {
+           this.wishes = data['userList'];
+           this.wishes.sort((a, b) => a.priority - b.priority);
+         });*/
+        this.getWishes();
     };
     MainComponent.prototype.up = function (event, item) {
         item.priority = item.priority + 1;
-        /* if (item.priority > (this.findMax()).priority + 1) {
-           item.priority = (this.findMax()).priority + 1;
-         }*/
         this.wishes.sort(function (a, b) { return a.priority - b.priority; });
     };
     MainComponent.prototype.findMax = function () {
@@ -297,12 +475,83 @@ var MainComponent = /** @class */ (function () {
         }
         this.wishes.sort(function (a, b) { return a.priority - b.priority; });
     };
-    MainComponent.prototype.test = function () {
+    MainComponent.prototype.getWishes = function () {
         var _this = this;
-        this.httpService.getData(this.testJson).subscribe(function (data) {
-            console.log(data);
-            _this.testData = data[0];
+        this.httpService.getData(this.apiUrl).subscribe(function (data) {
+            _this.wishes = data['list'];
+            console.log(_this.wishes);
         });
+    };
+    MainComponent.prototype.openEditWish = function (event, item, isedit) {
+        /* this.httpService.getData(this.testJson).subscribe(data => {
+           console.log(data);
+           this.testData = data[0];
+         });*/
+        /* this.httpService.getData(this.testJson).subscribe(data => {
+           this.wishes = data['list'];
+           console.log( this.wishes);
+         });*/
+        if (isedit === 1) {
+            this.isEdit = true;
+            this.isEditMode = true;
+            this.form.patchValue({
+                id: item.id,
+                name: item.wish,
+                description: item.description,
+                url: item.url,
+                priority: item.priority,
+                price: item.price,
+            });
+        }
+        else {
+            this.isEdit = true;
+            this.isEditMode = false;
+            this.form.patchValue({
+                id: 1,
+                name: '',
+                description: 'какое-то описание',
+                url: '',
+                priority: 1,
+                price: 0,
+            });
+        }
+    };
+    MainComponent.prototype.addEditService = function () {
+        var _this = this;
+        var wish = new _dto_wish__WEBPACK_IMPORTED_MODULE_3__["Wish"](this.form.value.id, this.form.value.name, this.form.value.price, this.form.value.priority, false, this.form.value.description, this.form.value.url);
+        // todo: обрабатывать ошибки
+        if (this.isEditMode) {
+            this.httpService.updateWish(wish, this.apiUrl)
+                .subscribe(function (hero) {
+                console.log(hero);
+                _this.isEdit = false;
+            });
+        }
+        else {
+            this.httpService.sendData(wish, this.apiUrl)
+                .subscribe(function (hero) {
+                console.log('ADD MODE');
+                console.log(hero);
+                _this.isEdit = false;
+            });
+        }
+        //   this.producersService.addTransaction(params).subscribe(() => {
+        //    this.isEdit = false;
+        //     this.getTransactions();
+        //    });
+        //  } else {
+        //   this.producersService.updateTransaction(params).subscribe(() => {
+        //  this.isEdit = false;
+        //    this.getTransactions();
+        //    });
+        // }
+    };
+    MainComponent.prototype.tempAdd = function () {
+        var wish = new _dto_wish__WEBPACK_IMPORTED_MODULE_3__["Wish"](this.form.value.id, this.form.value.name, this.form.value.price, this.form.value.priority, false, this.form.value.description, this.form.value.url);
+        // todo: определять добавление или редактировани
+        // todo: обрабатывать ошибки
+        /*this.httpService.sendData(wish, this.updateWish)
+          .subscribe(hero => console.log(hero));*/
     };
     MainComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -311,7 +560,7 @@ var MainComponent = /** @class */ (function () {
             providers: [_service_http_service__WEBPACK_IMPORTED_MODULE_2__["HttpService"]],
             styles: [__webpack_require__(/*! ./main.component.css */ "./src/app/ui/layout/main/main.component.css")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_service_http_service__WEBPACK_IMPORTED_MODULE_2__["HttpService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_service_http_service__WEBPACK_IMPORTED_MODULE_2__["HttpService"], _angular_forms__WEBPACK_IMPORTED_MODULE_4__["FormBuilder"]])
     ], MainComponent);
     return MainComponent;
 }());
@@ -366,12 +615,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
-/* harmony import */ var _layout_layout_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./layout/layout.component */ "./src/app/ui/layout/layout.component.ts");
-/* harmony import */ var _layout_header_header_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./layout/header/header.component */ "./src/app/ui/layout/header/header.component.ts");
-/* harmony import */ var _layout_sidebar_sidebar_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./layout/sidebar/sidebar.component */ "./src/app/ui/layout/sidebar/sidebar.component.ts");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var clarity_angular__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! clarity-angular */ "./node_modules/clarity-angular/clarity-angular.es5.js");
-/* harmony import */ var _layout_main_main_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./layout/main/main.component */ "./src/app/ui/layout/main/main.component.ts");
+/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
+/* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/platform-browser/animations */ "./node_modules/@angular/platform-browser/fesm5/animations.js");
+/* harmony import */ var _layout_layout_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./layout/layout.component */ "./src/app/ui/layout/layout.component.ts");
+/* harmony import */ var _layout_header_header_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./layout/header/header.component */ "./src/app/ui/layout/header/header.component.ts");
+/* harmony import */ var _layout_sidebar_sidebar_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./layout/sidebar/sidebar.component */ "./src/app/ui/layout/sidebar/sidebar.component.ts");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+/* harmony import */ var _clr_angular__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @clr/angular */ "./node_modules/@clr/angular/fesm5/clr-angular.js");
+/* harmony import */ var _layout_main_main_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./layout/main/main.component */ "./src/app/ui/layout/main/main.component.ts");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var _layout_edit_edit_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./layout/edit/edit.component */ "./src/app/ui/layout/edit/edit.component.ts");
+
+
+
+
 
 
 
@@ -386,13 +643,17 @@ var UiModule = /** @class */ (function () {
     }
     UiModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
-            declarations: [_layout_layout_component__WEBPACK_IMPORTED_MODULE_3__["LayoutComponent"], _layout_header_header_component__WEBPACK_IMPORTED_MODULE_4__["HeaderComponent"], _layout_sidebar_sidebar_component__WEBPACK_IMPORTED_MODULE_5__["SidebarComponent"], _layout_main_main_component__WEBPACK_IMPORTED_MODULE_8__["MainComponent"]],
+            declarations: [_layout_layout_component__WEBPACK_IMPORTED_MODULE_5__["LayoutComponent"], _layout_header_header_component__WEBPACK_IMPORTED_MODULE_6__["HeaderComponent"], _layout_sidebar_sidebar_component__WEBPACK_IMPORTED_MODULE_7__["SidebarComponent"], _layout_main_main_component__WEBPACK_IMPORTED_MODULE_10__["MainComponent"], _layout_edit_edit_component__WEBPACK_IMPORTED_MODULE_12__["EditComponent"]],
             imports: [
                 _angular_common__WEBPACK_IMPORTED_MODULE_2__["CommonModule"],
-                _angular_common_http__WEBPACK_IMPORTED_MODULE_6__["HttpClientModule"],
-                clarity_angular__WEBPACK_IMPORTED_MODULE_7__["ClarityModule"]
+                _angular_platform_browser__WEBPACK_IMPORTED_MODULE_3__["BrowserModule"],
+                _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_4__["BrowserAnimationsModule"],
+                _angular_common_http__WEBPACK_IMPORTED_MODULE_8__["HttpClientModule"],
+                _angular_forms__WEBPACK_IMPORTED_MODULE_11__["FormsModule"],
+                _angular_forms__WEBPACK_IMPORTED_MODULE_11__["ReactiveFormsModule"],
+                _clr_angular__WEBPACK_IMPORTED_MODULE_9__["ClarityModule"]
             ],
-            exports: [_layout_layout_component__WEBPACK_IMPORTED_MODULE_3__["LayoutComponent"]]
+            exports: [_layout_layout_component__WEBPACK_IMPORTED_MODULE_5__["LayoutComponent"]]
         })
     ], UiModule);
     return UiModule;

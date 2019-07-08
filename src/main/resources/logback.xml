@@ -50,16 +50,16 @@
         </encoder>
     </appender>
 
-    <logger name="com" level="debug" additivity="false" >
+    <logger name="com" level="info" additivity="false" >
         <appender-ref ref="FILE" />
     </logger>
 
-    <logger name="console_logger" level="debug" additivity="false" >
+    <logger name="console_logger" level="info" additivity="false" >
         <appender-ref ref="console" />
         <appender-ref ref="FILE_FOR_BOT" />
     </logger>
 
-    <root level="debug">
+    <root level="info">
         <!--<appender-ref ref="FILE" />-->
         <appender-ref ref="console" />
     </root>
