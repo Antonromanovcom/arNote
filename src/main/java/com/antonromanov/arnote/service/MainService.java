@@ -19,4 +19,5 @@ public interface MainService {
 	Integer getSumm4All();
 	Integer getSumm4Prior();
 
+	void deleteWish(String id);
 }

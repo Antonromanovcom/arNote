@@ -42,5 +42,10 @@ public class MainServiceImpl implements MainService {
         return wishRepository.getAllNotWithPriority1().stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
+    @Override
+    public void deleteWish(String id) {
+        wishRepository.deleteByLongId(Long.parseLong(id));
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.controller;
 
+import com.antonromanov.arnote.model.ResponseStatusDTO;
 import com.antonromanov.arnote.model.SummEntity;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.service.MainService;
@@ -30,10 +31,6 @@ public class MainRestController extends ControllerBase {
 		private List<Wish> list = new ArrayList<>();
 	}
 
-	@Data
-	private class ErrorDTO {
-		private String error;
-	}
 
 
 	/**
@@ -128,4 +125,18 @@ public class MainRestController extends ControllerBase {
 			return $prepareResponse(result);
 		}, null, resp);
 	}
+
+
+	@CrossOrigin(origins = "*")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteWish(@PathVariable String id, HttpServletResponse resp) {
+
+		return $do(s -> {
+			LOGGER.info("========= DELETE WISH ============== ");
+			LOGGER.info("ID: " + id);
+			mainService.deleteWish(id);
+			return $prepareResponse(createGsonBuilder().toJson(ResponseStatusDTO.builder().okMessage("OK").status("OK").build()));
+		}, null, resp);
+	}
+
 }
