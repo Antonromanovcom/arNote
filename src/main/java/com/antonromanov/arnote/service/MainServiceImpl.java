@@ -1,9 +1,10 @@
 package com.antonromanov.arnote.service;
 
-
 import com.antonromanov.arnote.model.Wish;
-import com.antonromanov.arnote.repositoty.LogsRepository;
+import com.antonromanov.arnote.repositoty.WishRepository;
+import org.apache.commons.math3.util.ArithmeticUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
@@ -13,23 +14,32 @@ public class MainServiceImpl implements MainService {
 
 
     @Autowired
-    private LogsRepository logsRepository;
+    private WishRepository wishRepository;
 
 
     @Override
     public List<Wish> getAllWishes() {
-        return logsRepository.findAll();
+        return wishRepository.findAll(Sort.by(Sort.Direction.ASC, "priority"));
     }
-
 
     @Override
     public void updateWish(Wish log) {
-      logsRepository.save(log);
+      wishRepository.save(log);
     }
 
     @Override
     public Wish addWish(Wish wish) {
-        return logsRepository.saveAndFlush(wish);
+        return wishRepository.saveAndFlush(wish);
+    }
+
+    @Override
+    public Integer getSumm4All() {
+        return wishRepository.findAll().stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
+    }
+
+    @Override
+    public Integer getSumm4Prior() {
+        return wishRepository.getAllNotWithPriority1().stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
 

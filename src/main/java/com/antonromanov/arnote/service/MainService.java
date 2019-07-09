@@ -15,4 +15,8 @@ public interface MainService {
 	void updateWish(Wish log);
 
 	Wish addWish(Wish parseJsonToWish);
+
+	Integer getSumm4All();
+	Integer getSumm4Prior();
+
 }

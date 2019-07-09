@@ -1,17 +1,12 @@
 package com.antonromanov.arnote.controller;
 
-import com.antonromanov.arnote.Exceptions.JsonNullException;
-import com.antonromanov.arnote.Exceptions.JsonParseException;
-import com.antonromanov.arnote.Exceptions.SaveNewWishException;
+import com.antonromanov.arnote.model.SummEntity;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
-import lombok.Data;
+import lombok.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +42,8 @@ public class MainRestController extends ControllerBase {
 	@Autowired
 	MainService mainService;
 
+//	INSERT INTO arnote.wishes (id, wish, priority, price, archive, description, url) VALUES (1, '1', 1, 1, false, 'desc', '1');
+
 
 	@GetMapping("/daotest")
 	public String testDao(HttpServletResponse resp) {
@@ -57,14 +54,6 @@ public class MainRestController extends ControllerBase {
 			//throw new JsonNullException("gbgf");
 			return r;
 		}, str, resp);
-	}
-
-	@GetMapping("/testinsert")
-	public String testInsert() {
-
-		//	userDao.testInsert();
-
-		return "TESTED";
 	}
 
 	@CrossOrigin(origins = "*")
@@ -123,5 +112,20 @@ public class MainRestController extends ControllerBase {
 			return $prepareResponse(result);
 
 		}, requestParam, resp);
+	}
+
+	@CrossOrigin(origins = "*")
+	@GetMapping("/summ")
+	public ResponseEntity<String> getSumm(HttpServletResponse resp) {
+
+		return $do(s -> {
+			LOGGER.info("========= GET SUMM ============== ");
+
+			String result = createGsonBuilder().toJson(SummEntity.builder()
+					.all(mainService.getSumm4All())
+					.priority(mainService.getSumm4Prior()).build());
+			LOGGER.info("PAYLOAD: " + result);
+			return $prepareResponse(result);
+		}, null, resp);
 	}
 }
