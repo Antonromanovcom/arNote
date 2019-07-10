@@ -402,7 +402,7 @@ module.exports = "\r\n::ng-deep clr-icon:hover {\r\n  background:#53ea93;\r\n}\r
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"content-container\">\n  <!--<div class=\"clr-break-row\">-->\n    <!--<div class=\"col-4\">-->\n      <div class=\"content-area\">\n        <ng-content>\n        </ng-content>\n\n        <div class=\"clr-row\">\n          <div class=\"clr-col-12\">\n            <table class=\"table\">\n              <thead>\n              <tr>\n                <th>Желание</th>\n                <th>Цена</th>\n                <th>Приоритет</th>\n                <th>.</th>\n                <th>.</th>\n                <th>Ред.</th>\n              </tr>\n              </thead>\n              <tbody>\n              <tr *ngFor=\"let item of wishes\">\n                <td style=\"width: 50%\"> {{item.wish}}</td>\n                <td style=\"width: 10%\"> {{item.price}}</td>\n                <td class=\"my_priority_table\"> {{item.priority}}</td>\n                <td style=\"width: 5%\">\n                  <clr-icon shape=\"upload\" (click)=\"up($event, item)\"></clr-icon>\n                </td>\n                <td style=\"width: 5%\">\n                  <clr-icon shape=\"download\" (click)=\"down($event, item)\"></clr-icon>\n                </td>\n                <td>\n                  <clr-icon shape=\"edit\" (click)=\"openEditWish($event, item, 1)\"></clr-icon>\n                </td>\n              </tr>\n              <tr class=\"sumallrow\">\n              <td style=\"width: 50%\"><strong> ИТОГО </strong></td>\n              <td style=\"width: 10%\"><strong> {{summAll}} </strong></td>\n              <td> -</td>\n              <td style=\"width: 5%\"> - </td>\n              <td style=\"width: 5%\"> - </td>\n              <td> - </td>\n\n              </tr>\n              <tr class=\"sumpriorrow\">\n                <td style=\"width: 50%\"><strong> ИТОГО (PRIOR) </strong></td>\n                <td style=\"width: 10%\"><strong> {{summPriority}} </strong></td>\n                <td> -</td>\n                <td style=\"width: 5%\"> - </td>\n                <td style=\"width: 5%\"> - </td>\n                <td> - </td>\n\n              </tr>\n              </tbody>\n            </table>\n          </div>\n        </div>\n\n        <button class=\"btn btn-primary\" (click)=\"openEditWish($event, item, 2)\"> Добавить</button>\n        <button class=\"btn btn-secondary\" (click)=\"getWishes()\"> Обновить</button>\n\n\n        <clr-modal [(clrModalOpen)]=\"isEdit\">\n          <h3 class=\"modal-title\">{{isEditableTransacion ? 'Редактировать сервис' : 'Добавить сервис'}}</h3>\n          <div class=\"modal-body\">\n            <form clrForm [formGroup]=\"form\">\n\n\n              <!--ПОЛЕ ID-->\n\n              <clr-input-container>\n\n                <label #label for=\"id\" class=\"input-label clr-col-12\">id</label>\n                <input type=\"id\" clrInput formControlName=\"id\" id=\"id\" name=\"id\" autocomplete=\"off\" readonly required\n                       size=\"50\">\n              </clr-input-container>\n\n              <!--ПОЛЕ ИМЯ-->\n\n\n              <clr-input-container>\n\n                <label #label for=\"name\" class=\"input-label clr-col-12\">Название</label>\n                <input type=\"text\"\n                       clrInput\n                       formControlName=\"name\"\n                       id=\"name\"\n                       name=\"name\"\n                       autocomplete=\"off\" required size=\"100\">\n\n                <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n              </clr-input-container>\n\n              <!--ПОЛЕ ОПИСАНИЕ-->\n\n              <clr-input-container>\n                <label #label for=\"description\" class=\"input-label clr-col-12\">Описание</label>\n                <input type=\"text\"\n                       clrInput\n                       formControlName=\"description\"\n                       id=\"description\"\n                       name=\"description\"\n                       autocomplete=\"off\" required size=\"100\">\n                <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n              </clr-input-container>\n\n              <!--ПОЛЕ URL-->\n\n              <clr-input-container>\n                <label #label for=\"url\" class=\"input-label clr-col-12\">URL</label>\n                <input type=\"url\"\n                       clrInput\n                       formControlName=\"url\"\n                       id=\"url\"\n                       name=\"url\"\n                       autocomplete=\"off\" required size=\"100\">\n                <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n                <clr-control-error *clrIfError=\"'pattern'\">Некорректный форма url</clr-control-error>\n              </clr-input-container>\n\n              <!--ПОЛЕ PRIORITY-->\n\n              <clr-input-container>\n                <label #label for=\"priority\" class=\"input-label clr-col-12\">Приоритет</label>\n                <input type=\"text\"\n                       clrInput\n                       formControlName=\"priority\"\n                       id=\"priority\"\n                       name=\"priority\"\n                       autocomplete=\"off\">\n                <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n              </clr-input-container>\n\n              <!--ПОЛЕ PRICE-->\n\n              <clr-input-container>\n                <label #label for=\"price\" class=\"input-label clr-col-12\">Цена</label>\n                <input type=\"text\"\n                       clrInput\n                       formControlName=\"price\"\n                       id=\"price\"\n                       name=\"price\"\n                       autocomplete=\"off\">\n              </clr-input-container>\n            </form>\n            <!--<clr-checkbox-wrapper>-->\n            <!--<input type=\"checkbox\" clrCheckbox [(ngModel)]=\"enabled\"  name=\"options\" />-->\n            <!--<label>Включен</label>-->\n            <!--</clr-checkbox-wrapper>-->\n            <div class=\"row\">\n            <button type=\"button\" (click)=\"addEditService()\" class=\"btn btn-primary mt-1\">Сохранить</button>\n            <button type=\"button\" (click)=\"deleteWish()\" class=\"btn btn-danger mt-1\">Удалить</button>\n            </div>\n          </div>\n        </clr-modal>\n\n\n      </div>\n    <!--</div>-->\n\n    <!--<div class=\"col-4\">-->\n      <app-sidebar class=\"sidenav\"></app-sidebar>\n    <!--</div>-->\n  <!--</div>-->\n</div>\n"
+module.exports = "<div class=\"content-container\">\n  <!--<div class=\"clr-break-row\">-->\n  <!--<div class=\"col-4\">-->\n  <div class=\"content-area\">\n    <ng-content>\n    </ng-content>\n\n    <clr-alert [clrAlertType]=\"'success'\" *ngIf=\"result\">\n      <clr-alert-item>\n        <span class=\"alert-text\">\n            {{result}}\n        </span>\n      </clr-alert-item>\n    </clr-alert>\n\n    <clr-alert [clrAlertType]=\"'danger'\" *ngIf=\"error\">\n      <clr-alert-item>\n        <span class=\"alert-text\">\n            {{error}}\n        </span>\n      </clr-alert-item>\n    </clr-alert>\n\n    <div class=\"clr-row\">\n      <div class=\"clr-col-12\">\n        <table class=\"table\">\n          <thead>\n          <tr>\n            <th>Желание</th>\n            <th>Цена</th>\n            <th>Приоритет</th>\n            <th>.</th>\n            <th>.</th>\n            <th>Ред.</th>\n          </tr>\n          </thead>\n          <tbody>\n          <tr *ngFor=\"let item of wishes\">\n            <td style=\"width: 50%\"> {{item.wish}}</td>\n            <td style=\"width: 10%\"> {{item.price}}</td>\n            <td class=\"my_priority_table\"> {{item.priority}}</td>\n            <td style=\"width: 5%\">\n              <clr-icon shape=\"upload\" (click)=\"up($event, item)\"></clr-icon>\n            </td>\n            <td style=\"width: 5%\">\n              <clr-icon shape=\"download\" (click)=\"down($event, item)\"></clr-icon>\n            </td>\n            <td>\n              <clr-icon shape=\"edit\" (click)=\"openEditWish($event, item, 1)\"></clr-icon>\n            </td>\n          </tr>\n          <tr class=\"sumallrow\">\n            <td style=\"width: 50%\"><strong> ИТОГО </strong></td>\n            <td style=\"width: 10%\"><strong> {{summAll}} </strong></td>\n            <td> Реализ-ция: {{periodAll}} </td>\n            <td style=\"width: 5%\"> -</td>\n            <td style=\"width: 5%\"> -</td>\n            <td> -</td>\n\n          </tr>\n          <tr class=\"sumpriorrow\">\n            <td style=\"width: 50%\"><strong> ИТОГО (PRIOR) </strong></td>\n            <td style=\"width: 10%\"><strong> {{summPriority}} </strong></td>\n            <td> Реализ-ция: {{periodPriority}} </td>\n            <td style=\"width: 5%\"> -</td>\n            <td style=\"width: 5%\"> -</td>\n            <td> -</td>\n\n          </tr>\n          </tbody>\n        </table>\n      </div>\n    </div>\n\n    <button class=\"btn btn-primary\" (click)=\"openEditWish($event, item, 2)\"> Добавить</button>\n    <button class=\"btn btn-secondary\" (click)=\"getWishes()\"> Обновить</button>\n    <clr-dropdown>\n      <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\n        Фильтры\n        <clr-icon shape=\"caret down\"></clr-icon>\n      </button>\n      <clr-dropdown-menu clrPosition=\"top-left\" *clrIfOpen>\n        <label class=\"dropdown-header\">Фильтры</label>\n        <a *ngFor=\"let item of filters\" (click)=\"changeFilter(item)\"  clrDropdownItem>{{item}}</a>\n      </clr-dropdown-menu>\n    </clr-dropdown>\n\n\n    <clr-modal [(clrModalOpen)]=\"isEdit\">\n      <h3 class=\"modal-title\">{{isEditMode ? 'Редактировать сервис' : 'Добавить сервис'}}</h3>\n      <div class=\"modal-body\">\n        <form clrForm [formGroup]=\"form\">\n\n\n          <!--ПОЛЕ ID-->\n\n          <clr-input-container>\n\n            <label #label for=\"id\" class=\"input-label clr-col-12\">id</label>\n            <input type=\"id\" clrInput formControlName=\"id\" id=\"id\" name=\"id\" autocomplete=\"off\" readonly required\n                   size=\"50\">\n          </clr-input-container>\n\n          <!--ПОЛЕ ИМЯ-->\n\n\n          <clr-input-container>\n\n            <label #label for=\"name\" class=\"input-label clr-col-12\">Название</label>\n            <input type=\"text\"\n                   clrInput\n                   formControlName=\"name\"\n                   id=\"name\"\n                   name=\"name\"\n                   autocomplete=\"off\" required size=\"100\">\n\n            <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n          </clr-input-container>\n\n          <!--ПОЛЕ ОПИСАНИЕ-->\n\n          <clr-input-container>\n            <label #label for=\"description\" class=\"input-label clr-col-12\">Описание</label>\n            <input type=\"text\"\n                   clrInput\n                   formControlName=\"description\"\n                   id=\"description\"\n                   name=\"description\"\n                   autocomplete=\"off\" required size=\"100\">\n            <!--<clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>-->\n          </clr-input-container>\n\n          <!--ПОЛЕ URL-->\n\n          <clr-input-container>\n            <label #label for=\"url\" class=\"input-label clr-col-12\">URL</label>\n            <input type=\"url\"\n                   clrInput\n                   formControlName=\"url\"\n                   id=\"url\"\n                   name=\"url\"\n                   autocomplete=\"off\" required size=\"100\">\n            <!--<clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>-->\n            <!--<clr-control-error *clrIfError=\"'pattern'\">Некорректный форма url</clr-control-error>-->\n          </clr-input-container>\n\n          <!--ПОЛЕ PRIORITY-->\n\n          <clr-input-container>\n            <label #label for=\"priority\" class=\"input-label clr-col-12\">Приоритет</label>\n            <input type=\"text\"\n                   clrInput\n                   formControlName=\"priority\"\n                   id=\"priority\"\n                   name=\"priority\"\n                   autocomplete=\"off\">\n            <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n          </clr-input-container>\n\n          <!--ПОЛЕ PRICE-->\n\n          <clr-input-container>\n            <label #label for=\"price\" class=\"input-label clr-col-12\">Цена</label>\n            <input type=\"text\"\n                   clrInput\n                   formControlName=\"price\"\n                   id=\"price\"\n                   name=\"price\"\n                   autocomplete=\"off\">\n          </clr-input-container>\n        </form>\n\n        <div class=\"row\">\n          <button type=\"button\" (click)=\"addEditService()\" class=\"btn btn-primary mt-1\">Сохранить</button>\n          <button type=\"button\" (click)=\"deleteWish()\" *ngIf=\"isEditMode\" class=\"btn btn-danger mt-1\">Удалить</button>\n        </div>\n\n      </div>\n    </clr-modal>\n\n\n  </div>\n  <!--</div>-->\n\n  <!--<div class=\"col-4\">-->\n  <app-sidebar class=\"sidenav\"></app-sidebar>\n  <!--</div>-->\n  <!--</div>-->\n</div>\n"
 
 /***/ }),
 
@@ -421,6 +421,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _service_http_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../service/http.service */ "./src/app/service/http.service.ts");
 /* harmony import */ var _dto_wish__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../dto/wish */ "./src/app/dto/wish.ts");
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+
+
 
 
 
@@ -430,32 +434,33 @@ var MainComponent = /** @class */ (function () {
     function MainComponent(httpService, fb) {
         this.httpService = httpService;
         this.fb = fb;
-        this.localJson = 'assets/data.json';
-        this._apiUrl = 'http://localhost:8080/rest/wishes';
-        this.apiUrl = '/rest/wishes';
-        this.apiGetSumm = '/rest/wishes/summ';
-        this._apiGetSumm = 'http://localhost:8080/rest/wishes/summ';
-        // updateWish = 'http://localhost:8080/rest/users/update';
-        this.testData = '';
-        this.summAll = 0;
-        this.summPriority = 0;
-        this.isEdit = false;
-        this.isEditMode = false;
-        this.wishes = [];
+        // --------------------------------- ПЕРЕМЕННЫЕ -------------------------------------
+        this.localJson = 'assets/data.json'; // временный локальный json для тестирования
+        this._apiUrl = 'http://localhost:8080/rest/wishes/all'; // основная ссылка на api
+        this.myBaseUrl = '/rest/wishes';
+        this.apiUrl = this.myBaseUrl + '/all'; // все желания // основная ссылка на api
+        this.priorityWishesUrl = this.myBaseUrl + '/priority'; // приоритетные желания
+        this._priorityWishesUrl = 'http://localhost:8080/rest/wishes/priority'; // приоритетные желания
+        this.allWishesUrl = this.myBaseUrl + '/all'; // все желания
+        this._allWishesUrl = 'http://localhost:8080/rest/wishes/all'; // все желания
+        this.apiGetSumm = this.myBaseUrl + '/summ'; // ссылка для получения сумм
+        this._apiGetSumm = 'http://localhost:8080/rest/wishes/summ'; // ссылка для получения сумм
+        this.summAll = 0; // отображение сум по всем желаниям
+        this.summPriority = 0; // отображение сум по приоритетным желаниям
+        this.periodAll = 0; // период реализации для всего
+        this.periodPriority = 0; // период реализации для приоритетного
+        this.isEdit = false; // режим редактирования для отображения / или чтобы спрятать модальное окно
+        this.isEditMode = false; // редактировать или добавить
+        this.wishes = []; // контейнер желаний
+        this.filters = ['Все', 'Приоритет']; // фильтры
         this.form = this.fb.group({
             id: ['', []],
             name: ['', [
                     _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required,
                     _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].maxLength(160),
                 ]],
-            description: ['', [
-                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required,
-                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].maxLength(1024),
-                ]],
-            url: ['', [
-                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required,
-                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/),
-                ]],
+            description: ['', []],
+            url: ['', []],
             priority: ['', [
                     _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required,
                     _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].pattern(/^[0-9]+$/)
@@ -467,10 +472,15 @@ var MainComponent = /** @class */ (function () {
         });
     }
     MainComponent.prototype.ngOnInit = function () {
-        /* this.httpService.getData(this.localJson).subscribe(data => {
-           this.wishes = data['userList'];
-           this.wishes.sort((a, b) => a.priority - b.priority);
-         });*/
+        this.getWishes();
+    };
+    MainComponent.prototype.changeFilter = function (item) {
+        if (item === 'Все') {
+            this.apiUrl = this.allWishesUrl;
+        }
+        else {
+            this.apiUrl = this.priorityWishesUrl;
+        }
         this.getWishes();
     };
     MainComponent.prototype.up = function (event, item) {
@@ -489,22 +499,40 @@ var MainComponent = /** @class */ (function () {
     };
     MainComponent.prototype.getWishes = function () {
         var _this = this;
-        this.httpService.getData(this.apiUrl).subscribe(function (data) {
+        this.httpService.getData(this.apiUrl).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно получить желания!');
+        })).subscribe(function (data) {
             _this.wishes = data['list'];
             console.log(_this.wishes);
         });
-        this.httpService.getData(this.apiGetSumm).subscribe(function (data) {
+        this.httpService.getData(this.apiGetSumm).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно посчитать итоговые стоимости!');
+        })).subscribe(function (data) {
             _this.summAll = data.all;
             _this.summPriority = data.priority;
+            _this.periodAll = data.allPeriodForImplementation;
+            _this.periodPriority = data.priorityPeriodForImplementation;
+            console.log('Sal: ' + data.lastSalary);
         });
     };
     MainComponent.prototype.deleteWish = function () {
         var _this = this;
-        this.httpService.deleteWish(this.form.value.id, this.apiUrl)
+        this.httpService.deleteWish(this.form.value.id, this.myBaseUrl).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно удалить желание!');
+        }))
             .subscribe(function (res) {
-            console.log(res);
-            _this.isEdit = false;
+            _this.showAlert('Желание с id [' + _this.form.value.id + '] успешно удалено!', 'ADD MODE', res);
         });
+    };
+    MainComponent.prototype.errorHandler = function (err, message) {
+        var _this = this;
+        this.isEdit = false;
+        this.error = message;
+        console.log(err);
+        Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["timer"])(4000).subscribe(function () {
+            _this.error = null;
+        });
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["throwError"])(err);
     };
     MainComponent.prototype.openEditWish = function (event, item, isedit) {
         if (isedit === 1) {
@@ -532,24 +560,31 @@ var MainComponent = /** @class */ (function () {
             });
         }
     };
+    MainComponent.prototype.showAlert = function (text, mode, result) {
+        var _this = this;
+        console.log(mode);
+        console.log(result);
+        this.isEdit = false;
+        this.result = text;
+        Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["timer"])(4000).subscribe(function () {
+            _this.result = null;
+        });
+    };
     MainComponent.prototype.addEditService = function () {
         var _this = this;
         var wish = new _dto_wish__WEBPACK_IMPORTED_MODULE_3__["Wish"](this.form.value.id, this.form.value.name, this.form.value.price, this.form.value.priority, false, this.form.value.description, this.form.value.url);
-        // todo: обрабатывать ошибки
-        // todo: надо как-то выводить результат - добавлено или нет
         if (this.isEditMode) {
-            this.httpService.updateWish(wish, this.apiUrl)
-                .subscribe(function (hero) {
-                console.log(hero);
-                _this.isEdit = false;
+            this.httpService.updateWish(wish, this.myBaseUrl).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+                return _this.errorHandler(err, 'Невозможно обновить желание!');
+            })).subscribe(function (hero) {
+                _this.showAlert('Желание с id [' + wish.id + '] успешно обновлено!', 'ADD MODE', hero);
             });
         }
         else {
-            this.httpService.sendData(wish, this.apiUrl)
-                .subscribe(function (hero) {
-                console.log('ADD MODE');
-                console.log(hero);
-                _this.isEdit = false;
+            this.httpService.sendData(wish, this.myBaseUrl).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+                return _this.errorHandler(err, 'Невозможно добавить желание!');
+            })).subscribe(function (hero) {
+                _this.showAlert('Желание успешно добавлено!', 'ADD MODE', hero);
             });
         }
     };

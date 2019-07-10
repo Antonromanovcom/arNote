@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+
 import static com.antonromanov.arnote.utils.Utils.*;
 
 
@@ -30,7 +32,6 @@ public class MainRestController extends ControllerBase {
 	private class DTO {
 		private List<Wish> list = new ArrayList<>();
 	}
-
 
 
 	/**
@@ -54,15 +55,23 @@ public class MainRestController extends ControllerBase {
 	}
 
 	@CrossOrigin(origins = "*")
-	@GetMapping
-	public ResponseEntity<String> gelAllWishes(HttpServletResponse resp) {
+	@GetMapping("/{type}")
+	public ResponseEntity<String> gelAllWishes(@PathVariable String type, HttpServletResponse resp) {
 
 		return $do(s -> {
+			List<Wish> wishList;
 
-			List<Wish> todayList = mainService.getAllWishes();
+			if ("all".equalsIgnoreCase(type)) {
+				wishList = mainService.getAllWishes();
+				LOGGER.info("============== GET ALL WISHES ============== ");
+			} else {
+				wishList = mainService.getAllWishesWithPriority1();
+				LOGGER.info("============== GET PRIORITY WISHES ============== ");
+			}
+
 			DTO dto = new DTO();
-			dto.list.addAll(todayList);
-			LOGGER.info("============== GET ALL WISHES ============== ");
+			dto.list.addAll(wishList);
+
 			String result = createGsonBuilder().toJson(dto);
 			LOGGER.info("PAYLOAD: " + result);
 			return $prepareResponse(result);
@@ -86,8 +95,6 @@ public class MainRestController extends ControllerBase {
 			return $prepareResponse(result);
 
 		}, requestParam, resp);
-
-
 	}
 
 	@CrossOrigin(origins = "*")
@@ -120,6 +127,9 @@ public class MainRestController extends ControllerBase {
 
 			String result = createGsonBuilder().toJson(SummEntity.builder()
 					.all(mainService.getSumm4All())
+					.allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All()))
+					.priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior()))
+					.lastSalary(mainService.getLastSalary().getResidualSalary())
 					.priority(mainService.getSumm4Prior()).build());
 			LOGGER.info("PAYLOAD: " + result);
 			return $prepareResponse(result);
@@ -138,5 +148,17 @@ public class MainRestController extends ControllerBase {
 			return $prepareResponse(createGsonBuilder().toJson(ResponseStatusDTO.builder().okMessage("OK").status("OK").build()));
 		}, null, resp);
 	}
+
+
+	/*@CrossOrigin(origins = "*")
+	@GetMapping("/last")
+	public ResponseEntity<String> getLastSalary(HttpServletResponse resp) {
+
+		return $do(s -> {
+			LOGGER.info("========= GET LAST SALARY ============== ");
+			String result = createGsonBuilder().toJson(mainService.calculateImplementationPeriod(143000));
+			return $prepareResponse(result);
+		}, null, resp);
+	}*/
 
 }

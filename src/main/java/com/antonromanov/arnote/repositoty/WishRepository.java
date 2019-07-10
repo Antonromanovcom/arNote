@@ -16,7 +16,7 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	List<Wish> getAllNotInArchive();
 
 	@Query(value="select w from Wish w where w.ac = false and w.priority = 1 order by w.priority ASC ")
-	List<Wish> getAllNotWithPriority1();
+	List<Wish> getAllWithPriority1();
 
 	@Modifying
 	@Transactional
