@@ -29,4 +29,9 @@ public class Salary {
 	@Column(name = "date", nullable = true)
 	@Temporal(TemporalType.DATE)
 	private Date salarydate;
+
+	public Salary(Integer fullSlary, Integer residualSalary) {
+		this.fullSlary = fullSlary;
+		this.residualSalary = residualSalary;
+	}
 }

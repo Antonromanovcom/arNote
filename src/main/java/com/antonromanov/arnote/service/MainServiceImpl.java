@@ -59,8 +59,8 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public void saveSalary(Salary salary) {
-        salaryRepository.save(salary);
+    public Salary saveSalary(Salary salary) {
+        return salaryRepository.saveAndFlush(salary);
     }
 
     @Override

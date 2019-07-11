@@ -1,20 +1,20 @@
 package com.antonromanov.arnote.controller;
 
 import com.antonromanov.arnote.model.ResponseStatusDTO;
+import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.SummEntity;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
+import com.antonromanov.arnote.utils.CsvDispatcher;
 import lombok.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-
 import static com.antonromanov.arnote.utils.Utils.*;
 
 
@@ -150,7 +150,7 @@ public class MainRestController extends ControllerBase {
 	}
 
 
-	/*@CrossOrigin(origins = "*")
+	@CrossOrigin(origins = "*")
 	@GetMapping("/last")
 	public ResponseEntity<String> getLastSalary(HttpServletResponse resp) {
 
@@ -159,6 +159,45 @@ public class MainRestController extends ControllerBase {
 			String result = createGsonBuilder().toJson(mainService.calculateImplementationPeriod(143000));
 			return $prepareResponse(result);
 		}, null, resp);
-	}*/
+	}
+
+	@CrossOrigin(origins = "*")
+	@PostMapping("/salary")
+	public ResponseEntity<String> addSalary(@RequestBody String requestParam, HttpServletResponse resp) {
+
+
+		return $do(s -> {
+
+			LOGGER.info("========= ADD SALARY ============== ");
+			LOGGER.info("PAYLOAD: " + requestParam);
+
+			Salary newSalary;
+			newSalary = mainService.saveSalary(parseJsonToSalary(requestParam));
+
+			String result = createGsonBuilder().toJson(newSalary);
+			LOGGER.info("PAYLOAD: " + result);
+
+			return $prepareResponse(result);
+
+		}, requestParam, resp);
+	}
+
+	@CrossOrigin(origins = "*")
+	@PostMapping("/testxlsx")
+	public ResponseEntity<String> testXlsx(HttpServletResponse resp) {
+
+
+		return $do(s -> {
+
+			CsvDispatcher csvDispatcher = new CsvDispatcher();
+			//System.out.println(csvDispatcher.doIt("C:\\opt\\02.xlsx"));
+			csvDispatcher.doit2();
+			String result = createGsonBuilder().toJson("TEST");
+
+
+			return $prepareResponse(result);
+
+		}, null, resp);
+	}
 
 }

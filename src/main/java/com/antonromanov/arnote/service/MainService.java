@@ -23,7 +23,7 @@ public interface MainService {
 
 	void deleteWish(String id);
 
-	void saveSalary(Salary salary);
+	Salary saveSalary(Salary salary);
 
 	Salary getLastSalary();
 

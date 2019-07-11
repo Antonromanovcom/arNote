@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Date;
+
+import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.Exceptions.*;
 import com.google.gson.Gson;
@@ -151,12 +153,37 @@ public class Utils {
 		return gson;
 	}
 
+
+
+	/**
+	 * Конвертим пришедший json в новую Salary
+	 */
+	public static Salary parseJsonToSalary(String json) throws Exception {
+
+		if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
+			throw new JsonNullException("JSON - пустой");
+		}
+
+		Salary salary;
+		Date currentDate = new Date();
+
+		try {
+				salary = new Salary(
+						JSONTemplate.fromString(json).get("fullsalary").getAsInt(),
+						JSONTemplate.fromString(json).get("residualSalary").getAsInt()
+				);
+			salary.setSalarydate(currentDate);
+		} catch (Exception e) {
+			throw new JsonParseException(json);
+		}
+		return salary;
+	}
+
+
 	/**
 	 * Конвертим пришедший json в новый WISH
 	 */
 	public static Wish parseJsonToWish(ParseType parseType, String json) throws Exception {
-//	public static Wish parseJsonToWish(String json) throws Exception {
-
 
 		if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
 			throw new JsonNullException("JSON - пустой");
@@ -194,15 +221,4 @@ public class Utils {
 
 
 	}
-
-	/*public static Optional<Wish> getParsedWish(String json) throws JsonParseException, JsonNullException {
-
-		try {
-			return Optional.ofNullable(parseJsonToWish(json));
-		} catch (final JsonParseException | JsonNullException e) {
-			return Optional.empty();
-		}
-	}*/
-
-
 }
