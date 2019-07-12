@@ -184,14 +184,14 @@ public class MainRestController extends ControllerBase {
 
 	@CrossOrigin(origins = "*")
 	@PostMapping("/testxlsx")
-	public ResponseEntity<String> testXlsx(HttpServletResponse resp) {
+	public ResponseEntity<String> testXlsx(@RequestBody String text, HttpServletResponse resp) {
 
 
 		return $do(s -> {
-
+			LOGGER.info("PAYLOAD: " + text);
 			CsvDispatcher csvDispatcher = new CsvDispatcher();
 			//System.out.println(csvDispatcher.doIt("C:\\opt\\02.xlsx"));
-			csvDispatcher.doit2();
+			csvDispatcher.doit2(text);
 			String result = createGsonBuilder().toJson("TEST");
 
 
