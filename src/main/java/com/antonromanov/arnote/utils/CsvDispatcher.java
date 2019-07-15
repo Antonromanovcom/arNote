@@ -108,12 +108,12 @@ public class CsvDispatcher {
 		}).collect(Collectors.toList());
 
 		boolean match = "Ружье 1 (гладкоствольное)(beretta a400xtreme),,140,000 р.,,,".matches(".*1");
-		System.out.println(match);
+//		System.out.println(match);
 
 
 		String res = "Ружье 1 (гладкоствольное)(beretta a400xtreme),,140,000 р.,,,";
 //		Pattern p = Pattern.compile("Ружье(.*)");
-		System.out.println(text);
+//		System.out.println(text);
 	//	Pattern p = Pattern.compile(text);
 	//	Matcher m = p.matcher(res);
 		/*if (m.find()) {
@@ -140,14 +140,27 @@ public class CsvDispatcher {
 
 //			Pattern p = Pattern.compile(text);
 			Pattern p = Pattern.compile("(.*)(?=\\,,\\d)");
+			Pattern p2 = Pattern.compile("(?:,,)(\\d.*)(р.)");
+
 			Matcher m = p.matcher(f);
+			Matcher m2 = p2.matcher(f);
 
 
 			if (m.find()) {
-				System.out.println("Matched: " + m.group(1));
+				System.out.println("Matched m1: " + m.group(1));
 			} else {
 				System.out.println("No match.");
 			}
+
+			System.out.println("=========================================");
+
+			if (m2.find()) {
+				System.out.println("Matched m2: " + m2.group(1));
+			} else {
+				System.out.println("No match.");
+			}
+
+
 			return "";
 
 
