@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -183,15 +185,34 @@ public class MainRestController extends ControllerBase {
 	}
 
 	@CrossOrigin(origins = "*")
-	@PostMapping("/testxlsx")
+	@PostMapping("/testxlsx_old")
 	public ResponseEntity<String> testXlsx(@RequestBody String text, HttpServletResponse resp) {
 
 
 		return $do(s -> {
 			LOGGER.info("PAYLOAD: " + text);
 			CsvDispatcher csvDispatcher = new CsvDispatcher();
-			//System.out.println(csvDispatcher.doIt("C:\\opt\\02.xlsx"));
-			csvDispatcher.doit2(text);
+
+		//	mainService.doit2(text);
+			String result = createGsonBuilder().toJson("TEST");
+
+
+			return $prepareResponse(result);
+
+		}, null, resp);
+	}
+
+	@CrossOrigin(origins = "*")
+	@PostMapping("/testxlsx")
+	public ResponseEntity<String> testXlsxWithFile(
+			@RequestParam(required = false, value = "csvfile") MultipartFile csvFile,
+			HttpServletResponse resp) {
+
+
+		return $do(s -> {
+		//	LOGGER.info("PAYLOAD: " + text);
+			LOGGER.info("FILE: " + csvFile.getOriginalFilename());
+			mainService.doit2(csvFile);
 			String result = createGsonBuilder().toJson("TEST");
 
 

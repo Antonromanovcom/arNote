@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.service;
 
+import au.com.bytecode.opencsv.CSVReader;
 import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.repositoty.SalaryRepository;
@@ -9,7 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -71,6 +79,68 @@ public class MainServiceImpl implements MainService {
     @Override
     public Integer calculateImplementationPeriod(Integer summ) {
         return summ / getLastSalary().getResidualSalary();
+    }
+
+    @Override
+    public  void doit2(MultipartFile file) throws Exception
+    {
+//        CSVReader reader = new CSVReader(new FileReader("C:\\opt\\02.csv"), ',', '"', 1);
+        CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()), ',', '"', 1);
+
+        List<String[]> allRows = reader.readAll();
+        Pattern pattern = Pattern.compile("^\\d{1,3}\\,");
+//        Pattern pattern2 = Pattern.compile("^(?:\\d{1,3}\\,).*?(.*)$");
+
+
+        List<String> resultList = allRows.stream()
+                .map(strings -> String.join(",", strings))
+                .filter(pattern.asPredicate())
+                .map(f->{
+                    System.out.println("-------- >" + f);
+
+                    return f;
+
+                })
+                .map(f->{
+
+                    Pattern p = Pattern.compile("^\\d{1,3},(.*)(?=\\,,\\d)");
+                    Pattern p2 = Pattern.compile("(?:,,)(\\d.*)(р.)");
+                    Matcher m = p.matcher(f);
+                    Matcher m2 = p2.matcher(f);
+                    String localWish = "";
+                    Integer localPrice = 0;
+
+                    if (m.find()) {
+                        localWish = m.group(1);
+                        System.out.println("Matched m1: " + localWish);
+                    } else {
+                        System.out.println("No match.");
+                    }
+
+                    System.out.println("=========================================");
+
+                    if (m2.find()) {
+                        localPrice = Integer.parseInt(m2.group(1).replace(",","").trim());
+                        System.out.println("Matched m2: " + localPrice);
+                    } else {
+                        System.out.println("No match.");
+                    }
+
+
+                    List<Wish> wishes = wishRepository.getWishesByName(localWish).orElseGet(() -> new ArrayList<>());
+
+                    if (wishes.size() > 1) {
+                        // удаляем и ничего не делаем больше
+                    } else if (wishes.size() < 1) {
+                        //нету? добавляем
+                        wishRepository.save(new Wish(localWish, localPrice, 1, false, "from csv", ""));
+                    }
+
+
+                    return "";
+                })
+                .collect(Collectors.toList())
+                .stream().filter(pattern.asPredicate()).collect(Collectors.toList());
     }
 
 

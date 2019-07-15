@@ -3,10 +3,14 @@ package com.antonromanov.arnote.service;
 
 import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.Wish;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 
 public interface MainService {
+
+	void doit2(MultipartFile file) throws Exception;
 
 
 	List<Wish> getAllWishes();
