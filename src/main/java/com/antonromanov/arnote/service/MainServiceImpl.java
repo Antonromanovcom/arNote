@@ -90,7 +90,7 @@ public class MainServiceImpl implements MainService {
 
       //  try {
 
-            CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()), ',', '"', 1);
+            CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"), ',', '"', 1);
             List<String[]> allRows = reader.readAll();
             Pattern pattern = Pattern.compile("^\\d{1,3}\\,");
 
