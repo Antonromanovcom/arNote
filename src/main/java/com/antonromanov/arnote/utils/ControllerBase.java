@@ -50,6 +50,7 @@ public class ControllerBase {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
 		response.setHeader("Content-Type","application/json;charset=UTF-8");
+
 		try (PrintWriter pw = response.getWriter()) {
 			pw.write(ex.getMessage() == null ? "Ошибка сохранения нового желания! ":ex.getMessage() );
 		}catch (IOException ioe) {
@@ -61,6 +62,4 @@ public class ControllerBase {
 	protected interface SomeProcess<T, E> {
 		T aplly(E req) throws Exception;
 	}
-
-
 }

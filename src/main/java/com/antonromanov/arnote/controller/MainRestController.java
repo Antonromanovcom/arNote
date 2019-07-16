@@ -6,7 +6,6 @@ import com.antonromanov.arnote.model.SummEntity;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
-import com.antonromanov.arnote.utils.CsvDispatcher;
 import lombok.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,31 +190,24 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 			LOGGER.info("PAYLOAD: " + text);
-			CsvDispatcher csvDispatcher = new CsvDispatcher();
-
-		//	mainService.doit2(text);
+		//	CsvDispatcher csvDispatcher = new CsvDispatcher();
 			String result = createGsonBuilder().toJson("TEST");
-
-
 			return $prepareResponse(result);
 
 		}, null, resp);
 	}
 
 	@CrossOrigin(origins = "*")
-	@PostMapping("/testxlsx")
+	@PostMapping("/parsecsv")
 	public ResponseEntity<String> testXlsxWithFile(
 			@RequestParam(required = false, value = "csvfile") MultipartFile csvFile,
 			HttpServletResponse resp) {
 
-
 		return $do(s -> {
-		//	LOGGER.info("PAYLOAD: " + text);
+
 			LOGGER.info("FILE: " + csvFile.getOriginalFilename());
-			mainService.doit2(csvFile);
-			String result = createGsonBuilder().toJson("TEST");
 
-
+			String result = createGsonBuilder().toJson(mainService.parseCsv(csvFile));
 			return $prepareResponse(result);
 
 		}, null, resp);
