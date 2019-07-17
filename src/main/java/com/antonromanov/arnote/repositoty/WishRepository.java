@@ -29,4 +29,5 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	@Query("delete from Wish w where w.id = ?1")
 	void deleteByLongId(Long entityId);
 
+	Optional<Wish> findById(long l);
 }

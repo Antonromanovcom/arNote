@@ -54,6 +54,11 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
+    public Optional<Wish> getWishById(int id) {
+        return wishRepository.findById(Long.valueOf(id));
+    }
+
+    @Override
     public Integer getSumm4All() {
         return wishRepository.findAll().stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
     }

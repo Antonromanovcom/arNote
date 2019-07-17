@@ -1,11 +1,12 @@
 package com.antonromanov.arnote.controller;
 
-import com.antonromanov.arnote.model.ResponseStatusDTO;
-import com.antonromanov.arnote.model.Salary;
-import com.antonromanov.arnote.model.SummEntity;
-import com.antonromanov.arnote.model.Wish;
+import com.antonromanov.arnote.Exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.Exceptions.JsonParseException;
+import com.antonromanov.arnote.model.*;
+import com.antonromanov.arnote.repositoty.IUserDAO;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import lombok.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static com.antonromanov.arnote.utils.Utils.*;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
@@ -41,19 +49,30 @@ public class MainRestController extends ControllerBase {
 	@Autowired
 	MainService mainService;
 
+	@Autowired
+	private IUserDAO api;
+
 //	INSERT INTO arnote.wishes (id, wish, priority, price, archive, description, url) VALUES (1, '1', 1, 1, false, 'desc', '1');
 
 
-	@GetMapping("/daotest")
-	public String testDao(HttpServletResponse resp) {
-		String str = "0111";
-		return $do(s -> {
-			String r = str + " 145";
-			System.out.println(r);
-			//throw new JsonNullException("gbgf");
-			return r;
-		}, str, resp);
+
+
+
+	@RequestMapping(method = RequestMethod.GET, value = "/users")
+	@ResponseBody
+	public List<Wish> findAll(@RequestParam(value = "search", required = false) String search) {
+		List<SearchCriteria> params = new ArrayList<SearchCriteria>();
+		if (search != null) {
+			//Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
+			Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)([a-zA-Z0-9А-Яа-я]*),");
+			Matcher matcher = pattern.matcher(search + ",");
+			while (matcher.find()) {
+				params.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
+			}
+		}
+		return api.searchUser(params);
 	}
+
 
 	@CrossOrigin(origins = "*")
 	@GetMapping("/{type}")
@@ -183,19 +202,7 @@ public class MainRestController extends ControllerBase {
 		}, requestParam, resp);
 	}
 
-	@CrossOrigin(origins = "*")
-	@PostMapping("/testxlsx_old")
-	public ResponseEntity<String> testXlsx(@RequestBody String text, HttpServletResponse resp) {
 
-
-		return $do(s -> {
-			LOGGER.info("PAYLOAD: " + text);
-		//	CsvDispatcher csvDispatcher = new CsvDispatcher();
-			String result = createGsonBuilder().toJson("TEST");
-			return $prepareResponse(result);
-
-		}, null, resp);
-	}
 
 	@CrossOrigin(origins = "*")
 	@PostMapping("/parsecsv")
@@ -212,5 +219,44 @@ public class MainRestController extends ControllerBase {
 
 		}, null, resp);
 	}
+
+
+	@CrossOrigin(origins = "*")
+	@GetMapping("/changepriority/{id}/{move}")
+	public ResponseEntity<String> changePriority(@PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
+
+
+		return $do(s -> {
+
+			LOGGER.info("========= MOVE WISH (CHANGE PRIORITY) ============== ");
+			LOGGER.info("id: " + id);
+			LOGGER.info("move: " + move);
+
+			if ((!"up".equals(move))&&(!"down".equals(move))) throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.PRIORITYCHANGE);
+			if ((isBlank(id)) || (!Pattern.compile("^\\d*$").matcher(id).matches())) throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID);
+			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(()->new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
+
+			switch (move) {
+				case "down":
+					if (wish.getPriority()> 1) wish.setPriority(wish.getPriority()-1);
+					mainService.updateWish(wish);
+					break;
+
+				case "up":
+					wish.setPriority(wish.getPriority()+1);
+					mainService.updateWish(wish);
+					break;
+			}
+
+			String result = createGsonBuilder().toJson(wish);
+
+			return $prepareResponse(result);
+
+		}, null, resp);
+	}
+
+
+
+
 
 }
