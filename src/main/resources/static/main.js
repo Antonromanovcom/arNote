@@ -477,8 +477,8 @@ var MainComponent = /** @class */ (function () {
         // --------------------------------- ПЕРЕМЕННЫЕ -------------------------------------
         this.localJson = 'assets/data.json'; // временный локальный json для тестирования
         this._apiUrl = 'http://localhost:8080/rest/wishes/all'; // основная ссылка на api
-        this._myBaseUrl = '/rest/wishes';
-        this.myBaseUrl = 'http://localhost:8080/rest/wishes';
+        this.myBaseUrl = '/rest/wishes';
+        this._myBaseUrl = 'http://localhost:8080/rest/wishes';
         this.apiUrl = this.myBaseUrl + '/all'; // все желания // основная ссылка на api
         this.priorityWishesUrl = this.myBaseUrl + '/priority'; // приоритетные желания
         this._priorityWishesUrl = 'http://localhost:8080/rest/wishes/priority'; // приоритетные желания
