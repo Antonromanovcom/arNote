@@ -1,28 +1,21 @@
 package com.antonromanov.arnote.controller;
 
 import com.antonromanov.arnote.Exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.Exceptions.JsonParseException;
 import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.repositoty.IUserDAO;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import lombok.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
