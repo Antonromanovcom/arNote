@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -334,4 +336,21 @@ public class MainRestController extends ControllerBase {
 
 		}, user, resp);
 	}
+
+	@CrossOrigin(origins = "*")
+	@GetMapping("/users/list")
+	public ResponseEntity<String> getAllUsers(HttpServletResponse resp) {
+
+		return $do(s -> {
+			LOGGER.info("========= GET ALL USERS  ============== ");
+
+			List<LocalUser> userList = usersRepo.findAll().stream().map(u->{
+				if (u.getCreationDate()==null) u.setCreationDate(new Date());
+			return u;
+			}).collect(Collectors.toList());
+
+			return $prepareResponse(createGsonBuilder().toJson(userList));
+		}, null, resp);
+	}
+
 }
