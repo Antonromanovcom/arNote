@@ -5,6 +5,7 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Date;
 
+import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.Exceptions.*;
@@ -13,7 +14,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.slf4j.LoggerFactory;
 
-
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
@@ -151,6 +152,59 @@ public class Utils {
 				.create();
 
 		return gson;
+	}
+
+
+	/**
+	 * Конвертим пришедший json в нового пользака и валидируем
+	 */
+	public static LocalUser parseJsonToUserAndValidate(String json) throws Exception {
+
+		if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
+			throw new JsonNullException("JSON - пустой");
+		}
+
+		LocalUser localUser;
+		Date currentDate = new Date();
+
+
+
+		try {
+			// ------------------ Валидация -------------------------
+
+			if (isBlank(JSONTemplate.fromString(json).get("login").getAsString())) throw new JsonParseException(json);
+
+			LocalUser.Role userRole;
+
+			if (("USER".equals(JSONTemplate.fromString(json).get("role").getAsString())) ||
+					("ADMIN".equals(JSONTemplate.fromString(json).get("role").getAsString()))) {
+				userRole = LocalUser.Role.valueOf(JSONTemplate.fromString(json).get("role").getAsString());
+			} else {
+				userRole = LocalUser.Role.USER;
+
+			}
+
+			if (JSONTemplate.fromString(json).get("usercryptomode") == null) throw new JsonParseException(json);
+			if (JSONTemplate.fromString(json).get("pwd") == null) throw new JsonParseException(json);
+
+
+
+			// ------------------------------------------------------
+
+
+			localUser = new LocalUser(
+					JSONTemplate.fromString(json).get("login").getAsString(),
+					userRole,
+					JSONTemplate.fromString(json).get("pwd").getAsString(),
+					JSONTemplate.fromString(json).get("usercryptomode").getAsBoolean()
+			);
+
+			localUser.setCreationDate(currentDate);
+
+		} catch (Exception e) {
+			throw new JsonParseException(json);
+		}
+		return localUser;
 	}
 
 

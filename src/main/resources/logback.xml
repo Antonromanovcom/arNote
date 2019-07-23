@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
         <file>logs/arnote.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -9,12 +9,12 @@
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <!-- how many days to keep the files -->
+            &lt;!&ndash; how many days to keep the files &ndash;&gt;
             <maxHistory>10</maxHistory>
         </rollingPolicy>
 
 
-        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+      &lt;!&ndash;  <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
                 <timestampFormat>yyyy-MM-dd' - 'HH:mm:ss.SSSX</timestampFormat>
                 <timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>
@@ -23,12 +23,12 @@
                     <prettyPrint>true</prettyPrint>
                 </jsonFormatter>
             </layout>
-        </encoder>
-    </appender>
+        </encoder>&ndash;&gt;
+    </appender>-->
 
     <appender name="FILE_FOR_BOT" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-        <file>logs/rif-bot.log</file>
+        <file>logs/arnote-bot.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>logs/arnote.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -50,9 +50,9 @@
         </encoder>
     </appender>
 
-    <logger name="com" level="info" additivity="false" >
-        <appender-ref ref="FILE" />
-    </logger>
+    <!--<logger name="com" level="info" additivity="false" >-->
+        <!--<appender-ref ref="FILE" />-->
+    <!--</logger>-->
 
     <logger name="console_logger" level="info" additivity="false" >
         <appender-ref ref="console" />

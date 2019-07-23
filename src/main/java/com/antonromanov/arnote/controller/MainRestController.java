@@ -3,12 +3,14 @@ package com.antonromanov.arnote.controller;
 import com.antonromanov.arnote.Exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.repositoty.IUserDAO;
+import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
 import lombok.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 /**
  * Основной REST-контроллер приложения.
  */
+@CrossOrigin()
 @RestController
 @RequestMapping("/rest/wishes")
 public class MainRestController extends ControllerBase {
@@ -41,6 +44,12 @@ public class MainRestController extends ControllerBase {
 	 */
 	@Autowired
 	MainService mainService;
+
+	@Autowired
+	BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
+	UsersRepo usersRepo;
 
 	@Autowired
 	private IUserDAO api;
@@ -248,6 +257,32 @@ public class MainRestController extends ControllerBase {
 		}, null, resp);
 	}
 
+
+	@CrossOrigin(origins = "*")
+	@PostMapping("/users")
+	public ResponseEntity<String> addUser(@RequestBody String user, HttpServletResponse resp) {
+
+
+		return $do(s -> {
+
+			LOGGER.info("========= ADD USER  ============== ");
+			LOGGER.info("PAYLOAD: " + user);
+
+
+			LocalUser newUser = parseJsonToUserAndValidate(user);
+			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
+
+
+			if (usersRepo.findByLogin(newUser.getLogin()).isPresent()) {
+				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
+			}
+
+			usersRepo.save(newUser);
+
+			return $prepareResponse(createGsonBuilder().toJson(newUser));
+
+		}, null, resp);
+	}
 
 
 
