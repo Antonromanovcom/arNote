@@ -305,4 +305,33 @@ public class MainRestController extends ControllerBase {
 
 		}, id, resp);
 	}
+
+	@CrossOrigin(origins = "*")
+	@PutMapping("/users/{id}")
+	public ResponseEntity<String> editUser(@RequestBody String user, @PathVariable String id, HttpServletResponse resp) {
+
+		return $do(s -> {
+
+			LOGGER.info("========= EDIT USER  ============== ");
+			LOGGER.info("PAYLOAD: " + user);
+			LOGGER.info("id: " + id);
+
+			LocalUser newUser = parseJsonToUserAndValidate(user);
+
+			if (usersRepo.findByLogin(newUser.getLogin()).isPresent()) {
+				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
+			}
+
+			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
+
+			LocalUser user4update = usersRepo.findById(Long.valueOf(id)).orElseThrow(()-> new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST));
+			user4update.setPwd(newUser.getPwd());
+			user4update.setLogin(newUser.getLogin());
+			user4update.setEmail(newUser.getEmail());
+			user4update.setFullname(newUser.getFullname());
+
+			return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(user4update)));
+
+		}, user, resp);
+	}
 }
