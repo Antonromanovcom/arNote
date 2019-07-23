@@ -6,7 +6,7 @@ public class BadIncomeParameter extends Exception {
 
 	private String message;
 
-	public enum ParameterKind {PRIORITYCHANGE, WISH_ID_SEARCH, WRONG_ID, SUCH_USER_EXIST}
+	public enum ParameterKind {PRIORITYCHANGE, WISH_ID_SEARCH, WRONG_ID, SUCH_USER_EXIST, SUCH_USER_NO_EXIST}
 
 	public BadIncomeParameter(ParameterKind parameter) {
 
@@ -18,6 +18,8 @@ public class BadIncomeParameter extends Exception {
 			this.message = "ID должен быть цифрой и не пустым заначением!";
 		} else if (parameter == SUCH_USER_EXIST) {
 			this.message = "Этот логин уже занят!";
+		} else if (parameter == SUCH_USER_NO_EXIST) {
+			this.message = "Пользователя с таким ID не существует!";
 		} else {
 			this.message = "Ошибочный входной параметр";
 		}

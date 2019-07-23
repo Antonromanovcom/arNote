@@ -284,7 +284,25 @@ public class MainRestController extends ControllerBase {
 		}, null, resp);
 	}
 
+	@CrossOrigin(origins = "*")
+	@DeleteMapping("/users/{id}")
+	public ResponseEntity<String> deleteUser(@PathVariable String id, HttpServletResponse resp) {
 
 
+		return $do(s -> {
 
+			LOGGER.info("========= DELETE USER  ============== ");
+			LOGGER.info("PAYLOAD: " + id);
+
+
+			if (!usersRepo.findById(Long.valueOf(id)).isPresent()) {
+				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST);
+			}
+
+			usersRepo.deleteById(Long.valueOf(id));
+
+			return $prepareResponse(createGsonBuilder().toJson(id));
+
+		}, id, resp);
+	}
 }

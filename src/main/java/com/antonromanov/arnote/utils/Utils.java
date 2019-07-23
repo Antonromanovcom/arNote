@@ -186,17 +186,18 @@ public class Utils {
 
 			if (JSONTemplate.fromString(json).get("usercryptomode") == null) throw new JsonParseException(json);
 			if (JSONTemplate.fromString(json).get("pwd") == null) throw new JsonParseException(json);
-
-
+			if (JSONTemplate.fromString(json).get("email") == null) throw new JsonParseException(json);
+			if (JSONTemplate.fromString(json).get("fullname") == null) throw new JsonParseException(json);
 
 			// ------------------------------------------------------
-
 
 			localUser = new LocalUser(
 					JSONTemplate.fromString(json).get("login").getAsString(),
 					userRole,
 					JSONTemplate.fromString(json).get("pwd").getAsString(),
-					JSONTemplate.fromString(json).get("usercryptomode").getAsBoolean()
+					JSONTemplate.fromString(json).get("usercryptomode").getAsBoolean(),
+					JSONTemplate.fromString(json).get("email").getAsString(),
+					JSONTemplate.fromString(json).get("fullname").getAsString()
 			);
 
 			localUser.setCreationDate(currentDate);
@@ -206,7 +207,6 @@ public class Utils {
 		}
 		return localUser;
 	}
-
 
 
 	/**
