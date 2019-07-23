@@ -59,8 +59,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		configuration.addExposedHeader("Authorization, x-xsrf-token, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, " +
 				"Content-Type, Access-Control-Request-Method, Custom-Filter-Header");
 
-//		configuration.setAllowedHeaders(Arrays.asList("x-requested-wit"));
-		//configuration.setAllowedHeaders(Arrays.asList("x-requested-wit"));
 
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
@@ -81,10 +79,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		String password = "123";
 
 		String encrytedPassword = this.passwordEncoder().encode(password);
-		System.out.println("Encoded password of 123=" + encrytedPassword);
+//		System.out.println("Encoded password of 123=" + encrytedPassword);
 
-		InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> //
-				mngConfig = auth.inMemoryAuthentication();
+		InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> mngConfig = auth.inMemoryAuthentication();
 
 		// Defines 2 users, stored in memory.
 		// ** Spring BOOT >= 2.x (Spring Security 5.x)
