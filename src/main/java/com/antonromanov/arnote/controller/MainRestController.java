@@ -1,6 +1,13 @@
 package com.antonromanov.arnote.controller;
 
 import com.antonromanov.arnote.Exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.email.EmailSender;
+import com.antonromanov.arnote.email.EmailStatus;
+import com.antonromanov.arnote.email.Sender;
+import com.antonromanov.arnote.email.SimpleJavaCoreSender;
+import com.antonromanov.arnote.email.python.Apmail;
+import com.antonromanov.arnote.email.python.Testp;
+import com.antonromanov.arnote.email.python.version2.Disp;
 import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.repositoty.IUserDAO;
 import com.antonromanov.arnote.repositoty.UsersRepo;
@@ -10,6 +17,8 @@ import lombok.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,7 +65,11 @@ public class MainRestController extends ControllerBase {
 	@Autowired
 	private IUserDAO api;
 
-//	INSERT INTO arnote.wishes (id, wish, priority, price, archive, description, url) VALUES (1, '1', 1, 1, false, 'desc', '1');
+	@Autowired
+	private EmailSender emailSender;
+
+//	@Autowired
+//	public JavaMailSender emailSender;
 
 
 
@@ -207,7 +220,6 @@ public class MainRestController extends ControllerBase {
 	}
 
 
-
 	@CrossOrigin(origins = "*")
 	@PostMapping("/parsecsv")
 	public ResponseEntity<String> testXlsxWithFile(
@@ -236,18 +248,20 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("id: " + id);
 			LOGGER.info("move: " + move);
 
-			if ((!"up".equals(move))&&(!"down".equals(move))) throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.PRIORITYCHANGE);
-			if ((isBlank(id)) || (!Pattern.compile("^\\d*$").matcher(id).matches())) throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID);
-			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(()->new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
+			if ((!"up".equals(move)) && (!"down".equals(move)))
+				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.PRIORITYCHANGE);
+			if ((isBlank(id)) || (!Pattern.compile("^\\d*$").matcher(id).matches()))
+				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID);
+			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
 
 			switch (move) {
 				case "down":
-					if (wish.getPriority()> 1) wish.setPriority(wish.getPriority()-1);
+					if (wish.getPriority() > 1) wish.setPriority(wish.getPriority() - 1);
 					mainService.updateWish(wish);
 					break;
 
 				case "up":
-					wish.setPriority(wish.getPriority()+1);
+					wish.setPriority(wish.getPriority() + 1);
 					mainService.updateWish(wish);
 					break;
 			}
@@ -326,7 +340,7 @@ public class MainRestController extends ControllerBase {
 
 			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
 
-			LocalUser user4update = usersRepo.findById(Long.valueOf(id)).orElseThrow(()-> new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST));
+			LocalUser user4update = usersRepo.findById(Long.valueOf(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST));
 			user4update.setPwd(newUser.getPwd());
 			user4update.setLogin(newUser.getLogin());
 			user4update.setEmail(newUser.getEmail());
@@ -344,13 +358,57 @@ public class MainRestController extends ControllerBase {
 		return $do(s -> {
 			LOGGER.info("========= GET ALL USERS  ============== ");
 
-			List<LocalUser> userList = usersRepo.findAll().stream().map(u->{
-				if (u.getCreationDate()==null) u.setCreationDate(new Date());
-			return u;
+			List<LocalUser> userList = usersRepo.findAll().stream().map(u -> {
+				if (u.getCreationDate() == null) u.setCreationDate(new Date());
+				return u;
 			}).collect(Collectors.toList());
 
 			return $prepareResponse(createGsonBuilder().toJson(userList));
 		}, null, resp);
 	}
 
+
+	@CrossOrigin(origins = "*")
+	@GetMapping("/users/t")
+	public ResponseEntity<String> test(HttpServletResponse resp) {
+
+		return $do(s -> {
+
+
+			EmailStatus emailStatus =  emailSender.sendPlainText("antonr0manov@yandex.ru","You are subscribed","Your subscribe is...."); //sending e-mail
+
+			// Create a Simple MailMessage.
+			/*SimpleMailMessage message = new SimpleMailMessage();
+
+			message.setTo("antonromanov@list.ru");
+			message.setSubject("Test Simple Email");
+			message.setText("Hello, Im testing Simple Email");
+
+			// Send Message!
+			this.emailSender.send(message);*/
+
+//			Sender sslSender = new Sender("rzd.photo@gmail.com", "Fobos3a5n70Az");
+//			Sender sslSender = new Sender("antonr0manov@yandex.ru", "Fobos3a5n70Azz");
+//			sslSender.send("This is Subject", "SSL: This is text!", "rzd.photo@gmail.com", "antonromanov@list.ru");
+//			sslSender.send("This is Subject", "SSL: This is text!", "antonromanov@list.ru", "antonromanov@list.ru");
+
+
+//			SimpleJavaCoreSender simpleJavaCoreSender = new SimpleJavaCoreSender();
+//			simpleJavaCoreSender.send();
+
+
+//			Testp testp = new Testp();
+//			testp.$doIt();
+
+//			Apmail apmail = new Apmail();
+//			apmail.sendSimpleEmail();
+
+//			Disp disp = new Disp();
+//			disp.$$$doit();
+
+
+
+			return $prepareResponse(createGsonBuilder().toJson("OK"));
+		}, null, resp);
+	}
 }
