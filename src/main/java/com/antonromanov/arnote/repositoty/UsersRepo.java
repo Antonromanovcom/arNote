@@ -9,6 +9,8 @@ public interface UsersRepo extends JpaRepository<LocalUser, Integer> {
 
 	Optional<LocalUser> findByLogin(String login);
 
+	Optional<LocalUser> findByEmail(String email);
+
 	Optional<LocalUser> findById(Long id);
 
 	@Transactional

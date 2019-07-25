@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.Exceptions;
+package com.antonromanov.arnote.exceptions;
 
 public class JsonNullException extends Exception {
 

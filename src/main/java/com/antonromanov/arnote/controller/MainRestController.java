@@ -1,13 +1,9 @@
 package com.antonromanov.arnote.controller;
 
-import com.antonromanov.arnote.Exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.email.EmailSender;
 import com.antonromanov.arnote.email.EmailStatus;
-import com.antonromanov.arnote.email.Sender;
-import com.antonromanov.arnote.email.SimpleJavaCoreSender;
-import com.antonromanov.arnote.email.python.Apmail;
-import com.antonromanov.arnote.email.python.Testp;
-import com.antonromanov.arnote.email.python.version2.Disp;
 import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.repositoty.IUserDAO;
 import com.antonromanov.arnote.repositoty.UsersRepo;
@@ -16,12 +12,12 @@ import com.antonromanov.arnote.utils.ControllerBase;
 import lombok.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -70,9 +66,6 @@ public class MainRestController extends ControllerBase {
 
 //	@Autowired
 //	public JavaMailSender emailSender;
-
-
-
 
 
 	@RequestMapping(method = RequestMethod.GET, value = "/users")
@@ -368,47 +361,71 @@ public class MainRestController extends ControllerBase {
 	}
 
 
+	/**
+	 * Метод, который дергается, если пользователь забыл пароль.
+	 *
+	 * @param email
+	 * @param resp
+	 * @return
+	 */
 	@CrossOrigin(origins = "*")
-	@GetMapping("/users/t")
-	public ResponseEntity<String> test(HttpServletResponse resp) {
+	@PostMapping(value = "/users/forget", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<String> returnUserPassword(@RequestParam(name = "email") String email, HttpServletResponse resp) {
 
 		return $do(s -> {
-
-
-			EmailStatus emailStatus =  emailSender.sendPlainText("antonr0manov@yandex.ru","You are subscribed","Your subscribe is...."); //sending e-mail
-
-			// Create a Simple MailMessage.
-			/*SimpleMailMessage message = new SimpleMailMessage();
-
-			message.setTo("antonromanov@list.ru");
-			message.setSubject("Test Simple Email");
-			message.setText("Hello, Im testing Simple Email");
-
-			// Send Message!
-			this.emailSender.send(message);*/
-
-//			Sender sslSender = new Sender("rzd.photo@gmail.com", "Fobos3a5n70Az");
-//			Sender sslSender = new Sender("antonr0manov@yandex.ru", "Fobos3a5n70Azz");
-//			sslSender.send("This is Subject", "SSL: This is text!", "rzd.photo@gmail.com", "antonromanov@list.ru");
-//			sslSender.send("This is Subject", "SSL: This is text!", "antonromanov@list.ru", "antonromanov@list.ru");
-
-
-//			SimpleJavaCoreSender simpleJavaCoreSender = new SimpleJavaCoreSender();
-//			simpleJavaCoreSender.send();
-
-
-//			Testp testp = new Testp();
-//			testp.$doIt();
-
-//			Apmail apmail = new Apmail();
-//			apmail.sendSimpleEmail();
-
-//			Disp disp = new Disp();
-//			disp.$$$doit();
-
-
-
-			return $prepareResponse(createGsonBuilder().toJson("OK"));
+			LOGGER.info("========= FORGET PWD METHOD =============== ");
+			LOGGER.info("USER EMAIL - " + email);
+			try {
+				LocalUser localUser = usersRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
+				return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, email).getStatus()));
+			} catch (UserNotFoundException e) {
+				return $prepare400Response(createGsonBuilder().toJson("No such user!"));
+			}
 		}, null, resp);
+	}
+
+	/**
+	 * Сброс юзерского пароля админом.
+	 *
+	 * @param id
+	 * @param resp
+	 * @return
+	 */
+	@CrossOrigin(origins = "*")
+	@GetMapping("/users/reset/{id}")
+	public ResponseEntity<String> resetUserPasswordByAdmin(@PathVariable String id, HttpServletResponse resp) {
+
+		return $do(s -> {
+			LOGGER.info("========= RESET USER PWD =============== ");
+			LOGGER.info("USER ID - " + id);
+			try {
+				LocalUser localUser = usersRepo.findById(Long.parseLong(id)).orElseThrow(UserNotFoundException::new);
+				return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, localUser.getEmail()).getStatus()));
+			} catch (UserNotFoundException e) {
+				return $prepare400Response(createGsonBuilder().toJson("No such user!"));
+			}
+		}, null, resp);
+	}
+
+
+	/**
+	 * Смена pwd и отправка уведомления на почту.
+	 * @param user
+	 * @param email
+	 * @return
+	 */
+	private EmailStatus changePwd(LocalUser user, String email){
+
+		LOGGER.info("USER FOUND - " + user.toString());
+
+		String pwd = generateRandomPassword();
+		LOGGER.info("NEW PWD - " + pwd);
+		user.setPwd(passwordEncoder.encode(pwd));
+		LocalUser updatedUser = usersRepo.saveAndFlush(user);
+		LOGGER.info("UPDATED USER - " + updatedUser.toString());
+
+
+		return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd + " [email - " + email + " ]");
+
 	}
 }

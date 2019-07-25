@@ -51,9 +51,19 @@ public class LocalUser {
 	@Column
 	private String fullname;
 
-
-
-
+	@Override
+	public String toString() {
+		return "LocalUser{" +
+				"id=" + id +
+				", login='" + login + '\'' +
+				", pwd='" + pwd + '\'' +
+				", userRole=" + userRole +
+				", userCryptoMode=" + userCryptoMode +
+				", creationDate=" + creationDate +
+				", email='" + email + '\'' +
+				", fullname='" + fullname + '\'' +
+				'}';
+	}
 
 	public LocalUser(String login, String pw) {
 		this.login = login;

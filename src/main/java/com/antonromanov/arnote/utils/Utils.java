@@ -3,15 +3,20 @@ package com.antonromanov.arnote.utils;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.Wish;
-import com.antonromanov.arnote.Exceptions.*;
+import com.antonromanov.arnote.exceptions.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import org.passay.CharacterRule;
+import org.passay.EnglishCharacterData;
+import org.passay.PasswordGenerator;
 import org.slf4j.LoggerFactory;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -272,7 +277,16 @@ public class Utils {
 		}
 
 		return wishAfterParse;
-
-
 	}
+
+	public static String generateRandomPassword() {
+
+		List rules = Arrays.asList(new CharacterRule(EnglishCharacterData.UpperCase, 1),
+				new CharacterRule(EnglishCharacterData.LowerCase, 1), new CharacterRule(EnglishCharacterData.Digit, 1),new CharacterRule(EnglishCharacterData.Special, 1));
+
+		PasswordGenerator generator = new PasswordGenerator();
+		String password = generator.generatePassword(8, rules);
+		return password;
+	}
+
 }

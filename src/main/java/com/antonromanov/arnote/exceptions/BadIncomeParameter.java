@@ -1,6 +1,6 @@
-package com.antonromanov.arnote.Exceptions;
+package com.antonromanov.arnote.exceptions;
 
-import static com.antonromanov.arnote.Exceptions.BadIncomeParameter.ParameterKind.*;
+import static com.antonromanov.arnote.exceptions.BadIncomeParameter.ParameterKind.*;
 
 public class BadIncomeParameter extends Exception {
 

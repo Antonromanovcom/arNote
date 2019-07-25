@@ -1,8 +1,8 @@
 package com.antonromanov.arnote.utils;
 
-import com.antonromanov.arnote.Exceptions.JsonNullException;
-import com.antonromanov.arnote.Exceptions.JsonParseException;
-import com.antonromanov.arnote.Exceptions.SaveNewWishException;
+import com.antonromanov.arnote.exceptions.JsonNullException;
+import com.antonromanov.arnote.exceptions.JsonParseException;
+import com.antonromanov.arnote.exceptions.SaveNewWishException;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.http.server.ServletServerHttpResponse;
@@ -34,6 +34,19 @@ public class ControllerBase {
 
 		return responseEntity;
 	}
+
+	protected ResponseEntity<String> $prepare400Response(String responseBody){
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setCacheControl("no-cache");
+
+		ResponseEntity<String> responseEntity = new ResponseEntity<String>(responseBody, headers, HttpStatus.BAD_REQUEST);
+		LOGGER.info("RESPONSE: " + responseEntity.toString());
+
+		return responseEntity;
+	}
+
+
 
 
 	public static void prepareError(Exception ex, HttpOutputMessage outputMessage) {
