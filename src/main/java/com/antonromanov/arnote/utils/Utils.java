@@ -11,6 +11,7 @@ import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.exceptions.*;
+import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -242,7 +243,7 @@ public class Utils {
 	/**
 	 * Конвертим пришедший json в новый WISH
 	 */
-	public static Wish parseJsonToWish(ParseType parseType, String json) throws Exception {
+	public static Wish parseJsonToWish(ParseType parseType, String json, UsersRepo repo) throws Exception {
 
 		if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
 			throw new JsonNullException("JSON - пустой");
@@ -260,8 +261,13 @@ public class Utils {
 						JSONTemplate.fromString(json).get("priority").getAsInt(),
 						JSONTemplate.fromString(json).get("archive").getAsBoolean(),
 						JSONTemplate.fromString(json).get("description").getAsString(),
-						JSONTemplate.fromString(json).get("url").getAsString()
+						JSONTemplate.fromString(json).get("url").getAsString(),
+						repo.findById(JSONTemplate.fromString(json).get("userid").getAsLong()).orElseThrow(UserNotFoundException::new)
 				);
+
+
+
+
 			} else {
 				wishAfterParse = new Wish(
 						JSONTemplate.fromString(json).get("wish").getAsString(),
@@ -269,7 +275,8 @@ public class Utils {
 						JSONTemplate.fromString(json).get("priority").getAsInt(),
 						JSONTemplate.fromString(json).get("archive").getAsBoolean(),
 						JSONTemplate.fromString(json).get("description").getAsString(),
-						JSONTemplate.fromString(json).get("url").getAsString()
+						JSONTemplate.fromString(json).get("url").getAsString(),
+						repo.findById(JSONTemplate.fromString(json).get("userid").getAsLong()).orElseThrow(UserNotFoundException::new)
 				);
 			}
 		} catch (Exception e) {

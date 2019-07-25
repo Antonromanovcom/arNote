@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.service;
 
 
+import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.ResponseParseResult;
 import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.Wish;
@@ -11,13 +12,13 @@ import java.util.Optional;
 
 public interface MainService {
 
-	ResponseParseResult parseCsv(MultipartFile file) throws Exception;
+	ResponseParseResult parseCsv(MultipartFile file, LocalUser localUser) throws Exception;
 
 	void clearCounter();
 
 	List<Wish> getAllWishes();
 
-	List<Wish> getAllWishesWithPriority1();
+	List<Wish> getAllWishesWithPriority1(LocalUser user);
 
 	void updateWish(Wish log);
 
@@ -25,9 +26,9 @@ public interface MainService {
 
 	Optional<Wish> getWishById(int id);
 
-	Integer getSumm4All();
+	Integer getSumm4All(LocalUser user);
 
-	Integer getSumm4Prior();
+	Integer getSumm4Prior(LocalUser user);
 
 	void deleteWish(String id);
 
@@ -35,6 +36,7 @@ public interface MainService {
 
 	Salary getLastSalary();
 
-
 	Integer calculateImplementationPeriod(Integer summ);
+
+	List<Wish> getAllWishesByUserId(LocalUser user);
 }

@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.service;
 
 import au.com.bytecode.opencsv.CSVReader;
+import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.ResponseParseResult;
 import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.Wish;
@@ -39,9 +40,18 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public List<Wish> getAllWishesWithPriority1() {
-        return wishRepository.getAllWithPriority1();
+    public List<Wish> getAllWishesWithPriority1(LocalUser user) {
+        return wishRepository.getAllWithPriority1(user);
     }
+
+    @Override
+    public List<Wish> getAllWishesByUserId(LocalUser user) {
+
+        return wishRepository.findAllByIdSorted(user);
+    }
+
+
+
 
     @Override
     public void updateWish(Wish log) {
@@ -59,13 +69,13 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public Integer getSumm4All() {
-        return wishRepository.findAll().stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
+    public Integer getSumm4All(LocalUser user) {
+        return wishRepository.findAllByIdSorted(user).stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
     @Override
-    public Integer getSumm4Prior() {
-        return wishRepository.getAllWithPriority1().stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
+    public Integer getSumm4Prior(LocalUser user) {
+        return wishRepository.getAllWithPriority1(user).stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
     @Override
@@ -89,17 +99,14 @@ public class MainServiceImpl implements MainService {
     }
 
 
-
     @Override
-    public  ResponseParseResult parseCsv(MultipartFile file) throws IOException {
+    public  ResponseParseResult parseCsv(MultipartFile file, LocalUser localUser) throws IOException {
 
       //  try {
 
             CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"), ',', '"', 1);
             List<String[]> allRows = reader.readAll();
             Pattern pattern = Pattern.compile("^\\d{1,3}\\,");
-
-
 
             allRows.stream()
                     .map(strings -> String.join(",", strings))
@@ -133,14 +140,12 @@ public class MainServiceImpl implements MainService {
 
                         if (wishes.size() < 1) {
                             //нету? добавляем
-                            wishRepository.save(new Wish(localWish, localPrice, 1, false, "from csv", ""));
+
+
+                            wishRepository.save(new Wish(localWish, localPrice, 1, false, "from csv", "", localUser));
                             addCount++;
                         }
                     });
-
-        /*} catch (Exception e){
-            return ResponseParseResult.builder().itemsAdded(0).status("Error").errorMessage("Парсинг не удался: " + ).build();
-        }*/
 
         return ResponseParseResult.builder().itemsAdded(addCount).status("Ok").okMessage("Парсинг успешно выполнен").build();
     }

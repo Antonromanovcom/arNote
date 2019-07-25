@@ -17,17 +17,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+
+
+//todo: надо нормально поименовать ендпоинты
+//todo: надо сделать проверку на уникальность добавляемых желаний
 
 /**
  * Основной REST-контроллер приложения.
@@ -64,8 +67,6 @@ public class MainRestController extends ControllerBase {
 	@Autowired
 	private EmailSender emailSender;
 
-//	@Autowired
-//	public JavaMailSender emailSender;
 
 
 	@RequestMapping(method = RequestMethod.GET, value = "/users")
@@ -73,7 +74,6 @@ public class MainRestController extends ControllerBase {
 	public List<Wish> findAll(@RequestParam(value = "search", required = false) String search) {
 		List<SearchCriteria> params = new ArrayList<SearchCriteria>();
 		if (search != null) {
-			//Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
 			Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)([a-zA-Z0-9А-Яа-я]*),");
 			Matcher matcher = pattern.matcher(search + ",");
 			while (matcher.find()) {
@@ -85,17 +85,21 @@ public class MainRestController extends ControllerBase {
 
 
 	@CrossOrigin(origins = "*")
-	@GetMapping("/{type}")
-	public ResponseEntity<String> gelAllWishes(@PathVariable String type, HttpServletResponse resp) {
+	@GetMapping("/{type}/{id}")
+	public ResponseEntity<String> gelAllWishes(@PathVariable String type, @PathVariable String id, HttpServletResponse resp) {
 
 		return $do(s -> {
 			List<Wish> wishList;
 
+			if (!usersRepo.findById(Long.valueOf(id)).isPresent()) {
+				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST);
+			}
+
 			if ("all".equalsIgnoreCase(type)) {
-				wishList = mainService.getAllWishes();
+				wishList = mainService.getAllWishesByUserId(usersRepo.findById(Long.valueOf(id)).orElseThrow(UserNotFoundException::new));
 				LOGGER.info("============== GET ALL WISHES ============== ");
 			} else {
-				wishList = mainService.getAllWishesWithPriority1();
+				wishList = mainService.getAllWishesWithPriority1(usersRepo.findById(Long.valueOf(id)).orElseThrow(UserNotFoundException::new));
 				LOGGER.info("============== GET PRIORITY WISHES ============== ");
 			}
 
@@ -117,7 +121,7 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("========= UPDATE WISH ============== ");
 			LOGGER.info("PAYLOAD: " + requestParam);
 
-			mainService.updateWish(parseJsonToWish(ParseType.EDIT, requestParam));
+			mainService.updateWish(parseJsonToWish(ParseType.EDIT, requestParam, usersRepo));
 
 			String result = "";
 			LOGGER.info("PAYLOAD: " + result);
@@ -138,7 +142,7 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("PAYLOAD: " + requestParam);
 
 			Wish newWish;
-			newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam));
+			newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, usersRepo));
 
 			String result = createGsonBuilder().toJson(newWish);
 			LOGGER.info("PAYLOAD: " + result);
@@ -150,17 +154,20 @@ public class MainRestController extends ControllerBase {
 
 	@CrossOrigin(origins = "*")
 	@GetMapping("/summ")
-	public ResponseEntity<String> getSumm(HttpServletResponse resp) {
+	public ResponseEntity<String> getSumm(HttpServletResponse resp, Principal principal) {
 
 		return $do(s -> {
 			LOGGER.info("========= GET SUMM ============== ");
+			LOGGER.info("PRINCIPAL: " + principal.getName());
+
+			LocalUser localUser = getUserFromPrincipal(principal);
 
 			String result = createGsonBuilder().toJson(SummEntity.builder()
-					.all(mainService.getSumm4All())
-					.allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All()))
-					.priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior()))
+					.all(mainService.getSumm4All(localUser))
+					.allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser)))
+					.priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser)))
 					.lastSalary(mainService.getLastSalary().getResidualSalary())
-					.priority(mainService.getSumm4Prior()).build());
+					.priority(mainService.getSumm4Prior(localUser)).build());
 			LOGGER.info("PAYLOAD: " + result);
 			return $prepareResponse(result);
 		}, null, resp);
@@ -186,7 +193,7 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 			LOGGER.info("========= GET LAST SALARY ============== ");
-			String result = createGsonBuilder().toJson(mainService.calculateImplementationPeriod(143000));
+			String result = createGsonBuilder().toJson(mainService.getLastSalary().getResidualSalary());
 			return $prepareResponse(result);
 		}, null, resp);
 	}
@@ -215,15 +222,17 @@ public class MainRestController extends ControllerBase {
 
 	@CrossOrigin(origins = "*")
 	@PostMapping("/parsecsv")
-	public ResponseEntity<String> testXlsxWithFile(
-			@RequestParam(required = false, value = "csvfile") MultipartFile csvFile,
+	public ResponseEntity<String> parseCsv(
+			@RequestParam(required = false, value = "csvfile") MultipartFile csvFile, Principal principal,
 			HttpServletResponse resp) {
 
 		return $do(s -> {
 
 			LOGGER.info("FILE: " + csvFile.getOriginalFilename());
+			LocalUser localUser = getUserFromPrincipal(principal);
+			LOGGER.info("PRINCIPAL: " + localUser.toString());
 
-			String result = createGsonBuilder().toJson(mainService.parseCsv(csvFile));
+			String result = createGsonBuilder().toJson(mainService.parseCsv(csvFile, localUser));
 			return $prepareResponse(result);
 
 		}, null, resp);
@@ -427,5 +436,15 @@ public class MainRestController extends ControllerBase {
 
 		return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd + " [email - " + email + " ]");
 
+	}
+
+	/**
+	 * Вытаскиваем юзера из Принципала
+	 *
+	 * @param principal
+	 * @return
+	 */
+	private LocalUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
+		return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
 	}
 }

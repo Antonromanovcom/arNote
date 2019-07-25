@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.repositoty;
 
+import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.Wish;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,10 +17,15 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	@Query(value="select w from Wish w where w.ac = false order by w.priority ASC ")
 	List<Wish> getAllNotInArchive();
 
-	@Query(value="select w from Wish w where w.ac = false and w.priority = 1 order by w.priority ASC ")
-	List<Wish> getAllWithPriority1();
+	@Query(value="select w from Wish w where w.ac = false and w.user = :user order by w.priority ASC ")
+	List<Wish> findAllByIdSorted(@Param("user") LocalUser user);
 
-//
+
+
+	@Query(value="select w from Wish w where w.ac = false and w.priority = 1 and  w.user = :user order by w.wish ASC ")
+	List<Wish> getAllWithPriority1(@Param("user") LocalUser user);
+
+
 
 	@Query(value="select w from Wish w where w.wish = ?1")
 	Optional<List<Wish>> getWishesByName(@Param("wish") String wish);

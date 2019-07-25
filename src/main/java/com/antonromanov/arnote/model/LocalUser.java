@@ -51,6 +51,8 @@ public class LocalUser {
 	@Column
 	private String fullname;
 
+
+
 	@Override
 	public String toString() {
 		return "LocalUser{" +
