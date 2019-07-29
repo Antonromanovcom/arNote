@@ -67,7 +67,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return source;
 	}
 
-
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -76,18 +75,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-	/*	String password = "123";
-		String encryptedPassword = this.passwordEncoder().encode(password);
-		System.out.println("Encoded password of 123=" + encryptedPassword);
-
-		InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> mngConfig = auth.inMemoryAuthentication();
-
-		UserDetails u1 = User.withUsername("tom").password(encryptedPassword).roles("USER").build();
-		UserDetails u2 = User.withUsername("jerry").password(encryptedPassword).roles("USER").build();
-
-		mngConfig.withUser(u1);
-		mngConfig.withUser(u2);*/
 
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 

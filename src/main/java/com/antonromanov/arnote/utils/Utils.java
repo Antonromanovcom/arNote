@@ -218,7 +218,7 @@ public class Utils {
 	/**
 	 * Конвертим пришедший json в новую Salary
 	 */
-	public static Salary parseJsonToSalary(String json) throws Exception {
+	public static Salary parseJsonToSalary(String json, LocalUser user) throws Exception {
 
 		if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
 			throw new JsonNullException("JSON - пустой");
@@ -233,6 +233,7 @@ public class Utils {
 						JSONTemplate.fromString(json).get("residualSalary").getAsInt()
 				);
 			salary.setSalarydate(currentDate);
+			salary.setUser(user);
 		} catch (Exception e) {
 			throw new JsonParseException(json);
 		}

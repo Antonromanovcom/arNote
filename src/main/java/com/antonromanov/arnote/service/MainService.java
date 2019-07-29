@@ -34,9 +34,9 @@ public interface MainService {
 
 	Salary saveSalary(Salary salary);
 
-	Salary getLastSalary();
+	Salary getLastSalary(LocalUser localUser);
 
-	Integer calculateImplementationPeriod(Integer summ);
+	Integer calculateImplementationPeriod(Integer summ, LocalUser localUser);
 
 	List<Wish> getAllWishesByUserId(LocalUser user);
 }

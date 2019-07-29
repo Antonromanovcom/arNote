@@ -85,21 +85,22 @@ public class MainRestController extends ControllerBase {
 
 
 	@CrossOrigin(origins = "*")
-	@GetMapping("/{type}/{id}")
-	public ResponseEntity<String> gelAllWishes(@PathVariable String type, @PathVariable String id, HttpServletResponse resp) {
+	@GetMapping("/{type}")
+	public ResponseEntity<String> gelAllWishes(@PathVariable String type, Principal principal, HttpServletResponse resp) {
 
 		return $do(s -> {
 			List<Wish> wishList;
 
-			if (!usersRepo.findById(Long.valueOf(id)).isPresent()) {
-				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST);
-			}
+			LOGGER.info("PRINCIPAL: " + principal.getName());
+			LocalUser localUser = getUserFromPrincipal(principal);
+
+
 
 			if ("all".equalsIgnoreCase(type)) {
-				wishList = mainService.getAllWishesByUserId(usersRepo.findById(Long.valueOf(id)).orElseThrow(UserNotFoundException::new));
+				wishList = mainService.getAllWishesByUserId(localUser);
 				LOGGER.info("============== GET ALL WISHES ============== ");
 			} else {
-				wishList = mainService.getAllWishesWithPriority1(usersRepo.findById(Long.valueOf(id)).orElseThrow(UserNotFoundException::new));
+				wishList = mainService.getAllWishesWithPriority1(localUser);
 				LOGGER.info("============== GET PRIORITY WISHES ============== ");
 			}
 
@@ -107,7 +108,7 @@ public class MainRestController extends ControllerBase {
 			dto.list.addAll(wishList);
 
 			String result = createGsonBuilder().toJson(dto);
-			LOGGER.info("PAYLOAD: " + result);
+			LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
 			return $prepareResponse(result);
 		}, null, resp);
 	}
@@ -164,9 +165,9 @@ public class MainRestController extends ControllerBase {
 
 			String result = createGsonBuilder().toJson(SummEntity.builder()
 					.all(mainService.getSumm4All(localUser))
-					.allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser)))
-					.priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser)))
-					.lastSalary(mainService.getLastSalary().getResidualSalary())
+					.allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser), localUser))
+					.priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
+					.lastSalary(mainService.getLastSalary(localUser).getResidualSalary())
 					.priority(mainService.getSumm4Prior(localUser)).build());
 			LOGGER.info("PAYLOAD: " + result);
 			return $prepareResponse(result);
@@ -189,27 +190,35 @@ public class MainRestController extends ControllerBase {
 
 	@CrossOrigin(origins = "*")
 	@GetMapping("/last")
-	public ResponseEntity<String> getLastSalary(HttpServletResponse resp) {
+	public ResponseEntity<String> getLastSalary(HttpServletResponse resp, Principal principal) {
 
 		return $do(s -> {
 			LOGGER.info("========= GET LAST SALARY ============== ");
-			String result = createGsonBuilder().toJson(mainService.getLastSalary().getResidualSalary());
+			LOGGER.info("PRINCIPAL: " + principal.getName());
+
+			LocalUser localUser = getUserFromPrincipal(principal);
+
+
+			String result = createGsonBuilder().toJson(mainService.getLastSalary(localUser).getResidualSalary());
 			return $prepareResponse(result);
 		}, null, resp);
 	}
 
 	@CrossOrigin(origins = "*")
 	@PostMapping("/salary")
-	public ResponseEntity<String> addSalary(@RequestBody String requestParam, HttpServletResponse resp) {
+	public ResponseEntity<String> addSalary(@RequestBody String requestParam, HttpServletResponse resp, Principal principal) {
 
 
 		return $do(s -> {
 
 			LOGGER.info("========= ADD SALARY ============== ");
 			LOGGER.info("PAYLOAD: " + requestParam);
+			LOGGER.info("PRINCIPAL: " + principal.getName());
+
+			LocalUser localUser = getUserFromPrincipal(principal);
 
 			Salary newSalary;
-			newSalary = mainService.saveSalary(parseJsonToSalary(requestParam));
+			newSalary = mainService.saveSalary(parseJsonToSalary(requestParam, localUser));
 
 			String result = createGsonBuilder().toJson(newSalary);
 			LOGGER.info("PAYLOAD: " + result);

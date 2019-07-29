@@ -30,7 +30,7 @@ public class ControllerBase {
 		headers.setCacheControl("no-cache");
 
 		ResponseEntity<String> responseEntity = new ResponseEntity<String>(responseBody, headers, HttpStatus.OK);
-		LOGGER.info("RESPONSE: " + responseEntity.toString());
+		LOGGER.info("RESPONSE [STATUS CODE]: " + responseEntity.getStatusCode());
 
 		return responseEntity;
 	}

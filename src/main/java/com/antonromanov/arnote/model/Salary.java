@@ -30,6 +30,9 @@ public class Salary {
 	@Temporal(TemporalType.DATE)
 	private Date salarydate;
 
+	@ManyToOne(cascade = CascadeType.ALL)
+	private LocalUser user;
+
 	public Salary(Integer fullSlary, Integer residualSalary) {
 		this.fullSlary = fullSlary;
 		this.residualSalary = residualSalary;

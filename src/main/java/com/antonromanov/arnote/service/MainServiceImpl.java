@@ -89,13 +89,13 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public Salary getLastSalary() {
-        return (salaryRepository.getLastSalary(new PageRequest(0, 1, Sort.Direction.DESC, "salarydate"))).get(0);
+    public Salary getLastSalary(LocalUser localUser) {
+        return (salaryRepository.getLastSalary(localUser)).get(0);
     }
 
     @Override
-    public Integer calculateImplementationPeriod(Integer summ) {
-        return summ / getLastSalary().getResidualSalary();
+    public Integer calculateImplementationPeriod(Integer summ, LocalUser localUser) {
+        return summ / getLastSalary(localUser).getResidualSalary();
     }
 
 
