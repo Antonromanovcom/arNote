@@ -36,4 +36,10 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	void deleteByLongId(Long entityId);
 
 	Optional<Wish> findById(long l);
+
+
+	@Query(value="select * from arnote.wishes w where w.wish like " +
+			"(concat('%',:wish,'%')) and w.user_id = :userId order by w.wish", nativeQuery = true)
+	Optional<List<Wish>> findAllByWishAndUser(String wish, long userId);
+
 }

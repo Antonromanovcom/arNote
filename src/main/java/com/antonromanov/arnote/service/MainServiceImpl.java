@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.service;
 
 import au.com.bytecode.opencsv.CSVReader;
+import com.antonromanov.arnote.exceptions.NoDataYetException;
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.ResponseParseResult;
 import com.antonromanov.arnote.model.Salary;
@@ -9,7 +10,6 @@ import com.antonromanov.arnote.repositoty.SalaryRepository;
 import com.antonromanov.arnote.repositoty.WishRepository;
 import org.apache.commons.math3.util.ArithmeticUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,7 +50,10 @@ public class MainServiceImpl implements MainService {
         return wishRepository.findAllByIdSorted(user);
     }
 
-
+    @Override
+    public Optional<List<Wish>> findAllWishesByWish(String wish, LocalUser user) {
+        return wishRepository.findAllByWishAndUser(wish, user.getId());
+    }
 
 
     @Override
@@ -90,12 +93,12 @@ public class MainServiceImpl implements MainService {
 
     @Override
     public Salary getLastSalary(LocalUser localUser) {
-        return (salaryRepository.getLastSalary(localUser)).get(0);
+        return (salaryRepository.getLastSalary(localUser)).size()<1 ? null : (salaryRepository.getLastSalary(localUser)).get(0);
     }
 
     @Override
     public Integer calculateImplementationPeriod(Integer summ, LocalUser localUser) {
-        return summ / getLastSalary(localUser).getResidualSalary();
+        return summ / (getLastSalary(localUser).getResidualSalary());
     }
 
 

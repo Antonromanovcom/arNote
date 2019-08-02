@@ -5,5 +5,5 @@ import com.antonromanov.arnote.model.Wish;
 import java.util.List;
 
 public interface IUserDAO {
-	List<Wish> searchUser(List<SearchCriteria> params);
+	List<Wish> searchWish(List<SearchCriteria> params);
 }

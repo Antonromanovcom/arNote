@@ -182,26 +182,27 @@ public class Utils {
 
 			LocalUser.Role userRole;
 
-			if (("USER".equals(JSONTemplate.fromString(json).get("role").getAsString())) ||
-					("ADMIN".equals(JSONTemplate.fromString(json).get("role").getAsString()))) {
-				userRole = LocalUser.Role.valueOf(JSONTemplate.fromString(json).get("role").getAsString());
+			if (("USER".equals(JSONTemplate.fromString(json).get("userRole").getAsString())) ||
+					("ADMIN".equals(JSONTemplate.fromString(json).get("userRole").getAsString()))) {
+				userRole = LocalUser.Role.valueOf(JSONTemplate.fromString(json).get("userRole").getAsString());
 			} else {
 				userRole = LocalUser.Role.USER;
 
 			}
 
-			if (JSONTemplate.fromString(json).get("usercryptomode") == null) throw new JsonParseException(json);
+			if (JSONTemplate.fromString(json).get("userCryptoMode") == null) throw new JsonParseException(json);
 			if (JSONTemplate.fromString(json).get("pwd") == null) throw new JsonParseException(json);
 			if (JSONTemplate.fromString(json).get("email") == null) throw new JsonParseException(json);
 			if (JSONTemplate.fromString(json).get("fullname") == null) throw new JsonParseException(json);
 
-			// ------------------------------------------------------
+
+
 
 			localUser = new LocalUser(
 					JSONTemplate.fromString(json).get("login").getAsString(),
 					userRole,
 					JSONTemplate.fromString(json).get("pwd").getAsString(),
-					JSONTemplate.fromString(json).get("usercryptomode").getAsBoolean(),
+					JSONTemplate.fromString(json).get("userCryptoMode").getAsBoolean(),
 					JSONTemplate.fromString(json).get("email").getAsString(),
 					JSONTemplate.fromString(json).get("fullname").getAsString()
 			);
@@ -244,7 +245,7 @@ public class Utils {
 	/**
 	 * Конвертим пришедший json в новый WISH
 	 */
-	public static Wish parseJsonToWish(ParseType parseType, String json, UsersRepo repo) throws Exception {
+	public static Wish parseJsonToWish(ParseType parseType, String json, LocalUser user) throws Exception {
 
 		if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
 			throw new JsonNullException("JSON - пустой");
@@ -263,8 +264,7 @@ public class Utils {
 						JSONTemplate.fromString(json).get("archive").getAsBoolean(),
 						JSONTemplate.fromString(json).get("description").getAsString(),
 						JSONTemplate.fromString(json).get("url").getAsString(),
-						repo.findById(JSONTemplate.fromString(json).get("userid").getAsLong()).orElseThrow(UserNotFoundException::new)
-				);
+						user);
 
 
 
@@ -277,7 +277,7 @@ public class Utils {
 						JSONTemplate.fromString(json).get("archive").getAsBoolean(),
 						JSONTemplate.fromString(json).get("description").getAsString(),
 						JSONTemplate.fromString(json).get("url").getAsString(),
-						repo.findById(JSONTemplate.fromString(json).get("userid").getAsLong()).orElseThrow(UserNotFoundException::new)
+						user
 				);
 			}
 		} catch (Exception e) {

@@ -15,7 +15,7 @@ public class WishDao implements IUserDAO {
 	private EntityManager entityManager;
 
 	@Override
-	public List<Wish> searchUser(List<SearchCriteria> params) {
+	public List<Wish> searchWish(List<SearchCriteria> params) {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Wish> query = builder.createQuery(Wish.class);
 		Root r = query.from(Wish.class);

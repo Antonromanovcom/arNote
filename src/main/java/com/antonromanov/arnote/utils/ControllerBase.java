@@ -35,7 +35,7 @@ public class ControllerBase {
 		return responseEntity;
 	}
 
-	protected ResponseEntity<String> $prepare400Response(String responseBody){
+	protected ResponseEntity<String> $prepareBadResponse(String responseBody){
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setCacheControl("no-cache");
@@ -46,7 +46,22 @@ public class ControllerBase {
 		return responseEntity;
 	}
 
+	protected ResponseEntity<String> $prepareNoDataYetErrorResponse(Boolean switcher){
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setCacheControl("no-cache");
 
+		ResponseEntity<String> responseEntity;
+
+		if (switcher) {
+			responseEntity = new ResponseEntity<String>("ERR-01", headers, HttpStatus.BAD_REQUEST);
+		} else {
+			responseEntity = new ResponseEntity<String>("ERR-02", headers, HttpStatus.BAD_REQUEST);
+		}
+		LOGGER.info("RESPONSE: " + responseEntity.toString());
+
+		return responseEntity;
+	}
 
 
 	public static void prepareError(Exception ex, HttpOutputMessage outputMessage) {

@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.service;
 
 
+import com.antonromanov.arnote.exceptions.NoDataYetException;
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.ResponseParseResult;
 import com.antonromanov.arnote.model.Salary;
@@ -39,4 +40,7 @@ public interface MainService {
 	Integer calculateImplementationPeriod(Integer summ, LocalUser localUser);
 
 	List<Wish> getAllWishesByUserId(LocalUser user);
+
+	Optional<List<Wish>> findAllWishesByWish(String Wish, LocalUser user);
+
 }

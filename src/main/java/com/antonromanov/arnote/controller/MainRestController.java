@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
@@ -24,9 +25,10 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static com.antonromanov.arnote.exceptions.BadIncomeParameter.ParameterKind.NOTHING_FOUND;
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-
 
 
 //todo: надо нормально поименовать ендпоинты
@@ -69,10 +71,13 @@ public class MainRestController extends ControllerBase {
 
 
 
-	@RequestMapping(method = RequestMethod.GET, value = "/users")
+	/*@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	public List<Wish> findAll(@RequestParam(value = "search", required = false) String search) {
 		List<SearchCriteria> params = new ArrayList<SearchCriteria>();
+
+		LOGGER.info("============== FILTER WISHES ============== ");
+
 		if (search != null) {
 			Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)([a-zA-Z0-9А-Яа-я]*),");
 			Matcher matcher = pattern.matcher(search + ",");
@@ -80,7 +85,37 @@ public class MainRestController extends ControllerBase {
 				params.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
 			}
 		}
-		return api.searchUser(params);
+		return api.searchWish(params);
+	}*/
+
+	@CrossOrigin(origins = "*")
+	@PostMapping("/filter")
+	public ResponseEntity<String> findAll(@RequestBody String requestParam, Principal principal, HttpServletResponse resp) {
+
+
+		return $do(s -> {
+			LOGGER.info("============== FILTER WISHES ============== ");
+			LOGGER.info("VALUE: " + requestParam);
+			LOGGER.info("PRINCIPAL: " + principal.getName());
+			LocalUser localUser = getUserFromPrincipal(principal);
+			//Wish wish = parseJsonToWish(ParseType.EDIT, requestParam, localUser);
+
+			List<Wish> wishes = mainService
+					.findAllWishesByWish(parseJsonToWish(ParseType.EDIT, requestParam, localUser).getWish(), localUser)
+					.orElseGet(ArrayList::new);
+
+			DTO dto = new DTO();
+			dto.list.addAll(wishes);
+
+
+			String res = createGsonBuilder().toJson(dto);
+			LOGGER.info("PAYLOAD: " + res);
+
+			return $prepareResponse(res);
+
+		}, null, resp);
+
+
 	}
 
 
@@ -92,37 +127,42 @@ public class MainRestController extends ControllerBase {
 			List<Wish> wishList;
 
 			LOGGER.info("PRINCIPAL: " + principal.getName());
+
 			LocalUser localUser = getUserFromPrincipal(principal);
 
+			if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
+				if ("all".equalsIgnoreCase(type)) {
+					wishList = mainService.getAllWishesByUserId(localUser);
+					LOGGER.info("============== GET ALL WISHES ============== ");
+				} else {
+					wishList = mainService.getAllWishesWithPriority1(localUser);
+					LOGGER.info("============== GET PRIORITY WISHES ============== ");
+				}
 
-			if ("all".equalsIgnoreCase(type)) {
-				wishList = mainService.getAllWishesByUserId(localUser);
-				LOGGER.info("============== GET ALL WISHES ============== ");
+				DTO dto = new DTO();
+				dto.list.addAll(wishList);
+
+				String result = createGsonBuilder().toJson(dto);
+				LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
+				return $prepareResponse(result);
 			} else {
-				wishList = mainService.getAllWishesWithPriority1(localUser);
-				LOGGER.info("============== GET PRIORITY WISHES ============== ");
+				return $prepareNoDataYetErrorResponse(false);
 			}
-
-			DTO dto = new DTO();
-			dto.list.addAll(wishList);
-
-			String result = createGsonBuilder().toJson(dto);
-			LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
-			return $prepareResponse(result);
 		}, null, resp);
 	}
 
 	@CrossOrigin(origins = "*")
 	@PutMapping
-	public ResponseEntity<String> updateWish(@RequestBody String requestParam, HttpServletRequest request, HttpServletResponse resp) {
+	public ResponseEntity<String> updateWish(@RequestBody String requestParam, HttpServletRequest request, HttpServletResponse resp, Principal principal) {
 
 		return $do(s -> {
 
 			LOGGER.info("========= UPDATE WISH ============== ");
 			LOGGER.info("PAYLOAD: " + requestParam);
+			LocalUser localUser = getUserFromPrincipal(principal);
 
-			mainService.updateWish(parseJsonToWish(ParseType.EDIT, requestParam, usersRepo));
+			mainService.updateWish(parseJsonToWish(ParseType.EDIT, requestParam, localUser));
 
 			String result = "";
 			LOGGER.info("PAYLOAD: " + result);
@@ -134,7 +174,7 @@ public class MainRestController extends ControllerBase {
 
 	@CrossOrigin(origins = "*")
 	@PostMapping
-	public ResponseEntity<String> addWish(@RequestBody String requestParam, HttpServletResponse resp) {
+	public ResponseEntity<String> addWish(@RequestBody String requestParam, HttpServletResponse resp, Principal principal) {
 
 
 		return $do(s -> {
@@ -142,8 +182,10 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("========= ADD WISH ============== ");
 			LOGGER.info("PAYLOAD: " + requestParam);
 
+			LocalUser localUser = getUserFromPrincipal(principal);
+
 			Wish newWish;
-			newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, usersRepo));
+			newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, localUser));
 
 			String result = createGsonBuilder().toJson(newWish);
 			LOGGER.info("PAYLOAD: " + result);
@@ -163,14 +205,18 @@ public class MainRestController extends ControllerBase {
 
 			LocalUser localUser = getUserFromPrincipal(principal);
 
-			String result = createGsonBuilder().toJson(SummEntity.builder()
-					.all(mainService.getSumm4All(localUser))
-					.allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser), localUser))
-					.priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
-					.lastSalary(mainService.getLastSalary(localUser).getResidualSalary())
-					.priority(mainService.getSumm4Prior(localUser)).build());
-			LOGGER.info("PAYLOAD: " + result);
-			return $prepareResponse(result);
+			if (mainService.getLastSalary(localUser) != null) {
+				String result = createGsonBuilder().toJson(SummEntity.builder()
+						.all(mainService.getSumm4All(localUser))
+						.allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser), localUser))
+						.priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
+						.lastSalary(mainService.getLastSalary(localUser).getResidualSalary())
+						.priority(mainService.getSumm4Prior(localUser)).build());
+				LOGGER.info("PAYLOAD: " + result);
+				return $prepareResponse(result);
+			} else {
+				return $prepareNoDataYetErrorResponse(true);
+			}
 		}, null, resp);
 	}
 
@@ -335,7 +381,7 @@ public class MainRestController extends ControllerBase {
 
 	@CrossOrigin(origins = "*")
 	@PutMapping("/users/{id}")
-	public ResponseEntity<String> editUser(@RequestBody String user, @PathVariable String id, HttpServletResponse resp) {
+	public ResponseEntity<String> editUser(@RequestBody String user, @PathVariable String id, HttpServletResponse resp, Principal principal) {
 
 		return $do(s -> {
 
@@ -344,20 +390,22 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("id: " + id);
 
 			LocalUser newUser = parseJsonToUserAndValidate(user);
+			LocalUser localuser = getUserFromPrincipal(principal);
+			newUser.setCreationDate(localuser.getCreationDate());
 
-			if (usersRepo.findByLogin(newUser.getLogin()).isPresent()) {
+			if ((usersRepo.findByLogin(newUser.getLogin()).isPresent()) && (!localuser.getLogin().equals(newUser.getLogin()))) {
 				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
 			}
 
 			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
 
-			LocalUser user4update = usersRepo.findById(Long.valueOf(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST));
-			user4update.setPwd(newUser.getPwd());
-			user4update.setLogin(newUser.getLogin());
-			user4update.setEmail(newUser.getEmail());
-			user4update.setFullname(newUser.getFullname());
+//			LocalUser user4update = usersRepo.findById(Long.valueOf(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST));
+			localuser.setPwd(newUser.getPwd());
+			localuser.setLogin(newUser.getLogin());
+			localuser.setEmail(newUser.getEmail());
+			localuser.setFullname(newUser.getFullname());
 
-			return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(user4update)));
+			return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
 
 		}, user, resp);
 	}
@@ -375,6 +423,19 @@ public class MainRestController extends ControllerBase {
 			}).collect(Collectors.toList());
 
 			return $prepareResponse(createGsonBuilder().toJson(userList));
+		}, null, resp);
+	}
+
+	@CrossOrigin(origins = "*")
+	@GetMapping("/users/getcurrent")
+	public ResponseEntity<String> getCurrentUser(HttpServletResponse resp, Principal principal) {
+
+		return $do(s -> {
+			LOGGER.info("========= GET CURRENT USER  ============== ");
+
+			LocalUser localUser = getUserFromPrincipal(principal);
+
+			return $prepareResponse(createGsonBuilder().toJson(localUser));
 		}, null, resp);
 	}
 
@@ -397,7 +458,7 @@ public class MainRestController extends ControllerBase {
 				LocalUser localUser = usersRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
 				return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, email).getStatus()));
 			} catch (UserNotFoundException e) {
-				return $prepare400Response(createGsonBuilder().toJson("No such user!"));
+				return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
 			}
 		}, null, resp);
 	}
@@ -420,7 +481,7 @@ public class MainRestController extends ControllerBase {
 				LocalUser localUser = usersRepo.findById(Long.parseLong(id)).orElseThrow(UserNotFoundException::new);
 				return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, localUser.getEmail()).getStatus()));
 			} catch (UserNotFoundException e) {
-				return $prepare400Response(createGsonBuilder().toJson("No such user!"));
+				return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
 			}
 		}, null, resp);
 	}
@@ -428,11 +489,12 @@ public class MainRestController extends ControllerBase {
 
 	/**
 	 * Смена pwd и отправка уведомления на почту.
+	 *
 	 * @param user
 	 * @param email
 	 * @return
 	 */
-	private EmailStatus changePwd(LocalUser user, String email){
+	private EmailStatus changePwd(LocalUser user, String email) {
 
 		LOGGER.info("USER FOUND - " + user.toString());
 
