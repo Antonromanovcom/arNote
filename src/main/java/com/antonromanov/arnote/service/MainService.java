@@ -2,10 +2,7 @@ package com.antonromanov.arnote.service;
 
 
 import com.antonromanov.arnote.exceptions.NoDataYetException;
-import com.antonromanov.arnote.model.LocalUser;
-import com.antonromanov.arnote.model.ResponseParseResult;
-import com.antonromanov.arnote.model.Salary;
-import com.antonromanov.arnote.model.Wish;
+import com.antonromanov.arnote.model.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +17,8 @@ public interface MainService {
 	List<Wish> getAllWishes();
 
 	List<Wish> getAllWishesWithPriority1(LocalUser user);
+
+	List<WishDTO> getAllWishesWithGroupPriority(LocalUser user);
 
 	void updateWish(Wish log);
 

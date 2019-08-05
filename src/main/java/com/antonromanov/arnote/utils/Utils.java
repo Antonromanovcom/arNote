@@ -2,16 +2,21 @@ package com.antonromanov.arnote.utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
+import java.text.DateFormatSymbols;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.format.TextStyle;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.exceptions.*;
-import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -264,10 +269,7 @@ public class Utils {
 						JSONTemplate.fromString(json).get("archive").getAsBoolean(),
 						JSONTemplate.fromString(json).get("description").getAsString(),
 						JSONTemplate.fromString(json).get("url").getAsString(),
-						user);
-
-
-
+						user, 1, 1);
 
 			} else {
 				wishAfterParse = new Wish(
@@ -295,6 +297,16 @@ public class Utils {
 		PasswordGenerator generator = new PasswordGenerator();
 		String password = generator.generatePassword(8, rules);
 		return password;
+	}
+
+	public static String computerMonth(Integer proirity) {
+		Date date = new Date();
+		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		int month = localDate.getMonthValue();
+//		return String.valueOf(month);
+//		return new DateFormatSymbols().getMonths()[month-1];
+		Locale currentLocale = Locale.getDefault();
+		return Month.of(month+(proirity-1)).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
 	}
 
 }

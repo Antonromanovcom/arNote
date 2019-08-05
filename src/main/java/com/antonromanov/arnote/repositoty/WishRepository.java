@@ -17,6 +17,10 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	@Query(value="select w from Wish w where w.ac = false order by w.priority ASC ")
 	List<Wish> getAllNotInArchive();
 
+
+	@Query(value="select w from Wish w where w.ac = false and w.user = :user order by w.priorityGroup, w.priorityGroupOrder ASC ")
+	List<Wish> getAllWithGroupOrder(@Param("user") LocalUser user);
+
 	@Query(value="select w from Wish w where w.ac = false and w.user = :user order by w.priority ASC ")
 	List<Wish> findAllByIdSorted(@Param("user") LocalUser user);
 

@@ -40,6 +40,14 @@ public class Wish {
     @ManyToOne(cascade = CascadeType.ALL)
     private LocalUser user;
 
+    @Column
+    private Integer priorityGroup;
+
+    @Column
+    private Integer priorityGroupOrder;
+
+
+
 
     public Wish(String wish, Integer price, Integer priority, Boolean ac, String description, String url, LocalUser user) {
         this.wish = wish;

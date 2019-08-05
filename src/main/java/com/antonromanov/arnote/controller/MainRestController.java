@@ -50,6 +50,11 @@ public class MainRestController extends ControllerBase {
 		private List<Wish> list = new ArrayList<>();
 	}
 
+	@Data
+	private class DTOwithOrder {
+		private List<WishDTO> list = new ArrayList<>();
+	}
+
 
 	/**
 	 * Инжектим сервис.
@@ -70,24 +75,6 @@ public class MainRestController extends ControllerBase {
 	private EmailSender emailSender;
 
 
-
-	/*@RequestMapping(method = RequestMethod.GET)
-	@ResponseBody
-	public List<Wish> findAll(@RequestParam(value = "search", required = false) String search) {
-		List<SearchCriteria> params = new ArrayList<SearchCriteria>();
-
-		LOGGER.info("============== FILTER WISHES ============== ");
-
-		if (search != null) {
-			Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)([a-zA-Z0-9А-Яа-я]*),");
-			Matcher matcher = pattern.matcher(search + ",");
-			while (matcher.find()) {
-				params.add(new SearchCriteria(matcher.group(1), matcher.group(2), matcher.group(3)));
-			}
-		}
-		return api.searchWish(params);
-	}*/
-
 	@CrossOrigin(origins = "*")
 	@PostMapping("/filter")
 	public ResponseEntity<String> findAll(@RequestBody String requestParam, Principal principal, HttpServletResponse resp) {
@@ -98,7 +85,6 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("VALUE: " + requestParam);
 			LOGGER.info("PRINCIPAL: " + principal.getName());
 			LocalUser localUser = getUserFromPrincipal(principal);
-			//Wish wish = parseJsonToWish(ParseType.EDIT, requestParam, localUser);
 
 			List<Wish> wishes = mainService
 					.findAllWishesByWish(parseJsonToWish(ParseType.EDIT, requestParam, localUser).getWish(), localUser)
@@ -114,8 +100,6 @@ public class MainRestController extends ControllerBase {
 			return $prepareResponse(res);
 
 		}, null, resp);
-
-
 	}
 
 
@@ -125,26 +109,36 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 			List<Wish> wishList;
-
+			List<WishDTO> wishListWithMonthOrder;
 			LOGGER.info("PRINCIPAL: " + principal.getName());
-
 			LocalUser localUser = getUserFromPrincipal(principal);
-
 			if (mainService.getAllWishesByUserId(localUser).size() > 0) {
+
+				DTO dto = new DTO();
+				DTOwithOrder dtOwithOrder = new DTOwithOrder();
+				String result = "";
 
 				if ("all".equalsIgnoreCase(type)) {
 					wishList = mainService.getAllWishesByUserId(localUser);
+					dto.list.addAll(wishList);
+					result = createGsonBuilder().toJson(dto);
+					LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
 					LOGGER.info("============== GET ALL WISHES ============== ");
+				} else if ("groups".equalsIgnoreCase(type)){
+					wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
+					dtOwithOrder.list.addAll(wishListWithMonthOrder);
+					result = createGsonBuilder().toJson(dtOwithOrder);
+					LOGGER.info("PAYLOAD (wishes count): " + dtOwithOrder.list.size());
+					LOGGER.info("============== GET WISHES WITH GROUP ORDER ============== ");
 				} else {
 					wishList = mainService.getAllWishesWithPriority1(localUser);
+					dto.list.addAll(wishList);
 					LOGGER.info("============== GET PRIORITY WISHES ============== ");
+					result = createGsonBuilder().toJson(dto);
+					LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
 				}
 
-				DTO dto = new DTO();
-				dto.list.addAll(wishList);
 
-				String result = createGsonBuilder().toJson(dto);
-				LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
 				return $prepareResponse(result);
 			} else {
 				return $prepareNoDataYetErrorResponse(false);

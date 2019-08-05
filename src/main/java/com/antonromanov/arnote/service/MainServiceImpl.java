@@ -2,10 +2,7 @@ package com.antonromanov.arnote.service;
 
 import au.com.bytecode.opencsv.CSVReader;
 import com.antonromanov.arnote.exceptions.NoDataYetException;
-import com.antonromanov.arnote.model.LocalUser;
-import com.antonromanov.arnote.model.ResponseParseResult;
-import com.antonromanov.arnote.model.Salary;
-import com.antonromanov.arnote.model.Wish;
+import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.repositoty.SalaryRepository;
 import com.antonromanov.arnote.repositoty.WishRepository;
 import org.apache.commons.math3.util.ArithmeticUtils;
@@ -19,6 +16,9 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static com.antonromanov.arnote.utils.Utils.computerMonth;
 
 
 @Service
@@ -42,6 +42,27 @@ public class MainServiceImpl implements MainService {
     @Override
     public List<Wish> getAllWishesWithPriority1(LocalUser user) {
         return wishRepository.getAllWithPriority1(user);
+    }
+
+    @Override
+    public List<WishDTO> getAllWishesWithGroupPriority(LocalUser user) {
+        List<Wish> wishDTOList = wishRepository.getAllWithGroupOrder(user);
+        Comparator<Wish> comparator = Comparator.comparing( Wish::getPriorityGroup);
+        int minPrior = (wishDTOList.stream().filter(wish -> wish.getPriorityGroup()!=null).max(comparator).get().getPriorityGroup())+1;
+        return wishRepository.getAllWithGroupOrder(user).stream()
+                .map(w -> WishDTO.builder()
+                        .id(w.getId())
+                        .wish(w.getWish())
+                        .price(w.getPrice())
+                        .priority(w.getPriority())
+                        .ac(w.getAc())
+                        .description(w.getDescription())
+                        .url(w.getUrl())
+                        .priorityGroup(w.getPriorityGroup())
+                        .priorityGroupOrder(w.getPriorityGroupOrder())
+                        .month(computerMonth(w.getPriorityGroup()==null ? minPrior : w.getPriorityGroup()))
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
