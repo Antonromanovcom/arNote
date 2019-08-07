@@ -994,7 +994,7 @@ var MainComponent = /** @class */ (function () {
         this.parseUrl = this.myBaseUrl + '/parsecsv'; // url для парсинга csv
         this.changePriorityUrl = this.myBaseUrl + '/changepriority'; // url для быстрого изменения приоритета
         this.changePriorityMonthUrl = this.myBaseUrl + '/changemonth'; // url для быстрого изменения приоритета
-        this.filterUrl = this.myBaseUrl + '/filter';
+        // filterUrl = this.myBaseUrl + '/filter';
         // --------------------------------- ПЕРЕМЕННЫЕ -------------------------------------
         this.cryptokey = ''; // пользовательский ключ шифрования
         this.summAll = 0; // отображение сум по всем желаниям
@@ -1089,7 +1089,7 @@ var MainComponent = /** @class */ (function () {
             }
         });
         // Закрываем пункт меню группировки по месяцам если нет зарплат
-        if (!this.isSalayExists) {
+        if (this.isSalayExists) {
             this.filters = ['Все', 'Приоритет', 'Помесячная группировка']; // фильтры
         }
         else {
@@ -1208,6 +1208,7 @@ var MainComponent = /** @class */ (function () {
             _this.summPriority = data.priority;
             _this.periodAll = data.allPeriodForImplementation;
             _this.periodPriority = data.priorityPeriodForImplementation;
+            _this.isSalayExists = true;
             console.log('Sal: ' + data.lastSalary);
         });
     };

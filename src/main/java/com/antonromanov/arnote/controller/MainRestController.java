@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,8 +60,8 @@ public class MainRestController extends ControllerBase {
 	@Autowired
 	MainService mainService;
 
-	@Autowired
-	BCryptPasswordEncoder passwordEncoder;
+//	@Autowired
+//	BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
 	UsersRepo usersRepo;
@@ -391,7 +391,7 @@ public class MainRestController extends ControllerBase {
 
 
 			LocalUser newUser = parseJsonToUserAndValidate(user);
-			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
+//			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
 			newUser.setViewMode("TABLE");
 
 
@@ -446,7 +446,7 @@ public class MainRestController extends ControllerBase {
 				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
 			}
 
-			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
+//			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
 			localuser.setPwd(newUser.getPwd());
 			localuser.setLogin(newUser.getLogin());
 			localuser.setEmail(newUser.getEmail());
@@ -568,7 +568,7 @@ public class MainRestController extends ControllerBase {
 
 		String pwd = generateRandomPassword();
 		LOGGER.info("NEW PWD - " + pwd);
-		user.setPwd(passwordEncoder.encode(pwd));
+//		user.setPwd(passwordEncoder.encode(pwd));
 		LocalUser updatedUser = usersRepo.saveAndFlush(user);
 		LOGGER.info("UPDATED USER - " + updatedUser.toString());
 

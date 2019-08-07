@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class UserPrinciple implements UserDetails {
+//public class UserPrinciple  {
 
 	private static final long serialVersionUID = 1L;
 

@@ -17,6 +17,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
+//public class JWTLoginFilter {
 
 	public JWTLoginFilter(String url, AuthenticationManager authManager) {
 		super(new AntPathRequestMatcher(url));
