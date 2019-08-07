@@ -22,11 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.antonromanov.arnote.exceptions.BadIncomeParameter.ParameterKind.NOTHING_FOUND;
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -52,7 +50,7 @@ public class MainRestController extends ControllerBase {
 
 	@Data
 	private class DTOwithOrder {
-		private List<WishDTO> list = new ArrayList<>();
+		private List<WishDTOList> list = new ArrayList<>();
 	}
 
 
@@ -109,7 +107,7 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 			List<Wish> wishList;
-			List<WishDTO> wishListWithMonthOrder;
+			List<WishDTOList> wishListWithMonthOrder;
 			LOGGER.info("PRINCIPAL: " + principal.getName());
 			LocalUser localUser = getUserFromPrincipal(principal);
 			if (mainService.getAllWishesByUserId(localUser).size() > 0) {
@@ -124,7 +122,7 @@ public class MainRestController extends ControllerBase {
 					result = createGsonBuilder().toJson(dto);
 					LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
 					LOGGER.info("============== GET ALL WISHES ============== ");
-				} else if ("groups".equalsIgnoreCase(type)){
+				} else if ("groups".equalsIgnoreCase(type)) {
 					wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
 					dtOwithOrder.list.addAll(wishListWithMonthOrder);
 					result = createGsonBuilder().toJson(dtOwithOrder);
@@ -297,13 +295,8 @@ public class MainRestController extends ControllerBase {
 
 			LOGGER.info("========= MOVE WISH (CHANGE PRIORITY) ============== ");
 			LOGGER.info("id: " + id);
-			LOGGER.info("move: " + move);
 
-			if ((!"up".equals(move)) && (!"down".equals(move)))
-				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.PRIORITYCHANGE);
-			if ((isBlank(id)) || (!Pattern.compile("^\\d*$").matcher(id).matches()))
-				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID);
-			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
+			Wish wish = checkParametersAndGetWish(id, move);
 
 			switch (move) {
 				case "down":
@@ -313,6 +306,67 @@ public class MainRestController extends ControllerBase {
 
 				case "up":
 					wish.setPriority(wish.getPriority() + 1);
+					mainService.updateWish(wish);
+					break;
+			}
+
+			String result = createGsonBuilder().toJson(wish);
+
+			return $prepareResponse(result);
+
+		}, null, resp);
+	}
+
+	private Wish checkParametersAndGetWish(String id, String move) throws BadIncomeParameter {
+
+		if ((!"up".equals(move)) && (!"down".equals(move)))
+			throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.PRIORITYCHANGE);
+		if ((isBlank(id)) || (!Pattern.compile("^\\d*$").matcher(id).matches()))
+			throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID);
+
+		LOGGER.info("move: " + move);
+
+		return mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
+	}
+
+
+	@CrossOrigin(origins = "*")
+	@GetMapping("/changemonth/{id}/{move}")
+	public ResponseEntity<String> changeMonth(@PathVariable String id, @PathVariable String move, HttpServletResponse resp, Principal principal) {
+
+
+		return $do(s -> {
+
+			LOGGER.info("========= MOVE WISH (CHANGE MONTH) ============== ");
+			LOGGER.info("id: " + id);
+			LocalUser localUser = getUserFromPrincipal(principal);
+			LOGGER.info("principal: " + localUser.getLogin());
+
+			Wish wish = checkParametersAndGetWish(id, move);
+			int maxPrior = (mainService.getMaxPriority(localUser)) - 1;
+			LOGGER.info("max prior: " + maxPrior);
+
+			switch (move) {
+				case "down":
+
+
+
+					if (wish.getPriorityGroup() == null) {
+						// wish.setPriorityGroup(1);
+					} else if (wish.getPriorityGroup() < maxPrior) {
+						wish.setPriorityGroup(wish.getPriorityGroup() + 1);
+					}
+					mainService.updateWish(wish);
+					break;
+
+				case "up":
+
+					if (wish.getPriorityGroup() == null) {
+						wish.setPriorityGroup(maxPrior);
+					} else if (wish.getPriorityGroup() > 1) {
+						wish.setPriorityGroup(wish.getPriorityGroup() - 1);
+					}
+
 					mainService.updateWish(wish);
 					break;
 			}
@@ -338,6 +392,7 @@ public class MainRestController extends ControllerBase {
 
 			LocalUser newUser = parseJsonToUserAndValidate(user);
 			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
+			newUser.setViewMode("TABLE");
 
 
 			if (usersRepo.findByLogin(newUser.getLogin()).isPresent()) {
@@ -392,8 +447,6 @@ public class MainRestController extends ControllerBase {
 			}
 
 			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
-
-//			LocalUser user4update = usersRepo.findById(Long.valueOf(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST));
 			localuser.setPwd(newUser.getPwd());
 			localuser.setLogin(newUser.getLogin());
 			localuser.setEmail(newUser.getEmail());
@@ -402,6 +455,27 @@ public class MainRestController extends ControllerBase {
 			return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
 
 		}, user, resp);
+	}
+
+
+	@CrossOrigin(origins = "*")
+	@GetMapping("/users/toggle/{mode}")
+	public ResponseEntity<String> toggleUserMode(@PathVariable String mode, HttpServletResponse resp, Principal principal) {
+
+		return $do(s -> {
+
+			LOGGER.info("========= TOGGLE / GET USER MODE ============== ");
+			LOGGER.info("MODE: " + mode);
+			LocalUser localuser = getUserFromPrincipal(principal);
+
+			if (("TABLE".equals(mode))||("TREE".equals(mode))) {
+				localuser.setViewMode(mode);
+				return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
+			} else {
+				return $prepareResponse(createGsonBuilder().toJson(localuser));
+			}
+
+		}, null, resp);
 	}
 
 	@CrossOrigin(origins = "*")

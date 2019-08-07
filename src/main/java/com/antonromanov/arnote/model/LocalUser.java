@@ -51,6 +51,9 @@ public class LocalUser {
 	@Column
 	private String fullname;
 
+	@Column
+	private String viewMode;
+
 
 
 	@Override

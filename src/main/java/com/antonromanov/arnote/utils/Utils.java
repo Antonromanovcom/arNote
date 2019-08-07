@@ -2,21 +2,18 @@ package com.antonromanov.arnote.utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
-import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.exceptions.*;
+import com.antonromanov.arnote.model.WishDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -36,6 +33,9 @@ public class Utils {
 	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
 
 	public enum ParseType {ADD, EDIT}
+
+	private static HashMap<Integer, String> colorClasses;
+
 
 	/**
 	 * Определяет лижит ли указанное время между двумя заданными.
@@ -95,23 +95,6 @@ public class Utils {
 		return remoteAddr;
 	}
 
-	/**
-	 * Формируем ответный JSON
-	 */
-	public static void createResponseJson(int size, Boolean at2am, Boolean at8am, Boolean at14, Boolean at19, HttpServletRequest request) {
-
-		// Формируем JSON
-		JsonObject responseStatusInJson = JSONTemplate.create()
-				.add("AllTemperatures", size)
-				.add("NightPost", at2am)
-				.add("MorningPost", at8am)
-				.add("DayPost", at14)
-				.add("EveningPost", at19)
-				.add("ip", getIp(request)).getJson();
-
-		LOGGER.info("RESULT:  " + responseStatusInJson.toString());
-		//return remoteAddr;
-	}
 
 	/**
 	 * Формируем ответный JSON
@@ -179,7 +162,6 @@ public class Utils {
 		Date currentDate = new Date();
 
 
-
 		try {
 			// ------------------ Валидация -------------------------
 
@@ -199,8 +181,6 @@ public class Utils {
 			if (JSONTemplate.fromString(json).get("pwd") == null) throw new JsonParseException(json);
 			if (JSONTemplate.fromString(json).get("email") == null) throw new JsonParseException(json);
 			if (JSONTemplate.fromString(json).get("fullname") == null) throw new JsonParseException(json);
-
-
 
 
 			localUser = new LocalUser(
@@ -234,10 +214,10 @@ public class Utils {
 		Date currentDate = new Date();
 
 		try {
-				salary = new Salary(
-						JSONTemplate.fromString(json).get("fullsalary").getAsInt(),
-						JSONTemplate.fromString(json).get("residualSalary").getAsInt()
-				);
+			salary = new Salary(
+					JSONTemplate.fromString(json).get("fullsalary").getAsInt(),
+					JSONTemplate.fromString(json).get("residualSalary").getAsInt()
+			);
 			salary.setSalarydate(currentDate);
 			salary.setUser(user);
 		} catch (Exception e) {
@@ -260,7 +240,7 @@ public class Utils {
 
 		try {
 
-			if (parseType == ParseType.EDIT){
+			if (parseType == ParseType.EDIT) {
 				wishAfterParse = new Wish(
 						JSONTemplate.fromString(json).get("id").getAsLong(),
 						JSONTemplate.fromString(json).get("wish").getAsString(),
@@ -292,7 +272,7 @@ public class Utils {
 	public static String generateRandomPassword() {
 
 		List rules = Arrays.asList(new CharacterRule(EnglishCharacterData.UpperCase, 1),
-				new CharacterRule(EnglishCharacterData.LowerCase, 1), new CharacterRule(EnglishCharacterData.Digit, 1),new CharacterRule(EnglishCharacterData.Special, 1));
+				new CharacterRule(EnglishCharacterData.LowerCase, 1), new CharacterRule(EnglishCharacterData.Digit, 1), new CharacterRule(EnglishCharacterData.Special, 1));
 
 		PasswordGenerator generator = new PasswordGenerator();
 		String password = generator.generatePassword(8, rules);
@@ -303,10 +283,70 @@ public class Utils {
 		Date date = new Date();
 		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		int month = localDate.getMonthValue();
-//		return String.valueOf(month);
-//		return new DateFormatSymbols().getMonths()[month-1];
+
 		Locale currentLocale = Locale.getDefault();
-		return Month.of(month+(proirity-1)).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
+		return Month.of(month + (proirity - 1)).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
 	}
+
+	public static int computerMonthNumber(Integer proirity) {
+		Date date = new Date();
+		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		int month = localDate.getMonthValue();
+		return Month.of(month + (proirity - 1)).getValue();
+	}
+
+	public static int getCurrentYear() {
+		Date date = new Date();
+		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		return localDate.getYear();
+	}
+
+	public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
+		return WishDTO.builder()
+				.id(w.getId())
+				.wish(w.getWish().length()<50 ? w.getWish() : w.getWish().substring(0, 50) + "...")
+				.price(w.getPrice())
+				.priority(w.getPriority())
+				.ac(w.getAc())
+				.description(w.getDescription())
+				.url(w.getUrl())
+				.priorityGroup(w.getPriorityGroup())
+				.priorityGroupOrder(w.getPriorityGroupOrder())
+				.month(computerMonth(w.getPriorityGroup() == null ? maxPrior : w.getPriorityGroup()))
+				.build();
+	}
+
+	public static String getClassColorByMonth(int month, boolean overdraft) {
+
+		colorClasses = new HashMap<>();
+		colorClasses.put(1, "label label-purple");
+		colorClasses.put(2, "label label-blue");
+		colorClasses.put(3, "label label-light-blue");
+		colorClasses.put(4, "label label-orange");
+		colorClasses.put(5, "label label-success");
+		colorClasses.put(6, "label label-purple");
+		colorClasses.put(7, "label label-blue");
+		colorClasses.put(8, "label label-light-blue");
+		colorClasses.put(9, "label label-orange");
+		colorClasses.put(10, "label label-success");
+		colorClasses.put(11, "label label-purple");
+		colorClasses.put(12, "label label-blue");
+		colorClasses.put(13, "label label-danger");
+
+		LOGGER.info("MONTH (getClassColorByMonth) => " + month);
+
+		if (!overdraft) {
+			if (month == 0) {
+				return colorClasses.get(1);
+			} else {
+				LOGGER.info("NEW MONTH (getClassColorByMonth) => " + month);
+				LOGGER.info("CLASS (getClassColorByMonth) => " + colorClasses.get(month));
+				return colorClasses.get(month);
+			}
+		} else {
+			return colorClasses.get(13);
+		}
+	}
+
 
 }

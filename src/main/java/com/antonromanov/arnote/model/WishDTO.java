@@ -1,8 +1,10 @@
 package com.antonromanov.arnote.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
-import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Builder
@@ -10,6 +12,7 @@ public class WishDTO {
 
     private long id;
     private String wish;
+    @Getter
     private Integer price;
     private Integer priority;
     private Boolean ac;
@@ -18,7 +21,6 @@ public class WishDTO {
     private Integer priorityGroup;
     private Integer priorityGroupOrder;
     private String month;
-
 
 }
 
