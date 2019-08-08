@@ -174,7 +174,6 @@ public class Utils {
 				userRole = LocalUser.Role.valueOf(JSONTemplate.fromString(json).get("userRole").getAsString());
 			} else {
 				userRole = LocalUser.Role.USER;
-
 			}
 
 			if (JSONTemplate.fromString(json).get("userCryptoMode") == null) throw new JsonParseException(json);
