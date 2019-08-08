@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.controller;
 
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.exceptions.JsonParseException;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.email.EmailSender;
 import com.antonromanov.arnote.email.EmailStatus;
@@ -9,6 +10,7 @@ import com.antonromanov.arnote.repositoty.IUserDAO;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
+import com.antonromanov.arnote.utils.JSONTemplate;
 import lombok.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
@@ -348,7 +351,7 @@ public class MainRestController extends ControllerBase {
 			switch (move) {
 				case "down":
 
-					if (maxPrior!=0) {
+					if (maxPrior != 0) {
 
 
 						if (wish.getPriorityGroup() == null) {
@@ -362,7 +365,7 @@ public class MainRestController extends ControllerBase {
 
 				case "up":
 
-					if (maxPrior==0){
+					if (maxPrior == 0) {
 						wish.setPriorityGroup(1);
 					} else {
 						if (wish.getPriorityGroup() == null) {
@@ -457,6 +460,8 @@ public class MainRestController extends ControllerBase {
 			localuser.setEmail(newUser.getEmail());
 			localuser.setFullname(newUser.getFullname());
 
+			fixNullUserFields(localuser);
+
 			return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
 
 		}, user, resp);
@@ -473,7 +478,7 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("MODE: " + mode);
 			LocalUser localuser = getUserFromPrincipal(principal);
 
-			if (("TABLE".equals(mode))||("TREE".equals(mode))) {
+			if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
 				localuser.setViewMode(mode);
 				return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
 			} else {
@@ -499,6 +504,16 @@ public class MainRestController extends ControllerBase {
 		}, null, resp);
 	}
 
+	private void fixNullUserFields(LocalUser localUser) {
+		// Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
+		if (localUser.getUserRole() == null) localUser.setUserRole(LocalUser.Role.USER);
+		if (localUser.getUserCryptoMode() == null) localUser.setUserCryptoMode(false);
+		if (localUser.getCreationDate() == null) localUser.setCreationDate(new Date());
+		if (localUser.getEmail() == null) localUser.setEmail("antonr0manov@yndex.ru");
+		if (localUser.getFullname() == null) localUser.setFullname("Имя неизвестно");
+		if (localUser.getViewMode() == null) localUser.setViewMode("TABLE");
+	}
+
 	@CrossOrigin(origins = "*")
 	@GetMapping("/users/getcurrent")
 	public ResponseEntity<String> getCurrentUser(HttpServletResponse resp, Principal principal) {
@@ -507,6 +522,9 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("========= GET CURRENT USER  ============== ");
 
 			LocalUser localUser = getUserFromPrincipal(principal);
+
+			// Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
+			fixNullUserFields(localUser);
 
 			return $prepareResponse(createGsonBuilder().toJson(localUser));
 		}, null, resp);
