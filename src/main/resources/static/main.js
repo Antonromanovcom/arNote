@@ -332,8 +332,8 @@ var AuthService = /** @class */ (function () {
     function AuthService(http, jwtHelper) {
         this.http = http;
         this.jwtHelper = jwtHelper;
-        this.loginURL = 'http://localhost:8080/login?';
-        this._loginURL = '/login?';
+        this._loginURL = 'http://localhost:8080/login?';
+        this.loginURL = '/login?';
     }
     AuthService.prototype.login = function (loginPayload) {
         console.log('loginPayload ->' + loginPayload);
