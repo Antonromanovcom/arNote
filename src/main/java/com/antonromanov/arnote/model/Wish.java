@@ -2,6 +2,7 @@ package com.antonromanov.arnote.model;
 
 import javax.persistence.*;
 import lombok.*;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -46,6 +47,10 @@ public class Wish {
     @Column
     private Integer priorityGroupOrder;
 
+    @Column
+    @Temporal(TemporalType.DATE)
+    private Date creationDate;
+
 
 
 
@@ -57,6 +62,19 @@ public class Wish {
         this.description = description;
         this.url = url;
         this.user = user;
+    }
+
+    public Wish(long id, String wish, int price, int priority, boolean ac, String description, String url, LocalUser user) {
+
+        this.wish = wish;
+        this.price = price;
+        this.priority = priority;
+        this.ac = ac;
+        this.description = description;
+        this.url = url;
+        this.user = user;
+        this.id = id;
+
     }
 }
 

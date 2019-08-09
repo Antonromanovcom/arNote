@@ -236,6 +236,7 @@ public class Utils {
 		}
 
 		Wish wishAfterParse;
+		Date currentDate = new Date();
 
 		try {
 
@@ -248,7 +249,7 @@ public class Utils {
 						JSONTemplate.fromString(json).get("archive").getAsBoolean(),
 						JSONTemplate.fromString(json).get("description").getAsString(),
 						JSONTemplate.fromString(json).get("url").getAsString(),
-						user, 1, 1);
+						user);
 
 			} else {
 				wishAfterParse = new Wish(
@@ -260,6 +261,9 @@ public class Utils {
 						JSONTemplate.fromString(json).get("url").getAsString(),
 						user
 				);
+
+				wishAfterParse.setCreationDate(currentDate);
+
 			}
 		} catch (Exception e) {
 			throw new JsonParseException(json);
@@ -303,7 +307,8 @@ public class Utils {
 	public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
 		return WishDTO.builder()
 				.id(w.getId())
-				.wish(w.getWish().length()<50 ? w.getWish() : w.getWish().substring(0, 50) + "...")
+//				.wish(w.getWish().length()<50 ? w.getWish() : w.getWish().substring(0, 50) + "...")
+				.wish(w.getWish())
 				.price(w.getPrice())
 				.priority(w.getPriority())
 				.ac(w.getAc())

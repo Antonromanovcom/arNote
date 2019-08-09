@@ -39,6 +39,11 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	@Query("delete from Wish w where w.id = ?1")
 	void deleteByLongId(Long entityId);
 
+
+//	@Query(value = "UPDATE arnote.wishes set archive = true where id = ?1", nativeQuery = true)
+//	void deleteByLongId(Long entityId);
+
+
 	Optional<Wish> findById(long l);
 
 

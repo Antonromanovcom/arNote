@@ -1,7 +1,6 @@
 package com.antonromanov.arnote.controller;
 
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.exceptions.JsonParseException;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.email.EmailSender;
 import com.antonromanov.arnote.email.EmailStatus;
@@ -10,7 +9,6 @@ import com.antonromanov.arnote.repositoty.IUserDAO;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
-import com.antonromanov.arnote.utils.JSONTemplate;
 import lombok.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -120,6 +116,12 @@ public class MainRestController extends ControllerBase {
 
 				if ("all".equalsIgnoreCase(type)) {
 					wishList = mainService.getAllWishesByUserId(localUser);
+
+					// Предотвращение вываливания на пустых датах
+					wishList.forEach(w -> {
+					if (w.getCreationDate()==null) w.setCreationDate(new Date());
+					});
+
 					dto.list.addAll(wishList);
 					result = createGsonBuilder().toJson(dto);
 					LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
@@ -222,7 +224,9 @@ public class MainRestController extends ControllerBase {
 		return $do(s -> {
 			LOGGER.info("========= DELETE WISH ============== ");
 			LOGGER.info("ID: " + id);
-			mainService.deleteWish(id);
+			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(()-> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID));
+			wish.setAc(true);
+			mainService.updateWish(wish);
 			return $prepareResponse(createGsonBuilder().toJson(ResponseStatusDTO.builder().okMessage("OK").status("OK").build()));
 		}, null, resp);
 	}
