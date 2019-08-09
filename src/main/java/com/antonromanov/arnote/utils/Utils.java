@@ -284,14 +284,14 @@ public class Utils {
 		int month = localDate.getMonthValue();
 
 		Locale currentLocale = Locale.getDefault();
-		return Month.of(month + (proirity - 1)).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
+		return Month.of((month + (proirity - 1)) > 12 ? (month + (proirity - 1))-12 : (month + (proirity - 1))).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
 	}
 
 	public static int computerMonthNumber(Integer proirity) {
 		Date date = new Date();
 		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		int month = localDate.getMonthValue();
-		return Month.of(month + (proirity - 1)).getValue();
+		return Month.of((month + (proirity - 1)) > 12 ? (month + (proirity - 1))-12 : (month + (proirity - 1))).getValue();
 	}
 
 	public static int getCurrentYear() {

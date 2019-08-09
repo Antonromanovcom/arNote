@@ -356,7 +356,7 @@ public class MainRestController extends ControllerBase {
 
 						if (wish.getPriorityGroup() == null) {
 							// wish.setPriorityGroup(1);
-						} else if (wish.getPriorityGroup() < maxPrior) {
+						} else if (wish.getPriorityGroup() < maxPrior+1) {
 							wish.setPriorityGroup(wish.getPriorityGroup() + 1);
 						}
 						mainService.updateWish(wish);

@@ -59,7 +59,7 @@ public class MainServiceImpl implements MainService {
                                                    LocalUser user){
         wishDTOListGlobal.add(WishDTOList.builder()
                 .wishList(wishDTOListFiltered)
-                .monthNumber(computerMonthNumber(maxPrior+1))
+                .monthNumber(computerMonthNumber(maxPrior+1 > 12 ? (maxPrior+1-12) : maxPrior+1))
                 .monthName(computerMonth(maxPrior))
                 .year(String.valueOf(getCurrentYear()))
                 .colspan(2)
