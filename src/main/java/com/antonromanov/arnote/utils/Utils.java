@@ -2,10 +2,7 @@ package com.antonromanov.arnote.utils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.TextStyle;
 import java.util.*;
 
@@ -218,6 +215,9 @@ public class Utils {
 					JSONTemplate.fromString(json).get("residualSalary").getAsInt()
 			);
 			salary.setSalarydate(currentDate);
+			LocalDateTime currentTimestamp = LocalDateTime.now();
+			salary.setSalaryTimeStamp(currentTimestamp);
+
 			salary.setUser(user);
 		} catch (Exception e) {
 			throw new JsonParseException(json);

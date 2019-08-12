@@ -2,6 +2,7 @@ package com.antonromanov.arnote.model;
 
 import lombok.*;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -29,6 +30,10 @@ public class Salary {
 	@Column(name = "date", nullable = true)
 	@Temporal(TemporalType.DATE)
 	private Date salarydate;
+
+	@Column
+//	@Temporal(TemporalType.TIMESTAMP)
+	private LocalDateTime salaryTimeStamp;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	private LocalUser user;
