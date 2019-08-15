@@ -320,6 +320,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @auth0/angular-jwt */ "./node_modules/@auth0/angular-jwt/index.js");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../environments/environment */ "./src/environments/environment.ts");
+
 
 
 
@@ -332,8 +334,9 @@ var AuthService = /** @class */ (function () {
     function AuthService(http, jwtHelper) {
         this.http = http;
         this.jwtHelper = jwtHelper;
+        this.SERVER_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].serverUrl;
         this._loginURL = 'http://localhost:8080/login?';
-        this.loginURL = '/login?';
+        this.loginURL = this.SERVER_URL + '/login?';
     }
     AuthService.prototype.login = function (loginPayload) {
         console.log('loginPayload ->' + loginPayload);
@@ -492,16 +495,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../environments/environment */ "./src/environments/environment.ts");
+
 
 
 
 var HttpService = /** @class */ (function () {
     function HttpService(http) {
         this.http = http;
+        this.SERVER_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_3__["environment"].serverUrl;
         this._loginURL = 'http://localhost:8080/login?';
-        this.loginURL = '/login?';
+        this.loginURL = this.SERVER_URL + '/login?';
         this._isCryptoUserUrl = 'http://localhost:8080/rest/wishes/users/getcurrent';
-        this.isCryptoUserUrl = '/rest/wishes/users/getcurrent';
+        this.isCryptoUserUrl = this.SERVER_URL + '/rest/wishes/users/getcurrent';
     }
     HttpService.prototype.getData = function (url) {
         return this.http.get(url);
@@ -692,6 +698,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 /* harmony import */ var _service_http_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../service/http.service */ "./src/app/service/http.service.ts");
 /* harmony import */ var _dto_user__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../dto/user */ "./src/app/dto/user.ts");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../../environments/environment */ "./src/environments/environment.ts");
+
 
 
 
@@ -712,8 +720,9 @@ var HeaderComponent = /** @class */ (function () {
         this.fb = fb;
         this.router = router;
         // --------------------------------- URL'ы -------------------------------------
+        this.SERVER_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_12__["environment"].serverUrl;
         this.cryptokey = '';
-        this.myBaseUrl = '/rest/wishes';
+        this.myBaseUrl = this.SERVER_URL + '/rest/wishes';
         this._myBaseUrl = 'http://localhost:8080/rest/wishes';
         this.usersUrl = this.myBaseUrl + '/users'; // основная ссылка на api
         this.isLogin = false; // вывод диалогового окна логгирования
@@ -983,6 +992,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var _service_common_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../service/common.service */ "./src/app/service/common.service.ts");
 /* harmony import */ var _service_message_code__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../service/message.code */ "./src/app/service/message.code.ts");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../../environments/environment */ "./src/environments/environment.ts");
+
 
 
 
@@ -1000,9 +1011,8 @@ var MainComponent = /** @class */ (function () {
         this.httpService = httpService;
         this.fb = fb;
         // --------------------------------- URL'ы -------------------------------------
-        // localJson = 'assets/data.json'; // временный локальный json для тестирования
-        // _apiUrl = 'http://localhost:8080/rest/wishes/all'; // основная ссылка на api
-        this.myBaseUrl = '/rest/wishes';
+        this.SERVER_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_11__["environment"].serverUrl;
+        this.myBaseUrl = this.SERVER_URL + '/rest/wishes';
         this._myBaseUrl = 'http://localhost:8080/rest/wishes';
         this.apiUrl = this.myBaseUrl + '/all'; // все желания // основная ссылка на api
         this.priorityWishesUrl = this.myBaseUrl + '/priority'; // приоритетные желания
@@ -1704,20 +1714,10 @@ var UiModule = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "environment", function() { return environment; });
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
 var environment = {
-    production: false
+    production: true,
+    serverUrl: ''
 };
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 
 
 /***/ }),

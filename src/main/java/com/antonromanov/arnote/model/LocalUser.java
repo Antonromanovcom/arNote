@@ -3,6 +3,7 @@ package com.antonromanov.arnote.model;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -53,6 +54,14 @@ public class LocalUser {
 
 	@Column
 	private String viewMode;
+
+
+	@Column
+	private LocalDateTime lastOperationTime;
+
+	@Column
+	private String lastOperation;
+
 
 
 

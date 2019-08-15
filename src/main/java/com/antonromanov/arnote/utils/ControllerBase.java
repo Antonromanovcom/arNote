@@ -4,17 +4,21 @@ import com.antonromanov.arnote.exceptions.JsonNullException;
 import com.antonromanov.arnote.exceptions.JsonParseException;
 import com.antonromanov.arnote.exceptions.SaveNewWishException;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.Principal;
 
+//@Component
 public class ControllerBase {
 
 	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
 
-	protected <T,E>T $do(SomeProcess<T, E> process, E s, HttpServletResponse response){
+	protected <T,E>T $do(SomeProcess<T, E> process, E s, Principal user, Utils.OperationType operationType, HttpServletResponse response){
 		try {
 			return process.aplly(s);
 		} catch (Exception ex) {

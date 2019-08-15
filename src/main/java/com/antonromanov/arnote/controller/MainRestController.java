@@ -5,11 +5,9 @@ import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.email.EmailSender;
 import com.antonromanov.arnote.email.EmailStatus;
 import com.antonromanov.arnote.model.*;
-import com.antonromanov.arnote.repositoty.IUserDAO;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
-import com.antonromanov.arnote.utils.JSONTemplate;
 import lombok.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -54,10 +50,6 @@ public class MainRestController extends ControllerBase {
         private List<WishDTOList> list = new ArrayList<>();
     }
 
-
-    /**
-     * Инжектим сервис.
-     */
     @Autowired
     MainService mainService;
 
@@ -68,15 +60,12 @@ public class MainRestController extends ControllerBase {
     UsersRepo usersRepo;
 
     @Autowired
-    private IUserDAO api;
-
-    @Autowired
     private EmailSender emailSender;
 
 
     @CrossOrigin(origins = "*")
     @PostMapping("/filter")
-    public ResponseEntity<String> findAll(@RequestBody String requestParam, Principal principal, HttpServletResponse resp) {
+    public ResponseEntity<String> findAll(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
 
 
         return $do(s -> {
@@ -98,13 +87,13 @@ public class MainRestController extends ControllerBase {
 
             return $prepareResponse(res);
 
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
 
     @CrossOrigin(origins = "*")
     @GetMapping("/{type}")
-    public ResponseEntity<String> gelAllWishes(@PathVariable String type, Principal principal, HttpServletResponse resp) {
+    public ResponseEntity<String> gelAllWishes(Principal principal, @PathVariable String type, HttpServletResponse resp) {
 
         return $do(s -> {
             List<Wish> wishList;
@@ -148,12 +137,12 @@ public class MainRestController extends ControllerBase {
             } else {
                 return $prepareNoDataYetErrorResponse(false);
             }
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
     @CrossOrigin(origins = "*")
     @PutMapping
-    public ResponseEntity<String> updateWish(@RequestBody String requestParam, HttpServletRequest request, HttpServletResponse resp, Principal principal) {
+    public ResponseEntity<String> updateWish(Principal principal, @RequestBody String requestParam,  HttpServletResponse resp) {
 
         return $do(s -> {
 
@@ -168,12 +157,12 @@ public class MainRestController extends ControllerBase {
 
             return $prepareResponse(result);
 
-        }, requestParam, resp);
+        }, requestParam, null, null, resp);
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping
-    public ResponseEntity<String> addWish(@RequestBody String requestParam, HttpServletResponse resp, Principal principal) {
+    public ResponseEntity<String> addWish(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
 
 
         return $do(s -> {
@@ -191,12 +180,12 @@ public class MainRestController extends ControllerBase {
 
             return $prepareResponse(result);
 
-        }, requestParam, resp);
+        }, requestParam, null, null, resp);
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/summ")
-    public ResponseEntity<String> getSumm(HttpServletResponse resp, Principal principal) {
+    public ResponseEntity<String> getSumm(Principal principal, HttpServletResponse resp) {
 
         return $do(s -> {
             LOGGER.info("========= GET SUMM ============== ");
@@ -216,13 +205,13 @@ public class MainRestController extends ControllerBase {
             } else {
                 return $prepareNoDataYetErrorResponse(true);
             }
-        }, null, resp);
+        }, null, principal, OperationType.GET_SUMS, resp);
     }
 
 
     @CrossOrigin(origins = "*")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteWish(@PathVariable String id, HttpServletResponse resp) {
+    public ResponseEntity<String> deleteWish(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 
         return $do(s -> {
             LOGGER.info("========= DELETE WISH ============== ");
@@ -231,13 +220,13 @@ public class MainRestController extends ControllerBase {
             wish.setAc(true);
             mainService.updateWish(wish);
             return $prepareResponse(createGsonBuilder().toJson(ResponseStatusDTO.builder().okMessage("OK").status("OK").build()));
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
 
     @CrossOrigin(origins = "*")
     @GetMapping("/last")
-    public ResponseEntity<String> getLastSalary(HttpServletResponse resp, Principal principal) {
+    public ResponseEntity<String> getLastSalary(Principal principal, HttpServletResponse resp) {
 
         return $do(s -> {
             LOGGER.info("========= GET LAST SALARY ============== ");
@@ -248,12 +237,12 @@ public class MainRestController extends ControllerBase {
 
             String result = createGsonBuilder().toJson(mainService.getLastSalary(localUser).getResidualSalary());
             return $prepareResponse(result);
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping("/salary")
-    public ResponseEntity<String> addSalary(@RequestBody String requestParam, HttpServletResponse resp, Principal principal) {
+    public ResponseEntity<String> addSalary(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
 
 
         return $do(s -> {
@@ -272,14 +261,14 @@ public class MainRestController extends ControllerBase {
 
             return $prepareResponse(result);
 
-        }, requestParam, resp);
+        }, requestParam, null, null, resp);
     }
 
 
     @CrossOrigin(origins = "*")
     @PostMapping("/parsecsv")
-    public ResponseEntity<String> parseCsv(
-            @RequestParam(required = false, value = "csvfile") MultipartFile csvFile, Principal principal,
+    public ResponseEntity<String> parseCsv(Principal principal,
+            @RequestParam(required = false, value = "csvfile") MultipartFile csvFile,
             HttpServletResponse resp) {
 
         return $do(s -> {
@@ -291,13 +280,13 @@ public class MainRestController extends ControllerBase {
             String result = createGsonBuilder().toJson(mainService.parseCsv(csvFile, localUser));
             return $prepareResponse(result);
 
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
 
     @CrossOrigin(origins = "*")
     @GetMapping("/changepriority/{id}/{move}")
-    public ResponseEntity<String> changePriority(@PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
+    public ResponseEntity<String> changePriority(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
 
 
         return $do(s -> {
@@ -323,7 +312,7 @@ public class MainRestController extends ControllerBase {
 
             return $prepareResponse(result);
 
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
     private Wish checkParametersAndGetWish(String id, String move) throws BadIncomeParameter {
@@ -341,7 +330,7 @@ public class MainRestController extends ControllerBase {
 
     @CrossOrigin(origins = "*")
     @GetMapping("/changemonth/{id}/{move}")
-    public ResponseEntity<String> changeMonth(@PathVariable String id, @PathVariable String move, HttpServletResponse resp, Principal principal) {
+    public ResponseEntity<String> changeMonth(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
 
 
         return $do(s -> {
@@ -359,11 +348,7 @@ public class MainRestController extends ControllerBase {
                 case "down":
 
                     if (maxPrior != 0) {
-
-
-                        if (wish.getPriorityGroup() == null) {
-                            // wish.setPriorityGroup(1);
-                        } else if (wish.getPriorityGroup() < maxPrior + 1) {
+                        if (wish.getPriorityGroup() < maxPrior + 1) {
                             wish.setPriorityGroup(wish.getPriorityGroup() + 1);
                         }
                         mainService.updateWish(wish);
@@ -395,13 +380,13 @@ public class MainRestController extends ControllerBase {
 
             return $prepareResponse(result);
 
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
 
     @CrossOrigin(origins = "*")
     @PostMapping("/users")
-    public ResponseEntity<String> addUser(@RequestBody String user, HttpServletResponse resp) {
+    public ResponseEntity<String> addUser(Principal principal, @RequestBody String user, HttpServletResponse resp) {
 
 
         return $do(s -> {
@@ -423,19 +408,18 @@ public class MainRestController extends ControllerBase {
 
             return $prepareResponse(createGsonBuilder().toJson(newUser));
 
-        }, null, resp);
+        }, null,null, null,  resp);
     }
 
     @CrossOrigin(origins = "*")
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable String id, HttpServletResponse resp) {
+    public ResponseEntity<String> deleteUser(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 
 
         return $do(s -> {
 
             LOGGER.info("========= DELETE USER  ============== ");
             LOGGER.info("PAYLOAD: " + id);
-
 
             if (!usersRepo.findById(Long.valueOf(id)).isPresent()) {
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST);
@@ -445,12 +429,12 @@ public class MainRestController extends ControllerBase {
 
             return $prepareResponse(createGsonBuilder().toJson(id));
 
-        }, id, resp);
+        }, id, null, null, resp);
     }
 
     @CrossOrigin(origins = "*")
     @PutMapping("/users/{id}")
-    public ResponseEntity<String> editUser(@RequestBody String user, @PathVariable String id, HttpServletResponse resp, Principal principal) {
+    public ResponseEntity<String> editUser(Principal principal, @RequestBody String user, @PathVariable String id, HttpServletResponse resp) {
 
         return $do(s -> {
 
@@ -476,13 +460,13 @@ public class MainRestController extends ControllerBase {
 
             return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
 
-        }, user, resp);
+        }, user,null, null,  resp);
     }
 
 
     @CrossOrigin(origins = "*")
     @GetMapping("/users/toggle/{mode}")
-    public ResponseEntity<String> toggleUserMode(@PathVariable String mode, HttpServletResponse resp, Principal principal) {
+    public ResponseEntity<String> toggleUserMode(Principal principal, @PathVariable String mode, HttpServletResponse resp) {
 
         return $do(s -> {
 
@@ -497,12 +481,12 @@ public class MainRestController extends ControllerBase {
                 return $prepareResponse(createGsonBuilder().toJson(localuser));
             }
 
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
     @CrossOrigin(origins = "*")
     @GetMapping("/users/list")
-    public ResponseEntity<String> getAllUsers(HttpServletResponse resp) {
+    public ResponseEntity<String> getAllUsers(Principal principal, HttpServletResponse resp) {
 
         return $do(s -> {
             LOGGER.info("========= GET ALL USERS  ============== ");
@@ -513,7 +497,7 @@ public class MainRestController extends ControllerBase {
             }).collect(Collectors.toList());
 
             return $prepareResponse(createGsonBuilder().toJson(userList));
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
     private void fixNullUserFields(LocalUser localUser) {
@@ -528,7 +512,7 @@ public class MainRestController extends ControllerBase {
 
     @CrossOrigin(origins = "*")
     @GetMapping("/users/getcurrent")
-    public ResponseEntity<String> getCurrentUser(HttpServletResponse resp, Principal principal) {
+    public ResponseEntity<String> getCurrentUser(Principal principal, HttpServletResponse resp) {
 
         return $do(s -> {
             LOGGER.info("========= GET CURRENT USER  ============== ");
@@ -539,7 +523,7 @@ public class MainRestController extends ControllerBase {
             fixNullUserFields(localUser);
 
             return $prepareResponse(createGsonBuilder().toJson(localUser));
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
 
@@ -552,7 +536,7 @@ public class MainRestController extends ControllerBase {
      */
     @CrossOrigin(origins = "*")
     @PostMapping(value = "/users/forget", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> returnUserPassword(@RequestParam(name = "email") String email, HttpServletResponse resp) {
+    public ResponseEntity<String> returnUserPassword(Principal principal, @RequestParam(name = "email") String email, HttpServletResponse resp) {
 
         return $do(s -> {
             LOGGER.info("========= FORGET PWD METHOD =============== ");
@@ -563,7 +547,7 @@ public class MainRestController extends ControllerBase {
             } catch (UserNotFoundException e) {
                 return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
             }
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
     /**
@@ -575,7 +559,7 @@ public class MainRestController extends ControllerBase {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/users/reset/{id}")
-    public ResponseEntity<String> resetUserPasswordByAdmin(@PathVariable String id, HttpServletResponse resp) {
+    public ResponseEntity<String> resetUserPasswordByAdmin(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 
         return $do(s -> {
             LOGGER.info("========= RESET USER PWD =============== ");
@@ -586,7 +570,7 @@ public class MainRestController extends ControllerBase {
             } catch (UserNotFoundException e) {
                 return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
             }
-        }, null, resp);
+        }, null, null, null, resp);
     }
 
 

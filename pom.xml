@@ -275,22 +275,13 @@
                 <version>1.2.0</version>
             </dependency>
 
+        <!--AOP-->
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
 
-       <!---->
-
-        <!--<dependency>-->
-            <!--<groupId>com.sun.mail</groupId>-->
-            <!--<artifactId>javax.mail</artifactId>-->
-            <!--<version>1.5.4</version>-->
-        <!--</dependency>-->
-
-        <!--&lt;!&ndash; https://mvnrepository.com/artifact/javax.activation/activation &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>javax.activation</groupId>-->
-            <!--<artifactId>activation</artifactId>-->
-            <!--<version>1.1.1</version>-->
-        <!--</dependency>-->
 
 
     </dependencies>

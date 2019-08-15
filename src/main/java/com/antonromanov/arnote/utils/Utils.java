@@ -13,7 +13,7 @@ import com.antonromanov.arnote.exceptions.*;
 import com.antonromanov.arnote.model.WishDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import org.aspectj.lang.Signature;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
@@ -31,6 +31,11 @@ public class Utils {
 
 	public enum ParseType {ADD, EDIT}
 
+	public enum OperationType {
+		ADD_WISH, EDIT_WISH, DELETE_WISH, ADD_SALARY, GET_SUMS, GET_ALL_WISHES, GET_GROUP_WISHES,
+		UP_PRIORITY, DOWN_PRIORITY, UP_MONTH, DOWN_MONTH, LOGIN, TOGGLE_MODE, GET_USER_INFO, UPDATE_USER
+	}
+
 	private static HashMap<Integer, String> colorClasses;
 
 
@@ -43,7 +48,7 @@ public class Utils {
 	 * @return
 	 */
 	public static boolean isBetween(LocalTime candidate, LocalTime start, LocalTime end) {
-		return !candidate.isBefore(start) && !candidate.isAfter(end);  // Inclusive.
+		return !candidate.isBefore(start) && !candidate.isAfter(end);
 	}
 
 	/**
@@ -92,43 +97,6 @@ public class Utils {
 		return remoteAddr;
 	}
 
-
-	/**
-	 * Формируем ответный JSON
-	 */
-	public static void createResponseJsonForLogs(int size, Boolean at2am, Boolean at8am, Boolean at14, Boolean at19, HttpServletRequest request) {
-
-		// Формируем JSON
-		JsonObject responseStatusInJson = JSONTemplate.create()
-				.add("AllTemperatures", size)
-				.add("NightPost", at2am)
-				.add("MorningPost", at8am)
-				.add("DayPost", at14)
-				.add("EveningPost", at19)
-				.add("ip", getIp(request)).getJson();
-
-		LOGGER.info("RESULT:  " + responseStatusInJson.toString());
-		//return remoteAddr;
-	}
-
-
-	/**
-	 * Формируем ответный JSON
-	 */
-	public static JsonObject createResponseJsonWithReturn(int size, Boolean at2am, Boolean at8am, Boolean at14, Boolean at19, HttpServletRequest request) {
-
-		// Формируем JSON
-		JsonObject responseStatusInJson = JSONTemplate.create()
-				.add("AllTemperatures", size)
-				.add("NightPost", at2am)
-				.add("MorningPost", at8am)
-				.add("DayPost", at14)
-				.add("EveningPost", at19)
-				.add("ip", getIp(request)).getJson();
-
-		LOGGER.info("RESULT:  " + responseStatusInJson.toString());
-		return responseStatusInJson;
-	}
 
 	/**
 	 * Создаем gson builder
@@ -288,14 +256,14 @@ public class Utils {
 		int month = localDate.getMonthValue();
 
 		Locale currentLocale = Locale.getDefault();
-		return Month.of((month + (proirity - 1)) > 12 ? (month + (proirity - 1))-12 : (month + (proirity - 1))).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
+		return Month.of((month + (proirity - 1)) > 12 ? (month + (proirity - 1)) - 12 : (month + (proirity - 1))).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
 	}
 
 	public static int computerMonthNumber(Integer proirity) {
 		Date date = new Date();
 		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		int month = localDate.getMonthValue();
-		return Month.of((month + (proirity - 1)) > 12 ? (month + (proirity - 1))-12 : (month + (proirity - 1))).getValue();
+		return Month.of((month + (proirity - 1)) > 12 ? (month + (proirity - 1)) - 12 : (month + (proirity - 1))).getValue();
 	}
 
 	public static int getCurrentYear() {
@@ -343,8 +311,6 @@ public class Utils {
 			if (month == 0) {
 				return colorClasses.get(1);
 			} else {
-				LOGGER.info("NEW MONTH (getClassColorByMonth) => " + month);
-				LOGGER.info("CLASS (getClassColorByMonth) => " + colorClasses.get(month));
 				return colorClasses.get(month);
 			}
 		} else {
@@ -352,5 +318,70 @@ public class Utils {
 		}
 	}
 
+	public static String defineUserActionByMethodSignature(Signature signature) {
 
+		String action = "UNKNOWN";
+
+		switch (signature.getName()) {
+			case "getSumm":
+				action = "GET_SUM";
+				break;
+			case "findAll":
+				action = "GET_ALL";
+				break;
+			case "gelAllWishes":
+				action = "GET_ALL_WISHES";
+				break;
+			case "updateWish":
+				action = "UPDATE_WISH";
+				break;
+			case "addWish":
+				action = "ADD_NEW_WISH";
+				break;
+			case "deleteWish":
+				action = "DELETE_WISH";
+				break;
+			case "getLastSalary":
+				action = "GET_LAST_SALARY";
+				break;
+			case "addSalary":
+				action = "ADD_SALARY";
+				break;
+			case "parseCsv":
+				action = "PARSE_CSV_FILE";
+				break;
+			case "changePriority":
+				action = "CHANGE_WISH_PRIORITY";
+				break;
+			case "changeMonth":
+				action = "CHANGE_MONTH";
+				break;
+			case "addUser":
+				action = "ADD_NEW_USER";
+				break;
+			case "deleteUser":
+				action = "DELETE_USER";
+				break;
+			case "editUser":
+				action = "EDIT_USER";
+				break;
+			case "toggleUserMode":
+				action = "TOGGLE_USER_VIEW_MODE";
+				break;
+			case "getAllUsers":
+				action = "GET_ALL_USERS";
+				break;
+			case "getCurrentUser":
+				action = "GET_CURRENT_USER";
+				break;
+			case "returnUserPassword":
+				action = "RETURN_USER_PASSWORD";
+				break;
+			case "resetUserPasswordByAdmin":
+				action = "RETURN_USER_PASSWORD_BY_ADMIN";
+				break;
+		}
+
+		return action;
+	}
 }
