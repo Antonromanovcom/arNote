@@ -16,12 +16,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -37,572 +39,594 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequestMapping("/rest/wishes")
 public class MainRestController extends ControllerBase {
 
-    private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
+	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
 
 
-    @Data
-    private class DTO {
-        private List<Wish> list = new ArrayList<>();
-    }
+	@Data
+	private class DTO {
+		private List<Wish> list = new ArrayList<>();
+	}
 
-    @Data
-    private class DTOwithOrder {
-        private List<WishDTOList> list = new ArrayList<>();
-    }
+	@Data
+	private class DTOwithOrder {
+		private List<WishDTOList> list = new ArrayList<>();
+	}
 
-    @Autowired
-    MainService mainService;
+	@Autowired
+	MainService mainService;
 
-    @Autowired
-    BCryptPasswordEncoder passwordEncoder;
+	@Autowired
+	BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    UsersRepo usersRepo;
+	@Autowired
+	UsersRepo usersRepo;
 
-    @Autowired
-    private EmailSender emailSender;
+	@Autowired
+	private EmailSender emailSender;
 
 
-    @CrossOrigin(origins = "*")
-    @PostMapping("/filter")
-    public ResponseEntity<String> findAll(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
+	@CrossOrigin(origins = "*")
+	@PostMapping("/filter")
+	public ResponseEntity<String> findAll(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
 
 
-        return $do(s -> {
-            LOGGER.info("============== FILTER WISHES ============== ");
-            LOGGER.info("VALUE: " + requestParam);
-            LOGGER.info("PRINCIPAL: " + principal.getName());
-            LocalUser localUser = getUserFromPrincipal(principal);
+		return $do(s -> {
+			LOGGER.info("============== FILTER WISHES ============== ");
+			LOGGER.info("VALUE: " + requestParam);
+			LOGGER.info("PRINCIPAL: " + principal.getName());
+			LocalUser localUser = getUserFromPrincipal(principal);
 
-            List<Wish> wishes = mainService
-                    .findAllWishesByWish(parseJsonToWish(ParseType.EDIT, requestParam, localUser).getWish(), localUser)
-                    .orElseGet(ArrayList::new);
+			List<Wish> wishes = mainService
+					.findAllWishesByWish(parseJsonToWish(ParseType.EDIT, requestParam, localUser).getWish(), localUser)
+					.orElseGet(ArrayList::new);
 
-            DTO dto = new DTO();
-            dto.list.addAll(wishes);
+			DTO dto = new DTO();
+			dto.list.addAll(wishes);
 
 
-            String res = createGsonBuilder().toJson(dto);
-            LOGGER.info("PAYLOAD: " + res);
+			String res = createGsonBuilder().toJson(dto);
+			LOGGER.info("PAYLOAD: " + res);
 
-            return $prepareResponse(res);
+			return $prepareResponse(res);
 
-        }, null, null, null, resp);
-    }
+		}, null, null, null, resp);
+	}
 
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/{type}")
-    public ResponseEntity<String> gelAllWishes(Principal principal, @PathVariable String type, HttpServletResponse resp) {
+	@CrossOrigin(origins = "*")
+	@GetMapping("/{type}")
+	public ResponseEntity<String> gelAllWishes(Principal principal, @PathVariable String type, HttpServletResponse resp) {
 
-        return $do(s -> {
-            List<Wish> wishList;
-            List<WishDTOList> wishListWithMonthOrder;
-            LOGGER.info("PRINCIPAL: " + principal.getName());
-            LocalUser localUser = getUserFromPrincipal(principal);
-            if (mainService.getAllWishesByUserId(localUser).size() > 0) {
+		return $do(s -> {
+			List<Wish> wishList;
+			List<WishDTOList> wishListWithMonthOrder;
+			LOGGER.info("PRINCIPAL: " + principal.getName());
+			LocalUser localUser = getUserFromPrincipal(principal);
+			if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
-                DTO dto = new DTO();
-                DTOwithOrder dtOwithOrder = new DTOwithOrder();
-                String result = "";
+				DTO dto = new DTO();
+				DTOwithOrder dtOwithOrder = new DTOwithOrder();
+				String result = "";
 
-                if ("all".equalsIgnoreCase(type)) {
-                    wishList = mainService.getAllWishesByUserId(localUser);
+				if ("all".equalsIgnoreCase(type)) {
+					wishList = mainService.getAllWishesByUserId(localUser);
 
-                    // Предотвращение вываливания на пустых датах
-                    wishList.forEach(w -> {
-                        if (w.getCreationDate() == null) w.setCreationDate(new Date());
-                    });
+					// Предотвращение вываливания на пустых датах
+					wishList.forEach(w -> {
+						if (w.getCreationDate() == null) w.setCreationDate(new Date());
+						if (w.getRealized() == null) w.setRealized(false);
+						if (w.getRealizationDate() == null) w.setRealizationDate(new Date());
+					});
 
-                    dto.list.addAll(wishList);
-                    result = createGsonBuilder().toJson(dto);
-                    LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
-                    LOGGER.info("============== GET ALL WISHES ============== ");
-                } else if ("groups".equalsIgnoreCase(type)) {
-                    wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
-                    dtOwithOrder.list.addAll(wishListWithMonthOrder);
-                    result = createGsonBuilder().toJson(dtOwithOrder);
-                    LOGGER.info("PAYLOAD (wishes count): " + dtOwithOrder.list.size());
-                    LOGGER.info("============== GET WISHES WITH GROUP ORDER ============== ");
-                } else {
-                    wishList = mainService.getAllWishesWithPriority1(localUser);
-                    dto.list.addAll(wishList);
-                    LOGGER.info("============== GET PRIORITY WISHES ============== ");
-                    result = createGsonBuilder().toJson(dto);
-                    LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
-                }
+					dto.list.addAll(wishList);
+					result = createGsonBuilder().toJson(dto);
+					LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
+					LOGGER.info("============== GET ALL WISHES ============== ");
+				} else if ("groups".equalsIgnoreCase(type)) {
+					wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
+					dtOwithOrder.list.addAll(wishListWithMonthOrder);
+					result = createGsonBuilder().toJson(dtOwithOrder);
+					LOGGER.info("PAYLOAD (wishes count): " + dtOwithOrder.list.size());
+					LOGGER.info("============== GET WISHES WITH GROUP ORDER ============== ");
+				} else {
+					wishList = mainService.getAllWishesWithPriority1(localUser);
+					dto.list.addAll(wishList);
+					LOGGER.info("============== GET PRIORITY WISHES ============== ");
+					result = createGsonBuilder().toJson(dto);
+					LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
+				}
 
 
-                return $prepareResponse(result);
-            } else {
-                return $prepareNoDataYetErrorResponse(false);
-            }
-        }, null, null, null, resp);
-    }
+				return $prepareResponse(result);
+			} else {
+				return $prepareNoDataYetErrorResponse(false);
+			}
+		}, null, null, null, resp);
+	}
 
-    @CrossOrigin(origins = "*")
-    @PutMapping
-    public ResponseEntity<String> updateWish(Principal principal, @RequestBody String requestParam,  HttpServletResponse resp) {
+	@CrossOrigin(origins = "*")
+	@PutMapping
+	public ResponseEntity<String> updateWish(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
 
-        return $do(s -> {
+		return $do(s -> {
 
-            LOGGER.info("========= UPDATE WISH ============== ");
-            LOGGER.info("PAYLOAD: " + requestParam);
-            LocalUser localUser = getUserFromPrincipal(principal);
+			LOGGER.info("========= UPDATE WISH ============== ");
+			LOGGER.info("PAYLOAD: " + requestParam);
+			LocalUser localUser = getUserFromPrincipal(principal);
 
-            mainService.updateWish(parseJsonToWish(ParseType.EDIT, requestParam, localUser));
+			mainService.updateWish(parseJsonToWish(ParseType.EDIT, requestParam, localUser));
 
-            String result = "";
-            LOGGER.info("PAYLOAD: " + result);
+			String result = "";
+			LOGGER.info("PAYLOAD: " + result);
 
-            return $prepareResponse(result);
+			return $prepareResponse(result);
 
-        }, requestParam, null, null, resp);
-    }
+		}, requestParam, null, null, resp);
+	}
 
-    @CrossOrigin(origins = "*")
-    @PostMapping
-    public ResponseEntity<String> addWish(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
+	@CrossOrigin(origins = "*")
+	@PostMapping
+	public ResponseEntity<String> addWish(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
 
 
-        return $do(s -> {
+		return $do(s -> {
 
-            LOGGER.info("========= ADD WISH ============== ");
-            LOGGER.info("PAYLOAD: " + requestParam);
+			LOGGER.info("========= ADD WISH ============== ");
+			LOGGER.info("PAYLOAD: " + requestParam);
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+			LocalUser localUser = getUserFromPrincipal(principal);
 
-            Wish newWish;
-            newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, localUser));
+			Wish newWish;
+			newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, localUser));
 
-            String result = createGsonBuilder().toJson(newWish);
-            LOGGER.info("PAYLOAD: " + result);
+			// Предотвращение вываливания на пустых датах
 
-            return $prepareResponse(result);
+			if (newWish.getCreationDate() == null) newWish.setCreationDate(new Date());
+			if (newWish.getRealized() == null) newWish.setRealized(false);
+			if (newWish.getRealizationDate() == null) newWish.setRealizationDate(new Date());
 
-        }, requestParam, null, null, resp);
-    }
+			String result = createGsonBuilder().toJson(newWish);
+			LOGGER.info("PAYLOAD: " + result);
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/summ")
-    public ResponseEntity<String> getSumm(Principal principal, HttpServletResponse resp) {
+			return $prepareResponse(result);
 
-        return $do(s -> {
-            LOGGER.info("========= GET SUMM ============== ");
-            LOGGER.info("PRINCIPAL: " + principal.getName());
+		}, requestParam, null, null, resp);
+	}
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+	@CrossOrigin(origins = "*")
+	@GetMapping("/summ")
+	public ResponseEntity<String> getSumm(Principal principal, HttpServletResponse resp) {
 
-            if (mainService.getLastSalary(localUser) != null) {
-                String result = createGsonBuilder().toJson(SummEntity.builder()
-                        .all(mainService.getSumm4All(localUser))
-                        .allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser), localUser))
-                        .priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
-                        .lastSalary(mainService.getLastSalary(localUser).getResidualSalary())
-                        .priority(mainService.getSumm4Prior(localUser)).build());
-                LOGGER.info("PAYLOAD: " + result);
-                return $prepareResponse(result);
-            } else {
-                return $prepareNoDataYetErrorResponse(true);
-            }
-        }, null, principal, OperationType.GET_SUMS, resp);
-    }
+		return $do(s -> {
+			LOGGER.info("========= GET SUMM ============== ");
+			LOGGER.info("PRINCIPAL: " + principal.getName());
 
+			long localAverageImplementationTime = 0L;
+			int days = 0;
+			LocalUser localUser = getUserFromPrincipal(principal);
 
-    @CrossOrigin(origins = "*")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteWish(Principal principal, @PathVariable String id, HttpServletResponse resp) {
+			if (mainService.getAllRealizedWishes(localUser).isPresent()) {
 
-        return $do(s -> {
-            LOGGER.info("========= DELETE WISH ============== ");
-            LOGGER.info("ID: " + id);
-            Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID));
-            wish.setAc(true);
-            mainService.updateWish(wish);
-            return $prepareResponse(createGsonBuilder().toJson(ResponseStatusDTO.builder().okMessage("OK").status("OK").build()));
-        }, null, null, null, resp);
-    }
+				List<Long> realizedWishes = mainService.getAllRealizedWishes(localUser).get().stream()
+						.map(w -> (w.getRealizationDate().getTime() - w.getCreationDate().getTime())).collect(Collectors.toList());
+				Optional<Long> summ = realizedWishes.stream().reduce((l, r) -> l + r);
+				if (summ.isPresent()) {
+					localAverageImplementationTime = (summ.get()) / realizedWishes.size();
+				}
+				days = (int) (localAverageImplementationTime / (1000*60*60*24)); // Переводим в кол-во дней
+			}
 
+			if (mainService.getLastSalary(localUser) != null) {
+				String result = createGsonBuilder().toJson(SummEntity.builder()
+						.all(mainService.getSumm4All(localUser))
+						.allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser), localUser))
+						.priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
+						.lastSalary(mainService.getLastSalary(localUser).getResidualSalary())
+						.averageImplementationTime(days)
+						.priority(mainService.getSumm4Prior(localUser)).build());
+				LOGGER.info("PAYLOAD: " + result);
+				return $prepareResponse(result);
+			} else {
+				return $prepareNoDataYetErrorResponse(true);
+			}
+		}, null, principal, OperationType.GET_SUMS, resp);
+	}
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/last")
-    public ResponseEntity<String> getLastSalary(Principal principal, HttpServletResponse resp) {
 
-        return $do(s -> {
-            LOGGER.info("========= GET LAST SALARY ============== ");
-            LOGGER.info("PRINCIPAL: " + principal.getName());
+	@CrossOrigin(origins = "*")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteWish(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+		return $do(s -> {
+			LOGGER.info("========= DELETE WISH ============== ");
+			LOGGER.info("ID: " + id);
+			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID));
+			wish.setAc(true);
+			mainService.updateWish(wish);
+			return $prepareResponse(createGsonBuilder().toJson(ResponseStatusDTO.builder().okMessage("OK").status("OK").build()));
+		}, null, null, null, resp);
+	}
 
 
-            String result = createGsonBuilder().toJson(mainService.getLastSalary(localUser).getResidualSalary());
-            return $prepareResponse(result);
-        }, null, null, null, resp);
-    }
+	@CrossOrigin(origins = "*")
+	@GetMapping("/last")
+	public ResponseEntity<String> getLastSalary(Principal principal, HttpServletResponse resp) {
 
-    @CrossOrigin(origins = "*")
-    @PostMapping("/salary")
-    public ResponseEntity<String> addSalary(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
+		return $do(s -> {
+			LOGGER.info("========= GET LAST SALARY ============== ");
+			LOGGER.info("PRINCIPAL: " + principal.getName());
 
+			LocalUser localUser = getUserFromPrincipal(principal);
 
-        return $do(s -> {
 
-            LOGGER.info("========= ADD SALARY ============== ");
-            LOGGER.info("PAYLOAD: " + requestParam);
-            LOGGER.info("PRINCIPAL: " + principal.getName());
+			String result = createGsonBuilder().toJson(mainService.getLastSalary(localUser).getResidualSalary());
+			return $prepareResponse(result);
+		}, null, null, null, resp);
+	}
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+	@CrossOrigin(origins = "*")
+	@PostMapping("/salary")
+	public ResponseEntity<String> addSalary(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
 
-            Salary newSalary;
-            newSalary = mainService.saveSalary(parseJsonToSalary(requestParam, localUser));
 
-            String result = createGsonBuilder().toJson(newSalary);
-            LOGGER.info("PAYLOAD: " + result);
+		return $do(s -> {
 
-            return $prepareResponse(result);
+			LOGGER.info("========= ADD SALARY ============== ");
+			LOGGER.info("PAYLOAD: " + requestParam);
+			LOGGER.info("PRINCIPAL: " + principal.getName());
 
-        }, requestParam, null, null, resp);
-    }
+			LocalUser localUser = getUserFromPrincipal(principal);
 
+			Salary newSalary;
+			newSalary = mainService.saveSalary(parseJsonToSalary(requestParam, localUser));
 
-    @CrossOrigin(origins = "*")
-    @PostMapping("/parsecsv")
-    public ResponseEntity<String> parseCsv(Principal principal,
-            @RequestParam(required = false, value = "csvfile") MultipartFile csvFile,
-            HttpServletResponse resp) {
+			String result = createGsonBuilder().toJson(newSalary);
+			LOGGER.info("PAYLOAD: " + result);
 
-        return $do(s -> {
+			return $prepareResponse(result);
 
-            LOGGER.info("FILE: " + csvFile.getOriginalFilename());
-            LocalUser localUser = getUserFromPrincipal(principal);
-            LOGGER.info("PRINCIPAL: " + localUser.toString());
+		}, requestParam, null, null, resp);
+	}
 
-            String result = createGsonBuilder().toJson(mainService.parseCsv(csvFile, localUser));
-            return $prepareResponse(result);
 
-        }, null, null, null, resp);
-    }
+	@CrossOrigin(origins = "*")
+	@PostMapping("/parsecsv")
+	public ResponseEntity<String> parseCsv(Principal principal,
+	                                       @RequestParam(required = false, value = "csvfile") MultipartFile csvFile,
+	                                       HttpServletResponse resp) {
 
+		return $do(s -> {
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/changepriority/{id}/{move}")
-    public ResponseEntity<String> changePriority(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
+			LOGGER.info("FILE: " + csvFile.getOriginalFilename());
+			LocalUser localUser = getUserFromPrincipal(principal);
+			LOGGER.info("PRINCIPAL: " + localUser.toString());
 
+			String result = createGsonBuilder().toJson(mainService.parseCsv(csvFile, localUser));
+			return $prepareResponse(result);
 
-        return $do(s -> {
+		}, null, null, null, resp);
+	}
 
-            LOGGER.info("========= MOVE WISH (CHANGE PRIORITY) ============== ");
-            LOGGER.info("id: " + id);
 
-            Wish wish = checkParametersAndGetWish(id, move);
+	@CrossOrigin(origins = "*")
+	@GetMapping("/changepriority/{id}/{move}")
+	public ResponseEntity<String> changePriority(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
 
-            switch (move) {
-                case "down":
-                    if (wish.getPriority() > 1) wish.setPriority(wish.getPriority() - 1);
-                    mainService.updateWish(wish);
-                    break;
 
-                case "up":
-                    wish.setPriority(wish.getPriority() + 1);
-                    mainService.updateWish(wish);
-                    break;
-            }
+		return $do(s -> {
 
-            String result = createGsonBuilder().toJson(wish);
+			LOGGER.info("========= MOVE WISH (CHANGE PRIORITY) ============== ");
+			LOGGER.info("id: " + id);
 
-            return $prepareResponse(result);
+			Wish wish = checkParametersAndGetWish(id, move);
 
-        }, null, null, null, resp);
-    }
+			switch (move) {
+				case "down":
+					if (wish.getPriority() > 1) wish.setPriority(wish.getPriority() - 1);
+					mainService.updateWish(wish);
+					break;
 
-    private Wish checkParametersAndGetWish(String id, String move) throws BadIncomeParameter {
+				case "up":
+					wish.setPriority(wish.getPriority() + 1);
+					mainService.updateWish(wish);
+					break;
+			}
 
-        if ((!"up".equals(move)) && (!"down".equals(move)))
-            throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.PRIORITYCHANGE);
-        if ((isBlank(id)) || (!Pattern.compile("^\\d*$").matcher(id).matches()))
-            throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID);
+			String result = createGsonBuilder().toJson(wish);
 
-        LOGGER.info("move: " + move);
+			return $prepareResponse(result);
 
-        return mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
-    }
+		}, null, null, null, resp);
+	}
 
+	private Wish checkParametersAndGetWish(String id, String move) throws BadIncomeParameter {
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/changemonth/{id}/{move}")
-    public ResponseEntity<String> changeMonth(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
+		if ((!"up".equals(move)) && (!"down".equals(move)))
+			throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.PRIORITYCHANGE);
+		if ((isBlank(id)) || (!Pattern.compile("^\\d*$").matcher(id).matches()))
+			throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID);
 
+		LOGGER.info("move: " + move);
 
-        return $do(s -> {
+		return mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
+	}
 
-            LOGGER.info("========= MOVE WISH (CHANGE MONTH) ============== ");
-            LOGGER.info("id: " + id);
-            LocalUser localUser = getUserFromPrincipal(principal);
-            LOGGER.info("principal: " + localUser.getLogin());
 
-            Wish wish = checkParametersAndGetWish(id, move);
-            int maxPrior = (mainService.getMaxPriority(localUser)) - 1;
-            LOGGER.info("max prior: " + maxPrior);
+	@CrossOrigin(origins = "*")
+	@GetMapping("/changemonth/{id}/{move}")
+	public ResponseEntity<String> changeMonth(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
 
-            switch (move) {
-                case "down":
 
-                    if (maxPrior != 0) {
-                        if (wish.getPriorityGroup() < maxPrior + 1) {
-                            wish.setPriorityGroup(wish.getPriorityGroup() + 1);
-                        }
-                        mainService.updateWish(wish);
-                        break;
-                    }
+		return $do(s -> {
 
-                case "up":
+			LOGGER.info("========= MOVE WISH (CHANGE MONTH) ============== ");
+			LOGGER.info("id: " + id);
+			LocalUser localUser = getUserFromPrincipal(principal);
+			LOGGER.info("principal: " + localUser.getLogin());
 
-                    if (maxPrior == 0) {
-                        wish.setPriorityGroup(1);
-                    } else {
-                        if (wish.getPriorityGroup() == null) {
-                            wish.setPriorityGroup(maxPrior);
-                        } else if (wish.getPriorityGroup() > 1) {
-                            wish.setPriorityGroup(wish.getPriorityGroup() - 1);
-                        }
-                    }
+			Wish wish = checkParametersAndGetWish(id, move);
+			int maxPrior = (mainService.getMaxPriority(localUser)) - 1;
+			LOGGER.info("max prior: " + maxPrior);
 
-                    mainService.updateWish(wish);
-                    break;
-            }
+			switch (move) {
+				case "down":
 
-            Date currentDate = new Date();
-            if (wish.getCreationDate() == null) wish.setCreationDate(currentDate);
-            if (wish.getPriorityGroupOrder() == null) wish.setPriorityGroupOrder(1);
+					if (maxPrior != 0) {
+						if (wish.getPriorityGroup() < maxPrior + 1) {
+							wish.setPriorityGroup(wish.getPriorityGroup() + 1);
+						}
+						mainService.updateWish(wish);
+						break;
+					}
 
+				case "up":
 
-            String result = createGsonBuilder().toJson(wish);
+					if (maxPrior == 0) {
+						wish.setPriorityGroup(1);
+					} else {
+						if (wish.getPriorityGroup() == null) {
+							wish.setPriorityGroup(maxPrior);
+						} else if (wish.getPriorityGroup() > 1) {
+							wish.setPriorityGroup(wish.getPriorityGroup() - 1);
+						}
+					}
 
-            return $prepareResponse(result);
+					mainService.updateWish(wish);
+					break;
+			}
 
-        }, null, null, null, resp);
-    }
+			Date currentDate = new Date();
+			if (wish.getCreationDate() == null) wish.setCreationDate(currentDate);
+			if (wish.getPriorityGroupOrder() == null) wish.setPriorityGroupOrder(1);
 
 
-    @CrossOrigin(origins = "*")
-    @PostMapping("/users")
-    public ResponseEntity<String> addUser(Principal principal, @RequestBody String user, HttpServletResponse resp) {
+			String result = createGsonBuilder().toJson(wish);
 
+			return $prepareResponse(result);
 
-        return $do(s -> {
+		}, null, null, null, resp);
+	}
 
-            LOGGER.info("========= ADD USER  ============== ");
-            LOGGER.info("PAYLOAD: " + user);
 
+	@CrossOrigin(origins = "*")
+	@PostMapping("/users")
+	public ResponseEntity<String> addUser(Principal principal, @RequestBody String user, HttpServletResponse resp) {
 
-            LocalUser newUser = parseJsonToUserAndValidate(user);
-            newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
-            newUser.setViewMode("TABLE");
 
+		return $do(s -> {
 
-            if (usersRepo.findByLogin(newUser.getLogin()).isPresent()) {
-                throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
-            }
+			LOGGER.info("========= ADD USER  ============== ");
+			LOGGER.info("PAYLOAD: " + user);
 
-            usersRepo.save(newUser);
 
-            return $prepareResponse(createGsonBuilder().toJson(newUser));
+			LocalUser newUser = parseJsonToUserAndValidate(user);
+			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
+			newUser.setViewMode("TABLE");
 
-        }, null,null, null,  resp);
-    }
 
-    @CrossOrigin(origins = "*")
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(Principal principal, @PathVariable String id, HttpServletResponse resp) {
+			if (usersRepo.findByLogin(newUser.getLogin()).isPresent()) {
+				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
+			}
 
+			usersRepo.save(newUser);
 
-        return $do(s -> {
+			return $prepareResponse(createGsonBuilder().toJson(newUser));
 
-            LOGGER.info("========= DELETE USER  ============== ");
-            LOGGER.info("PAYLOAD: " + id);
+		}, null, null, null, resp);
+	}
 
-            if (!usersRepo.findById(Long.valueOf(id)).isPresent()) {
-                throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST);
-            }
+	@CrossOrigin(origins = "*")
+	@DeleteMapping("/users/{id}")
+	public ResponseEntity<String> deleteUser(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 
-            usersRepo.deleteById(Long.valueOf(id));
 
-            return $prepareResponse(createGsonBuilder().toJson(id));
+		return $do(s -> {
 
-        }, id, null, null, resp);
-    }
+			LOGGER.info("========= DELETE USER  ============== ");
+			LOGGER.info("PAYLOAD: " + id);
 
-    @CrossOrigin(origins = "*")
-    @PutMapping("/users/{id}")
-    public ResponseEntity<String> editUser(Principal principal, @RequestBody String user, @PathVariable String id, HttpServletResponse resp) {
+			if (!usersRepo.findById(Long.valueOf(id)).isPresent()) {
+				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST);
+			}
 
-        return $do(s -> {
+			usersRepo.deleteById(Long.valueOf(id));
 
-            LOGGER.info("========= EDIT USER  ============== ");
-            LOGGER.info("PAYLOAD: " + user);
-            LOGGER.info("id: " + id);
+			return $prepareResponse(createGsonBuilder().toJson(id));
 
-            LocalUser newUser = parseJsonToUserAndValidate(user);
-            LocalUser localuser = getUserFromPrincipal(principal);
-            newUser.setCreationDate(localuser.getCreationDate());
+		}, id, null, null, resp);
+	}
 
-            if ((usersRepo.findByLogin(newUser.getLogin()).isPresent()) && (!localuser.getLogin().equals(newUser.getLogin()))) {
-                throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
-            }
+	@CrossOrigin(origins = "*")
+	@PutMapping("/users/{id}")
+	public ResponseEntity<String> editUser(Principal principal, @RequestBody String user, @PathVariable String id, HttpServletResponse resp) {
 
-            newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
-            localuser.setPwd(newUser.getPwd());
-            localuser.setLogin(newUser.getLogin());
-            localuser.setEmail(newUser.getEmail());
-            localuser.setFullname(newUser.getFullname());
+		return $do(s -> {
 
-            fixNullUserFields(localuser);
+			LOGGER.info("========= EDIT USER  ============== ");
+			LOGGER.info("PAYLOAD: " + user);
+			LOGGER.info("id: " + id);
 
-            return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
+			LocalUser newUser = parseJsonToUserAndValidate(user);
+			LocalUser localuser = getUserFromPrincipal(principal);
+			newUser.setCreationDate(localuser.getCreationDate());
 
-        }, user,null, null,  resp);
-    }
+			if ((usersRepo.findByLogin(newUser.getLogin()).isPresent()) && (!localuser.getLogin().equals(newUser.getLogin()))) {
+				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
+			}
 
+			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
+			localuser.setPwd(newUser.getPwd());
+			localuser.setLogin(newUser.getLogin());
+			localuser.setEmail(newUser.getEmail());
+			localuser.setFullname(newUser.getFullname());
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/users/toggle/{mode}")
-    public ResponseEntity<String> toggleUserMode(Principal principal, @PathVariable String mode, HttpServletResponse resp) {
+			fixNullUserFields(localuser);
 
-        return $do(s -> {
+			return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
 
-            LOGGER.info("========= TOGGLE / GET USER MODE ============== ");
-            LOGGER.info("MODE: " + mode);
-            LocalUser localuser = getUserFromPrincipal(principal);
+		}, user, null, null, resp);
+	}
 
-            if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
-                localuser.setViewMode(mode);
-                return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
-            } else {
-                return $prepareResponse(createGsonBuilder().toJson(localuser));
-            }
 
-        }, null, null, null, resp);
-    }
+	@CrossOrigin(origins = "*")
+	@GetMapping("/users/toggle/{mode}")
+	public ResponseEntity<String> toggleUserMode(Principal principal, @PathVariable String mode, HttpServletResponse resp) {
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/users/list")
-    public ResponseEntity<String> getAllUsers(Principal principal, HttpServletResponse resp) {
+		return $do(s -> {
 
-        return $do(s -> {
-            LOGGER.info("========= GET ALL USERS  ============== ");
+			LOGGER.info("========= TOGGLE / GET USER MODE ============== ");
+			LOGGER.info("MODE: " + mode);
+			LocalUser localuser = getUserFromPrincipal(principal);
 
-            List<LocalUser> userList = usersRepo.findAll().stream().map(u -> {
-                if (u.getCreationDate() == null) u.setCreationDate(new Date());
-                return u;
-            }).collect(Collectors.toList());
+			if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
+				localuser.setViewMode(mode);
+				return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
+			} else {
+				return $prepareResponse(createGsonBuilder().toJson(localuser));
+			}
 
-            return $prepareResponse(createGsonBuilder().toJson(userList));
-        }, null, null, null, resp);
-    }
+		}, null, null, null, resp);
+	}
 
-    private void fixNullUserFields(LocalUser localUser) {
-        // Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
-        if (localUser.getUserRole() == null) localUser.setUserRole(LocalUser.Role.USER);
-        if (localUser.getUserCryptoMode() == null) localUser.setUserCryptoMode(false);
-        if (localUser.getCreationDate() == null) localUser.setCreationDate(new Date());
-        if (localUser.getEmail() == null) localUser.setEmail("antonr0manov@yndex.ru");
-        if (localUser.getFullname() == null) localUser.setFullname("Имя неизвестно");
-        if (localUser.getViewMode() == null) localUser.setViewMode("TABLE");
-    }
+	@CrossOrigin(origins = "*")
+	@GetMapping("/users/list")
+	public ResponseEntity<String> getAllUsers(Principal principal, HttpServletResponse resp) {
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/users/getcurrent")
-    public ResponseEntity<String> getCurrentUser(Principal principal, HttpServletResponse resp) {
+		return $do(s -> {
+			LOGGER.info("========= GET ALL USERS  ============== ");
 
-        return $do(s -> {
-            LOGGER.info("========= GET CURRENT USER  ============== ");
+			List<LocalUser> userList = usersRepo.findAll().stream().map(u -> {
+				if (u.getCreationDate() == null) u.setCreationDate(new Date());
+				return u;
+			}).collect(Collectors.toList());
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+			return $prepareResponse(createGsonBuilder().toJson(userList));
+		}, null, null, null, resp);
+	}
 
-            // Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
-            fixNullUserFields(localUser);
+	private void fixNullUserFields(LocalUser localUser) {
+		// Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
+		if (localUser.getUserRole() == null) localUser.setUserRole(LocalUser.Role.USER);
+		if (localUser.getUserCryptoMode() == null) localUser.setUserCryptoMode(false);
+		if (localUser.getCreationDate() == null) localUser.setCreationDate(new Date());
+		if (localUser.getEmail() == null) localUser.setEmail("antonr0manov@yndex.ru");
+		if (localUser.getFullname() == null) localUser.setFullname("Имя неизвестно");
+		if (localUser.getViewMode() == null) localUser.setViewMode("TABLE");
+	}
 
-            return $prepareResponse(createGsonBuilder().toJson(localUser));
-        }, null, null, null, resp);
-    }
+	@CrossOrigin(origins = "*")
+	@GetMapping("/users/getcurrent")
+	public ResponseEntity<String> getCurrentUser(Principal principal, HttpServletResponse resp) {
 
+		return $do(s -> {
+			LOGGER.info("========= GET CURRENT USER  ============== ");
 
-    /**
-     * Метод, который дергается, если пользователь забыл пароль.
-     *
-     * @param email
-     * @param resp
-     * @return
-     */
-    @CrossOrigin(origins = "*")
-    @PostMapping(value = "/users/forget", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> returnUserPassword(Principal principal, @RequestParam(name = "email") String email, HttpServletResponse resp) {
+			LocalUser localUser = getUserFromPrincipal(principal);
 
-        return $do(s -> {
-            LOGGER.info("========= FORGET PWD METHOD =============== ");
-            LOGGER.info("USER EMAIL - " + email);
-            try {
-                LocalUser localUser = usersRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
-                return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, email).getStatus()));
-            } catch (UserNotFoundException e) {
-                return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
-            }
-        }, null, null, null, resp);
-    }
+			// Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
+			fixNullUserFields(localUser);
 
-    /**
-     * Сброс юзерского пароля админом.
-     *
-     * @param id
-     * @param resp
-     * @return
-     */
-    @CrossOrigin(origins = "*")
-    @GetMapping("/users/reset/{id}")
-    public ResponseEntity<String> resetUserPasswordByAdmin(Principal principal, @PathVariable String id, HttpServletResponse resp) {
+			return $prepareResponse(createGsonBuilder().toJson(localUser));
+		}, null, null, null, resp);
+	}
 
-        return $do(s -> {
-            LOGGER.info("========= RESET USER PWD =============== ");
-            LOGGER.info("USER ID - " + id);
-            try {
-                LocalUser localUser = usersRepo.findById(Long.parseLong(id)).orElseThrow(UserNotFoundException::new);
-                return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, localUser.getEmail()).getStatus()));
-            } catch (UserNotFoundException e) {
-                return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
-            }
-        }, null, null, null, resp);
-    }
 
+	/**
+	 * Метод, который дергается, если пользователь забыл пароль.
+	 *
+	 * @param email
+	 * @param resp
+	 * @return
+	 */
+	@CrossOrigin(origins = "*")
+	@PostMapping(value = "/users/forget", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<String> returnUserPassword(Principal principal, @RequestParam(name = "email") String email, HttpServletResponse resp) {
 
-    /**
-     * Смена pwd и отправка уведомления на почту.
-     *
-     * @param user
-     * @param email
-     * @return
-     */
-    private EmailStatus changePwd(LocalUser user, String email) {
+		return $do(s -> {
+			LOGGER.info("========= FORGET PWD METHOD =============== ");
+			LOGGER.info("USER EMAIL - " + email);
+			try {
+				LocalUser localUser = usersRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
+				return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, email).getStatus()));
+			} catch (UserNotFoundException e) {
+				return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
+			}
+		}, null, null, null, resp);
+	}
 
-        LOGGER.info("USER FOUND - " + user.toString());
+	/**
+	 * Сброс юзерского пароля админом.
+	 *
+	 * @param id
+	 * @param resp
+	 * @return
+	 */
+	@CrossOrigin(origins = "*")
+	@GetMapping("/users/reset/{id}")
+	public ResponseEntity<String> resetUserPasswordByAdmin(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 
-        String pwd = generateRandomPassword();
-        LOGGER.info("NEW PWD - " + pwd);
-        user.setPwd(passwordEncoder.encode(pwd));
-        LocalUser updatedUser = usersRepo.saveAndFlush(user);
-        LOGGER.info("UPDATED USER - " + updatedUser.toString());
+		return $do(s -> {
+			LOGGER.info("========= RESET USER PWD =============== ");
+			LOGGER.info("USER ID - " + id);
+			try {
+				LocalUser localUser = usersRepo.findById(Long.parseLong(id)).orElseThrow(UserNotFoundException::new);
+				return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, localUser.getEmail()).getStatus()));
+			} catch (UserNotFoundException e) {
+				return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
+			}
+		}, null, null, null, resp);
+	}
 
 
-        return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd + " [email - " + email + " ]");
+	/**
+	 * Смена pwd и отправка уведомления на почту.
+	 *
+	 * @param user
+	 * @param email
+	 * @return
+	 */
+	private EmailStatus changePwd(LocalUser user, String email) {
 
-    }
+		LOGGER.info("USER FOUND - " + user.toString());
 
-    /**
-     * Вытаскиваем юзера из Принципала
-     *
-     * @param principal
-     * @return
-     */
-    private LocalUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
-        return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-    }
+		String pwd = generateRandomPassword();
+		LOGGER.info("NEW PWD - " + pwd);
+		user.setPwd(passwordEncoder.encode(pwd));
+		LocalUser updatedUser = usersRepo.saveAndFlush(user);
+		LOGGER.info("UPDATED USER - " + updatedUser.toString());
+
+
+		return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd + " [email - " + email + " ]");
+
+	}
+
+	/**
+	 * Вытаскиваем юзера из Принципала
+	 *
+	 * @param principal
+	 * @return
+	 */
+	private LocalUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
+		return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+	}
 }

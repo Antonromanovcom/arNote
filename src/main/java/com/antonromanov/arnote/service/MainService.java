@@ -31,7 +31,7 @@ public interface MainService {
 
 	Integer getSumm4Prior(LocalUser user);
 
-	void deleteWish(String id);
+//	void deleteWish(String id);
 
 	Salary saveSalary(Salary salary);
 
@@ -42,5 +42,9 @@ public interface MainService {
 	List<Wish> getAllWishesByUserId(LocalUser user);
 
 	Optional<List<Wish>> findAllWishesByWish(String Wish, LocalUser user);
+
+	Optional<List<Wish>> getAllRealizedWishes(LocalUser user);
+
+
 
 }

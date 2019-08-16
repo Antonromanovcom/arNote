@@ -9,4 +9,6 @@ public class SummEntity {
 	private Integer allPeriodForImplementation;
 	private Integer priorityPeriodForImplementation;
 	private Integer lastSalary;
+	private int averageImplementationTime;
+
 }

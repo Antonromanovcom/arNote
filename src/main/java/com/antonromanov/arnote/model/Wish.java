@@ -51,6 +51,12 @@ public class Wish {
     @Temporal(TemporalType.DATE)
     private Date creationDate;
 
+    @Column
+    @Temporal(TemporalType.DATE)
+    private Date realizationDate;
+
+    @Column
+    private Boolean realized;
 
 
 

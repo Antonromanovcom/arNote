@@ -137,6 +137,11 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
+    public Optional<List<Wish>> getAllRealizedWishes(LocalUser user) {
+        return Optional.of(wishRepository.getAllRealizedWishes(user));
+    }
+
+    @Override
     public void updateWish(Wish log) {
       wishRepository.save(log);
     }
@@ -161,10 +166,10 @@ public class MainServiceImpl implements MainService {
         return wishRepository.getAllWithPriority1(user).stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
-    @Override
-    public void deleteWish(String id) {
-        wishRepository.deleteByLongId(Long.parseLong(id));
-    }
+//    @Override
+//    public void deleteWish(String id) {
+//        wishRepository.deleteByLongId(Long.parseLong(id));
+//    }
 
     @Override
     public Salary saveSalary(Salary salary) {

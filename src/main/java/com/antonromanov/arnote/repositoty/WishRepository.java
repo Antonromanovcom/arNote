@@ -14,20 +14,30 @@ import java.util.Optional;
 @Repository
 public interface WishRepository extends JpaRepository<Wish, Integer>{
 
-	@Query(value="select w from Wish w where w.ac = false order by w.priority ASC ")
+	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) order by w.priority ASC ")
 	List<Wish> getAllNotInArchive();
 
 
-	@Query(value="select w from Wish w where w.ac = false and w.user = :user order by w.priorityGroup, w.priorityGroupOrder ASC ")
+	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.user = :user order by w.priorityGroup, w.priorityGroupOrder ASC ")
 	List<Wish> getAllWithGroupOrder(@Param("user") LocalUser user);
 
-	@Query(value="select w from Wish w where w.ac = false and w.user = :user order by w.priority ASC ")
+	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.user = :user order by w.priority ASC ")
 	List<Wish> findAllByIdSorted(@Param("user") LocalUser user);
 
 
 
-	@Query(value="select w from Wish w where w.ac = false and w.priority = 1 and  w.user = :user order by w.wish ASC ")
+	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.priority = 1 and  w.user = :user order by w.wish ASC ")
 	List<Wish> getAllWithPriority1(@Param("user") LocalUser user);
+
+
+	/**
+	 * Метод для высчитывания среднего времени реализации.
+	 *
+	 * @param user
+	 * @return
+	 */
+	@Query(value="select w from Wish w where w.ac = false and w.realized = true and  w.user = :user order by w.wish ASC ")
+	List<Wish> getAllRealizedWishes(@Param("user") LocalUser user);
 
 
 
@@ -39,16 +49,11 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	@Query("delete from Wish w where w.id = ?1")
 	void deleteByLongId(Long entityId);
 
-
-//	@Query(value = "UPDATE arnote.wishes set archive = true where id = ?1", nativeQuery = true)
-//	void deleteByLongId(Long entityId);
-
-
 	Optional<Wish> findById(long l);
 
 
 	@Query(value="select * from arnote.wishes w where w.wish like " +
-			"(concat('%',:wish,'%')) and w.user_id = :userId order by w.wish", nativeQuery = true)
+			"(concat('%',:wish,'%')) and (w.realized = false or w.realized is null ) and user_id = :userId order by w.wish", nativeQuery = true)
 	Optional<List<Wish>> findAllByWishAndUser(String wish, long userId);
 
 }

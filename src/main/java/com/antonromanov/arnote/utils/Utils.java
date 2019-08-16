@@ -219,6 +219,13 @@ public class Utils {
 						JSONTemplate.fromString(json).get("url").getAsString(),
 						user);
 
+				boolean realizedWish = JSONTemplate.fromString(json).get("realized").getAsBoolean();
+				if (realizedWish) {
+					wishAfterParse.setRealized(true);
+					wishAfterParse.setRealizationDate(new Date());
+				}
+
+
 			} else {
 				wishAfterParse = new Wish(
 						JSONTemplate.fromString(json).get("wish").getAsString(),
