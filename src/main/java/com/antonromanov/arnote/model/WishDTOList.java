@@ -7,6 +7,7 @@ import java.util.List;
 @Builder
 public class WishDTOList {
 
+    @Getter
     List<WishDTO> wishList;
     String monthName;
     String year;

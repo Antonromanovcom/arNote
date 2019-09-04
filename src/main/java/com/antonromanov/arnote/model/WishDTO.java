@@ -11,6 +11,7 @@ import java.util.List;
 public class WishDTO {
 
     private long id;
+    @Getter
     private String wish;
     @Getter
     private Integer price;

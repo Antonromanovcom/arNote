@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.service;
 
 import au.com.bytecode.opencsv.CSVReader;
+import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.repositoty.SalaryRepository;
 import com.antonromanov.arnote.repositoty.WishRepository;
@@ -139,6 +140,13 @@ public class MainServiceImpl implements MainService {
     @Override
     public Optional<List<Wish>> getAllRealizedWishes(LocalUser user) {
         return Optional.of(wishRepository.getAllRealizedWishes(user));
+    }
+
+    @Override
+    public Wish updateMonthGroup(Wish wish) throws BadIncomeParameter {
+        Wish searchedWish = wishRepository.findById(wish.getId()).orElseThrow(()->new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
+        wish.setPriorityGroup(searchedWish.getPriorityGroup());
+        return wish;
     }
 
     @Override

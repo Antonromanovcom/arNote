@@ -92,6 +92,51 @@ public class MainRestController extends ControllerBase {
 		}, null, null, null, resp);
 	}
 
+	@CrossOrigin(origins = "*")
+	@GetMapping("/groups")
+	public ResponseEntity<String> gelAllWishesWithMonthGroupping(Principal principal, @RequestParam String sortType, HttpServletResponse resp) {
+
+		return $do(s -> {
+			List<WishDTOList> wishListWithMonthOrder;
+			LOGGER.info("PRINCIPAL: " + principal.getName());
+			LocalUser localUser = getUserFromPrincipal(principal);
+			if (mainService.getAllWishesByUserId(localUser).size() > 0) {
+
+				DTOwithOrder dtOwithOrder = new DTOwithOrder();
+				String result = "";
+				wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
+				dtOwithOrder.list.addAll(wishListWithMonthOrder);
+
+				if ("name".equalsIgnoreCase(sortType)) {
+					LOGGER.info("SORTING BY NAME");
+					dtOwithOrder.list.forEach(wl -> {
+						wl.getWishList().sort(Comparator.comparing(WishDTO::getWish));
+					});
+				} else if ("price-asc".equalsIgnoreCase(sortType)) {
+					LOGGER.info("SORTING BY PRICE ASC");
+					dtOwithOrder.list.forEach(wl -> {
+						wl.getWishList().sort(Comparator.comparing(WishDTO::getPrice));
+					});
+				} else if ("price-desc".equalsIgnoreCase(sortType)) {
+					LOGGER.info("SORTING BY PRICE DESC");
+					Comparator<WishDTO> comparator = Comparator.comparing(WishDTO::getPrice);
+					dtOwithOrder.list.forEach(wl -> {
+						wl.getWishList().sort(comparator.reversed());
+					});
+				}
+
+
+				result = createNullableGsonBuilder().toJson(dtOwithOrder);
+				LOGGER.info("PAYLOAD (wishes count): " + dtOwithOrder.list.size());
+				LOGGER.info("============== GET WISHES WITH GROUP ORDER ============== ");
+
+				return $prepareResponse(result);
+			} else {
+				return $prepareNoDataYetErrorResponse(false);
+			}
+		}, null, null, null, resp);
+	}
+
 
 	@CrossOrigin(origins = "*")
 	@GetMapping("/{type}")
@@ -105,7 +150,7 @@ public class MainRestController extends ControllerBase {
 			if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
 				DTO dto = new DTO();
-				DTOwithOrder dtOwithOrder = new DTOwithOrder();
+//				DTOwithOrder dtOwithOrder = new DTOwithOrder();
 				String result = "";
 
 				if ("all".equalsIgnoreCase(type)) {
@@ -115,27 +160,25 @@ public class MainRestController extends ControllerBase {
 					wishList.forEach(w -> {
 						if (w.getCreationDate() == null) w.setCreationDate(new Date());
 						if (w.getRealized() == null) w.setRealized(false);
-						if (w.getRealizationDate() == null) w.setRealizationDate(new Date());
 					});
 
 					dto.list.addAll(wishList);
-					result = createGsonBuilder().toJson(dto);
+					result = createNullableGsonBuilder().toJson(dto);
 					LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
 					LOGGER.info("============== GET ALL WISHES ============== ");
-				} else if ("groups".equalsIgnoreCase(type)) {
+				/*} else if ("groups".equalsIgnoreCase(type)) {
 					wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
 					dtOwithOrder.list.addAll(wishListWithMonthOrder);
-					result = createGsonBuilder().toJson(dtOwithOrder);
+					result = createNullableGsonBuilder().toJson(dtOwithOrder);
 					LOGGER.info("PAYLOAD (wishes count): " + dtOwithOrder.list.size());
-					LOGGER.info("============== GET WISHES WITH GROUP ORDER ============== ");
+					LOGGER.info("============== GET WISHES WITH GROUP ORDER ============== ");*/
 				} else {
 					wishList = mainService.getAllWishesWithPriority1(localUser);
 					dto.list.addAll(wishList);
 					LOGGER.info("============== GET PRIORITY WISHES ============== ");
-					result = createGsonBuilder().toJson(dto);
+					result = createNullableGsonBuilder().toJson(dto);
 					LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
 				}
-
 
 				return $prepareResponse(result);
 			} else {
@@ -153,8 +196,8 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("========= UPDATE WISH ============== ");
 			LOGGER.info("PAYLOAD: " + requestParam);
 			LocalUser localUser = getUserFromPrincipal(principal);
-
-			mainService.updateWish(parseJsonToWish(ParseType.EDIT, requestParam, localUser));
+			Wish wish = parseJsonToWish(ParseType.EDIT, requestParam, localUser);
+			mainService.updateWish(mainService.updateMonthGroup(wish));
 
 			String result = "";
 			LOGGER.info("PAYLOAD: " + result);
@@ -213,7 +256,7 @@ public class MainRestController extends ControllerBase {
 				if (summ.isPresent()) {
 					localAverageImplementationTime = (summ.get()) / realizedWishes.size();
 				}
-				days = (int) (localAverageImplementationTime / (1000*60*60*24)); // Переводим в кол-во дней
+				days = (int) (localAverageImplementationTime / (1000 * 60 * 60 * 24)); // Переводим в кол-во дней
 			}
 
 			if (mainService.getLastSalary(localUser) != null) {
@@ -400,7 +443,7 @@ public class MainRestController extends ControllerBase {
 			if (wish.getPriorityGroupOrder() == null) wish.setPriorityGroupOrder(1);
 
 
-			String result = createGsonBuilder().toJson(wish);
+			String result = createNullableGsonBuilder().toJson(wish);
 
 			return $prepareResponse(result);
 

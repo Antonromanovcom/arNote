@@ -13,6 +13,7 @@ import com.antonromanov.arnote.exceptions.*;
 import com.antonromanov.arnote.model.WishDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
 import org.aspectj.lang.Signature;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
@@ -111,6 +112,28 @@ public class Utils {
 				.create();
 
 		return gson;
+	}
+
+	public static Gson createNullableGsonBuilder() {
+
+		// Trick to get the DefaultDateTypeAdatpter instance
+		// Create a first instance a Gson
+		Gson gson = new GsonBuilder()
+				.setDateFormat("dd/MM/yyyy")
+				.create();
+
+		// Get the date adapter
+		TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
+
+		// Ensure the DateTypeAdapter is null safe
+		TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
+
+		// Build the definitive safe Gson instance
+		return new GsonBuilder()
+				.registerTypeAdapter(Date.class, safeDateTypeAdapter)
+				.create();
+
+	//	return gson;
 	}
 
 
@@ -224,7 +247,6 @@ public class Utils {
 					wishAfterParse.setRealized(true);
 					wishAfterParse.setRealizationDate(new Date());
 				}
-
 
 			} else {
 				wishAfterParse = new Wish(
@@ -391,4 +413,5 @@ public class Utils {
 
 		return action;
 	}
+
 }

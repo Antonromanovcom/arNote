@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.service;
 
 
+import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.model.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
@@ -31,8 +32,6 @@ public interface MainService {
 
 	Integer getSumm4Prior(LocalUser user);
 
-//	void deleteWish(String id);
-
 	Salary saveSalary(Salary salary);
 
 	Salary getLastSalary(LocalUser localUser);
@@ -45,6 +44,6 @@ public interface MainService {
 
 	Optional<List<Wish>> getAllRealizedWishes(LocalUser user);
 
-
+	Wish updateMonthGroup(Wish wish) throws BadIncomeParameter;
 
 }
