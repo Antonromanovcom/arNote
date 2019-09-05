@@ -19,10 +19,13 @@ public interface MainService {
 	List<Wish> getAllWishesWithPriority1(LocalUser user);
 
 	int getMaxPriority(LocalUser user);
+	int getMinPriority(LocalUser user);
 
 	List<WishDTOList> getAllWishesWithGroupPriority(LocalUser user);
 
 	void updateWish(Wish log);
+
+	Wish updateAndFlushWish(Wish log);
 
 	Wish addWish(Wish parseJsonToWish);
 

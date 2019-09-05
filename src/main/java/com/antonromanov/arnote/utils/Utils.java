@@ -5,6 +5,8 @@ import java.sql.Time;
 import java.time.*;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.Salary;
@@ -133,7 +135,7 @@ public class Utils {
 				.registerTypeAdapter(Date.class, safeDateTypeAdapter)
 				.create();
 
-	//	return gson;
+		//	return gson;
 	}
 
 
@@ -411,7 +413,91 @@ public class Utils {
 				break;
 		}
 
+
 		return action;
+	}
+
+	private static boolean isInteger(String value) {
+		try {
+			Integer.parseInt(value);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+
+	private static int monthNameToNumber(String value) {
+		int result = 0;
+		switch (value) {
+			case "Январь":
+				result = 1;
+				break;
+			case "Февраль":
+				result = 2;
+				break;
+			case "Март":
+				result = 3;
+				break;
+			case "Апрель":
+				result = 4;
+				break;
+			case "Май":
+				result = 5;
+				break;
+			case "Июнь":
+				result = 6;
+				break;
+			case "Июль":
+				result = 7;
+				break;
+			case "Август":
+				result = 8;
+				break;
+			case "Сентябрь":
+				result = 9;
+				break;
+			case "Октябрь":
+				result = 10;
+				break;
+			case "Ноябрь":
+				result = 11;
+				break;
+			case "Декабрь":
+				result = 12;
+				break;
+		}
+		return result;
+	}
+
+	public static int parseMonthAndCalculatePriority(String monthAndYear) throws BadIncomeParameter {
+
+		if (Pattern.compile("[А-Яа-я]+ [0-9]+").matcher(monthAndYear).find()) {
+
+			final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.MULTILINE);
+			final Matcher matcher = pattern.matcher(monthAndYear);
+			String year = "";
+			String month = "";
+
+			while (matcher.find()) {
+				year = matcher.group(1);
+				month = monthAndYear.substring(0, matcher.start(1)).trim();
+			}
+			if (isBlank(year) && isInteger(year)) {
+				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
+			} else {
+				int minMonth = (YearMonth.now().getMonthValue()); // приоритет = 1
+				if ((Calendar.getInstance().get(Calendar.YEAR)) == Integer.parseInt(year)) {
+					return monthNameToNumber(month) - minMonth +1; // разница между приоритетами;
+				} else {
+
+					return (12-minMonth)+1+monthNameToNumber(month); // разница между приоритетами;
+				}
+			}
+
+		} else {
+			// Если false - то не нашли
+			throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
+		}
 	}
 
 }

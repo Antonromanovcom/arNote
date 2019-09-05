@@ -54,7 +54,19 @@ public class MainServiceImpl implements MainService {
         }
     }
 
-   private void addIteminWishDTOListForNullPriorityWishes(List<WishDTOList> wishDTOListGlobal,
+    @Override
+    public int getMinPriority(LocalUser user) {
+        List<Wish> wishDTOList = wishRepository.getAllWithGroupOrder(user);
+        Comparator<Wish> comparator = Comparator.comparing( Wish::getPriorityGroup);
+
+        if ((wishDTOList.stream().filter(wish -> wish.getPriorityGroup()!=null && wish.getPriorityGroup()!=0).min(comparator).isPresent())) {
+            return (wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).min(comparator).get().getPriorityGroup()) + 1;
+        } else {
+            return 1;
+        }
+    }
+
+    private void addIteminWishDTOListForNullPriorityWishes(List<WishDTOList> wishDTOListGlobal,
                                                    List<WishDTO> wishDTOListFiltered,
                                                    int maxPrior,
                                                    LocalUser user){
@@ -150,8 +162,13 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public void updateWish(Wish log) {
-      wishRepository.save(log);
+    public void updateWish(Wish wish) {
+      wishRepository.save(wish);
+    }
+
+    @Override
+    public Wish updateAndFlushWish(Wish wish) {
+        return wishRepository.saveAndFlush(wish);
     }
 
     @Override

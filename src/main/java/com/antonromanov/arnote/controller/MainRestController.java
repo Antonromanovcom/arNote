@@ -23,6 +23,7 @@ import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -137,6 +138,25 @@ public class MainRestController extends ControllerBase {
 		}, null, null, null, resp);
 	}
 
+	@CrossOrigin(origins = "*")
+	@GetMapping("/transferwish")
+	public ResponseEntity<String> changeMonthOrder(Principal principal, @RequestParam String id, @RequestParam String month, HttpServletResponse resp) {
+		return $do(s -> {
+
+			LOGGER.info("========= MOVE WISH (CHANGE PRIORITY) ============== ");
+			LOGGER.info("PRINCIPAL: " + principal.getName());
+			LOGGER.info("id: " + id);
+			LOGGER.info("month: " + month);
+
+			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
+			wish.setPriorityGroup(parseMonthAndCalculatePriority(month));
+
+			String result = createNullableGsonBuilder().toJson(mainService.updateAndFlushWish(wish));
+			return $prepareResponse(result);
+
+		}, null, null, OperationType.EDIT_WISH, resp);
+	}
+
 
 	@CrossOrigin(origins = "*")
 	@GetMapping("/{type}")
@@ -184,7 +204,7 @@ public class MainRestController extends ControllerBase {
 			} else {
 				return $prepareNoDataYetErrorResponse(false);
 			}
-		}, null, null, null, resp);
+		}, null, null, OperationType.GET_ALL_WISHES, resp);
 	}
 
 	@CrossOrigin(origins = "*")
@@ -204,7 +224,7 @@ public class MainRestController extends ControllerBase {
 
 			return $prepareResponse(result);
 
-		}, requestParam, null, null, resp);
+		}, requestParam, null, OperationType.EDIT_WISH, resp);
 	}
 
 	@CrossOrigin(origins = "*")
@@ -233,7 +253,7 @@ public class MainRestController extends ControllerBase {
 
 			return $prepareResponse(result);
 
-		}, requestParam, null, null, resp);
+		}, requestParam, null, OperationType.ADD_WISH, resp);
 	}
 
 	@CrossOrigin(origins = "*")

@@ -7,7 +7,7 @@ public class BadIncomeParameter extends Exception {
 
 	private String message;
 
-	public enum ParameterKind {PRIORITYCHANGE, WISH_ID_SEARCH, WRONG_ID, SUCH_USER_EXIST, SUCH_USER_NO_EXIST, NOTHING_FOUND}
+	public enum ParameterKind {PRIORITYCHANGE, WISH_ID_SEARCH, WRONG_ID, SUCH_USER_EXIST, SUCH_USER_NO_EXIST, NOTHING_FOUND, WRONG_MONTH}
 
 	public BadIncomeParameter(ParameterKind parameter) {
 
@@ -21,6 +21,8 @@ public class BadIncomeParameter extends Exception {
 			this.message = "SUCH_USER_EXIST";
 		} else if (parameter == SUCH_USER_NO_EXIST) {
 			this.message = "Пользователя с таким ID не существует!";
+		} else if (parameter == WRONG_MONTH) {
+			this.message = "Неверно задан месяц при изменении помесячной группировки!";
 		} else if (parameter == NOTHING_FOUND) {
 			this.message = "NOTHING_FOUND";
 		} else {
