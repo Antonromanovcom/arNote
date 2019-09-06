@@ -395,7 +395,7 @@ public class MainRestController extends ControllerBase {
 					break;
 			}
 
-			String result = createGsonBuilder().toJson(wish);
+			String result = createNullableGsonBuilder().toJson(wish);
 
 			return $prepareResponse(result);
 
