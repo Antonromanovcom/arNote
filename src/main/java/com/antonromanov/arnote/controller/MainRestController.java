@@ -547,7 +547,7 @@ public class MainRestController extends ControllerBase {
 
 			return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
 
-		}, user, null, null, resp);
+		}, user, null, OperationType.UPDATE_USER, resp);
 	}
 
 
@@ -568,7 +568,7 @@ public class MainRestController extends ControllerBase {
 				return $prepareResponse(createGsonBuilder().toJson(localuser));
 			}
 
-		}, null, null, null, resp);
+		}, null, null, OperationType.TOGGLE_USER_MODE, resp);
 	}
 
 	@CrossOrigin(origins = "*")
@@ -602,15 +602,12 @@ public class MainRestController extends ControllerBase {
 	public ResponseEntity<String> getCurrentUser(Principal principal, HttpServletResponse resp) {
 
 		return $do(s -> {
-			LOGGER.info("========= GET CURRENT USER  ============== ");
-
+//			LOGGER.info("========= GET CURRENT USER  ============== ");
 			LocalUser localUser = getUserFromPrincipal(principal);
-
 			// Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
 			fixNullUserFields(localUser);
-
 			return $prepareResponse(createGsonBuilder().toJson(localUser));
-		}, null, null, null, resp);
+		}, null, null, OperationType.GET_CURRENT_USER, resp);
 	}
 
 

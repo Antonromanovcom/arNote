@@ -31,7 +31,6 @@ public class MainServiceImpl implements MainService {
 
     Integer addCount = 0; // Количество добавлений
 
-
     @Override
     public List<Wish> getAllWishes() {
         return wishRepository.findAll(Sort.by(Sort.Direction.ASC, "priority"));
@@ -191,11 +190,6 @@ public class MainServiceImpl implements MainService {
         return wishRepository.getAllWithPriority1(user).stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
-//    @Override
-//    public void deleteWish(String id) {
-//        wishRepository.deleteByLongId(Long.parseLong(id));
-//    }
-
     @Override
     public Salary saveSalary(Salary salary) {
         return salaryRepository.saveAndFlush(salary);
@@ -214,8 +208,6 @@ public class MainServiceImpl implements MainService {
 
     @Override
     public  ResponseParseResult parseCsv(MultipartFile file, LocalUser localUser) throws IOException {
-
-      //  try {
 
             CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"), ',', '"', 1);
             List<String[]> allRows = reader.readAll();
@@ -253,8 +245,6 @@ public class MainServiceImpl implements MainService {
 
                         if (wishes.size() < 1) {
                             //нету? добавляем
-
-
                             wishRepository.save(new Wish(localWish, localPrice, 1, false, "from csv", "", localUser));
                             addCount++;
                         }
