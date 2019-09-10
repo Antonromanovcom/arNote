@@ -271,6 +271,7 @@ public class MainRestController extends ControllerBase {
 			if (mainService.getAllRealizedWishes(localUser).isPresent()) {
 
 				List<Long> realizedWishes = mainService.getAllRealizedWishes(localUser).get().stream()
+						.filter(wf->wf.getRealizationDate()!=null && wf.getCreationDate()!=null )
 						.map(w -> (w.getRealizationDate().getTime() - w.getCreationDate().getTime())).collect(Collectors.toList());
 				Optional<Long> summ = realizedWishes.stream().reduce((l, r) -> l + r);
 				if (summ.isPresent()) {
