@@ -29,10 +29,7 @@ public class ControllerBase {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setCacheControl("no-cache");
-
 		ResponseEntity<String> responseEntity = new ResponseEntity<String>(responseBody, headers, HttpStatus.OK);
-		LOGGER.info("RESPONSE [STATUS CODE]: " + responseEntity.getStatusCode());
-
 		return responseEntity;
 	}
 
@@ -60,7 +57,6 @@ public class ControllerBase {
 			responseEntity = new ResponseEntity<String>("ERR-02", headers, HttpStatus.BAD_REQUEST);
 		}
 		LOGGER.info("RESPONSE: " + responseEntity.toString());
-
 		return responseEntity;
 	}
 
