@@ -1,0 +1,1 @@
+INSERT INTO arnote.users (id, creation_date, email, fullname, last_operation, last_operation_time, login, pwd, user_crypto_mode, user_role, view_mode) VALUES (8, '2019-09-19', 'antonr0manov@list.ru', 'Антон Романов', null, null, 'anton', '$2a$10$h1a0zfV94HKwgH//0ORe3uljo0Vfi7TcXb58OieaoEnaTZNS4aa52', false, 'ADMIN', 'TABLE');

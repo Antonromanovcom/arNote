@@ -425,6 +425,7 @@ public class MainRestController extends ControllerBase {
 
 			LOGGER.info("========= MOVE WISH (CHANGE MONTH) ============== ");
 			LOGGER.info("id: " + id);
+			LOGGER.info("move: " + move);
 			LocalUser localUser = getUserFromPrincipal(principal);
 			LOGGER.info("principal: " + localUser.getLogin());
 
@@ -439,6 +440,7 @@ public class MainRestController extends ControllerBase {
 						if (wish.getPriorityGroup() < maxPrior + 1) {
 							wish.setPriorityGroup(wish.getPriorityGroup() + 1);
 						}
+						LOGGER.info("move summary: " + (wish.getPriorityGroup() + 1));
 						mainService.updateWish(wish);
 						break;
 					}
@@ -446,11 +448,14 @@ public class MainRestController extends ControllerBase {
 				case "up":
 
 					if (maxPrior == 0) {
+						LOGGER.info("max prior = 0. move summary: 1");
 						wish.setPriorityGroup(1);
 					} else {
 						if (wish.getPriorityGroup() == null) {
+							LOGGER.info("move summary: " + maxPrior);
 							wish.setPriorityGroup(maxPrior);
 						} else if (wish.getPriorityGroup() > 1) {
+							LOGGER.info("move summary: " + (wish.getPriorityGroup() - 1));
 							wish.setPriorityGroup(wish.getPriorityGroup() - 1);
 						}
 					}
@@ -474,7 +479,7 @@ public class MainRestController extends ControllerBase {
 
 	@CrossOrigin(origins = "*")
 	@PostMapping("/users")
-	public ResponseEntity<String> addUser(Principal principal, @RequestBody String user, HttpServletResponse resp) {
+	public ResponseEntity<String> addUser(@RequestBody String user, HttpServletResponse resp) {
 
 
 		return $do(s -> {
