@@ -337,7 +337,7 @@ public class Utils {
 		colorClasses.put(12, "label label-blue");
 		colorClasses.put(13, "label label-danger");
 
-		LOGGER.info("MONTH (getClassColorByMonth) => " + month);
+//		LOGGER.info("MONTH (getClassColorByMonth) => " + month);
 
 		if (!overdraft) {
 			if (month == 0) {
@@ -467,6 +467,9 @@ public class Utils {
 				result = 12;
 				break;
 		}
+
+		LOGGER.info("GETTING REQUEST TO CHANGE MOVE. STRING MONTH NAME PARSED TO:  " + result);
+
 		return result;
 	}
 

@@ -143,10 +143,9 @@ public class MainRestController extends ControllerBase {
 	public ResponseEntity<String> changeMonthOrder(Principal principal, @RequestParam String id, @RequestParam String month, HttpServletResponse resp) {
 		return $do(s -> {
 
-			LOGGER.info("========= MOVE WISH (CHANGE PRIORITY) ============== ");
+			LOGGER.info("========= MOVE WISH (CHANGE MONTH PRIORITY) ============== ");
 			LOGGER.info("PRINCIPAL: " + principal.getName());
 			LOGGER.info("id: " + id);
-			LOGGER.info("month: " + month);
 
 			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
 			wish.setPriorityGroup(parseMonthAndCalculatePriority(month));
@@ -186,12 +185,6 @@ public class MainRestController extends ControllerBase {
 					result = createNullableGsonBuilder().toJson(dto);
 					LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
 					LOGGER.info("============== GET ALL WISHES ============== ");
-				/*} else if ("groups".equalsIgnoreCase(type)) {
-					wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
-					dtOwithOrder.list.addAll(wishListWithMonthOrder);
-					result = createNullableGsonBuilder().toJson(dtOwithOrder);
-					LOGGER.info("PAYLOAD (wishes count): " + dtOwithOrder.list.size());
-					LOGGER.info("============== GET WISHES WITH GROUP ORDER ============== ");*/
 				} else {
 					wishList = mainService.getAllWishesWithPriority1(localUser);
 					dto.list.addAll(wishList);
@@ -261,8 +254,6 @@ public class MainRestController extends ControllerBase {
 	public ResponseEntity<String> getSumm(Principal principal, HttpServletResponse resp) {
 
 		return $do(s -> {
-			LOGGER.info("========= GET SUMM ============== ");
-			LOGGER.info("PRINCIPAL: " + principal.getName());
 
 			long localAverageImplementationTime = 0L;
 			int days = 0;
@@ -487,17 +478,18 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("========= ADD USER  ============== ");
 			LOGGER.info("PAYLOAD: " + user);
 
-
 			LocalUser newUser = parseJsonToUserAndValidate(user);
 			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
 			newUser.setViewMode("TABLE");
 
-
 			if (usersRepo.findByLogin(newUser.getLogin()).isPresent()) {
 				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
 			}
-
 			usersRepo.save(newUser);
+			/*LOGGER.info("EMAIL SENT STATUS: " +
+					emailSender.sendPlainText(newUser.getEmail(),
+							"Ваши данные для доступа к arNote",
+							"Ваш пароль - " + newUser.getPwd() + " [Логин - " + newUser.getLogin() + " ]").getStatus());*/
 
 			return $prepareResponse(createGsonBuilder().toJson(newUser));
 
