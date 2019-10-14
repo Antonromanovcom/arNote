@@ -298,10 +298,13 @@ public class Utils {
 		return Month.of((month + (proirity - 1)) > 12 ? (month + (proirity - 1)) - 12 : (month + (proirity - 1))).getValue();
 	}
 
-	public static int getCurrentYear() {
+
+
+	public static int getCurrentYear(Integer proirity) {
 		Date date = new Date();
 		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		return localDate.getYear();
+		int month = localDate.getMonthValue();
+		return (month + (proirity - 1)) > 12 ? localDate.getYear()+1 : localDate.getYear();
 	}
 
 	public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
