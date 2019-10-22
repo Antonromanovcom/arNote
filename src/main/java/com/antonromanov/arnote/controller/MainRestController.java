@@ -31,6 +31,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 //todo: надо нормально поименовать ендпоинты
 //todo: надо сделать проверку на уникальность добавляемых желаний
+// SELECT sum(w.price) from arnote.wishes w WHERE w.user_id = 8 AND w.realized AND NOT w.archive - запрос реализованных желаний
 
 /**
  * Основной REST-контроллер приложения.
