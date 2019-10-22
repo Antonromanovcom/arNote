@@ -60,14 +60,16 @@ public class Wish {
 
 
 
-    public Wish(String wish, Integer price, Integer priority, Boolean ac, String description, String url, LocalUser user) {
+    public Wish(String wish, Integer price, Integer priority, Integer priorityGroup, Boolean ac, String description, String url, LocalUser user, Date creationDate) {
         this.wish = wish;
         this.price = price;
         this.priority = priority;
+        this.priorityGroup = priorityGroup;
         this.ac = ac;
         this.description = description;
         this.url = url;
         this.user = user;
+        this.creationDate = creationDate;
     }
 
     public Wish(long id, String wish, int price, int priority, boolean ac, String description, String url, LocalUser user) {
@@ -81,6 +83,17 @@ public class Wish {
         this.user = user;
         this.id = id;
 
+    }
+
+    public Wish(String wish, int price, int priority, boolean archive, String description, String url, LocalUser user) {
+        this.wish = wish;
+        this.price = price;
+        this.priority = priority;
+        this.priorityGroup = null;
+        this.ac = archive;
+        this.description = description;
+        this.url = url;
+        this.user = user;
     }
 }
 

@@ -299,12 +299,11 @@ public class Utils {
 	}
 
 
-
 	public static int getCurrentYear(Integer proirity) {
 		Date date = new Date();
 		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		int month = localDate.getMonthValue();
-		return (month + (proirity - 1)) > 12 ? localDate.getYear()+1 : localDate.getYear();
+		return (month + (proirity - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
 	}
 
 	public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
@@ -494,10 +493,10 @@ public class Utils {
 			} else {
 				int minMonth = (YearMonth.now().getMonthValue()); // приоритет = 1
 				if ((Calendar.getInstance().get(Calendar.YEAR)) == Integer.parseInt(year)) {
-					return monthNameToNumber(month) - minMonth +1; // разница между приоритетами;
+					return monthNameToNumber(month) - minMonth + 1; // разница между приоритетами;
 				} else {
 
-					return (12-minMonth)+1+monthNameToNumber(month); // разница между приоритетами;
+					return (12 - minMonth) + 1 + monthNameToNumber(month); // разница между приоритетами;
 				}
 			}
 

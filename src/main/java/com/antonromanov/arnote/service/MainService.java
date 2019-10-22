@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.service;
 
-
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.model.*;
 import org.springframework.web.multipart.MultipartFile;

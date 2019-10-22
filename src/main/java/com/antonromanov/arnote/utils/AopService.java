@@ -7,10 +7,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.security.Principal;
 import java.time.LocalDateTime;
-
 import static com.antonromanov.arnote.utils.Utils.defineUserActionByMethodSignature;
 
 @Aspect
