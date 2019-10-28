@@ -258,6 +258,10 @@ public class MainRestController extends ControllerBase {
 
 			long localAverageImplementationTime = 0L;
 			int days = 0;
+			int implemetedSummAllTime = 0;
+			int implemetedSummMonth = 0;
+			int littleWishes = 0;
+
 			LocalUser localUser = getUserFromPrincipal(principal);
 
 			if (mainService.getAllRealizedWishes(localUser).isPresent()) {
@@ -270,6 +274,11 @@ public class MainRestController extends ControllerBase {
 					localAverageImplementationTime = (summ.get()) / realizedWishes.size();
 				}
 				days = (int) (localAverageImplementationTime / (1000 * 60 * 60 * 24)); // Переводим в кол-во дней
+
+				implemetedSummAllTime = mainService.getImplementedSum(localUser, 1).orElseGet(()->0);
+				implemetedSummMonth = mainService.getImplementedSum(localUser, 2).orElseGet(()->0);
+
+
 			}
 
 			if (mainService.getLastSalary(localUser) != null) {
@@ -279,6 +288,8 @@ public class MainRestController extends ControllerBase {
 						.priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
 						.lastSalary(mainService.getLastSalary(localUser).getResidualSalary())
 						.averageImplementationTime(days)
+						.implemetedSummAllTime(implemetedSummAllTime)
+						.implemetedSummMonth(implemetedSummMonth)
 						.priority(mainService.getSumm4Prior(localUser)).build());
 				LOGGER.info("PAYLOAD: " + result);
 				return $prepareResponse(result);

@@ -2,6 +2,7 @@ package com.antonromanov.arnote.service;
 
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.model.*;
+import com.antonromanov.arnote.utils.Utils;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,8 @@ public interface MainService {
 	Integer getSumm4All(LocalUser user);
 
 	Integer getSumm4Prior(LocalUser user);
+
+	Optional<Integer> getImplementedSum(LocalUser user, int period);
 
 	Salary saveSalary(Salary salary);
 

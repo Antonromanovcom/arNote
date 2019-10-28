@@ -56,4 +56,19 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 			"(concat('%',:wish,'%')) and (w.realized = false or w.realized is null ) and user_id = :userId order by w.wish", nativeQuery = true)
 	Optional<List<Wish>> findAllByWishAndUser(String wish, long userId);
 
+	// Запросить сумму всех реализованных пользователем желаний за все время
+	@Query(value="select sum(p.price) from (select * from arnote.wishes w WHERE " +
+			"(w.id NOT IN (311) " +
+			"and w.user_id = :userId)) p" +
+			" WHERE NOT p.archive AND (p.realized=true)", nativeQuery = true)
+	Optional<Integer> getImplementedSum4AllPeriod(long userId);
+
+	// Запросить сумму всех реализованных пользователем желаний за текущий месяц
+	@Query(value="select sum(p.price) from (select * from arnote.wishes w WHERE " +
+			"(w.id NOT IN (311) " +
+			"and w.user_id = :userId " +
+			"and extract(month FROM w.realization_date) = extract (month FROM CURRENT_DATE))) p" +
+			" WHERE NOT p.archive AND (p.realized=true)", nativeQuery = true)
+	Optional<Integer> getImplementedSum4Month(long userId);
+
 }

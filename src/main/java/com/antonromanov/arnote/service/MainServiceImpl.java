@@ -191,6 +191,15 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
+    public Optional<Integer> getImplementedSum(LocalUser user, int period) {
+        if (period==1) {
+            return wishRepository.getImplementedSum4AllPeriod(user.getId());
+        } else {
+            return wishRepository.getImplementedSum4Month(user.getId());
+        }
+    }
+
+    @Override
     public Salary saveSalary(Salary salary) {
         return salaryRepository.saveAndFlush(salary);
     }
