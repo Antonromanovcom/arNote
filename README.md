@@ -76,6 +76,20 @@ select sum(p.price) from (select * from
 WHERE NOT p.archive AND (p.realized=false or p.realized ISNULL );
 
 
+-- Сумма реализованного
+select sum(p.price) from (select * from
+  arnote.wishes w WHERE
+  (w.id NOT IN (311))) p
+WHERE NOT p.archive AND (p.realized=true);
+
+
+-- Реализованное
+select * from (select * from
+  arnote.wishes w WHERE
+  (w.id NOT IN (311))) p
+WHERE NOT p.archive AND (p.realized=true);
+
+
 
 
 
