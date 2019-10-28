@@ -11,7 +11,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 
-@PropertySource("classpath:application.properties") //read filename from application.properties
+@PropertySource("classpath:application.properties")
 @Component
 public class EmailSender {
 

@@ -782,7 +782,12 @@ var HeaderComponent = /** @class */ (function () {
         console.log('cryptokey is - ' + this.cryptokey);
         this.user = new _dto_user__WEBPACK_IMPORTED_MODULE_11__["User"]();
         if (idToken) {
-            this.loginDropDownMenu = ['О пользователе', 'Выйти'];
+            if (this.authService.isAuthenticated()) {
+                this.loginDropDownMenu = ['О пользователе', 'Выйти'];
+            }
+            else {
+                this.loginDropDownMenu = ['Зарегистрироваться', 'Войти'];
+            }
         }
         else {
             this.loginDropDownMenu = ['Зарегистрироваться', 'Войти'];
@@ -1752,7 +1757,7 @@ module.exports = "@media screen and (max-width: 500px){\r\n\r\n  .sidenav {\r\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"content-container\">\r\n  <div class=\"content-area\">\r\n\r\n    <clr-alert [clrAlertType]=\"'success'\" *ngIf=\"result\">\r\n      <clr-alert-item>\r\n        <span class=\"alert-text\">\r\n            {{result}}\r\n        </span>\r\n      </clr-alert-item>\r\n    </clr-alert>\r\n\r\n    <clr-alert [clrAlertType]=\"'danger'\" *ngIf=\"error\">\r\n      <clr-alert-item>\r\n        <span class=\"alert-text\">\r\n            {{error}}\r\n        </span>\r\n      </clr-alert-item>\r\n    </clr-alert>\r\n\r\n\r\n    <h1>Дорогой друг!</h1>\r\n    <p>\r\n      Сейчас ты находишься на страничке проекта arNote. Это сервис хранения желаний, позволяющий считать сроки реализации, различным образом категорировать и управлять вашими желаниями. Для работы с сервисом необходимо получить логин и пароль от автора сервиса, в будущем будет организована свободная регистрация.\r\n    </p>\r\n    <p>\r\n      Одни из Важных преимуществ сервиса планируется сделать шифрование данных на стороне клиента, что обеспечит полную конфиденциальность. То есть администратор / автор сервиса не сможет прочитать Ваши данные ни при каких обстоятельствах, так как все Ваши записи будет шифрованы по уникальному ключу, который знаете только Вы.\r\n    </p>\r\n    <p>\r\n      По всем вопросам просьба писать автору на <i>antonromanov@list.ru.</i>\r\n    </p>\r\n\r\n  </div>\r\n  <app-sidebar class=\"sidenav\"></app-sidebar>\r\n</div>\r\n"
+module.exports = "<div class=\"content-container\">\r\n  <div class=\"content-area\">\r\n\r\n    <clr-alert [clrAlertType]=\"'success'\" *ngIf=\"result\">\r\n      <clr-alert-item>\r\n        <span class=\"alert-text\">\r\n            {{result}}\r\n        </span>\r\n      </clr-alert-item>\r\n    </clr-alert>\r\n\r\n    <clr-alert [clrAlertType]=\"'danger'\" *ngIf=\"error\">\r\n      <clr-alert-item>\r\n        <span class=\"alert-text\">\r\n            {{error}}\r\n        </span>\r\n      </clr-alert-item>\r\n    </clr-alert>\r\n\r\n\r\n    <h1>Дорогой друг!</h1>\r\n    <p>\r\n      Сейчас ты находишься на страничке проекта arNote. Это сервис хранения желаний, позволяющий считать сроки реализации, различным образом категорировать и управлять вашими желаниями. Для работы с сервисом необходимо получить логин и пароль от автора сервиса, в будущем будет организована свободная регистрация.\r\n    </p>\r\n    <p>\r\n      Одни из Важных преимуществ сервиса планируется сделать шифрование данных на стороне клиента, что обеспечит полную конфиденциальность. То есть администратор / автор сервиса не сможет прочитать Ваши данные ни при каких обстоятельствах, так как все Ваши записи будет шифрованы по уникальному ключу, который знаете только Вы.\r\n    </p>\r\n    <p>\r\n      По всем вопросам просьба писать автору на <i>antonromanov@list.ru.</i>\r\n    </p>\r\n\r\n  </div>\r\n  <!--<app-sidebar class=\"sidenav\"></app-sidebar>-->\r\n</div>\r\n"
 
 /***/ }),
 

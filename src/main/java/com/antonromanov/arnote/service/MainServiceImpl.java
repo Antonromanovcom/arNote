@@ -227,25 +227,17 @@ public class MainServiceImpl implements MainService {
 
                         if (m.find()) {
                             localWish = m.group(1);
-                            System.out.println("Matched m1: " + localWish);
-                        } else {
-                            System.out.println("No match.");
                         }
-
-                        System.out.println("=========================================");
 
                         if (m2.find()) {
                             localPrice = Integer.parseInt(m2.group(1).replace(",", "").trim());
-                            System.out.println("Matched m2: " + localPrice);
-                        } else {
-                            System.out.println("No match.");
                         }
 
                         List<Wish> wishes = wishRepository.getWishesByName(localWish).orElseGet(() -> new ArrayList<>());
 
                         if (wishes.size() < 1) {
                             //нету? добавляем
-                            wishRepository.save(new Wish(localWish, localPrice, 1, false, "from csv", "", localUser));
+                            wishRepository.save(new Wish(localWish, localPrice, 1, 1, false, "from csv", "", localUser, new Date()));
                             addCount++;
                         }
                     });
