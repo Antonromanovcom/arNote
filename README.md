@@ -89,6 +89,12 @@ select * from (select * from
   (w.id NOT IN (311))) p
 WHERE NOT p.archive AND (p.realized=true);
 
+-- Сумма реализованного (за месяц)
+select sum(p.price) from (select * from
+  arnote.wishes w WHERE
+  (w.id NOT IN (311) and extract(month FROM w.realization_date) = 10)) p
+WHERE NOT p.archive AND (p.realized=true);
+
 
 
 
