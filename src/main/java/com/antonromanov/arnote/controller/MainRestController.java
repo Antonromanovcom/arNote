@@ -43,7 +43,6 @@ public class MainRestController extends ControllerBase {
 
 	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
 
-
 	@Data
 	private class DTO {
 		private List<Wish> list = new ArrayList<>();
@@ -85,7 +84,6 @@ public class MainRestController extends ControllerBase {
 			DTO dto = new DTO();
 			dto.list.addAll(wishes);
 
-
 			String res = createGsonBuilder().toJson(dto);
 			LOGGER.info("PAYLOAD: " + res);
 
@@ -126,7 +124,6 @@ public class MainRestController extends ControllerBase {
 						wl.getWishList().sort(comparator.reversed());
 					});
 				}
-
 
 				result = createNullableGsonBuilder().toJson(dtOwithOrder);
 				LOGGER.info("PAYLOAD (wishes count): " + dtOwithOrder.list.size());
@@ -237,7 +234,6 @@ public class MainRestController extends ControllerBase {
 			newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, localUser));
 
 			// Предотвращение вываливания на пустых датах
-
 			if (newWish.getCreationDate() == null) newWish.setCreationDate(new Date());
 			if (newWish.getRealized() == null) newWish.setRealized(false);
 			if (newWish.getRealizationDate() == null) newWish.setRealizationDate(new Date());
@@ -343,10 +339,8 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("PRINCIPAL: " + principal.getName());
 
 			LocalUser localUser = getUserFromPrincipal(principal);
-
 			Salary newSalary;
 			newSalary = mainService.saveSalary(parseJsonToSalary(requestParam, localUser));
-
 			String result = createGsonBuilder().toJson(newSalary);
 			LOGGER.info("PAYLOAD: " + result);
 
@@ -471,7 +465,6 @@ public class MainRestController extends ControllerBase {
 			if (wish.getCreationDate() == null) wish.setCreationDate(currentDate);
 			if (wish.getPriorityGroupOrder() == null) wish.setPriorityGroupOrder(1);
 
-
 			String result = createNullableGsonBuilder().toJson(wish);
 
 			return $prepareResponse(result);
@@ -498,11 +491,6 @@ public class MainRestController extends ControllerBase {
 				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
 			}
 			usersRepo.save(newUser);
-			/*LOGGER.info("EMAIL SENT STATUS: " +
-					emailSender.sendPlainText(newUser.getEmail(),
-							"Ваши данные для доступа к arNote",
-							"Ваш пароль - " + newUser.getPwd() + " [Логин - " + newUser.getLogin() + " ]").getStatus());*/
-
 			return $prepareResponse(createGsonBuilder().toJson(newUser));
 
 		}, null, null, null, resp);
@@ -612,7 +600,7 @@ public class MainRestController extends ControllerBase {
 	public ResponseEntity<String> getCurrentUser(Principal principal, HttpServletResponse resp) {
 
 		return $do(s -> {
-//			LOGGER.info("========= GET CURRENT USER  ============== ");
+
 			LocalUser localUser = getUserFromPrincipal(principal);
 			// Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
 			fixNullUserFields(localUser);
@@ -684,7 +672,6 @@ public class MainRestController extends ControllerBase {
 		user.setPwd(passwordEncoder.encode(pwd));
 		LocalUser updatedUser = usersRepo.saveAndFlush(user);
 		LOGGER.info("UPDATED USER - " + updatedUser.toString());
-
 
 		return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd + " [email - " + email + " ]");
 

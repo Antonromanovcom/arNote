@@ -182,12 +182,12 @@ public class MainServiceImpl implements MainService {
 
     @Override
     public Integer getSumm4All(LocalUser user) {
-        return wishRepository.findAllByIdSorted(user).stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
+        return wishRepository.findAllByIdSorted(user).stream().map(Wish::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
     @Override
     public Integer getSumm4Prior(LocalUser user) {
-        return wishRepository.getAllWithPriority1(user).stream().map(w -> w.getPrice()).reduce(0, ArithmeticUtils::addAndCheck);
+        return wishRepository.getAllWithPriority1(user).stream().map(Wish::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
     @Override
@@ -242,7 +242,7 @@ public class MainServiceImpl implements MainService {
                             localPrice = Integer.parseInt(m2.group(1).replace(",", "").trim());
                         }
 
-                        List<Wish> wishes = wishRepository.getWishesByName(localWish).orElseGet(() -> new ArrayList<>());
+                        List<Wish> wishes = wishRepository.getWishesByName(localWish).orElseGet(ArrayList::new);
 
                         if (wishes.size() < 1) {
                             //нету? добавляем
