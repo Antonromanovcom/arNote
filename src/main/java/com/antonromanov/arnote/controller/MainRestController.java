@@ -249,7 +249,7 @@ public class MainRestController extends ControllerBase {
 		return $do(s -> {
 
 			LOGGER.info("========= ADD WISH ============== ");
-			LOGGER.info(wishWithPicture.getDecodedBase64String());
+			//LOGGER.info(wishWithPicture.getDecodedBase64String());
 			wishWithPicture.base64StringToJpg();
 
 		/*LOGGER.info("PAYLOAD: " + requestParam);

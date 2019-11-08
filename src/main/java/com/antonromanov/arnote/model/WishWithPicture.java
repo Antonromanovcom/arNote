@@ -83,10 +83,18 @@ public class WishWithPicture {
 	public void cutCircle2(BufferedImage image, String extension) {
 
 		try {
-			int x = 100;
-			int y = 100;
-			int radius = 40;
-			int margin = 10;
+			int radius;
+			if (image.getHeight() > image.getWidth()) {
+				radius = image.getWidth() / 2;
+			} else {
+				radius = image.getHeight() / 2;
+			}
+
+			int x = image.getWidth() / 2;
+			int y = image.getHeight() / 2;
+//			int margin = 10;
+			int margin = ((image.getWidth()/100)*10);
+
 			BufferedImage bi = new BufferedImage(2 * radius + (2 * margin), 2 * radius + (2 * margin), BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g2 = bi.createGraphics();
 			g2.translate(bi.getWidth() / 2, bi.getHeight() / 2);
@@ -104,8 +112,6 @@ public class WishWithPicture {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-
 	}
 
 
