@@ -16,15 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -222,7 +218,6 @@ public class MainRestController extends ControllerBase {
 	@PostMapping
 	public ResponseEntity<String> addWish(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
 
-
 		return $do(s -> {
 
 			LOGGER.info("========= ADD WISH ============== ");
@@ -245,6 +240,39 @@ public class MainRestController extends ControllerBase {
 
 		}, requestParam, null, OperationType.ADD_WISH, resp);
 	}
+
+
+	@CrossOrigin(origins = "*")
+	@PostMapping("/www")
+	public ResponseEntity<String> addWishWithPicture(Principal principal, @RequestBody WishWithPicture wishWithPicture, HttpServletResponse resp) {
+
+		return $do(s -> {
+
+			LOGGER.info("========= ADD WISH ============== ");
+			LOGGER.info(wishWithPicture.getDecodedBase64String());
+			wishWithPicture.base64StringToJpg();
+
+		/*LOGGER.info("PAYLOAD: " + requestParam);
+
+			LocalUser localUser = getUserFromPrincipal(principal);
+
+			Wish newWish;
+			newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, localUser));
+
+			// Предотвращение вываливания на пустых датах
+			if (newWish.getCreationDate() == null) newWish.setCreationDate(new Date());
+			if (newWish.getRealized() == null) newWish.setRealized(false);
+			if (newWish.getRealizationDate() == null) newWish.setRealizationDate(new Date());
+
+			String result = createGsonBuilder().toJson(newWish);
+			LOGGER.info("PAYLOAD: " + result);*/
+
+			return null;
+
+		}, wishWithPicture, null, OperationType.ADD_WISH, resp);
+	}
+
+
 
 	@CrossOrigin(origins = "*")
 	@GetMapping("/summ")

@@ -32,7 +32,6 @@ public class LocalUser {
 	@Column
 	private String login;
 
-
 	@Column
 	private String pwd;
 
@@ -61,9 +60,6 @@ public class LocalUser {
 
 	@Column
 	private String lastOperation;
-
-
-
 
 	@Override
 	public String toString() {
