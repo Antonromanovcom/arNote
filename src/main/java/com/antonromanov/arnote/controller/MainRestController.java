@@ -250,7 +250,7 @@ public class MainRestController extends ControllerBase {
 
 			LOGGER.info("========= ADD WISH ============== ");
 			//LOGGER.info(wishWithPicture.getDecodedBase64String());
-			wishWithPicture.base64StringToJpg();
+			wishWithPicture.base64StringToPng();
 
 		/*LOGGER.info("PAYLOAD: " + requestParam);
 
