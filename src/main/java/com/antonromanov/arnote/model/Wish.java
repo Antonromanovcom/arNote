@@ -58,6 +58,8 @@ public class Wish {
     @Column
     private Boolean realized;
 
+    @Lob
+    private byte[] wishPicture;
 
 
     public Wish(String wish, Integer price, Integer priority, Integer priorityGroup, Boolean ac, String description, String url, LocalUser user, Date creationDate) {

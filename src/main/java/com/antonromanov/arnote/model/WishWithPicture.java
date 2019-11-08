@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.model;
 
+import com.antonromanov.arnote.exceptions.SaveNewWishException;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.*;
@@ -26,21 +27,33 @@ public class WishWithPicture {
 	public WishWithPicture() {
 	}
 
-	public void base64StringToPng() {
+	public byte[] base64StringToPng() throws SaveNewWishException {
 
+		byte[] croppedImageInByte=null;
 
 		String[] strings = decodedBase64String.split(","); // отрезаем ненужное
 		byte[] data = DatatypeConverter.parseBase64Binary(strings[1]);
 		InputStream in = new ByteArrayInputStream(data);
 		try {
 			BufferedImage bImageFromConvert = ImageIO.read(in); // пишем байты в BufferedImage
-			cutCircle(bImageFromConvert); // обрезаем
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			BufferedImage croppedImage = cutCircle(bImageFromConvert); //обрезаем
+
+			if (croppedImage!=null) {
+				ImageIO.write(croppedImage, "png", baos);
+				baos.flush();
+				croppedImageInByte = baos.toByteArray();
+				baos.close();
+			}
+
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new SaveNewWishException("Ошибка обработки фотографии желания");
 		}
+
+		return croppedImageInByte;
 	}
 
-	private void cutCircle(BufferedImage image) {
+	private BufferedImage cutCircle(BufferedImage image) {
 
 		try {
 			int radius;
@@ -66,10 +79,11 @@ public class WishWithPicture {
 			g2.setClip(myArea);
 			g2.drawImage(image.getSubimage(x - radius, y - radius, x + radius, y + radius), -radius, -radius, null);
 			String path = "C:\\elexir\\test_image_1.png";
-
 			ImageIO.write(bi, "png", new File(path));
+			return bi;
+
 		} catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
 	}
 }

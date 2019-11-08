@@ -16,11 +16,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -249,29 +255,23 @@ public class MainRestController extends ControllerBase {
 		return $do(s -> {
 
 			LOGGER.info("========= ADD WISH ============== ");
-			//LOGGER.info(wishWithPicture.getDecodedBase64String());
-			wishWithPicture.base64StringToPng();
-
-		/*LOGGER.info("PAYLOAD: " + requestParam);
 
 			LocalUser localUser = getUserFromPrincipal(principal);
+			Wish newWish = new Wish();
+			newWish.setWishPicture(wishWithPicture.base64StringToPng());
+			newWish.setWish("TEST WISH WITH PICTURE");
+			Wish savedWish = mainService.addWish(newWish);
+			ByteArrayInputStream bis = new ByteArrayInputStream(savedWish.getWishPicture());
 
-			Wish newWish;
-			newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, localUser));
+			BufferedImage bImage2 = ImageIO.read(bis);
+			ImageIO.write(bImage2, "png", new File("output.png") );
+			System.out.println("image created");
 
-			// Предотвращение вываливания на пустых датах
-			if (newWish.getCreationDate() == null) newWish.setCreationDate(new Date());
-			if (newWish.getRealized() == null) newWish.setRealized(false);
-			if (newWish.getRealizationDate() == null) newWish.setRealizationDate(new Date());
-
-			String result = createGsonBuilder().toJson(newWish);
-			LOGGER.info("PAYLOAD: " + result);*/
 
 			return null;
 
-		}, wishWithPicture, null, OperationType.ADD_WISH, resp);
+		}, wishWithPicture, principal, OperationType.ADD_WISH, resp);
 	}
-
 
 
 	@CrossOrigin(origins = "*")
@@ -291,7 +291,7 @@ public class MainRestController extends ControllerBase {
 			if (mainService.getAllRealizedWishes(localUser).isPresent()) {
 
 				List<Long> realizedWishes = mainService.getAllRealizedWishes(localUser).get().stream()
-						.filter(wf->wf.getRealizationDate()!=null && wf.getCreationDate()!=null )
+						.filter(wf -> wf.getRealizationDate() != null && wf.getCreationDate() != null)
 						.map(w -> (w.getRealizationDate().getTime() - w.getCreationDate().getTime())).collect(Collectors.toList());
 				Optional<Long> summ = realizedWishes.stream().reduce((l, r) -> l + r);
 				if (summ.isPresent()) {
@@ -299,8 +299,8 @@ public class MainRestController extends ControllerBase {
 				}
 				days = (int) (localAverageImplementationTime / (1000 * 60 * 60 * 24)); // Переводим в кол-во дней
 
-				implemetedSummAllTime = mainService.getImplementedSum(localUser, 1).orElseGet(()->0);
-				implemetedSummMonth = mainService.getImplementedSum(localUser, 2).orElseGet(()->0);
+				implemetedSummAllTime = mainService.getImplementedSum(localUser, 1).orElseGet(() -> 0);
+				implemetedSummMonth = mainService.getImplementedSum(localUser, 2).orElseGet(() -> 0);
 
 
 			}
