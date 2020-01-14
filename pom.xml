@@ -88,8 +88,6 @@
             <version>2.9.8</version>
         </dependency>
 
-
-
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -114,7 +112,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
-
 
 
         <dependency>

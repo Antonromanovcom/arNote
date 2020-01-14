@@ -2,7 +2,6 @@ package com.antonromanov.arnote.utils;
 
 import java.util.Arrays;
 import java.util.List;
-
 import com.google.gson.*;
 
 public final class JSONTemplate {
