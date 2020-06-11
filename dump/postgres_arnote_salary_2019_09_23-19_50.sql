@@ -1,1 +1,0 @@
-INSERT INTO arnote.salary (id, fullslary, residualsalary, salary_time_stamp, date, user_id) VALUES (15, 170000, 64000, '2019-09-19 13:12:30.857000', '2019-09-19', 8);
