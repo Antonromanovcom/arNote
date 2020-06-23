@@ -11,13 +11,13 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString(exclude = "id")
 @EqualsAndHashCode
-@Table(name = "wishes", schema = "arnote", catalog = "postgres")
+@Table(name = "wishes")
 public class Wish {
 
     @Id
     @Column(name="id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wishes_seq_gen")
-    @SequenceGenerator(name = "wishes_seq_gen", sequenceName ="arnote.wishes_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "wishes_seq_gen", sequenceName ="wishes_id_seq", allocationSize = 1)
     private long id;
 
     @Column(name = "wish", nullable = true, length = 255)

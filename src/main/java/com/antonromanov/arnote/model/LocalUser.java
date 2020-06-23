@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
-@Table(name = "users", schema = "arnote", catalog = "postgres")
+@Table(name = "users")
 public class LocalUser {
 
 	public LocalUser(String login, Role userRole, String pwd, boolean usercryptomode, String email, String fullname) {
@@ -26,7 +26,7 @@ public class LocalUser {
 	@Id
 	@Column(name="id", nullable = false)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq_gen")
-	@SequenceGenerator(name = "users_seq_gen", sequenceName ="arnote.users_id_seq", allocationSize = 1)
+	@SequenceGenerator(name = "users_seq_gen", sequenceName ="users_id_seq", allocationSize = 1)
 	private long id;
 
 	@Column
