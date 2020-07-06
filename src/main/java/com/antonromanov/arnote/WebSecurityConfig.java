@@ -40,8 +40,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/").permitAll()
 				.antMatchers("/*.js").permitAll()
 				//.antMatchers("/index").permitAll() //
-				.antMatchers(HttpMethod.POST, "/login", "/rest/wishes/users").permitAll() //
-				.antMatchers(HttpMethod.GET, "/login").permitAll() // For Test on Browser
+				.antMatchers(HttpMethod.POST, "/login", "/rest/wishes/users").permitAll()
+				.antMatchers(HttpMethod.GET, "/login", "/favicon.ico").permitAll()
 				// Need authentication.
 				.anyRequest().authenticated()
 				.and()
