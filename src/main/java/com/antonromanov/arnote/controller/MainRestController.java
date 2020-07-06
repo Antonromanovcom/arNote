@@ -144,8 +144,11 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("========= MOVE WISH (CHANGE MONTH PRIORITY) ============== ");
 			LOGGER.info("PRINCIPAL: " + principal.getName());
 			LOGGER.info("id: " + id);
+			LOGGER.info("month: " + month);
+			LOGGER.info("=========================================================== ");
 
-			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
+			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() ->
+					new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
 			wish.setPriorityGroup(parseMonthAndCalculatePriority(month));
 
 			String result = createNullableGsonBuilder().toJson(mainService.updateAndFlushWish(wish));
