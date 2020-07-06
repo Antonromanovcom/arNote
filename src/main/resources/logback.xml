@@ -19,9 +19,9 @@
 
     <appender name="FILE_FOR_BOT" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-        <file>log/arnote-bot.log</file>
+        <file>/home/admin/arnote/log/arnote-bot.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/arnote-bot.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/home/admin/arnote/log/arnote-bot.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100KB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
