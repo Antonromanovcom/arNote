@@ -3,34 +3,25 @@
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-        <file>logs/arnote.log</file>
+        <file>log/arnote-all-logs.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/arnote-logs.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/arnote-all-logs.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <!-- how many days to keep the files -->
             <maxHistory>10</maxHistory>
         </rollingPolicy>
 
-
-        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-                <timestampFormat>yyyy-MM-dd' - 'HH:mm:ss.SSSX</timestampFormat>
-                <timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>
-                <appendLineSeparator>true</appendLineSeparator>
-                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-                    <prettyPrint>true</prettyPrint>
-                </jsonFormatter>
-            </layout>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %X{first} - %msg%n</pattern>
         </encoder>
     </appender>
 
     <appender name="FILE_FOR_BOT" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-        <file>logs/arnote-bot.log</file>
+        <file>log/arnote-bot.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/arnote.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/arnote-bot.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100KB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
@@ -49,10 +40,6 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %X{first} - %msg%n</pattern>
         </encoder>
     </appender>
-
-    <!--<logger name="com" level="info" additivity="false" >-->
-        <!--<appender-ref ref="FILE" />-->
-    <!--</logger>-->
 
     <logger name="console_logger" level="info" additivity="false" >
         <appender-ref ref="console" />
