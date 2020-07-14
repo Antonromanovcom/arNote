@@ -1,30 +1,26 @@
 package com.antonromanov.arnote.controller;
 
-import com.antonromanov.arnote.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.email.EmailSender;
 import com.antonromanov.arnote.email.EmailStatus;
+import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
-import lombok.*;
-import org.slf4j.LoggerFactory;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -39,9 +35,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @CrossOrigin()
 @RestController
 @RequestMapping("/rest/wishes")
+@Slf4j
 public class MainRestController extends ControllerBase {
 
-	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
+//	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
 
 	@Data
 	private class DTO {
@@ -72,9 +69,12 @@ public class MainRestController extends ControllerBase {
 
 
 		return $do(s -> {
-			LOGGER.info("============== FILTER WISHES ============== ");
+		/*	LOGGER.info("============== FILTER WISHES ============== ");
 			LOGGER.info("VALUE: " + requestParam);
-			LOGGER.info("PRINCIPAL: " + principal.getName());
+			LOGGER.info("PRINCIPAL: " + principal.getName());*/
+
+			log.error("ERROR!");
+
 			LocalUser localUser = getUserFromPrincipal(principal);
 
 			List<Wish> wishes = mainService
@@ -85,7 +85,7 @@ public class MainRestController extends ControllerBase {
 			dto.list.addAll(wishes);
 
 			String res = createGsonBuilder().toJson(dto);
-			LOGGER.info("PAYLOAD: " + res);
+		//	LOGGER.info("PAYLOAD: " + res);
 
 			return $prepareResponse(res);
 
@@ -98,7 +98,7 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 			List<WishDTOList> wishListWithMonthOrder;
-			LOGGER.info("PRINCIPAL: " + principal.getName());
+	//		LOGGER.info("PRINCIPAL: " + principal.getName());
 			LocalUser localUser = getUserFromPrincipal(principal);
 			if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
@@ -108,17 +108,17 @@ public class MainRestController extends ControllerBase {
 				dtOwithOrder.list.addAll(wishListWithMonthOrder);
 
 				if ("name".equalsIgnoreCase(sortType)) {
-					LOGGER.info("SORTING BY NAME");
+		//			LOGGER.info("SORTING BY NAME");
 					dtOwithOrder.list.forEach(wl -> {
 						wl.getWishList().sort(Comparator.comparing(WishDTO::getWish));
 					});
 				} else if ("price-asc".equalsIgnoreCase(sortType)) {
-					LOGGER.info("SORTING BY PRICE ASC");
+		//			LOGGER.info("SORTING BY PRICE ASC");
 					dtOwithOrder.list.forEach(wl -> {
 						wl.getWishList().sort(Comparator.comparing(WishDTO::getPrice));
 					});
 				} else if ("price-desc".equalsIgnoreCase(sortType)) {
-					LOGGER.info("SORTING BY PRICE DESC");
+		//			LOGGER.info("SORTING BY PRICE DESC");
 					Comparator<WishDTO> comparator = Comparator.comparing(WishDTO::getPrice);
 					dtOwithOrder.list.forEach(wl -> {
 						wl.getWishList().sort(comparator.reversed());
@@ -126,8 +126,8 @@ public class MainRestController extends ControllerBase {
 				}
 
 				result = createNullableGsonBuilder().toJson(dtOwithOrder);
-				LOGGER.info("PAYLOAD (wishes count): " + dtOwithOrder.list.size());
-				LOGGER.info("============== GET WISHES WITH GROUP ORDER ============== ");
+		//		LOGGER.info("PAYLOAD (wishes count): " + dtOwithOrder.list.size());
+		//		LOGGER.info("============== GET WISHES WITH GROUP ORDER ============== ");
 
 				return $prepareResponse(result);
 			} else {
@@ -141,11 +141,11 @@ public class MainRestController extends ControllerBase {
 	public ResponseEntity<String> changeMonthOrder(Principal principal, @RequestParam String id, @RequestParam String month, HttpServletResponse resp) {
 		return $do(s -> {
 
-			LOGGER.info("========= MOVE WISH (CHANGE MONTH PRIORITY) ============== ");
-			LOGGER.info("PRINCIPAL: " + principal.getName());
-			LOGGER.info("id: " + id);
-			LOGGER.info("month: " + month);
-			LOGGER.info("=========================================================== ");
+			log.info("========= MOVE WISH (CHANGE MONTH PRIORITY) ============== ");
+			log.info("PRINCIPAL: " + principal.getName());
+			log.info("id: " + id);
+			log.info("month: " + month);
+			log.info("=========================================================== ");
 
 			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() ->
 					new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
@@ -165,7 +165,8 @@ public class MainRestController extends ControllerBase {
 		return $do(s -> {
 			List<Wish> wishList;
 			List<WishDTOList> wishListWithMonthOrder;
-			LOGGER.info("PRINCIPAL: " + principal.getName());
+		//	LOGGER.info("PRINCIPAL: " + principal.getName());
+			log.error("ERROR!");
 			LocalUser localUser = getUserFromPrincipal(principal);
 			if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
@@ -184,14 +185,14 @@ public class MainRestController extends ControllerBase {
 
 					dto.list.addAll(wishList);
 					result = createNullableGsonBuilder().toJson(dto);
-					LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
-					LOGGER.info("============== GET ALL WISHES ============== ");
+	//				LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
+	//				LOGGER.info("============== GET ALL WISHES ============== ");
 				} else {
 					wishList = mainService.getAllWishesWithPriority1(localUser);
 					dto.list.addAll(wishList);
-					LOGGER.info("============== GET PRIORITY WISHES ============== ");
+	//				LOGGER.info("============== GET PRIORITY WISHES ============== ");
 					result = createNullableGsonBuilder().toJson(dto);
-					LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
+	//				LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
 				}
 
 				return $prepareResponse(result);
@@ -207,14 +208,14 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 
-			LOGGER.info("========= UPDATE WISH ============== ");
-			LOGGER.info("PAYLOAD: " + requestParam);
+//			LOGGER.info("========= UPDATE WISH ============== ");
+//			LOGGER.info("PAYLOAD: " + requestParam);
 			LocalUser localUser = getUserFromPrincipal(principal);
 			Wish wish = parseJsonToWish(ParseType.EDIT, requestParam, localUser);
 			mainService.updateWish(mainService.updateMonthGroup(wish));
 
 			String result = "";
-			LOGGER.info("PAYLOAD: " + result);
+//			LOGGER.info("PAYLOAD: " + result);
 
 			return $prepareResponse(result);
 
@@ -228,8 +229,8 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 
-			LOGGER.info("========= ADD WISH ============== ");
-			LOGGER.info("PAYLOAD: " + requestParam);
+//			LOGGER.info("========= ADD WISH ============== ");
+//			LOGGER.info("PAYLOAD: " + requestParam);
 
 			LocalUser localUser = getUserFromPrincipal(principal);
 
@@ -242,7 +243,7 @@ public class MainRestController extends ControllerBase {
 			if (newWish.getRealizationDate() == null) newWish.setRealizationDate(new Date());
 
 			String result = createGsonBuilder().toJson(newWish);
-			LOGGER.info("PAYLOAD: " + result);
+//			LOGGER.info("PAYLOAD: " + result);
 
 			return $prepareResponse(result);
 
@@ -276,8 +277,6 @@ public class MainRestController extends ControllerBase {
 
 				implemetedSummAllTime = mainService.getImplementedSum(localUser, 1).orElseGet(()->0);
 				implemetedSummMonth = mainService.getImplementedSum(localUser, 2).orElseGet(()->0);
-
-
 			}
 
 			if (mainService.getLastSalary(localUser) != null) {
@@ -290,7 +289,7 @@ public class MainRestController extends ControllerBase {
 						.implemetedSummAllTime(implemetedSummAllTime)
 						.implemetedSummMonth(implemetedSummMonth)
 						.priority(mainService.getSumm4Prior(localUser)).build());
-				LOGGER.info("PAYLOAD: " + result);
+//				LOGGER.info("PAYLOAD: " + result);
 				return $prepareResponse(result);
 			} else {
 				return $prepareNoDataYetErrorResponse(true);
@@ -304,8 +303,8 @@ public class MainRestController extends ControllerBase {
 	public ResponseEntity<String> deleteWish(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 
 		return $do(s -> {
-			LOGGER.info("========= DELETE WISH ============== ");
-			LOGGER.info("ID: " + id);
+//			LOGGER.info("========= DELETE WISH ============== ");
+//			LOGGER.info("ID: " + id);
 			Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID));
 			wish.setAc(true);
 			mainService.updateWish(wish);
@@ -319,8 +318,8 @@ public class MainRestController extends ControllerBase {
 	public ResponseEntity<String> getLastSalary(Principal principal, HttpServletResponse resp) {
 
 		return $do(s -> {
-			LOGGER.info("========= GET LAST SALARY ============== ");
-			LOGGER.info("PRINCIPAL: " + principal.getName());
+//			LOGGER.info("========= GET LAST SALARY ============== ");
+//			LOGGER.info("PRINCIPAL: " + principal.getName());
 
 			LocalUser localUser = getUserFromPrincipal(principal);
 
@@ -337,15 +336,15 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 
-			LOGGER.info("========= ADD SALARY ============== ");
+/*			LOGGER.info("========= ADD SALARY ============== ");
 			LOGGER.info("PAYLOAD: " + requestParam);
-			LOGGER.info("PRINCIPAL: " + principal.getName());
+			LOGGER.info("PRINCIPAL: " + principal.getName());*/
 
 			LocalUser localUser = getUserFromPrincipal(principal);
 			Salary newSalary;
 			newSalary = mainService.saveSalary(parseJsonToSalary(requestParam, localUser));
 			String result = createGsonBuilder().toJson(newSalary);
-			LOGGER.info("PAYLOAD: " + result);
+//			LOGGER.info("PAYLOAD: " + result);
 
 			return $prepareResponse(result);
 
@@ -361,9 +360,9 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 
-			LOGGER.info("FILE: " + csvFile.getOriginalFilename());
+//			LOGGER.info("FILE: " + csvFile.getOriginalFilename());
 			LocalUser localUser = getUserFromPrincipal(principal);
-			LOGGER.info("PRINCIPAL: " + localUser.toString());
+//			LOGGER.info("PRINCIPAL: " + localUser.toString());
 
 			String result = createGsonBuilder().toJson(mainService.parseCsv(csvFile, localUser));
 			return $prepareResponse(result);
@@ -379,8 +378,8 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 
-			LOGGER.info("========= MOVE WISH (CHANGE PRIORITY) ============== ");
-			LOGGER.info("id: " + id);
+		/*	LOGGER.info("========= MOVE WISH (CHANGE PRIORITY) ============== ");
+			LOGGER.info("id: " + id);*/
 
 			Wish wish = checkParametersAndGetWish(id, move);
 
@@ -410,7 +409,7 @@ public class MainRestController extends ControllerBase {
 		if ((isBlank(id)) || (!Pattern.compile("^\\d*$").matcher(id).matches()))
 			throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID);
 
-		LOGGER.info("move: " + move);
+//		LOGGER.info("move: " + move);
 
 		return mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
 	}
@@ -423,15 +422,15 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 
-			LOGGER.info("========= MOVE WISH (CHANGE MONTH) ============== ");
+	/*		LOGGER.info("========= MOVE WISH (CHANGE MONTH) ============== ");
 			LOGGER.info("id: " + id);
-			LOGGER.info("move: " + move);
+			LOGGER.info("move: " + move);*/
 			LocalUser localUser = getUserFromPrincipal(principal);
-			LOGGER.info("principal: " + localUser.getLogin());
+//			LOGGER.info("principal: " + localUser.getLogin());
 
 			Wish wish = checkParametersAndGetWish(id, move);
 			int maxPrior = (mainService.getMaxPriority(localUser)) - 1;
-			LOGGER.info("max prior: " + maxPrior);
+//			LOGGER.info("max prior: " + maxPrior);
 
 			switch (move) {
 				case "down":
@@ -440,7 +439,7 @@ public class MainRestController extends ControllerBase {
 						if (wish.getPriorityGroup() < maxPrior + 1) {
 							wish.setPriorityGroup(wish.getPriorityGroup() + 1);
 						}
-						LOGGER.info("move summary: " + (wish.getPriorityGroup() + 1));
+//						LOGGER.info("move summary: " + (wish.getPriorityGroup() + 1));
 						mainService.updateWish(wish);
 						break;
 					}
@@ -448,14 +447,14 @@ public class MainRestController extends ControllerBase {
 				case "up":
 
 					if (maxPrior == 0) {
-						LOGGER.info("max prior = 0. move summary: 1");
+//						LOGGER.info("max prior = 0. move summary: 1");
 						wish.setPriorityGroup(1);
 					} else {
 						if (wish.getPriorityGroup() == null) {
-							LOGGER.info("move summary: " + maxPrior);
+//							LOGGER.info("move summary: " + maxPrior);
 							wish.setPriorityGroup(maxPrior);
 						} else if (wish.getPriorityGroup() > 1) {
-							LOGGER.info("move summary: " + (wish.getPriorityGroup() - 1));
+//							LOGGER.info("move summary: " + (wish.getPriorityGroup() - 1));
 							wish.setPriorityGroup(wish.getPriorityGroup() - 1);
 						}
 					}
@@ -483,8 +482,8 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 
-			LOGGER.info("========= ADD USER  ============== ");
-			LOGGER.info("PAYLOAD: " + user);
+		/*	LOGGER.info("========= ADD USER  ============== ");
+			LOGGER.info("PAYLOAD: " + user);*/
 
 			LocalUser newUser = parseJsonToUserAndValidate(user);
 			newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
@@ -506,8 +505,8 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 
-			LOGGER.info("========= DELETE USER  ============== ");
-			LOGGER.info("PAYLOAD: " + id);
+			/*LOGGER.info("========= DELETE USER  ============== ");
+			LOGGER.info("PAYLOAD: " + id);*/
 
 			if (!usersRepo.findById(Long.valueOf(id)).isPresent()) {
 				throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST);
@@ -526,9 +525,9 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 
-			LOGGER.info("========= EDIT USER  ============== ");
+		/*	LOGGER.info("========= EDIT USER  ============== ");
 			LOGGER.info("PAYLOAD: " + user);
-			LOGGER.info("id: " + id);
+			LOGGER.info("id: " + id);*/
 
 			LocalUser newUser = parseJsonToUserAndValidate(user);
 			LocalUser localuser = getUserFromPrincipal(principal);
@@ -558,8 +557,8 @@ public class MainRestController extends ControllerBase {
 
 		return $do(s -> {
 
-			LOGGER.info("========= TOGGLE / GET USER MODE ============== ");
-			LOGGER.info("MODE: " + mode);
+			/*LOGGER.info("========= TOGGLE / GET USER MODE ============== ");
+			LOGGER.info("MODE: " + mode);*/
 			LocalUser localuser = getUserFromPrincipal(principal);
 
 			if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
@@ -577,7 +576,7 @@ public class MainRestController extends ControllerBase {
 	public ResponseEntity<String> getAllUsers(Principal principal, HttpServletResponse resp) {
 
 		return $do(s -> {
-			LOGGER.info("========= GET ALL USERS  ============== ");
+//			LOGGER.info("========= GET ALL USERS  ============== ");
 
 			List<LocalUser> userList = usersRepo.findAll().stream().map(u -> {
 				if (u.getCreationDate() == null) u.setCreationDate(new Date());
@@ -624,8 +623,8 @@ public class MainRestController extends ControllerBase {
 	public ResponseEntity<String> returnUserPassword(Principal principal, @RequestParam(name = "email") String email, HttpServletResponse resp) {
 
 		return $do(s -> {
-			LOGGER.info("========= FORGET PWD METHOD =============== ");
-			LOGGER.info("USER EMAIL - " + email);
+		/*	LOGGER.info("========= FORGET PWD METHOD =============== ");
+			LOGGER.info("USER EMAIL - " + email);*/
 			try {
 				LocalUser localUser = usersRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
 				return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, email).getStatus()));
@@ -647,8 +646,8 @@ public class MainRestController extends ControllerBase {
 	public ResponseEntity<String> resetUserPasswordByAdmin(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 
 		return $do(s -> {
-			LOGGER.info("========= RESET USER PWD =============== ");
-			LOGGER.info("USER ID - " + id);
+		/*	LOGGER.info("========= RESET USER PWD =============== ");
+			LOGGER.info("USER ID - " + id);*/
 			try {
 				LocalUser localUser = usersRepo.findById(Long.parseLong(id)).orElseThrow(UserNotFoundException::new);
 				return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, localUser.getEmail()).getStatus()));
@@ -668,13 +667,13 @@ public class MainRestController extends ControllerBase {
 	 */
 	private EmailStatus changePwd(LocalUser user, String email) {
 
-		LOGGER.info("USER FOUND - " + user.toString());
+//		LOGGER.info("USER FOUND - " + user.toString());
 
 		String pwd = generateRandomPassword();
-		LOGGER.info("NEW PWD - " + pwd);
+//		LOGGER.info("NEW PWD - " + pwd);
 		user.setPwd(passwordEncoder.encode(pwd));
 		LocalUser updatedUser = usersRepo.saveAndFlush(user);
-		LOGGER.info("UPDATED USER - " + updatedUser.toString());
+//		LOGGER.info("UPDATED USER - " + updatedUser.toString());
 
 		return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd + " [email - " + email + " ]");
 

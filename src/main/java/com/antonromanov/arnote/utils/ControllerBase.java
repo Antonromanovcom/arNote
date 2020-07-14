@@ -13,7 +13,7 @@ import java.security.Principal;
 
 public class ControllerBase {
 
-	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
+	//private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
 
 	protected <T,E>T $do(SomeProcess<T, E> process, E s, Principal user, Utils.OperationType operationType, HttpServletResponse response){
 		try {
@@ -39,7 +39,7 @@ public class ControllerBase {
 		headers.setCacheControl("no-cache");
 
 		ResponseEntity<String> responseEntity = new ResponseEntity<String>(responseBody, headers, HttpStatus.BAD_REQUEST);
-		LOGGER.info("RESPONSE: " + responseEntity.toString());
+	//	LOGGER.info("RESPONSE: " + responseEntity.toString());
 
 		return responseEntity;
 	}
@@ -56,7 +56,7 @@ public class ControllerBase {
 		} else {
 			responseEntity = new ResponseEntity<String>("ERR-02", headers, HttpStatus.BAD_REQUEST);
 		}
-		LOGGER.info("RESPONSE: " + responseEntity.toString());
+	//	LOGGER.info("RESPONSE: " + responseEntity.toString());
 		return responseEntity;
 	}
 
@@ -66,7 +66,7 @@ public class ControllerBase {
 	}
 
 	private static void prepareError(Exception ex, HttpServletResponse response) {
-		LOGGER.error(ex.getMessage(),ex);
+	//	LOGGER.error(ex.getMessage(),ex);
 		response.setStatus(520);
 
 		if(ex instanceof SaveNewWishException)
@@ -79,7 +79,7 @@ public class ControllerBase {
 		try (PrintWriter pw = response.getWriter()) {
 			pw.write(ex.getMessage() == null ? "Ошибка сохранения нового желания! ":ex.getMessage() );
 		}catch (IOException ioe) {
-			LOGGER.error("Не могу записать ошибку в Response", ex);
+	//		LOGGER.error("Не могу записать ошибку в Response", ex);
 		}
 	}
 
