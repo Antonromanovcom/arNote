@@ -4,7 +4,7 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
 <!--        <file>logs/arnote-prod.log</file>-->
-        <file>/home/admin/arnote/log/arnote-prod.log</file>
+        <file>/home/admin/arnote/logs/arnote.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>logs/lib.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -15,13 +15,13 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>PIZDEC-%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %X{first} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %X{first} - %msg%n</pattern>
         </encoder>
     </appender>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>PIZDEC-%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %X{first} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %X{first} - %msg%n</pattern>
         </encoder>
     </appender>
 
