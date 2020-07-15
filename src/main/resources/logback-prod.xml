@@ -6,7 +6,7 @@
 <!--        <file>logs/arnote-prod.log</file>-->
         <file>/home/admin/arnote/logs/arnote.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/lib.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/home/admin/arnote/logs/arnote.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
