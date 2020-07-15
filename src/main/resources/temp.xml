@@ -1,961 +1,1314 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<metamodel xmlns="http://audit.platform.ufs.sbrf.ru">
+<?xml version="1.0" encoding="UTF-8" ?>
+<metamodel>
     <groups>
-        <group code="NBO_ACTIVITY_CREATION">
+        <group>
             <localization>
-                <name lang="RUS" text="Создание NBO-активности" />
+                <name>
+                    <_lang>RUS</_lang>
+                    <_text>Создание Активности</_text>
+                </name>
             </localization>
             <events>
-                <event code="GET_CAMPAIGNER_INFO">
+                <event>
                     <localization>
-                        <name lang="RUS"
-                              text="Запрос на получение списка предложений по идентифицированному клиенту" />
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Создание активности</_text>
+                        </name>
                     </localization>
                     <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Категория события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
                             </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
                             </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
                             </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Логин пользователя" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_FIO" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="CLIENT_FIO" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="ФИО клиента" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
                             </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_ROLE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Код роли" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
                             </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="VSP_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="11-значный код ВСП" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>IP источника запроса</_text>
+                                </name>
                             </localization>
+                            <_code>IP</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="NBO_LIST" mandatory="false">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Код участника кампании – Id продукта – Название продукта" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
                             </localization>
-                        </param>
-                        <param code="AS_INITIATOR" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="АС - инициатор" />
-                            </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
                         </param>
                     </params>
+                    <_code>PUT_NEW_ACTIVITY</_code>
                 </event>
-                <event code="NBO_ACTIVITY_CREATED">
+                <event>
                     <localization>
-                        <name lang="RUS" text="NBO-активность была создана" />
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Активность была создана</_text>
+                        </name>
                     </localization>
                     <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Категория события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
                             </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
                             </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
                             </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Логин пользователя" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_FIO" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="CLIENT_FIO" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="ФИО клиента" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
                             </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_ROLE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Код роли" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Идентификатор активности</_text>
+                                </name>
                             </localization>
+                            <_code>ACTIVITY_ID</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="ACTIVITYID" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Идентификатор активности" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
                             </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="VSP_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="11-значный код ВСП" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
                             </localization>
-                        </param>
-                        <param code="NBO_QUANTITY" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Количество предложений" />
-                            </localization>
-                        </param>
-                        <param code="AS_INITIATOR" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="АС - инициатор" />
-                            </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
                         </param>
                     </params>
+                    <_code>ACTIVITY_CREATED</_code>
                 </event>
             </events>
+            <_code>ACTIVITY_CREATION</_code>
         </group>
-        <group code="NBO_ACTIVITY_WORK">
+        <group>
             <localization>
-                <name lang="RUS" text="Взятие в работу NBO-активности" />
+                <name>
+                    <_lang>RUS</_lang>
+                    <_text>Изменение Активности</_text>
+                </name>
             </localization>
             <events>
-                <event code="ACTIVITY_IS_ALREADY_IN_WORK">
+                <event>
                     <localization>
-                        <name lang="RUS"
-                              text="Пользователь попытался взять в работу активность, взятую в работу другим консультантом" />
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Изменение активности</_text>
+                        </name>
                     </localization>
                     <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Категория события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
                             </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
                             </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
                             </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Логин пользователя" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_FIO" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="CLIENT_FIO" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="ФИО клиента" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
                             </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_ROLE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Код роли" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
                             </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="ACTIVITYID" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Идентификатор активности" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>IP источника запроса</_text>
+                                </name>
                             </localization>
+                            <_code>IP</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="VSP_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="11-значный код ВСП" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
                             </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
                         </param>
-                        <param code="NBO_QUANTITY" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Количество предложений" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Идентификатор изменяемой активности</_text>
+                                </name>
                             </localization>
+                            <_code>ACTIVITY_ID</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
                     </params>
+                    <_code>UPDATE_ACTIVITY</_code>
                 </event>
-                <event code="ACTIVITY_IS_TAKEN">
+                <event>
                     <localization>
-                        <name lang="RUS"
-                              text="NBO-активность успешно взята в работу консультантом" />
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Активность была изменена</_text>
+                        </name>
                     </localization>
                     <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Категория события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
                             </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
                             </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
                             </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Логин пользователя" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_FIO" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="CLIENT_FIO" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="ФИО клиента" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
                             </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_ROLE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Код роли" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Идентификатор измененной активности</_text>
+                                </name>
                             </localization>
+                            <_code>ACTIVITY_ID</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="ACTIVITYID" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Идентификатор активности" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
                             </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="VSP_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="11-значный код ВСП" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
                             </localization>
-                        </param>
-                        <param code="NBO_QUANTITY" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Количество предложений" />
-                            </localization>
-                        </param>
-                    </params>
-                </event>
-                <event code="NBO_ACTIVITY_CLOSED">
-                    <localization>
-                        <name lang="RUS"
-                              text="NBO-активность обработана консультантом" />
-                    </localization>
-                    <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Категория события" />
-                            </localization>
-                        </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
-                            </localization>
-                        </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
-                            </localization>
-                        </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Логин пользователя" />
-                            </localization>
-                        </param>
-                        <param code="USER_FIO" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_FIO" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="ФИО клиента" />
-                            </localization>
-                        </param>
-                        <param code="USER_ROLE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Код роли" />
-                            </localization>
-                        </param>
-                        <param code="ACTIVITYID" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Идентификатор активности" />
-                            </localization>
-                        </param>
-                        <param code="VSP_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="11-значный код ВСП" />
-                            </localization>
-                        </param>
-                        <param code="NBO_QUANTITY" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Количество предложений" />
-                            </localization>
-                        </param>
-                        <param code="NBO_REACTION_LIST" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Тип продукта - Id продукта - результат операции" />
-                            </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
                         </param>
                     </params>
-                </event>
-                <event code="NBO_SALE">
-                    <localization>
-                        <name lang="RUS"
-                              text="Оформление продажи продукта после простановки отклика «Продажа»" />
-                    </localization>
-                    <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Категория события" />
-                            </localization>
-                        </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
-                            </localization>
-                        </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
-                            </localization>
-                        </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Логин пользователя" />
-                            </localization>
-                        </param>
-                        <param code="USER_FIO" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
-                            </localization>
-                        </param>
-                        <param code="USER_ROLE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Код роли" />
-                            </localization>
-                        </param>
-                        <param code="PRODUCT_ID" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Идентификатор NBO (продукта)" />
-                            </localization>
-                        </param>
-                        <param code="VSP_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="11-значный код ВСП" />
-                            </localization>
-                        </param>
-                    </params>
+                    <_code>ACTIVITY_UPDATED</_code>
                 </event>
             </events>
+            <_code>ACTIVITY_UPDATE</_code>
         </group>
-        <group code="ENTER_GROUP">
+        <group>
             <localization>
-                <name lang="RUS" text="Авторизация в МП МРМ РБ" />
+                <name>
+                    <_lang>RUS</_lang>
+                    <_text>Создание Сделки</_text>
+                </name>
             </localization>
             <events>
-                <event code="GET_BASE_PROFILE">
+                <event>
                     <localization>
-                        <name lang="RUS"
-                              text="Получение данных профиля пользователя" />
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Создание сделки</_text>
+                        </name>
                     </localization>
                     <params>
-                        <param code="LOGIN" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Логин пользователя" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
                             </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="AUTHMODE" mandatory="false">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Способ входа" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
                             </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
+                            </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>IP источника запроса</_text>
+                                </name>
+                            </localization>
+                            <_code>IP</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
+                            </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
+                            </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
                         </param>
                     </params>
+                    <_code>PUT_NEW_DEAL</_code>
+                </event>
+                <event>
+                    <localization>
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Сделка была создана</_text>
+                        </name>
+                    </localization>
+                    <params>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
+                            </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
+                            </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
+                            </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Идентификатор сделки</_text>
+                                </name>
+                            </localization>
+                            <_code>DEAL_ID</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
+                            </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
+                            </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
+                        </param>
+                    </params>
+                    <_code>DEAL_CREATED</_code>
                 </event>
             </events>
+            <_code>DEAL_CREATION</_code>
         </group>
-        <group code="FRONT_GROUP">
+        <group>
             <localization>
-                <name lang="RUS" text="События из МП МРМ РБ" />
+                <name>
+                    <_lang>RUS</_lang>
+                    <_text>Изменение Сделки</_text>
+                </name>
             </localization>
             <events>
-                <event code="SBOL_BUTTON_CLICKED">
+                <event>
                     <localization>
-                        <name lang="RUS"
-                              text="Пользователь перешел в СБОЛ в WebView" />
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Изменение сделки</_text>
+                        </name>
                     </localization>
                     <params>
-                        <param code="URL" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="URL" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
                             </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
+                            </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
+                            </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>IP источника запроса</_text>
+                                </name>
+                            </localization>
+                            <_code>IP</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
+                            </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
+                            </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Идентификатор изменяемой сделки</_text>
+                                </name>
+                            </localization>
+                            <_code>DEAL_ID</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
                     </params>
+                    <_code>UPDATE_DEAL</_code>
                 </event>
-                <event code="URL_BUTTON_CLICKED">
+                <event>
                     <localization>
-                        <name lang="RUS"
-                              text="Пользователь перешел по внешней ссылке в WebView" />
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Сделка была изменена</_text>
+                        </name>
                     </localization>
                     <params>
-                        <param code="URL" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="URL" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
                             </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
+                            </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
+                            </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Идентификатор измененной сделки</_text>
+                                </name>
+                            </localization>
+                            <_code>DEAL_ID</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
+                            </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
+                            </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
                         </param>
                     </params>
-                </event>
-                <event code="WEB_VIEW_CLOSED">
-                    <localization>
-                        <name lang="RUS" text="Система вернула в корзину из WebView" />
-                    </localization>
+                    <_code>DEAL_UPDATED</_code>
                 </event>
             </events>
+            <_code>DEAL_UPDATE</_code>
         </group>
-        <group code="PRINT_SBOLPRO">
+        <group>
             <localization>
-                <name lang="RUS"
-                      text="Печать документов на сетевом принтере в СБОЛ.про" />
+                <name>
+                    <_lang>RUS</_lang>
+                    <_text>Создание Точки продаж</_text>
+                </name>
             </localization>
             <events>
-                <event code="SENT_TO_PRINT">
+                <event>
                     <localization>
-                        <name lang="RUS" text="Отправка документа на печать" />
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Создание точки продаж</_text>
+                        </name>
                     </localization>
                     <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Категория события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
                             </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
                             </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
                             </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Логин пользователя" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_FIO" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_ROLE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Код роли пользователя" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
                             </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="DEPARTMENT_NUMBER" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Номер подразделения сотрудника" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>IP источника запроса</_text>
+                                </name>
                             </localization>
+                            <_code>IP</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="SESSION_ID" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Идентификатор сессии обслуживании клиента" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
                             </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="DOC_LINK" mandatory="false">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Информация о url документа, отправленного на печать" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
                             </localization>
-                        </param>
-                        <param code="PRINT_TYPE" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Способ печати (AirPrint или Сетевая печать)" />
-                            </localization>
-                        </param>
-                        <param code="IP_ADDRESS" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="IP-адрес принтера" />
-                            </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
                         </param>
                     </params>
+                    <_code>PUT_NEW_SALE_POINT</_code>
+                </event>
+                <event>
+                    <localization>
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Точка продаж была создана</_text>
+                        </name>
+                    </localization>
+                    <params>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
+                            </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
+                            </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
+                            </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
+                            </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Идентификатор созданной точки продаж</_text>
+                                </name>
+                            </localization>
+                            <_code>SALE_POINT_ID</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
+                            </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
+                        </param>
+                        <param>
+                            <localization>
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
+                            </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
+                        </param>
+                    </params>
+                    <_code>SALE_POINT_CREATED</_code>
                 </event>
             </events>
+            <_code>SALE_POINT_CREATION</_code>
         </group>
-        <group code="LEAD_WORK">
+        <group>
             <localization>
-                <name lang="RUS" text="Обработка лида" />
+                <name>
+                    <_lang>RUS</_lang>
+                    <_text>Изменение Точки продаж</_text>
+                </name>
             </localization>
             <events>
-                <event code="LEAD_IS_ALREADY_IN_WORK">
+                <event>
                     <localization>
-                        <name lang="RUS"
-                              text="Пользователь попытался взять в работу активность, взятую в работу другим пользователем" />
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Изменение точки продаж</_text>
+                        </name>
                     </localization>
                     <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Категория события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
                             </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
                             </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
                             </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Логин пользователя" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_FIO" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_ROLE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Код роли" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
                             </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="LEAD_ID" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Идентификатор лида" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>IP источника запроса</_text>
+                                </name>
                             </localization>
+                            <_code>IP</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="VSP_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Номер ВСП" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
                             </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="STAB_ID" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Идентификатор клиента" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
                             </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
                         </param>
-                        <param code="LEAD_SOURCE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Источник лида" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Идентификатор изменяемой точки продаж</_text>
+                                </name>
                             </localization>
-                        </param>
-                        <param code="LEAD_SOURCE_TYPE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Тип источника лида" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_FIRSTNAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Имя клиента" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_MIDDLENAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Отчество клиента" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_LASTNAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Фамилия клиента" />
-                            </localization>
+                            <_code>SALE_POINT_ID</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
                     </params>
+                    <_code>UPDATE_SALE_POINT</_code>
                 </event>
-                <event code="LEAD_IS_TAKEN">
+                <event>
                     <localization>
-                        <name lang="RUS" text="Взятие лида в работу." />
+                        <name>
+                            <_lang>RUS</_lang>
+                            <_text>Сделка была изменена</_text>
+                        </name>
                     </localization>
                     <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Категория события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Категория события</_text>
+                                </name>
                             </localization>
+                            <_code>EVENT_CATEGORY_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код функциональной подсистемы ЕФС</_text>
+                                </name>
                             </localization>
+                            <_code>EFS_SUBSYSTEM_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Дата и время наступления события</_text>
+                                </name>
                             </localization>
+                            <_code>DATETIME_AUDIT</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Логин пользователя" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Логин пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_LOGIN</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_FIO" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>ФИО пользователя</_text>
+                                </name>
                             </localization>
+                            <_code>USER_FIO</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="USER_ROLE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Код роли" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Код роли</_text>
+                                </name>
                             </localization>
+                            <_code>USER_ROLE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="LEAD_ID" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Идентификатор лида" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>Идентификатор измененной точки продаж</_text>
+                                </name>
                             </localization>
+                            <_code>SALE_POINT_ID</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="VSP_CODE" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Номер ВСП" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>11-значный код ВСП</_text>
+                                </name>
                             </localization>
+                            <_code>VSP_CODE</_code>
+                            <_mandatory>true</_mandatory>
                         </param>
-                        <param code="NBO_QUANTITY" mandatory="true">
+                        <param>
                             <localization>
-                                <name lang="RUS" text="Количество предложений" />
+                                <name>
+                                    <_lang>RUS</_lang>
+                                    <_text>АС - инициатор</_text>
+                                </name>
                             </localization>
-                        </param>
-                        <param code="STAB_ID" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Идентификатор клиента" />
-                            </localization>
-                        </param>
-                        <param code="LEAD_SOURCE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Источник лида" />
-                            </localization>
-                        </param>
-                        <param code="LEAD_SOURCE_TYPE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Тип источника лида" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_FIRSTNAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Имя клиента" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_MIDDLENAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Отчество клиента" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_LASTNAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Фамилия клиента" />
-                            </localization>
-                        </param>
-                        <param code="SUCCESS" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Результат запроса" />
-                            </localization>
-                        </param>
-                    </params>
-                </event>
-                <event code="LEAD_CLOSED">
-                    <localization>
-                        <name lang="RUS" text="Запрос на закрытие лида сотрудником." />
-                    </localization>
-                    <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Категория события" />
-                            </localization>
-                        </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
-                            </localization>
-                        </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
-                            </localization>
-                        </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Логин пользователя" />
-                            </localization>
-                        </param>
-                        <param code="USER_FIO" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
-                            </localization>
-                        </param>
-                        <param code="USER_ROLE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Код роли" />
-                            </localization>
-                        </param>
-                        <param code="LEAD_ID" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Идентификатор лида" />
-                            </localization>
-                        </param>
-                        <param code="VSP_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Номер ВСП" />
-                            </localization>
-                        </param>
-                        <param code="STAB_ID" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Идентификатор клиента" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_FIRSTNAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Имя клиента" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_MIDDLENAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Отчество клиента" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_LASTNAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Фамилия клиента" />
-                            </localization>
-                        </param>
-                        <param code="PASSPORT" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Серия и номер ДУЛ (паспорта)" />
-                            </localization>
-                        </param>
-                        <param code="NBO_REACTION_LIST" mandatory="false">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Id продукта – Отклик по продукту" />
-                            </localization>
-                        </param>
-                        <param code="STATUS" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Результат запроса" />
-                            </localization>
-                        </param>
-                        <param code="SUCCESS" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Статус лида" />
-                            </localization>
+                            <_code>AS_INITIATOR</_code>
+                            <_mandatory>false</_mandatory>
                         </param>
                     </params>
+                    <_code>SALE_POINT_UPDATED</_code>
                 </event>
             </events>
+            <_code>SALE_POINT_UPDATE</_code>
         </group>
-        <group code="GET_CAMPAIGNER_INFO">
-            <localization>
-                <name lang="RUS"
-                      text="Получение данных и NBO предложений по клиенту" />
-            </localization>
-            <events>
-                <event code="GET_CLIENT_INFO">
-                    <localization>
-                        <name lang="RUS"
-                              text="Запрос на получение данных клиента и nbo предложений по клиенту" />
-                    </localization>
-                    <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Категория события" />
-                            </localization>
-                        </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
-                            </localization>
-                        </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
-                            </localization>
-                        </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Логин пользователя" />
-                            </localization>
-                        </param>
-                        <param code="USER_FIO" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
-                            </localization>
-                        </param>
-                        <param code="USER_ROLE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Код роли" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_ID" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Идентификатор клиента" />
-                            </localization>
-                        </param>
-                        <param code="VSP_CODE" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="11-значный код ВСП" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_FIRSTNAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Имя клиента" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_MIDDLENAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Отчество клиента" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_LASTNAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Фамилия клиента" />
-                            </localization>
-                        </param>
-                        <param code="PASSPORT" mandatory="false">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Номер паспорта клиента" />
-                            </localization>
-                        </param>
-                        <param code="NBO_QUANTITY" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Количество предложений" />
-                            </localization>
-                        </param>
-                        <param code="SUCCESS" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Успешность вызова" />
-                            </localization>
-                        </param>
-                    </params>
-                </event>
-                <event code="GET_NBO_LIST">
-                    <localization>
-                        <name lang="RUS"
-                              text="Запрос на получение списка Nbo активностей по клиенту" />
-                    </localization>
-                    <params>
-                        <param code="EVENT_CATEGORY_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Категория события" />
-                            </localization>
-                        </param>
-                        <param code="EFS_SUBSYSTEM_CODE" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Код функциональной подсистемы ЕФС" />
-                            </localization>
-                        </param>
-                        <param code="DATETIME_AUDIT" mandatory="true">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Дата и время наступления события" />
-                            </localization>
-                        </param>
-                        <param code="CONSULTANT_LOGIN" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Логин пользователя" />
-                            </localization>
-                        </param>
-                        <param code="USER_FIO" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="ФИО сотрудника" />
-                            </localization>
-                        </param>
-                        <param code="USER_ROLE" mandatory="true">
-                            <localization>
-                                <name lang="RUS" text="Код роли" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_ID" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Идентификатор клиента" />
-                            </localization>
-                        </param>
-                        <param code="VSP_CODE" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="11-значный код ВСП" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_FIRSTNAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Имя клиента" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_MIDDLENAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Отчество клиента" />
-                            </localization>
-                        </param>
-                        <param code="CLIENT_LASTNAME" mandatory="false">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Фамилия клиента" />
-                            </localization>
-                        </param>
-                        <param code="PHONE" mandatory="false">
-                            <localization>
-                                <name lang="RUS"
-                                      text="Номер телефона клиента" />
-                            </localization>
-                        </param>
-                        <param code="NBO_QUANTITY" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Количество предложений" />
-                            </localization>
-                        </param>
-                        <param code="SUCCESS" mandatory="false">
-                            <localization>
-                                <name lang="RUS" text="Успешность вызова" />
-                            </localization>
-                        </param>
-                    </params>
-                </event>
-            </events>
-        </group>
-
     </groups>
+    <_xmlns>http://audit.platform.ufs.sbrf.ru</_xmlns>
 </metamodel>

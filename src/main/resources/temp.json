@@ -94,6 +94,16 @@
                       "localization": {
                         "name": {
                           "_lang": "RUS",
+                          "_text": "IP источника запроса"
+                        }
+                      },
+                      "_code": "IP",
+                      "_mandatory": "true"
+                    },
+                    {
+                      "localization": {
+                        "name": {
+                          "_lang": "RUS",
                           "_text": "АС - инициатор"
                         }
                       },
@@ -297,6 +307,16 @@
                         }
                       },
                       "_code": "VSP_CODE",
+                      "_mandatory": "true"
+                    },
+                    {
+                      "localization": {
+                        "name": {
+                          "_lang": "RUS",
+                          "_text": "IP источника запроса"
+                        }
+                      },
+                      "_code": "IP",
                       "_mandatory": "true"
                     },
                     {
@@ -512,6 +532,16 @@
                       "localization": {
                         "name": {
                           "_lang": "RUS",
+                          "_text": "IP источника запроса"
+                        }
+                      },
+                      "_code": "IP",
+                      "_mandatory": "true"
+                    },
+                    {
+                      "localization": {
+                        "name": {
+                          "_lang": "RUS",
                           "_text": "11-значный код ВСП"
                         }
                       },
@@ -536,7 +566,7 @@
                 "localization": {
                   "name": {
                     "_lang": "RUS",
-                    "_text": "Активность была создана"
+                    "_text": "Сделка была создана"
                   }
                 },
                 "params": {
@@ -721,6 +751,16 @@
                       "localization": {
                         "name": {
                           "_lang": "RUS",
+                          "_text": "IP источника запроса"
+                        }
+                      },
+                      "_code": "IP",
+                      "_mandatory": "true"
+                    },
+                    {
+                      "localization": {
+                        "name": {
+                          "_lang": "RUS",
                           "_text": "11-значный код ВСП"
                         }
                       },
@@ -871,7 +911,7 @@
                 "localization": {
                   "name": {
                     "_lang": "RUS",
-                    "_text": "Создание сделки"
+                    "_text": "Создание точки продаж"
                   }
                 },
                 "params": {
@@ -934,6 +974,16 @@
                         }
                       },
                       "_code": "USER_ROLE",
+                      "_mandatory": "true"
+                    },
+                    {
+                      "localization": {
+                        "name": {
+                          "_lang": "RUS",
+                          "_text": "IP источника запроса"
+                        }
+                      },
+                      "_code": "IP",
                       "_mandatory": "true"
                     },
                     {
@@ -1143,6 +1193,16 @@
                         }
                       },
                       "_code": "USER_ROLE",
+                      "_mandatory": "true"
+                    },
+                    {
+                      "localization": {
+                        "name": {
+                          "_lang": "RUS",
+                          "_text": "IP источника запроса"
+                        }
+                      },
+                      "_code": "IP",
                       "_mandatory": "true"
                     },
                     {
