@@ -16,21 +16,21 @@ import com.antonromanov.arnote.model.WishDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
+import javafx.util.Pair;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
-import org.slf4j.LoggerFactory;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
- * Тут собраны основные утлилиты.
+ * Тут собраны основные утилиты.
  */
+@Slf4j
 public class Utils {
-
-    private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
 
     public enum ParseType {ADD, EDIT}
 
@@ -44,7 +44,7 @@ public class Utils {
 
 
     /**
-     * Определяет лижит ли указанное время между двумя заданными.
+     * Определяет лежит ли указанное время между двумя заданными.
      *
      * @param candidate
      * @param start
@@ -94,19 +94,16 @@ public class Utils {
             remoteAddr = request.getHeader("X-FORWARDED-FOR");
             if (remoteAddr == null || "".equals(remoteAddr)) {
                 remoteAddr = request.getRemoteAddr();
-                LOGGER.info("GETTING REQUEST FROM:  " + remoteAddr);
+                log.info("GETTING REQUEST FROM:  " + remoteAddr);
             }
         }
-
         return remoteAddr;
     }
-
 
     /**
      * Создаем gson builder
      */
     public static Gson createGsonBuilder() {
-
 
         Gson gson = new GsonBuilder()
                 .serializeNulls()
@@ -119,7 +116,7 @@ public class Utils {
 
     public static Gson createNullableGsonBuilder() {
 
-        // Trick to get the DefaultDateTypeAdatpter instance
+        // Trick to get the DefaultDateTypeAdapter instance
         // Create a first instance a Gson
         Gson gson = new GsonBuilder()
                 .setDateFormat("dd/MM/yyyy")
@@ -469,55 +466,81 @@ public class Utils {
                 result = 12;
                 break;
         }
-
-        LOGGER.info("GETTING REQUEST TO CHANGE MOVE. STRING MONTH NAME PARSED TO:  " + result);
-
+         log.info("Выcчитали месяц: {}", result);
         return result;
+    }
+
+    private static Pattern getDigitsPattern() {
+        return Pattern.compile("([0-9]+)", Pattern.MULTILINE);
+    }
+
+    private static Matcher getMatcher(Pattern pattern, String stringToMatch) {
+        return pattern.matcher(stringToMatch);
+    }
+
+
+    private static Pair<String, String> getYearAndMonth(String monthAndYear) {
+        final Matcher matcher = getMatcher(getDigitsPattern(), monthAndYear);
+        String year = "";
+        String month = "";
+
+        while (matcher.find()) {
+            year = matcher.group(1);
+            month = monthAndYear.substring(0, matcher.start(1)).trim();
+        }
+
+        return new Pair<>(year, month);
     }
 
     public static int parseMonthAndCalculatePriority(String monthAndYear) throws BadIncomeParameter {
 
-       // monthAndYear = convertEnglishNames(monthAndYear);
         if (Pattern.compile("[А-Яа-я]+ [0-9]+").matcher(monthAndYear).find()) {
 
-            final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.MULTILINE);
-            final Matcher matcher = pattern.matcher(monthAndYear);
-            String year = "";
-            String month = "";
+            String year = getYearAndMonth(monthAndYear).getKey();
+            String month = getYearAndMonth(monthAndYear).getValue();
 
-            while (matcher.find()) {
-                year = matcher.group(1);
-                month = monthAndYear.substring(0, matcher.start(1)).trim();
-            }
+            log.info("Обнаружена дата в русской раскладке");
+            log.info("Год: {}", year);
+            log.info("Месяц: {}", month);
 
             if (isBlank(year) && isInteger(year)) {
+                log.error("Ошибка парсинга даты: {}", monthAndYear);
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
             } else {
                 int minMonth = (YearMonth.now().getMonthValue()); // приоритет = 1
+                log.info("Текущий Месяц: {}", minMonth);
                 if ((Calendar.getInstance().get(Calendar.YEAR)) == Integer.parseInt(year)) {
+                    log.info("Перемещаем желание в рамках текущего года");
+                    log.info("Разница между приоритетами: {}", monthNameToNumber(month) - minMonth + 1);
                     return monthNameToNumber(month) - minMonth + 1; // разница между приоритетами;
                 } else {
+                    log.info("Указан НЕ текущий год");
+                    log.info("Разница между приоритетами: {}", (12 - minMonth) + 1 + monthNameToNumber(month));
                     return (12 - minMonth) + 1 + monthNameToNumber(month); // разница между приоритетами;
                 }
             }
-        } else if (Pattern.compile("[A-Za-z]+ [0-9]+").matcher(monthAndYear).find()) { //todo: конечно этот кошмар с дуюлирующим кодом здесь надо исправлять
-            final Pattern pattern = Pattern.compile("([0-9]+)", Pattern.MULTILINE);
-            final Matcher matcher = pattern.matcher(monthAndYear);
-            String year = "";
-            String month = "";
+        } else if (Pattern.compile("[A-Za-z]+ [0-9]+").matcher(monthAndYear).find()) {
 
-            while (matcher.find()) {
-                year = matcher.group(1);
-                month = monthAndYear.substring(0, matcher.start(1)).trim();
-            }
+            String year = getYearAndMonth(monthAndYear).getKey();
+            String month = getYearAndMonth(monthAndYear).getValue();
+
+            log.info("Обнаружена дата в английской раскладке");
+            log.info("Год: {}", year);
+            log.info("Месяц: {}", month);
 
             if (isBlank(year) && isInteger(year)) {
+                log.error("Ошибка парсинга даты: {}", monthAndYear);
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
             } else {
                 int minMonth = (YearMonth.now().getMonthValue()); // приоритет = 1
+                log.info("Текущий Месяц: {}", minMonth);
                 if ((Calendar.getInstance().get(Calendar.YEAR)) == Integer.parseInt(year)) {
+                    log.info("Перемещаем желание в рамках текущего года");
+                    log.info("Разница между приоритетами: {}", monthNameToNumber(month) - minMonth + 1);
                     return monthNameToNumber(convertEnglishNames(month)) - minMonth + 1; // разница между приоритетами;
                 } else {
+                    log.info("Указан НЕ текущий год");
+                    log.info("Разница между приоритетами: {}", (12 - minMonth) + 1 + monthNameToNumber(convertEnglishNames(month)));
                     return (12 - minMonth) + 1 + monthNameToNumber(convertEnglishNames(month)); // разница между приоритетами;
                 }
             }
@@ -529,7 +552,6 @@ public class Utils {
 
     private static String convertEnglishNames(String monthAndYear) throws BadIncomeParameter {
         String returnMonth = monthAndYear;
-        if (Pattern.compile("[A-Za-z]+ [0-9]+").matcher(monthAndYear).find()) {
             switch (monthAndYear) {
                 case "January":
                     returnMonth = "Январь";
@@ -570,8 +592,7 @@ public class Utils {
                 default:
                     throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
             }
-
-        }
+        log.info("Перевели месяц на русский язык: {}", returnMonth);
         return returnMonth;
     }
 

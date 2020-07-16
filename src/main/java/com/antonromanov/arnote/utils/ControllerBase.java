@@ -3,7 +3,7 @@ package com.antonromanov.arnote.utils;
 import com.antonromanov.arnote.exceptions.JsonNullException;
 import com.antonromanov.arnote.exceptions.JsonParseException;
 import com.antonromanov.arnote.exceptions.SaveNewWishException;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.http.server.ServletServerHttpResponse;
 import javax.servlet.http.HttpServletResponse;
@@ -11,9 +11,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.Principal;
 
+@Slf4j
 public class ControllerBase {
-
-	//private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
 
 	protected <T,E>T $do(SomeProcess<T, E> process, E s, Principal user, Utils.OperationType operationType, HttpServletResponse response){
 		try {
@@ -30,6 +29,7 @@ public class ControllerBase {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setCacheControl("no-cache");
 		ResponseEntity<String> responseEntity = new ResponseEntity<String>(responseBody, headers, HttpStatus.OK);
+	//	log.info("RESPONSE: {}", responseEntity); // временно выключил, иначе сильно засирает логи
 		return responseEntity;
 	}
 
@@ -39,8 +39,7 @@ public class ControllerBase {
 		headers.setCacheControl("no-cache");
 
 		ResponseEntity<String> responseEntity = new ResponseEntity<String>(responseBody, headers, HttpStatus.BAD_REQUEST);
-	//	LOGGER.info("RESPONSE: " + responseEntity.toString());
-
+		log.error("RESPONSE: " + responseEntity.toString());
 		return responseEntity;
 	}
 
