@@ -7,7 +7,6 @@ import java.time.format.TextStyle;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.Salary;
 import com.antonromanov.arnote.model.Wish;
@@ -16,13 +15,11 @@ import com.antonromanov.arnote.model.WishDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
-import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
-
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -479,7 +476,7 @@ public class Utils {
     }
 
 
-    private static Pair<String, String> getYearAndMonth(String monthAndYear) {
+    private static MyPair getYearAndMonth(String monthAndYear) {
         final Matcher matcher = getMatcher(getDigitsPattern(), monthAndYear);
         String year = "";
         String month = "";
@@ -489,15 +486,15 @@ public class Utils {
             month = monthAndYear.substring(0, matcher.start(1)).trim();
         }
 
-        return new Pair<>(year, month);
+        return new MyPair(year, month);
     }
 
     public static int parseMonthAndCalculatePriority(String monthAndYear) throws BadIncomeParameter {
 
         if (Pattern.compile("[А-Яа-я]+ [0-9]+").matcher(monthAndYear).find()) {
 
-            String year = getYearAndMonth(monthAndYear).getKey();
-            String month = getYearAndMonth(monthAndYear).getValue();
+            String year = getYearAndMonth(monthAndYear).getYear();
+            String month = getYearAndMonth(monthAndYear).getMonth();
 
             log.info("Обнаружена дата в русской раскладке");
             log.info("Год: {}", year);
@@ -521,8 +518,8 @@ public class Utils {
             }
         } else if (Pattern.compile("[A-Za-z]+ [0-9]+").matcher(monthAndYear).find()) {
 
-            String year = getYearAndMonth(monthAndYear).getKey();
-            String month = getYearAndMonth(monthAndYear).getValue();
+            String year = getYearAndMonth(monthAndYear).getYear();
+            String month = getYearAndMonth(monthAndYear).getMonth();
 
             log.info("Обнаружена дата в английской раскладке");
             log.info("Год: {}", year);
