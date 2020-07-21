@@ -14,8 +14,8 @@ import java.util.Optional;
 @Repository
 public interface WishRepository extends JpaRepository<Wish, Integer>{
 
-	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) order by w.priority ASC ")
-	List<Wish> getAllNotInArchive();
+	/*@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) order by w.priority ASC ")
+	List<Wish> getAllNotInArchive();*/
 
 
 	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.user = :user order by w.priorityGroup, w.priorityGroupOrder ASC ")
@@ -44,10 +44,10 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	@Query(value="select w from Wish w where w.wish = ?1")
 	Optional<List<Wish>> getWishesByName(@Param("wish") String wish);
 
-	@Modifying
+	/*@Modifying
 	@Transactional
 	@Query("delete from Wish w where w.id = ?1")
-	void deleteByLongId(Long entityId);
+	void deleteByLongId(Long entityId);*/
 
 	Optional<Wish> findById(long l);
 
@@ -56,14 +56,18 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 			"(concat('%',:wish,'%')) and (w.realized = false or w.realized is null ) and user_id = :userId order by w.wish", nativeQuery = true)
 	Optional<List<Wish>> findAllByWishAndUser(String wish, long userId);
 
-	// Запросить сумму всех реализованных пользователем желаний за все время
+	/**
+	 * Запросить сумму всех реализованных пользователем желаний за все время.
+ 	 */
 	@Query(value="select sum(p.price) from (select * from wishes w WHERE " +
 			"(w.id NOT IN (311) " +
 			"and w.user_id = :userId)) p" +
 			" WHERE NOT p.archive AND (p.realized=true)", nativeQuery = true)
 	Optional<Integer> getImplementedSum4AllPeriod(long userId);
 
-	// Запросить сумму всех реализованных пользователем желаний за текущий месяц
+	/**
+	 * Запросить сумму всех реализованных пользователем желаний за текущий месяц.
+ 	 */
 	@Query(value="select sum(p.price) from (select * from wishes w WHERE " +
 			"(w.id NOT IN (311) " +
 			"and w.user_id = :userId " +

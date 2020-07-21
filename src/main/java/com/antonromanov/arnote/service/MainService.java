@@ -12,14 +12,14 @@ public interface MainService {
 
 	ResponseParseResult parseCsv(MultipartFile file, LocalUser localUser) throws Exception;
 
-	void clearCounter();
+//	void clearCounter();
 
-	List<Wish> getAllWishes();
+//	List<Wish> getAllWishes();
 
 	List<Wish> getAllWishesWithPriority1(LocalUser user);
 
 	int getMaxPriority(LocalUser user);
-	int getMinPriority(LocalUser user);
+//	int getMinPriority(LocalUser user);
 
 	List<WishDTOList> getAllWishesWithGroupPriority(LocalUser user);
 

@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.persistence.criteria.*;
 import java.util.List;
 
-@Repository
+@Repository //todo: переписать репозитории нормально, да и вообще вопрос зачем нужна эта репа
 public class WishDao implements IUserDAO {
 
 	@PersistenceContext

@@ -17,11 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -89,7 +91,7 @@ public class MainRestController extends ControllerBase {
                     .findAllWishesByWish(parseJsonToWish(Utils.ParseType.EDIT, requestParam, localUser).getWish(), localUser)
                     .orElseGet(ArrayList::new);
 
-            DTO dto = new DTO();
+            DTO dto = new DTO(); //todo: добавить билдеры
             dto.list.addAll(wishes);
 
             String res = createGsonBuilder().toJson(dto);
@@ -173,16 +175,27 @@ public class MainRestController extends ControllerBase {
         }, null, null, OperationType.EDIT_WISH, resp);
     }
 
-
+    /**
+     * Получить все желания.
+     *
+     * @param principal
+     * @param type
+     * @param resp
+     * @return
+     */
     @CrossOrigin(origins = "*")
     @GetMapping("/{type}")
     public ResponseEntity<String> gelAllWishes(Principal principal, @PathVariable String type, HttpServletResponse resp) {
 
         return $do(s -> {
             List<Wish> wishList;
-            List<WishDTOList> wishListWithMonthOrder;
-            //	LOGGER.info("PRINCIPAL: " + principal.getName());
-            log.error("ERROR!");
+            // List<WishDTOList> wishListWithMonthOrder;
+
+            log.info("==================== GET WISHES ======================== ");
+            log.info("type: " + type);
+            log.info("PRINCIPAL: " + principal.getName());
+            log.info("======================================================== ");
+
             LocalUser localUser = getUserFromPrincipal(principal);
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
@@ -201,14 +214,10 @@ public class MainRestController extends ControllerBase {
 
                     dto.list.addAll(wishList);
                     result = createNullableGsonBuilder().toJson(dto);
-                    //				LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
-                    //				LOGGER.info("============== GET ALL WISHES ============== ");
                 } else {
                     wishList = mainService.getAllWishesWithPriority1(localUser);
                     dto.list.addAll(wishList);
-                    //				LOGGER.info("============== GET PRIORITY WISHES ============== ");
                     result = createNullableGsonBuilder().toJson(dto);
-                    //				LOGGER.info("PAYLOAD (wishes count): " + dto.list.size());
                 }
 
                 return $prepareResponse(result);
@@ -224,15 +233,16 @@ public class MainRestController extends ControllerBase {
 
         return $do(s -> {
 
-//			LOGGER.info("========= UPDATE WISH ============== ");
-//			LOGGER.info("PAYLOAD: " + requestParam);
+            log.info("==================== UPDATE WISHES ======================== ");
+            log.info("PAYLOAD: " + requestParam);
+            log.info("PRINCIPAL: " + principal.getName());
+            log.info("=========================================================== ");
+
             LocalUser localUser = getUserFromPrincipal(principal);
             Wish wish = parseJsonToWish(ParseType.EDIT, requestParam, localUser);
             mainService.updateWish(mainService.updateMonthGroup(wish));
 
             String result = "";
-//			LOGGER.info("PAYLOAD: " + result);
-
             return $prepareResponse(result);
 
         }, requestParam, null, OperationType.EDIT_WISH, resp);
@@ -245,8 +255,10 @@ public class MainRestController extends ControllerBase {
 
         return $do(s -> {
 
-//			LOGGER.info("========= ADD WISH ============== ");
-//			LOGGER.info("PAYLOAD: " + requestParam);
+            log.info("==================== ADD WISHES ======================== ");
+            log.info("PAYLOAD: " + requestParam);
+            log.info("PRINCIPAL: " + principal.getName());
+            log.info("======================================================== ");
 
             LocalUser localUser = getUserFromPrincipal(principal);
 
@@ -259,7 +271,6 @@ public class MainRestController extends ControllerBase {
             if (newWish.getRealizationDate() == null) newWish.setRealizationDate(new Date());
 
             String result = createGsonBuilder().toJson(newWish);
-//			LOGGER.info("PAYLOAD: " + result);
             return $prepareResponse(result);
 
         }, requestParam, null, OperationType.ADD_WISH, resp);
@@ -304,7 +315,12 @@ public class MainRestController extends ControllerBase {
                         .implemetedSummAllTime(implemetedSummAllTime)
                         .implemetedSummMonth(implemetedSummMonth)
                         .priority(mainService.getSumm4Prior(localUser)).build());
-//				LOGGER.info("PAYLOAD: " + result);
+
+                log.info("==================== GET SUM ======================== ");
+                log.info("PAYLOAD: " + result);
+                log.info("PRINCIPAL: " + principal.getName());
+                log.info("===================================================== ");
+
                 return $prepareResponse(result);
             } else {
                 return $prepareNoDataYetErrorResponse(true);
@@ -318,8 +334,12 @@ public class MainRestController extends ControllerBase {
     public ResponseEntity<String> deleteWish(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 
         return $do(s -> {
-//			LOGGER.info("========= DELETE WISH ============== ");
-//			LOGGER.info("ID: " + id);
+
+            log.info("==================== DELETE WISH ======================== ");
+            log.info("ID: " + id);
+            log.info("PRINCIPAL: " + principal.getName());
+            log.info("===================================================== ");
+
             Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID));
             wish.setAc(true);
             mainService.updateWish(wish);
@@ -333,13 +353,13 @@ public class MainRestController extends ControllerBase {
     public ResponseEntity<String> getLastSalary(Principal principal, HttpServletResponse resp) {
 
         return $do(s -> {
-//			LOGGER.info("========= GET LAST SALARY ============== ");
-//			LOGGER.info("PRINCIPAL: " + principal.getName());
 
             LocalUser localUser = getUserFromPrincipal(principal);
-
-
             String result = createGsonBuilder().toJson(mainService.getLastSalary(localUser).getResidualSalary());
+            log.info("==================== GET LAST SALARY ======================== ");
+            log.info("PAYLOAD: " + result);
+            log.info("PRINCIPAL: " + principal.getName());
+            log.info("============================================================= ");
             return $prepareResponse(result);
         }, null, null, null, resp);
     }
@@ -351,15 +371,16 @@ public class MainRestController extends ControllerBase {
 
         return $do(s -> {
 
-/*			LOGGER.info("========= ADD SALARY ============== ");
-			LOGGER.info("PAYLOAD: " + requestParam);
-			LOGGER.info("PRINCIPAL: " + principal.getName());*/
+            log.info("==================== ADD SALARY ======================== ");
+            log.info("PAYLOAD: " + requestParam);
+            log.info("PRINCIPAL: " + principal.getName());
 
             LocalUser localUser = getUserFromPrincipal(principal);
             Salary newSalary;
             newSalary = mainService.saveSalary(parseJsonToSalary(requestParam, localUser));
             String result = createGsonBuilder().toJson(newSalary);
-//			LOGGER.info("PAYLOAD: " + result);
+            log.info("PAYLOAD: " + result);
+            log.info("======================================================== ");
 
             return $prepareResponse(result);
 
@@ -385,16 +406,17 @@ public class MainRestController extends ControllerBase {
         }, null, null, null, resp);
     }
 
-
+    //todo: надо понять какой метод нужен то - этот или changeMonth и какой что выполняет
     @CrossOrigin(origins = "*")
     @GetMapping("/changepriority/{id}/{move}")
     public ResponseEntity<String> changePriority(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
 
-
         return $do(s -> {
 
-		/*	LOGGER.info("========= MOVE WISH (CHANGE PRIORITY) ============== ");
-			LOGGER.info("id: " + id);*/
+            log.info("==================== MOVE WISH (CHANGE PRIORITY) ======================== ");
+            log.info("ID: " + id);
+            log.info("PRINCIPAL: " + principal.getName());
+            log.info("========================================================================= ");
 
             Wish wish = checkParametersAndGetWish(id, move);
 
@@ -423,9 +445,6 @@ public class MainRestController extends ControllerBase {
             throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.PRIORITYCHANGE);
         if ((isBlank(id)) || (!Pattern.compile("^\\d*$").matcher(id).matches()))
             throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID);
-
-//		LOGGER.info("move: " + move);
-
         return mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
     }
 
@@ -434,18 +453,18 @@ public class MainRestController extends ControllerBase {
     @GetMapping("/changemonth/{id}/{move}")
     public ResponseEntity<String> changeMonth(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
 
-
         return $do(s -> {
-
-	/*		LOGGER.info("========= MOVE WISH (CHANGE MONTH) ============== ");
-			LOGGER.info("id: " + id);
-			LOGGER.info("move: " + move);*/
             LocalUser localUser = getUserFromPrincipal(principal);
-//			LOGGER.info("principal: " + localUser.getLogin());
+            log.info("==================== MOVE WISH (CHANGE MONTH) ======================== ");
+            log.info("ID: " + id);
+            log.info("MOVE: " + move);
+            log.info("PRINCIPAL: " + principal.getName());
+
 
             Wish wish = checkParametersAndGetWish(id, move);
             int maxPrior = (mainService.getMaxPriority(localUser)) - 1;
-//			LOGGER.info("max prior: " + maxPrior);
+			log.info("MAX PRIORITY: " + maxPrior);
+
 
             switch (move) {
                 case "down":
@@ -454,7 +473,7 @@ public class MainRestController extends ControllerBase {
                         if (wish.getPriorityGroup() < maxPrior + 1) {
                             wish.setPriorityGroup(wish.getPriorityGroup() + 1);
                         }
-//						LOGGER.info("move summary: " + (wish.getPriorityGroup() + 1));
+						log.info("MOVE SUM: " + (wish.getPriorityGroup() + 1));
                         mainService.updateWish(wish);
                         break;
                     }
@@ -462,14 +481,14 @@ public class MainRestController extends ControllerBase {
                 case "up":
 
                     if (maxPrior == 0) {
-//						LOGGER.info("max prior = 0. move summary: 1");
+                        log.info("MAX PRIORITY = 0. MOVE SUM: 1");
                         wish.setPriorityGroup(1);
                     } else {
                         if (wish.getPriorityGroup() == null) {
-//							LOGGER.info("move summary: " + maxPrior);
+							log.info("MOVE SUM: " + maxPrior);
                             wish.setPriorityGroup(maxPrior);
                         } else if (wish.getPriorityGroup() > 1) {
-//							LOGGER.info("move summary: " + (wish.getPriorityGroup() - 1));
+                            log.info("MOVE SUM: " + (wish.getPriorityGroup() - 1));
                             wish.setPriorityGroup(wish.getPriorityGroup() - 1);
                         }
                     }
@@ -483,7 +502,8 @@ public class MainRestController extends ControllerBase {
             if (wish.getPriorityGroupOrder() == null) wish.setPriorityGroupOrder(1);
 
             String result = createNullableGsonBuilder().toJson(wish);
-
+            log.info("RESULT: {}", result);
+            log.info("====================================================================== ");
             return $prepareResponse(result);
 
         }, null, null, null, resp);
@@ -572,15 +592,16 @@ public class MainRestController extends ControllerBase {
 
         return $do(s -> {
 
-			/*LOGGER.info("========= TOGGLE / GET USER MODE ============== ");
-			LOGGER.info("MODE: " + mode);*/
+			log.info("========= TOGGLE / GET USER MODE ============== ");
+			log.info("MODE: " + mode);
+
             LocalUser localuser = getUserFromPrincipal(principal);
 
             if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
                 localuser.setViewMode(mode);
                 return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
             } else {
-                return $prepareResponse(createGsonBuilder().toJson(localuser));
+                return $prepareBadResponse(createGsonBuilder().toJson("Bad mode parameter!"));
             }
 
         }, null, null, OperationType.TOGGLE_USER_MODE, resp);
@@ -591,7 +612,7 @@ public class MainRestController extends ControllerBase {
     public ResponseEntity<String> getAllUsers(Principal principal, HttpServletResponse resp) {
 
         return $do(s -> {
-//			LOGGER.info("========= GET ALL USERS  ============== ");
+			log.info("========= GET ALL USERS  ============== ");
 
             List<LocalUser> userList = usersRepo.findAll().stream().map(u -> {
                 if (u.getCreationDate() == null) u.setCreationDate(new Date());
@@ -638,8 +659,8 @@ public class MainRestController extends ControllerBase {
     public ResponseEntity<String> returnUserPassword(Principal principal, @RequestParam(name = "email") String email, HttpServletResponse resp) {
 
         return $do(s -> {
-		/*	LOGGER.info("========= FORGET PWD METHOD =============== ");
-			LOGGER.info("USER EMAIL - " + email);*/
+			log.info("========= FORGET PWD METHOD =============== ");
+			log.info("USER EMAIL - " + email);
             try {
                 LocalUser localUser = usersRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
                 return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, email).getStatus()));

@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.Utils.*;
 
 
@@ -31,10 +33,10 @@ public class MainServiceImpl implements MainService {
 
     Integer addCount = 0; // Количество добавлений
 
-    @Override
+   /* @Override
     public List<Wish> getAllWishes() {
         return wishRepository.findAll(Sort.by(Sort.Direction.ASC, "priority"));
-    }
+    }*/
 
     @Override
     public List<Wish> getAllWishesWithPriority1(LocalUser user) {
@@ -44,42 +46,42 @@ public class MainServiceImpl implements MainService {
     @Override
     public int getMaxPriority(LocalUser user) {
         List<Wish> wishDTOList = wishRepository.getAllWithGroupOrder(user);
-        Comparator<Wish> comparator = Comparator.comparing( Wish::getPriorityGroup);
+        Comparator<Wish> comparator = Comparator.comparing(Wish::getPriorityGroup);
 
-        if ((wishDTOList.stream().filter(wish -> wish.getPriorityGroup()!=null).max(comparator).isPresent())) {
+        if ((wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).max(comparator).isPresent())) {
             return (wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).max(comparator).get().getPriorityGroup()) + 1;
         } else {
             return 1;
         }
     }
 
-    @Override
+   /* @Override
     public int getMinPriority(LocalUser user) {
         List<Wish> wishDTOList = wishRepository.getAllWithGroupOrder(user);
-        Comparator<Wish> comparator = Comparator.comparing( Wish::getPriorityGroup);
+        Comparator<Wish> comparator = Comparator.comparing(Wish::getPriorityGroup);
 
-        if ((wishDTOList.stream().filter(wish -> wish.getPriorityGroup()!=null && wish.getPriorityGroup()!=0).min(comparator).isPresent())) {
+        if ((wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null && wish.getPriorityGroup() != 0).min(comparator).isPresent())) {
             return (wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).min(comparator).get().getPriorityGroup()) + 1;
         } else {
             return 1;
         }
-    }
+    }*/
 
     private void addIteminWishDTOListForNullPriorityWishes(List<WishDTOList> wishDTOListGlobal,
-                                                   List<WishDTO> wishDTOListFiltered,
-                                                   int maxPrior,
-                                                   LocalUser user){
+                                                           List<WishDTO> wishDTOListFiltered,
+                                                           int maxPrior,
+                                                           LocalUser user) {
         wishDTOListGlobal.add(WishDTOList.builder()
                 .wishList(wishDTOListFiltered)
-                .monthNumber(computerMonthNumber(maxPrior+1 > 12 ? (maxPrior+1-12) : maxPrior+1))
+                .monthNumber(computerMonthNumber(maxPrior + 1 > 12 ? (maxPrior + 1 - 12) : maxPrior + 1))
                 .monthName(computerMonth(maxPrior))
                 .year(String.valueOf(getCurrentYear(maxPrior)))
                 .colspan(2)
                 .sum(wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck))
                 .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice)
-                        .reduce(0, ArithmeticUtils::addAndCheck))>getLastSalary(user).getResidualSalary())
+                        .reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary())
                 .colorClass(getClassColorByMonth(0, (wishDTOListFiltered.stream().map(WishDTO::getPrice)
-                        .reduce(0, ArithmeticUtils::addAndCheck))>getLastSalary(user).getResidualSalary()))
+                        .reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary()))
                 .expanded(true)
                 .build());
     }
@@ -90,15 +92,15 @@ public class MainServiceImpl implements MainService {
         int maxPrior = getMaxPriority(user);
         List<WishDTOList> wishDTOListGlobal = new ArrayList<>();
 
-        if (maxPrior-1 > 0){
+        if (maxPrior - 1 > 0) {
             int currentMonth = 1;
-            while (currentMonth < maxPrior){
+            while (currentMonth < maxPrior) {
 
                 int finalCurrentMonth = currentMonth;
                 List<WishDTO> wishDTOListFiltered = wishRepository.getAllWithGroupOrder(user)
                         .stream()
-                        .filter(wish -> wish.getPriorityGroup()!=null)
-                        .filter(wish -> wish.getPriorityGroup()== finalCurrentMonth)
+                        .filter(wish -> wish.getPriorityGroup() != null)
+                        .filter(wish -> wish.getPriorityGroup() == finalCurrentMonth)
                         .map(w -> prepareWishDTO(w, maxPrior))
                         .collect(Collectors.toList());
 
@@ -109,8 +111,8 @@ public class MainServiceImpl implements MainService {
                         .year(String.valueOf(getCurrentYear(currentMonth)))
                         .colspan(2)
                         .sum(wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck))
-                        .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck))>getLastSalary(user).getResidualSalary())
-                        .colorClass(getClassColorByMonth(computerMonthNumber(currentMonth), (wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck))>getLastSalary(user).getResidualSalary()))
+                        .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary())
+                        .colorClass(getClassColorByMonth(computerMonthNumber(currentMonth), (wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary()))
                         .expanded(true)
                         .build());
 
@@ -119,7 +121,7 @@ public class MainServiceImpl implements MainService {
 
             List<WishDTO> wishDTOListFiltered = wishRepository.getAllWithGroupOrder(user)
                     .stream()
-                    .filter(wish -> wish.getPriorityGroup()==null)
+                    .filter(wish -> wish.getPriorityGroup() == null)
                     .map(w -> prepareWishDTO(w, maxPrior))
                     .collect(Collectors.toList());
 
@@ -155,14 +157,14 @@ public class MainServiceImpl implements MainService {
 
     @Override
     public Wish updateMonthGroup(Wish wish) throws BadIncomeParameter {
-        Wish searchedWish = wishRepository.findById(wish.getId()).orElseThrow(()->new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
+        Wish searchedWish = wishRepository.findById(wish.getId()).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
         wish.setPriorityGroup(searchedWish.getPriorityGroup());
         return wish;
     }
 
     @Override
     public void updateWish(Wish wish) {
-      wishRepository.save(wish);
+        wishRepository.save(wish);
     }
 
     @Override
@@ -192,7 +194,7 @@ public class MainServiceImpl implements MainService {
 
     @Override
     public Optional<Integer> getImplementedSum(LocalUser user, int period) {
-        if (period==1) {
+        if (period == 1) {
             return wishRepository.getImplementedSum4AllPeriod(user.getId());
         } else {
             return wishRepository.getImplementedSum4Month(user.getId());
@@ -206,7 +208,7 @@ public class MainServiceImpl implements MainService {
 
     @Override
     public Salary getLastSalary(LocalUser localUser) {
-        return (salaryRepository.getLastSalary(localUser)).size()<1 ? null : (salaryRepository.getLastSalary(localUser)).get(0);
+        return (salaryRepository.getLastSalary(localUser)).size() < 1 ? null : (salaryRepository.getLastSalary(localUser)).get(0);
     }
 
     @Override
@@ -216,46 +218,46 @@ public class MainServiceImpl implements MainService {
 
 
     @Override
-    public  ResponseParseResult parseCsv(MultipartFile file, LocalUser localUser) throws IOException {
+    public ResponseParseResult parseCsv(MultipartFile file, LocalUser localUser) throws IOException {
 
-            CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"), ',', '"', 1);
-            List<String[]> allRows = reader.readAll();
-            Pattern pattern = Pattern.compile("^\\d{1,3}\\,");
+        CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"), ',', '"', 1);
+        List<String[]> allRows = reader.readAll();
+        Pattern pattern = Pattern.compile("^\\d{1,3}\\,");
 
-            allRows.stream()
-                    .map(strings -> String.join(",", strings))
-                    .filter(pattern.asPredicate())
-                    .forEach(f -> {
+        allRows.stream()
+                .map(strings -> String.join(",", strings))
+                .filter(pattern.asPredicate())
+                .forEach(f -> {
 
-                        Pattern p = Pattern.compile("^\\d{1,3},(.*)(?=\\,,\\d)");
-                        Pattern p2 = Pattern.compile("(?:,,)(\\d.*)(р.)");
-                        Matcher m = p.matcher(f);
-                        Matcher m2 = p2.matcher(f);
-                        String localWish = "";
-                        Integer localPrice = 0;
+                    Pattern p = Pattern.compile("^\\d{1,3},(.*)(?=\\,,\\d)");
+                    Pattern p2 = Pattern.compile("(?:,,)(\\d.*)(р.)");
+                    Matcher m = p.matcher(f);
+                    Matcher m2 = p2.matcher(f);
+                    String localWish = "";
+                    Integer localPrice = 0;
 
-                        if (m.find()) {
-                            localWish = m.group(1);
-                        }
+                    if (m.find()) {
+                        localWish = m.group(1);
+                    }
 
-                        if (m2.find()) {
-                            localPrice = Integer.parseInt(m2.group(1).replace(",", "").trim());
-                        }
+                    if (m2.find()) {
+                        localPrice = Integer.parseInt(m2.group(1).replace(",", "").trim());
+                    }
 
-                        List<Wish> wishes = wishRepository.getWishesByName(localWish).orElseGet(ArrayList::new);
+                    List<Wish> wishes = wishRepository.getWishesByName(localWish).orElseGet(ArrayList::new);
 
-                        if (wishes.size() < 1) {
-                            //нету? добавляем
-                            wishRepository.save(new Wish(localWish, localPrice, 1, 1, false, "from csv", "", localUser, new Date()));
-                            addCount++;
-                        }
-                    });
+                    if (wishes.size() < 1) {
+                        //нету? добавляем
+                        wishRepository.save(new Wish(localWish, localPrice, 1, 1, false, "from csv", "", localUser, new Date()));
+                        addCount++;
+                    }
+                });
 
         return ResponseParseResult.builder().itemsAdded(addCount).status("Ok").okMessage("Парсинг успешно выполнен").build();
     }
 
-    @Override
+   /* @Override
     public void clearCounter() {
         addCount = 0;
-    }
+    }*/
 }
