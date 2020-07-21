@@ -463,7 +463,7 @@ public class MainRestController extends ControllerBase {
 
             Wish wish = checkParametersAndGetWish(id, move);
             int maxPrior = (mainService.getMaxPriority(localUser)) - 1;
-			log.info("MAX PRIORITY: " + maxPrior);
+            log.info("MAX PRIORITY: " + maxPrior);
 
 
             switch (move) {
@@ -473,7 +473,7 @@ public class MainRestController extends ControllerBase {
                         if (wish.getPriorityGroup() < maxPrior + 1) {
                             wish.setPriorityGroup(wish.getPriorityGroup() + 1);
                         }
-						log.info("MOVE SUM: " + (wish.getPriorityGroup() + 1));
+                        log.info("MOVE SUM: " + (wish.getPriorityGroup() + 1));
                         mainService.updateWish(wish);
                         break;
                     }
@@ -485,7 +485,7 @@ public class MainRestController extends ControllerBase {
                         wish.setPriorityGroup(1);
                     } else {
                         if (wish.getPriorityGroup() == null) {
-							log.info("MOVE SUM: " + maxPrior);
+                            log.info("MOVE SUM: " + maxPrior);
                             wish.setPriorityGroup(maxPrior);
                         } else if (wish.getPriorityGroup() > 1) {
                             log.info("MOVE SUM: " + (wish.getPriorityGroup() - 1));
@@ -592,13 +592,18 @@ public class MainRestController extends ControllerBase {
 
         return $do(s -> {
 
-			log.info("========= TOGGLE / GET USER MODE ============== ");
-			log.info("MODE: " + mode);
+            log.info("========= TOGGLE / GET USER MODE ============== ");
+            log.info("MODE: " + mode);
 
             LocalUser localuser = getUserFromPrincipal(principal);
 
+            // if ("GET".equals(mode)) mode = "TABLE";
+
             if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
                 localuser.setViewMode(mode);
+                return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
+            } else if ("GET".equals(mode)) {
+                localuser.setViewMode("TABLE");
                 return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
             } else {
                 return $prepareBadResponse(createGsonBuilder().toJson("Bad mode parameter!"));
@@ -612,7 +617,7 @@ public class MainRestController extends ControllerBase {
     public ResponseEntity<String> getAllUsers(Principal principal, HttpServletResponse resp) {
 
         return $do(s -> {
-			log.info("========= GET ALL USERS  ============== ");
+            log.info("========= GET ALL USERS  ============== ");
 
             List<LocalUser> userList = usersRepo.findAll().stream().map(u -> {
                 if (u.getCreationDate() == null) u.setCreationDate(new Date());
@@ -659,8 +664,8 @@ public class MainRestController extends ControllerBase {
     public ResponseEntity<String> returnUserPassword(Principal principal, @RequestParam(name = "email") String email, HttpServletResponse resp) {
 
         return $do(s -> {
-			log.info("========= FORGET PWD METHOD =============== ");
-			log.info("USER EMAIL - " + email);
+            log.info("========= FORGET PWD METHOD =============== ");
+            log.info("USER EMAIL - " + email);
             try {
                 LocalUser localUser = usersRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
                 return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, email).getStatus()));
