@@ -34,6 +34,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 //todo: прописать JavaDoc везде
 //todo: надо уходить от json-билдеров и всего-такого
 //todo: избавиться от $do
+//todo: добавить тесты
+// todo: Надо убрать РеспонсЭнтити и возвращать налормальные ДТО-объекты а не этот пиздец
 // SELECT sum(w.price) from arnote.wishes w WHERE w.user_id = 8 AND w.realized AND NOT w.archive - запрос реализованных желаний
 
 /**
@@ -51,11 +53,11 @@ public class MainRestController extends ControllerBase {
     }
 
     @Data
-    private class DTOwithOrder {
+    private class DtoWithOrder {
         private List<WishDTOList> list = new ArrayList<>();
     }
 
-    @Autowired
+    @Autowired //переехать на связывание через конструктор
     MainService mainService;
 
     @Autowired
@@ -127,15 +129,13 @@ public class MainRestController extends ControllerBase {
 
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
-                DTOwithOrder dtOwithOrder = new DTOwithOrder();
+                DtoWithOrder dtOwithOrder = new DtoWithOrder();
                 String result = "";
                 wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
                 dtOwithOrder.list.addAll(wishListWithMonthOrder);
 
                 if ("name".equalsIgnoreCase(sortType)) {
-                    dtOwithOrder.list.forEach(wl -> {
-                        wl.getWishList().sort(Comparator.comparing(WishDTO::getWish));
-                    });
+                    dtOwithOrder.list.forEach(wl -> wl.getWishList().sort(Comparator.comparing(WishDTO::getWish)));
                 } else if ("price-asc".equalsIgnoreCase(sortType)) {
                     dtOwithOrder.list.forEach(wl -> {
                         wl.getWishList().sort(Comparator.comparing(WishDTO::getPrice));
@@ -602,7 +602,7 @@ public class MainRestController extends ControllerBase {
             if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
                 localuser.setViewMode(mode);
                 return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
-            } else if ("GET".equals(mode)) {
+            } else if ("GET".equals(mode)) { //todo: вот эту жесть конечно же надо убрать будет и исправить на фронте
                 localuser.setViewMode("TABLE");
                 return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
             } else {

@@ -30,11 +30,6 @@ public class MainServiceImpl implements MainService {
 
     Integer addCount = 0; // Количество добавлений
 
-   /* @Override
-    public List<Wish> getAllWishes() {
-        return wishRepository.findAll(Sort.by(Sort.Direction.ASC, "priority"));
-    }*/
-
     @Override
     public List<Wish> getAllWishesWithPriority1(LocalUser user) {
         return wishRepository.getAllWithPriority1(user);
@@ -45,26 +40,14 @@ public class MainServiceImpl implements MainService {
         List<Wish> wishDTOList = wishRepository.getAllWithGroupOrder(user);
         Comparator<Wish> comparator = Comparator.comparing(Wish::getPriorityGroup);
 
-        if ((wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).max(comparator).isPresent())) {
+        if ((wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).max(comparator).isPresent())) { //todo: при каких случаях он будет отсутствовать? Да и вообще упростить этот кода надо
             return (wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).max(comparator).get().getPriorityGroup()) + 1;
         } else {
             return 1;
         }
     }
 
-   /* @Override
-    public int getMinPriority(LocalUser user) {
-        List<Wish> wishDTOList = wishRepository.getAllWithGroupOrder(user);
-        Comparator<Wish> comparator = Comparator.comparing(Wish::getPriorityGroup);
-
-        if ((wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null && wish.getPriorityGroup() != 0).min(comparator).isPresent())) {
-            return (wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).min(comparator).get().getPriorityGroup()) + 1;
-        } else {
-            return 1;
-        }
-    }*/
-
-    private void addIteminWishDTOListForNullPriorityWishes(List<WishDTOList> wishDTOListGlobal,
+    private void addItemInWishDTOListForNullPriorityWishes(List<WishDTOList> wishDTOListGlobal,
                                                            List<WishDTO> wishDTOListFiltered,
                                                            int maxPrior,
                                                            LocalUser user) {
@@ -83,6 +66,10 @@ public class MainServiceImpl implements MainService {
                 .build());
     }
 
+    /**
+     * Получить все желания с помесячной группировкой и детализованным наполнением.
+     *
+     */
     @Override
     public List<WishDTOList> getAllWishesWithGroupPriority(LocalUser user) {
 
@@ -91,6 +78,7 @@ public class MainServiceImpl implements MainService {
 
         if (maxPrior - 1 > 0) {
             int currentMonth = 1;
+            Integer amountForAllMonths = 0; // набегающий баланс
             while (currentMonth < maxPrior) {
 
                 int finalCurrentMonth = currentMonth;
@@ -101,16 +89,23 @@ public class MainServiceImpl implements MainService {
                         .map(w -> prepareWishDTO(w, maxPrior))
                         .collect(Collectors.toList());
 
+                Integer sum = wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
+                amountForAllMonths = (getLastSalary(user).getResidualSalary()-sum) + amountForAllMonths; //считаем набегающий баланс
+
                 wishDTOListGlobal.add(WishDTOList.builder()
                         .wishList(wishDTOListFiltered)
                         .monthNumber(computerMonthNumber(currentMonth))
                         .monthName(computerMonth(currentMonth))
                         .year(String.valueOf(getCurrentYear(currentMonth)))
                         .colspan(2)
-                        .sum(wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck))
-                        .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary())
-                        .colorClass(getClassColorByMonth(computerMonthNumber(currentMonth), (wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary()))
+                        .sum(sum)
+                        .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice)
+                                .reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary())
+                        .colorClass(getClassColorByMonth(computerMonthNumber(currentMonth), (wishDTOListFiltered.stream()
+                                .map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user)
+                                .getResidualSalary()))
                         .expanded(true)
+                        .balance(amountForAllMonths)
                         .build());
 
                 currentMonth++;
@@ -122,7 +117,7 @@ public class MainServiceImpl implements MainService {
                     .map(w -> prepareWishDTO(w, maxPrior))
                     .collect(Collectors.toList());
 
-            addIteminWishDTOListForNullPriorityWishes(wishDTOListGlobal, wishDTOListFiltered, maxPrior, user);
+            addItemInWishDTOListForNullPriorityWishes(wishDTOListGlobal, wishDTOListFiltered, maxPrior, user);
 
         } else {
 
@@ -131,7 +126,7 @@ public class MainServiceImpl implements MainService {
                     .map(w -> prepareWishDTO(w, maxPrior))
                     .collect(Collectors.toList());
 
-            addIteminWishDTOListForNullPriorityWishes(wishDTOListGlobal, wishDTOListFiltered, maxPrior, user);
+            addItemInWishDTOListForNullPriorityWishes(wishDTOListGlobal, wishDTOListFiltered, maxPrior, user);
         }
 
         return wishDTOListGlobal;

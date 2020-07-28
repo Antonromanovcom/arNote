@@ -4,7 +4,7 @@ import lombok.*;
 import java.util.List;
 
 
-@Builder
+@Builder //todo: где геттеры и сеттры, почему поля не приватные??? Что это за пиздец???
 public class WishDTOList {
 
     @Getter
@@ -17,5 +17,6 @@ public class WishDTOList {
     boolean overflow;
     String colorClass;
     boolean expanded;
+    int balance; // набегающий баланс
 }
 

@@ -12,15 +12,14 @@ public interface MainService {
 
 	ResponseParseResult parseCsv(MultipartFile file, LocalUser localUser) throws Exception;
 
-//	void clearCounter();
-
-//	List<Wish> getAllWishes();
-
 	List<Wish> getAllWishesWithPriority1(LocalUser user);
 
 	int getMaxPriority(LocalUser user);
-//	int getMinPriority(LocalUser user);
 
+	/**
+	 * Получить все желания с помесячной группировкой и детализованным наполнением.
+	 *
+	 */
 	List<WishDTOList> getAllWishesWithGroupPriority(LocalUser user);
 
 	void updateWish(Wish log);
