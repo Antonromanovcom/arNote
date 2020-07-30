@@ -113,9 +113,9 @@ public class MainRestController extends ControllerBase {
      * @return
      */
     @CrossOrigin(origins = "*")
-    @GetMapping("/groups")
+    @GetMapping("/groups") // todo: переименовать
     public ResponseEntity<String> getAllWishesWithMonthGrouping(Principal principal,
-                                                                @RequestParam String sortType,
+                                                                @RequestParam String sortType, //todo: сорт-тайпы вынести в константы или енумы
                                                                 HttpServletResponse resp) {
 
         return $do(s -> {
@@ -129,24 +129,42 @@ public class MainRestController extends ControllerBase {
 
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
-                DtoWithOrder dtOwithOrder = new DtoWithOrder();
+                DtoWithOrder dtOwithOrder = new DtoWithOrder(); //todo: билдер
                 String result = "";
+                String finalSortType = sortType; //todo: очень не красивое решение - надо что-то с этим делать.
                 wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
-                dtOwithOrder.list.addAll(wishListWithMonthOrder);
 
-                if ("name".equalsIgnoreCase(sortType)) {
-                    dtOwithOrder.list.forEach(wl -> wl.getWishList().sort(Comparator.comparing(WishDTO::getWish)));
-                } else if ("price-asc".equalsIgnoreCase(sortType)) {
-                    dtOwithOrder.list.forEach(wl -> {
-                        wl.getWishList().sort(Comparator.comparing(WishDTO::getPrice));
-                    });
-                } else if ("price-desc".equalsIgnoreCase(sortType)) {
-                    Comparator<WishDTO> comparator = Comparator.comparing(WishDTO::getPrice);
-                    dtOwithOrder.list.forEach(wl -> {
-                        wl.getWishList().sort(comparator.reversed());
-                    });
+                dtOwithOrder.list.addAll(wishListWithMonthOrder); //todo: почему .list, а не getlist() ????
+
+                if (("all".equalsIgnoreCase(finalSortType))
+                        && (localUser.getSortMode()!=SortMode.ALL)
+                        && (localUser.getSortMode()!=null)) { //todo: проверяем не сохранен ли до этого режим отображения и если сохранен - выбираем его. Но  вообще это костылище и код не красивый - надо разбираться с этим
+                    finalSortType = localUser.getSortMode().getUiValue();
                 }
+
+                if ("name".equalsIgnoreCase(finalSortType)) { // todo: обработать какой-нить мапой ИФы и сделать все в функциональном стиле
+                    dtOwithOrder.list.forEach(wl -> wl.getWishList().sort(Comparator.comparing(WishDTO::getWish))); //todo: почему .list, а не getlist() ????
+                    localUser.setSortMode(SortMode.NAME);
+                    usersRepo.saveAndFlush(localUser);
+                } else if ("price-asc".equalsIgnoreCase(finalSortType)) {
+                    dtOwithOrder.list.forEach(wl -> wl.getWishList().sort(Comparator.comparing(WishDTO::getPrice)));
+                    localUser.setSortMode(SortMode.PRICE_ASC);
+                    usersRepo.saveAndFlush(localUser);
+                } else if ("all".equalsIgnoreCase(finalSortType)) {
+                    localUser.setSortMode(SortMode.ALL);
+                    usersRepo.saveAndFlush(localUser);
+                } else if ("price-desc".equalsIgnoreCase(finalSortType)) {
+                    Comparator<WishDTO> comparator = Comparator.comparing(WishDTO::getPrice);
+                    dtOwithOrder.list.forEach(wl -> wl.getWishList().sort(comparator.reversed()));
+                    localUser.setSortMode(SortMode.PRICE_DESC);
+                    usersRepo.saveAndFlush(localUser);
+                }
+
+                log.info("Данные по пользователю после запроса. Тип отображения: {}, Групповая сортировка: {}",
+                        localUser.getViewMode()==null? "N/A" : localUser.getViewMode(),
+                        localUser.getSortMode()==null ? "N/A": localUser.getSortMode().getUiValue());
                 result = createNullableGsonBuilder().toJson(dtOwithOrder);
+
                 return $prepareResponse(result);
             } else {
                 return $prepareNoDataYetErrorResponse(false);
@@ -185,11 +203,10 @@ public class MainRestController extends ControllerBase {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/{type}")
-    public ResponseEntity<String> gelAllWishes(Principal principal, @PathVariable String type, HttpServletResponse resp) {
+    public ResponseEntity<String> getAllWishes(Principal principal, @PathVariable String type, HttpServletResponse resp) {
 
         return $do(s -> {
             List<Wish> wishList;
-            // List<WishDTOList> wishListWithMonthOrder;
 
             log.info("==================== GET WISHES ======================== ");
             log.info("type: " + type);
@@ -200,12 +217,10 @@ public class MainRestController extends ControllerBase {
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
                 DTO dto = new DTO();
-//				DTOwithOrder dtOwithOrder = new DTOwithOrder();
                 String result = "";
 
                 if ("all".equalsIgnoreCase(type)) {
                     wishList = mainService.getAllWishesByUserId(localUser);
-
                     // Предотвращение вываливания на пустых датах
                     wishList.forEach(w -> {
                         if (w.getCreationDate() == null) w.setCreationDate(new Date());
@@ -278,15 +293,12 @@ public class MainRestController extends ControllerBase {
 
     @CrossOrigin(origins = "*")
     @GetMapping("/summ")
-    public ResponseEntity<String> getSumm(Principal principal, HttpServletResponse resp) {
+    public ResponseEntity<String> getSum(Principal principal, HttpServletResponse resp) {
 
         return $do(s -> {
-
-            long localAverageImplementationTime = 0L;
             int days = 0;
-            int implemetedSummAllTime = 0;
-            int implemetedSummMonth = 0;
-            int littleWishes = 0;
+            int implementedSumAllTime = 0;
+            int implementedSumMonth = 0;
 
             LocalUser localUser = getUserFromPrincipal(principal);
 
@@ -295,14 +307,10 @@ public class MainRestController extends ControllerBase {
                 List<Long> realizedWishes = mainService.getAllRealizedWishes(localUser).get().stream()
                         .filter(wf -> wf.getRealizationDate() != null && wf.getCreationDate() != null)
                         .map(w -> (w.getRealizationDate().getTime() - w.getCreationDate().getTime())).collect(Collectors.toList());
-                Optional<Long> summ = realizedWishes.stream().reduce((l, r) -> l + r);
-                if (summ.isPresent()) {
-                    localAverageImplementationTime = (summ.get()) / realizedWishes.size();
-                }
-                days = (int) (localAverageImplementationTime / (1000 * 60 * 60 * 24)); // Переводим в кол-во дней
 
-                implemetedSummAllTime = mainService.getImplementedSum(localUser, 1).orElseGet(() -> 0);
-                implemetedSummMonth = mainService.getImplementedSum(localUser, 2).orElseGet(() -> 0);
+                days = (realizedWishes.size()==0) ? 0 : (30 / realizedWishes.size());
+                implementedSumAllTime = mainService.getImplementedSum(localUser, 1).orElseGet(() -> 0);
+                implementedSumMonth = mainService.getImplementedSum(localUser, 2).orElseGet(() -> 0);
             }
 
             if (mainService.getLastSalary(localUser) != null) {
@@ -312,8 +320,8 @@ public class MainRestController extends ControllerBase {
                         .priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
                         .lastSalary(mainService.getLastSalary(localUser).getResidualSalary())
                         .averageImplementationTime(days)
-                        .implemetedSummAllTime(implemetedSummAllTime)
-                        .implemetedSummMonth(implemetedSummMonth)
+                        .implemetedSummAllTime(implementedSumAllTime)
+                        .implemetedSummMonth(implementedSumMonth)
                         .priority(mainService.getSumm4Prior(localUser)).build());
 
                 log.info("==================== GET SUM ======================== ");
@@ -585,7 +593,7 @@ public class MainRestController extends ControllerBase {
         }, user, null, OperationType.UPDATE_USER, resp);
     }
 
-
+//todo: АААААА! Это полная пизда вообще!!!!!! Должен быть отдельный контроллер для юзерских действий и там два метода отдельных! Один для получения, другой для добавления!
     @CrossOrigin(origins = "*")
     @GetMapping("/users/toggle/{mode}")
     public ResponseEntity<String> toggleUserMode(Principal principal, @PathVariable String mode, HttpServletResponse resp) {
@@ -597,14 +605,12 @@ public class MainRestController extends ControllerBase {
 
             LocalUser localuser = getUserFromPrincipal(principal);
 
-            // if ("GET".equals(mode)) mode = "TABLE";
-
             if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
                 localuser.setViewMode(mode);
                 return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
             } else if ("GET".equals(mode)) { //todo: вот эту жесть конечно же надо убрать будет и исправить на фронте
-                localuser.setViewMode("TABLE");
-                return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
+              //  localuser.setViewMode("TABLE");
+                return $prepareResponse(createGsonBuilder().toJson(localuser));
             } else {
                 return $prepareBadResponse(createGsonBuilder().toJson("Bad mode parameter!"));
             }

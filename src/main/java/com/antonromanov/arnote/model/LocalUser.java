@@ -29,31 +29,60 @@ public class LocalUser {
 	@SequenceGenerator(name = "users_seq_gen", sequenceName ="users_id_seq", allocationSize = 1)
 	private long id;
 
+	/**
+	 * Логин пользователя.
+	 */
 	@Column
 	private String login;
 
-
+	/**
+	 * Пароль пользователя.
+	 */
 	@Column
 	private String pwd;
 
+	/**
+	 * Роль пользователя.
+	 */
 	@Enumerated(EnumType.STRING)
 	private Role userRole = Role.USER;
 
+	/**
+	 * Режим шифрования на фронте.
+	 */
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private Boolean userCryptoMode;
 
+	/**
+	 * Дата создания пользователя.
+	 */
 	@Column
 	@Temporal(TemporalType.DATE)
 	private Date creationDate;
 
+	/**
+	 * Email-адрес пользователя.
+	 */
 	@Column
 	private String email;
 
+	/**
+	 * Полное имя пользователя.
+	 */
 	@Column
-	private String fullname;
+	private String fullname; //todo: нормально переименовать
 
+	/**
+	 * Режим отображения - таблица или помесячная группировка.
+	 */
 	@Column
 	private String viewMode;
+
+	/**
+	 * Режим сортировки
+	 */
+	@Enumerated(EnumType.STRING)
+	private SortMode sortMode;
 
 
 	@Column

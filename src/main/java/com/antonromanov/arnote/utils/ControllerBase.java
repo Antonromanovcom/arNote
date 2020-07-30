@@ -18,6 +18,7 @@ public class ControllerBase {
 		try {
 			return process.aplly(s);
 		} catch (Exception ex) {
+			log.error(ex.getMessage());
 			prepareError(ex, response);
 			return null;
 		}
