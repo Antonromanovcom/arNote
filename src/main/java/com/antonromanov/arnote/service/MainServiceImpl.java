@@ -240,16 +240,12 @@ public class MainServiceImpl implements MainService {
 
                     if (wishes.size() < 1) {
                         //нету? добавляем
-                        wishRepository.save(new Wish(localWish, localPrice, 1, 1, false, "from csv", "", localUser, new Date()));
+                        wishRepository.save(new Wish(localWish, localPrice, 1, 1,
+                                false, "from csv", "", localUser, new Date()));
                         addCount++;
                     }
                 });
 
         return ResponseParseResult.builder().itemsAdded(addCount).status("Ok").okMessage("Парсинг успешно выполнен").build();
     }
-
-   /* @Override
-    public void clearCounter() {
-        addCount = 0;
-    }*/
 }

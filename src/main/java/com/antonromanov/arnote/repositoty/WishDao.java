@@ -26,7 +26,6 @@ public class WishDao implements IUserDAO {
 		params.stream().forEach(searchConsumer);
 		predicate = searchConsumer.getPredicate();
 		query.where(predicate);
-
 		List<Wish> result = entityManager.createQuery(query).getResultList();
 		return result;
 	}

@@ -9,8 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.Salary;
-import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.exceptions.*;
+import com.antonromanov.arnote.model.Wish;
 import com.antonromanov.arnote.model.WishDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -285,11 +285,11 @@ public class Utils {
         return Month.of((month + (proirity - 1)) > 12 ? (month + (proirity - 1)) - 12 : (month + (proirity - 1))).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
     }
 
-    public static int computerMonthNumber(Integer proirity) {
+    public static int computerMonthNumber(Integer priority) {
         Date date = new Date();
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         int month = localDate.getMonthValue();
-        return Month.of((month + (proirity - 1)) > 12 ? (month + (proirity - 1)) - 12 : (month + (proirity - 1))).getValue();
+        return Month.of((month + (priority - 1)) > 12 ? (month + (priority - 1)) - 12 : (month + (priority - 1))).getValue();
     }
 
 

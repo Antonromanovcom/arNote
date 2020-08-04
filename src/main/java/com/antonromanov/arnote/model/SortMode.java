@@ -2,7 +2,6 @@ package com.antonromanov.arnote.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Режим сортировки.
