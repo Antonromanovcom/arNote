@@ -7,11 +7,8 @@ import java.time.format.TextStyle;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.antonromanov.arnote.model.LocalUser;
-import com.antonromanov.arnote.model.Salary;
-import com.antonromanov.arnote.model.Wish;
+import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.exceptions.*;
-import com.antonromanov.arnote.model.WishDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -545,6 +542,18 @@ public class Utils {
         } else {
             throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
         }
+    }
+
+    /**
+     * Поиск в enum'е сортировок подходящее по имени, переданному с UI.
+     * @param name
+     * @return
+     */
+    public static Optional<SortMode> lookUpSortType(String name) { // поиск в Енуме
+        for (SortMode mode : SortMode.values()) {
+            if (mode.getUiValue().equals(name)) return Optional.of(mode);
+        }
+        return null; // если не нашли
     }
 
     private static String convertEnglishNames(String monthAndYear) throws BadIncomeParameter {

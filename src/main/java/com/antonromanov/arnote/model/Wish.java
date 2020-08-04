@@ -58,9 +58,12 @@ public class Wish {
     @Column
     private Boolean realized;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    private WishGroup wishGroup;
 
 
-    public Wish(String wish, Integer price, Integer priority, Integer priorityGroup, Boolean ac, String description, String url, LocalUser user, Date creationDate) {
+    public Wish(String wish, Integer price, Integer priority, Integer priorityGroup, Boolean ac, String description,
+                String url, LocalUser user, Date creationDate) {
         this.wish = wish;
         this.price = price;
         this.priority = priority;
@@ -85,6 +88,7 @@ public class Wish {
 
     }
 
+    //Todo: с таким большим количеством конструкторов явно надо что-то делать. Может быть добавить билдер в класс или добавить метод конвертации
     public Wish(String wish, int price, int priority, boolean archive, String description, String url, LocalUser user) {
         this.wish = wish;
         this.price = price;

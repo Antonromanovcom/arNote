@@ -2,6 +2,8 @@ package com.antonromanov.arnote.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -82,7 +84,13 @@ public class LocalUser {
 	 * Режим сортировки
 	 */
 	@Enumerated(EnumType.STRING)
-	private SortMode sortMode;
+	private SortMode sortMode; //todo: переименовать
+
+	/**
+	 * Режим сортировки основной таблицы.
+	 */
+	@Enumerated(EnumType.STRING)
+	private SortMode sortMainMode; //todo: переименовать
 
 
 	@Column
@@ -90,6 +98,12 @@ public class LocalUser {
 
 	@Column
 	private String lastOperation;
+
+	/**
+	 * Последний запрос желаний для главной табоицы был с приоритетом или нет?
+	 */
+	@Column
+	private Boolean lastRequestWithPriority;
 
 
 

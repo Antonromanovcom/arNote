@@ -31,7 +31,7 @@ public class MainServiceImpl implements MainService {
     Integer addCount = 0; // Количество добавлений
 
     @Override
-    public List<Wish> getAllWishesWithPriority1(LocalUser user) {
+    public List<Wish> getAllWishesWithPriority(LocalUser user) {
         return wishRepository.getAllWithPriority1(user);
     }
 
@@ -141,6 +141,7 @@ public class MainServiceImpl implements MainService {
     public Optional<List<Wish>> findAllWishesByWish(String wish, LocalUser user) {
         return wishRepository.findAllByWishAndUser(wish, user.getId());
     }
+
 
     @Override
     public Optional<List<Wish>> getAllRealizedWishes(LocalUser user) {

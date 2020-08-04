@@ -12,7 +12,13 @@ public interface MainService {
 
 	ResponseParseResult parseCsv(MultipartFile file, LocalUser localUser) throws Exception;
 
-	List<Wish> getAllWishesWithPriority1(LocalUser user);
+	/**
+	 * Получить все желания с наивысшим приоритетом.
+	 *
+	 * @param user - пользак, по которому ищем желания.
+	 * @return - список желаний.
+	 */
+	List<Wish> getAllWishesWithPriority(LocalUser user);
 
 	int getMaxPriority(LocalUser user);
 
@@ -44,7 +50,9 @@ public interface MainService {
 
 	List<Wish> getAllWishesByUserId(LocalUser user);
 
-	Optional<List<Wish>> findAllWishesByWish(String Wish, LocalUser user);
+	Optional<List<Wish>> findAllWishesByWish(String wishName, LocalUser user);
+
+	/*Optional<List<Wish>> findAllWishesByWishName(String wishName, LocalUser user);*/
 
 	Optional<List<Wish>> getAllRealizedWishes(LocalUser user);
 

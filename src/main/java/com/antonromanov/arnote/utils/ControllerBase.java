@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.security.Principal;
 
 @Slf4j
-public class ControllerBase {
+public class ControllerBase { //todo: Юзера то лучше здесь один раз определить
 
 	protected <T,E>T $do(SomeProcess<T, E> process, E s, Principal user, Utils.OperationType operationType, HttpServletResponse response){
 		try {
@@ -30,7 +30,7 @@ public class ControllerBase {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setCacheControl("no-cache");
 		ResponseEntity<String> responseEntity = new ResponseEntity<String>(responseBody, headers, HttpStatus.OK);
-	//	log.info("RESPONSE: {}", responseEntity); // временно выключил, иначе сильно засирает логи
+		//log.info("RESPONSE: {}", responseEntity); // временно выключил, иначе сильно засирает логи
 		return responseEntity;
 	}
 

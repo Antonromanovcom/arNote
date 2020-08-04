@@ -8,13 +8,16 @@ import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
-import com.antonromanov.arnote.utils.Utils;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,7 +39,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 //todo: избавиться от $do
 //todo: добавить тесты
 // todo: Надо убрать РеспонсЭнтити и возвращать налормальные ДТО-объекты а не этот пиздец
-// SELECT sum(w.price) from arnote.wishes w WHERE w.user_id = 8 AND w.realized AND NOT w.archive - запрос реализованных желаний
+// SELECT sum(w.price) from wishes w WHERE w.user_id = 1 AND w.realized AND NOT w.archive - запрос реализованных желаний
 
 /**
  * Основной REST-контроллер приложения.
@@ -48,8 +51,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class MainRestController extends ControllerBase {
 
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
     private class DTO {
-        private List<Wish> list = new ArrayList<>();
+        private List<Wish> list;
     }
 
     @Data
@@ -58,7 +63,7 @@ public class MainRestController extends ControllerBase {
     }
 
     @Autowired //переехать на связывание через конструктор
-    MainService mainService;
+            MainService mainService;
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
@@ -79,24 +84,30 @@ public class MainRestController extends ControllerBase {
      * @return
      */
     @CrossOrigin(origins = "*")
-    @PostMapping("/filter")
-    public ResponseEntity<String> findAll(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
+    @GetMapping("/filter")
+    //public ResponseEntity<String> findWishByName(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
+    public ResponseEntity<String> findWishByName(Principal principal, @RequestParam String keyword, HttpServletResponse resp) {
 
         return $do(s -> {
             log.info("============== FILTER/SEARCH WISHES ============== ");
-            log.info("SEARCH KEYWORD: " + requestParam);
+            log.info("SEARCH KEYWORD: " + keyword);
             log.info("PRINCIPAL: " + principal.getName());
 
             LocalUser localUser = getUserFromPrincipal(principal);
+            List<Wish> foundedWishes = new ArrayList<>();
 
-            List<Wish> wishes = mainService
-                    .findAllWishesByWish(parseJsonToWish(Utils.ParseType.EDIT, requestParam, localUser).getWish(), localUser)
-                    .orElseGet(ArrayList::new);
+            /*List<Wish> wishes = mainService
+                    .findAllWishesByWish(parseJsonToWish(ParseType.EDIT, requestParam, localUser).getWish(), localUser)
+                    .orElseGet(ArrayList::new);*/
+
+            if (mainService.findAllWishesByWish(keyword, localUser).isPresent()) { //todo: тут конечно надо все нормально завернуть
+                 foundedWishes = mainService.findAllWishesByWish(keyword, localUser).get();
+            }
 
             DTO dto = new DTO(); //todo: добавить билдеры
-            dto.list.addAll(wishes);
+            dto.list = foundedWishes;
 
-            String res = createGsonBuilder().toJson(dto);
+            String res = createNullableGsonBuilder().toJson(dto);
             log.info("PAYLOAD: " + res);
 
             return $prepareResponse(res);
@@ -137,8 +148,8 @@ public class MainRestController extends ControllerBase {
                 dtOwithOrder.list.addAll(wishListWithMonthOrder); //todo: почему .list, а не getlist() ????
 
                 if (("all".equalsIgnoreCase(finalSortType))
-                        && (localUser.getSortMode()!=SortMode.ALL)
-                        && (localUser.getSortMode()!=null)) { //todo: проверяем не сохранен ли до этого режим отображения и если сохранен - выбираем его. Но  вообще это костылище и код не красивый - надо разбираться с этим
+                        && (localUser.getSortMode() != SortMode.ALL)
+                        && (localUser.getSortMode() != null)) { //todo: проверяем не сохранен ли до этого режим отображения и если сохранен - выбираем его. Но  вообще это костылище и код не красивый - надо разбираться с этим
                     finalSortType = localUser.getSortMode().getUiValue();
                 }
 
@@ -161,8 +172,8 @@ public class MainRestController extends ControllerBase {
                 }
 
                 log.info("Данные по пользователю после запроса. Тип отображения: {}, Групповая сортировка: {}",
-                        localUser.getViewMode()==null? "N/A" : localUser.getViewMode(),
-                        localUser.getSortMode()==null ? "N/A": localUser.getSortMode().getUiValue());
+                        localUser.getViewMode() == null ? "N/A" : localUser.getViewMode(),
+                        localUser.getSortMode() == null ? "N/A" : localUser.getSortMode().getUiValue());
                 result = createNullableGsonBuilder().toJson(dtOwithOrder);
 
                 return $prepareResponse(result);
@@ -203,37 +214,111 @@ public class MainRestController extends ControllerBase {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/{type}")
-    public ResponseEntity<String> getAllWishes(Principal principal, @PathVariable String type, HttpServletResponse resp) {
+    public ResponseEntity<String> getAllWishes(Principal principal, @PathVariable String type,
+                                               @RequestParam(required = false) String changeSortType,
+                                               HttpServletResponse resp) {
 
         return $do(s -> {
             List<Wish> wishList;
 
             log.info("==================== GET WISHES ======================== ");
             log.info("type: " + type);
+            log.info("sort: " + changeSortType==null? "null" : changeSortType);
             log.info("PRINCIPAL: " + principal.getName());
             log.info("======================================================== ");
 
             LocalUser localUser = getUserFromPrincipal(principal);
+
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
-                DTO dto = new DTO();
+                DTO dto = new DTO(); //todo: что это за название, блядь!
                 String result = "";
 
-                if ("all".equalsIgnoreCase(type)) {
-                    wishList = mainService.getAllWishesByUserId(localUser);
+                if ("default".equalsIgnoreCase(type)) { // когда мы не хотим изменять тип отображения ВСЕ/ПРИОРИТЕТ
+
+                    // Если у пользователя последний запрос приоритетный
+                    if (localUser.getLastRequestWithPriority() != null && localUser.getLastRequestWithPriority()) {
+                        wishList = mainService.getAllWishesWithPriority(localUser); //грузим приоритетные желания
+                    } else { // иначе все
+                        wishList = mainService.getAllWishesByUserId(localUser);
+                    }
+
                     // Предотвращение вываливания на пустых датах
                     wishList.forEach(w -> {
                         if (w.getCreationDate() == null) w.setCreationDate(new Date());
                         if (w.getRealized() == null) w.setRealized(false);
                     });
 
-                    dto.list.addAll(wishList);
-                    result = createNullableGsonBuilder().toJson(dto);
+                } else if ("all".equalsIgnoreCase(type)) { // вызывается если хотим дернуть все желания и установить это юзеру
+                    wishList = mainService.getAllWishesByUserId(localUser);
+                    localUser.setLastRequestWithPriority(false);
+                    usersRepo.save(localUser);
+                    log.warn("У пользователя {} режим отображения желаний переключен на ALL", principal.getName());
+
+                    // Предотвращение вываливания на пустых датах
+                    wishList.forEach(w -> {
+                        if (w.getCreationDate() == null) w.setCreationDate(new Date());
+                        if (w.getRealized() == null) w.setRealized(false);
+                    });
                 } else {
-                    wishList = mainService.getAllWishesWithPriority1(localUser);
-                    dto.list.addAll(wishList);
-                    result = createNullableGsonBuilder().toJson(dto);
+                    wishList = mainService.getAllWishesWithPriority(localUser);
+                    localUser.setLastRequestWithPriority(true);
+                    usersRepo.save(localUser);
+                    log.warn("У пользователя {} сохранен режим отображения только приоритетных желаний", principal.getName());
                 }
+
+                // Дальше проверяем сортировки и сортируем, если надо
+                if (changeSortType!=null){ // меняем сортировку
+                    switch (SortMode.valueOf(changeSortType)) {
+                        case NAME:
+                            wishList.sort(Comparator.comparing(Wish::getWish));
+                            localUser.setSortMainMode(SortMode.NAME);
+                            usersRepo.saveAndFlush(localUser);
+                            break;
+                        case PRICE_ASC:
+                            wishList.sort(Comparator.comparing(Wish::getPrice));
+                            localUser.setSortMainMode(SortMode.PRICE_ASC);
+                            usersRepo.saveAndFlush(localUser);
+                            break;
+                        case PRICE_DESC:
+                            wishList.sort((Comparator.comparing(Wish::getPrice)).reversed());
+                            localUser.setSortMainMode(SortMode.PRICE_DESC);
+                            usersRepo.saveAndFlush(localUser);
+                            break;
+                        case PRIORITY:
+                            wishList.sort(Comparator.comparing(Wish::getPriority));
+                            localUser.setSortMainMode(SortMode.PRIORITY);
+                            usersRepo.saveAndFlush(localUser);
+                            break;
+                        case ALL:
+                            localUser.setSortMainMode(null);
+                            usersRepo.saveAndFlush(localUser);
+                            break;
+                    }
+                } else { // сортировку берем из БД
+                    if (localUser.getSortMainMode() != null && localUser.getSortMainMode() != SortMode.ALL) {
+                        switch (localUser.getSortMainMode()) {
+                            case NAME:
+                                wishList.sort(Comparator.comparing(Wish::getWish));
+                                break;
+                            case PRICE_ASC:
+                                wishList.sort(Comparator.comparing(Wish::getPrice));
+                                break;
+                            case PRICE_DESC:
+                                wishList.sort((Comparator.comparing(Wish::getPrice)).reversed());
+                                break;
+                            case PRIORITY:
+                                wishList.sort(Comparator.comparing(Wish::getPriority));
+                                break;
+                            default:
+                                wishList.sort(Comparator.comparing(Wish::getWish));
+                        }
+                    }
+                }
+
+                dto.list = wishList; //todo: переделать
+
+                result = createNullableGsonBuilder().toJson(dto);
 
                 return $prepareResponse(result);
             } else {
@@ -308,7 +393,7 @@ public class MainRestController extends ControllerBase {
                         .filter(wf -> wf.getRealizationDate() != null && wf.getCreationDate() != null)
                         .map(w -> (w.getRealizationDate().getTime() - w.getCreationDate().getTime())).collect(Collectors.toList());
 
-                days = (realizedWishes.size()==0) ? 0 : (30 / realizedWishes.size());
+                days = (realizedWishes.size() == 0) ? 0 : (30 / realizedWishes.size());
                 implementedSumAllTime = mainService.getImplementedSum(localUser, 1).orElseGet(() -> 0);
                 implementedSumMonth = mainService.getImplementedSum(localUser, 2).orElseGet(() -> 0);
             }
@@ -593,7 +678,7 @@ public class MainRestController extends ControllerBase {
         }, user, null, OperationType.UPDATE_USER, resp);
     }
 
-//todo: АААААА! Это полная пизда вообще!!!!!! Должен быть отдельный контроллер для юзерских действий и там два метода отдельных! Один для получения, другой для добавления!
+    //todo: АААААА! Это полная пизда вообще!!!!!! Должен быть отдельный контроллер для юзерских действий и там два метода отдельных! Один для получения, другой для добавления!
     @CrossOrigin(origins = "*")
     @GetMapping("/users/toggle/{mode}")
     public ResponseEntity<String> toggleUserMode(Principal principal, @PathVariable String mode, HttpServletResponse resp) {
@@ -609,7 +694,6 @@ public class MainRestController extends ControllerBase {
                 localuser.setViewMode(mode);
                 return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
             } else if ("GET".equals(mode)) { //todo: вот эту жесть конечно же надо убрать будет и исправить на фронте
-              //  localuser.setViewMode("TABLE");
                 return $prepareResponse(createGsonBuilder().toJson(localuser));
             } else {
                 return $prepareBadResponse(createGsonBuilder().toJson("Bad mode parameter!"));
@@ -617,6 +701,28 @@ public class MainRestController extends ControllerBase {
 
         }, null, null, OperationType.TOGGLE_USER_MODE, resp);
     }
+
+  /*  @CrossOrigin(origins = "*")
+    @GetMapping("/users/toggle/mainsort") //todo: так не надо делать. Надо getWishes делать с указанием типа сортировки
+    public ResponseEntity<String> changeMainSort(Principal principal, @RequestParam String mode, HttpServletResponse resp) {
+
+        return $do(s -> {
+
+            log.info("========= CHANGE MAIN SORT TYPE ============== ");
+            log.info("SORT TYPE: " + mode);
+
+            LocalUser localuser = getUserFromPrincipal(principal);
+            return lookUpSortType(mode)
+                    .map(sortMode -> {
+                        localuser.setSortMainMode(sortMode);
+                        LocalUser updatedUser = usersRepo.saveAndFlush(localuser);
+                        log.info("UPDATED USER MODE: {}", updatedUser.getSortMainMode());
+                        return $prepareResponse(createGsonBuilder().toJson(updatedUser));
+                    })
+                    .orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_SORT_TYPE));
+
+        }, null, null, OperationType.TOGGLE_USER_MODE, resp);
+    }*/
 
     @CrossOrigin(origins = "*")
     @GetMapping("/users/list")
@@ -649,6 +755,7 @@ public class MainRestController extends ControllerBase {
     public ResponseEntity<String> getCurrentUser(Principal principal, HttpServletResponse resp) {
 
         return $do(s -> {
+            log.info("========= GET CURRENT USER  ============== ");
 
             LocalUser localUser = getUserFromPrincipal(principal);
             // Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
@@ -733,6 +840,7 @@ public class MainRestController extends ControllerBase {
      * @return
      */
     private LocalUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
+
         return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
     }
 }
