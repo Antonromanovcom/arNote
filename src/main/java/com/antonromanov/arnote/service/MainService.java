@@ -1,8 +1,11 @@
 package com.antonromanov.arnote.service;
 
+import com.antonromanov.arnote.dto.response.ResponseParseResult;
+import com.antonromanov.arnote.dto.response.WishList;
+import com.antonromanov.arnote.entity.LocalUser;
+import com.antonromanov.arnote.entity.Salary;
+import com.antonromanov.arnote.entity.Wish;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.model.*;
-import com.antonromanov.arnote.utils.Utils;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +23,7 @@ public interface MainService {
 	 * Получить все желания с помесячной группировкой и детализованным наполнением.
 	 *
 	 */
-	List<WishDTOList> getAllWishesWithGroupPriority(LocalUser user);
+	List<WishList> getAllWishesWithGroupPriority(LocalUser user);
 
 	void updateWish(Wish log);
 

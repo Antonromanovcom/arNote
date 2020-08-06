@@ -1,5 +1,7 @@
-package com.antonromanov.arnote.model;
+package com.antonromanov.arnote.entity;
 
+import com.antonromanov.arnote.dto.request.UserDto;
+import com.antonromanov.arnote.enums.SortMode;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
@@ -11,15 +13,6 @@ import java.util.Date;
 @Setter
 @Table(name = "users")
 public class LocalUser {
-
-	public LocalUser(String login, Role userRole, String pwd, boolean usercryptomode, String email, String fullname) {
-		this.login = login;
-		this.pwd = pwd;
-		this.userCryptoMode = usercryptomode;
-		this.userRole = userRole;
-		this.email = email;
-		this.fullname = fullname;
-	}
 
 	public enum Role { USER, ADMIN }
 
@@ -84,15 +77,11 @@ public class LocalUser {
 	@Enumerated(EnumType.STRING)
 	private SortMode sortMode;
 
-
 	@Column
 	private LocalDateTime lastOperationTime;
 
 	@Column
 	private String lastOperation;
-
-
-
 
 	@Override
 	public String toString() {
@@ -108,6 +97,15 @@ public class LocalUser {
 				'}';
 	}
 
+	public LocalUser(String login, Role userRole, String pwd, boolean usercryptomode, String email, String fullname) { //todo: переименовать usercryptomode и fullname
+		this.login = login;
+		this.pwd = pwd;
+		this.userCryptoMode = usercryptomode;
+		this.userRole = userRole;
+		this.email = email;
+		this.fullname = fullname;
+	}
+
 	public LocalUser(String login, String pw) {
 		this.login = login;
 		this.pwd = pw;
@@ -115,6 +113,18 @@ public class LocalUser {
 		this.userRole = Role.USER;
 	}
 
-	public LocalUser() {
+	public LocalUser() { //todo: ломбок
 	}
+
+	public LocalUser(UserDto newUser, String securePw) {
+		this.login = newUser.getLogin();
+		this.pwd = securePw;
+		this.userCryptoMode = newUser.getUserCryptoMode();
+		this.userRole = Role.USER;
+		this.email = newUser.getEmail();
+		this.fullname = newUser.getFullName();
+		this.viewMode = "TABLE"; //todo: вынести в ЕНУМ
+	}
+
+
 }

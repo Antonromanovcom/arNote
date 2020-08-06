@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.security;
 
 
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.entity.LocalUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class UserPrinciple implements UserDetails {
-//public class UserPrinciple  {
 
 	private static final long serialVersionUID = 1L;
 
@@ -85,22 +84,22 @@ public class UserPrinciple implements UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		return true; // todo: чо за хуйня?? Разобраться!
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return true; // todo: чо за хуйня?? Разобраться!
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+		return true; // todo: чо за хуйня?? Разобраться!
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return true; // todo: чо за хуйня?? Разобраться!
 	}
 
 	@Override

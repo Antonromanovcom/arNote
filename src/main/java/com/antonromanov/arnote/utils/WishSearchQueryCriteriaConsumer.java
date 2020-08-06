@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.utils;
 
-import com.antonromanov.arnote.model.SearchCriteria;
+import com.antonromanov.arnote.dto.SearchCriteria;
 import lombok.Getter;
 import javax.persistence.criteria.*;
 import java.util.function.Consumer;

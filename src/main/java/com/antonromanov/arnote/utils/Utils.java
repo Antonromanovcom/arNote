@@ -1,17 +1,19 @@
 package com.antonromanov.arnote.utils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.sql.Time;
 import java.time.*;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.antonromanov.arnote.model.LocalUser;
-import com.antonromanov.arnote.model.Salary;
+import com.antonromanov.arnote.entity.LocalUser;
+import com.antonromanov.arnote.entity.Salary;
 import com.antonromanov.arnote.exceptions.*;
-import com.antonromanov.arnote.model.Wish;
-import com.antonromanov.arnote.model.WishDTO;
+import com.antonromanov.arnote.entity.Wish;
+import com.antonromanov.arnote.dto.response.WishDTO;
+import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -20,6 +22,8 @@ import org.aspectj.lang.Signature;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -27,7 +31,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * Тут собраны основные утилиты.
  */
 @Slf4j
+@Service
 public class Utils {
+
+    @Autowired
+    UsersRepo usersRepo;
 
     public enum ParseType {ADD, EDIT}
 
@@ -591,6 +599,16 @@ public class Utils {
             }
         log.info("Перевели месяц на русский язык: {}", returnMonth);
         return returnMonth;
+    }
+
+    /**
+     * Вытаскиваем юзера из Принципала
+     *
+     * @param principal
+     * @return
+     */
+    public LocalUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
+        return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
     }
 
 }

@@ -1,6 +1,7 @@
-package com.antonromanov.arnote.model;
+package com.antonromanov.arnote.entity;
 
 import javax.persistence.*;
+
 import lombok.*;
 import java.util.Date;
 
@@ -88,7 +89,7 @@ public class Wish {
 
     }
 
-    //Todo: с таким большим количеством конструкторов явно надо что-то делать. Может быть добавить билдер в класс или добавить метод конвертации
+    //todo: с таким большим количеством конструкторов явно надо что-то делать. Может быть добавить билдер в класс или добавить метод конвертации
     public Wish(String wish, int price, int priority, boolean archive, String description, String url, LocalUser user) {
         this.wish = wish;
         this.price = price;

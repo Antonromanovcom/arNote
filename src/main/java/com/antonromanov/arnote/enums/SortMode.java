@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.model;
+package com.antonromanov.arnote.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

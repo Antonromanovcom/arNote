@@ -1,10 +1,17 @@
 package com.antonromanov.arnote.controller;
 
+import com.antonromanov.arnote.dto.response.ResponseStatus;
+import com.antonromanov.arnote.dto.response.SumEntity;
+import com.antonromanov.arnote.dto.response.WishDTO;
+import com.antonromanov.arnote.dto.response.WishList;
 import com.antonromanov.arnote.email.EmailSender;
 import com.antonromanov.arnote.email.EmailStatus;
+import com.antonromanov.arnote.entity.LocalUser;
+import com.antonromanov.arnote.entity.Salary;
+import com.antonromanov.arnote.entity.Wish;
+import com.antonromanov.arnote.enums.SortMode;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
@@ -17,13 +24,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -54,10 +59,10 @@ public class MainRestController extends ControllerBase {
 
     @Data
     private class DtoWithOrder {
-        private List<WishDTOList> list = new ArrayList<>();
+        private List<WishList> list = new ArrayList<>();
     }
 
-    @Autowired //переехать на связывание через конструктор
+    @Autowired //todo: переехать на связывание через конструктор
     MainService mainService;
 
     @Autowired
@@ -68,6 +73,9 @@ public class MainRestController extends ControllerBase {
 
     @Autowired
     private EmailSender emailSender;
+
+    @Autowired
+    private Utils arnoteUtils;
 
 
     /**
@@ -87,7 +95,7 @@ public class MainRestController extends ControllerBase {
             log.info("SEARCH KEYWORD: " + requestParam);
             log.info("PRINCIPAL: " + principal.getName());
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
 
             List<Wish> wishes = mainService
                     .findAllWishesByWish(parseJsonToWish(Utils.ParseType.EDIT, requestParam, localUser).getWish(), localUser)
@@ -119,13 +127,13 @@ public class MainRestController extends ControllerBase {
                                                                 HttpServletResponse resp) {
 
         return $do(s -> {
-            List<WishDTOList> wishListWithMonthOrder;
+            List<WishList> wishListWithMonthOrder;
 
             log.info("============== GET ALL WISHES WITH MONTH GROUPING ============== ");
             log.info("SORT TYPE: " + sortType);
             log.info("PRINCIPAL: " + principal.getName());
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
 
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
@@ -137,7 +145,7 @@ public class MainRestController extends ControllerBase {
                 dtOwithOrder.list.addAll(wishListWithMonthOrder); //todo: почему .list, а не getlist() ????
 
                 if (("all".equalsIgnoreCase(finalSortType))
-                        && (localUser.getSortMode()!=SortMode.ALL)
+                        && (localUser.getSortMode()!= SortMode.ALL)
                         && (localUser.getSortMode()!=null)) { //todo: проверяем не сохранен ли до этого режим отображения и если сохранен - выбираем его. Но  вообще это костылище и код не красивый - надо разбираться с этим
                     finalSortType = localUser.getSortMode().getUiValue();
                 }
@@ -213,7 +221,7 @@ public class MainRestController extends ControllerBase {
             log.info("PRINCIPAL: " + principal.getName());
             log.info("======================================================== ");
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
                 DTO dto = new DTO();
@@ -253,7 +261,7 @@ public class MainRestController extends ControllerBase {
             log.info("PRINCIPAL: " + principal.getName());
             log.info("=========================================================== ");
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
             Wish wish = parseJsonToWish(ParseType.EDIT, requestParam, localUser);
             mainService.updateWish(mainService.updateMonthGroup(wish));
 
@@ -275,7 +283,7 @@ public class MainRestController extends ControllerBase {
             log.info("PRINCIPAL: " + principal.getName());
             log.info("======================================================== ");
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
 
             Wish newWish;
             newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, localUser));
@@ -300,7 +308,7 @@ public class MainRestController extends ControllerBase {
             int implementedSumAllTime = 0;
             int implementedSumMonth = 0;
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
 
             if (mainService.getAllRealizedWishes(localUser).isPresent()) {
 
@@ -314,7 +322,7 @@ public class MainRestController extends ControllerBase {
             }
 
             if (mainService.getLastSalary(localUser) != null) {
-                String result = createGsonBuilder().toJson(SummEntity.builder()
+                String result = createGsonBuilder().toJson(SumEntity.builder()
                         .all(mainService.getSumm4All(localUser))
                         .allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser), localUser))
                         .priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
@@ -351,7 +359,7 @@ public class MainRestController extends ControllerBase {
             Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID));
             wish.setAc(true);
             mainService.updateWish(wish);
-            return $prepareResponse(createGsonBuilder().toJson(ResponseStatusDTO.builder().okMessage("OK").status("OK").build()));
+            return $prepareResponse(createGsonBuilder().toJson(ResponseStatus.builder().okMessage("OK").status("OK").build()));
         }, null, null, null, resp);
     }
 
@@ -362,7 +370,7 @@ public class MainRestController extends ControllerBase {
 
         return $do(s -> {
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
             String result = createGsonBuilder().toJson(mainService.getLastSalary(localUser).getResidualSalary());
             log.info("==================== GET LAST SALARY ======================== ");
             log.info("PAYLOAD: " + result);
@@ -383,7 +391,7 @@ public class MainRestController extends ControllerBase {
             log.info("PAYLOAD: " + requestParam);
             log.info("PRINCIPAL: " + principal.getName());
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
             Salary newSalary;
             newSalary = mainService.saveSalary(parseJsonToSalary(requestParam, localUser));
             String result = createGsonBuilder().toJson(newSalary);
@@ -405,7 +413,7 @@ public class MainRestController extends ControllerBase {
         return $do(s -> {
 
 //			LOGGER.info("FILE: " + csvFile.getOriginalFilename());
-            LocalUser localUser = getUserFromPrincipal(principal);
+            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
 //			LOGGER.info("PRINCIPAL: " + localUser.toString());
 
             String result = createGsonBuilder().toJson(mainService.parseCsv(csvFile, localUser));
@@ -462,7 +470,7 @@ public class MainRestController extends ControllerBase {
     public ResponseEntity<String> changeMonth(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
 
         return $do(s -> {
-            LocalUser localUser = getUserFromPrincipal(principal);
+            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
             log.info("==================== MOVE WISH (CHANGE MONTH) ======================== ");
             log.info("ID: " + id);
             log.info("MOVE: " + move);
@@ -573,7 +581,7 @@ public class MainRestController extends ControllerBase {
 			LOGGER.info("id: " + id);*/
 
             LocalUser newUser = parseJsonToUserAndValidate(user);
-            LocalUser localuser = getUserFromPrincipal(principal);
+            LocalUser localuser = arnoteUtils.getUserFromPrincipal(principal);
             newUser.setCreationDate(localuser.getCreationDate());
 
             if ((usersRepo.findByLogin(newUser.getLogin()).isPresent()) && (!localuser.getLogin().equals(newUser.getLogin()))) {
@@ -603,7 +611,7 @@ public class MainRestController extends ControllerBase {
             log.info("========= TOGGLE / GET USER MODE ============== ");
             log.info("MODE: " + mode);
 
-            LocalUser localuser = getUserFromPrincipal(principal);
+            LocalUser localuser = arnoteUtils.getUserFromPrincipal(principal);
 
             if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
                 localuser.setViewMode(mode);
@@ -650,7 +658,7 @@ public class MainRestController extends ControllerBase {
 
         return $do(s -> {
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
             // Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
             fixNullUserFields(localUser);
             return $prepareResponse(createGsonBuilder().toJson(localUser));
@@ -724,15 +732,5 @@ public class MainRestController extends ControllerBase {
 
         return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd + " [email - " + email + " ]");
 
-    }
-
-    /**
-     * Вытаскиваем юзера из Принципала
-     *
-     * @param principal
-     * @return
-     */
-    private LocalUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
-        return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
     }
 }

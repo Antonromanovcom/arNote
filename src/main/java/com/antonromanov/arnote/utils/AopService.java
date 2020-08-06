@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.utils;
 
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;

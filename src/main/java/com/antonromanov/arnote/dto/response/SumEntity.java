@@ -1,9 +1,9 @@
-package com.antonromanov.arnote.model;
+package com.antonromanov.arnote.dto.response;
 
 import lombok.Builder;
 
 @Builder
-public class SummEntity {
+public class SumEntity {
 	private Integer all;
 	private Integer priority;
 	private Integer allPeriodForImplementation;

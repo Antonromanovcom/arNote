@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.repositoty;
 
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.entity.LocalUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;

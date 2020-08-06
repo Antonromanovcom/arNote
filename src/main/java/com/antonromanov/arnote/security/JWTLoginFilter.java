@@ -17,7 +17,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
-//public class JWTLoginFilter {
 
 	public JWTLoginFilter(String url, AuthenticationManager authManager) {
 		super(new AntPathRequestMatcher(url));
@@ -31,24 +30,20 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 
-		System.out.printf("JWTLoginFilter.attemptAuthentication: username/password= %s,%s", username, password);
+		System.out.printf("JWTLoginFilter.attemptAuthentication: username/password= %s,%s", username, password); //todo: что это за пиздец????
 		System.out.println();
 
 		return getAuthenticationManager()
 				.authenticate(new UsernamePasswordAuthenticationToken(username, password, Collections.emptyList()));
 	}
 
-	@Override
+	@Override //todo: надо оверрайдить метод обработки неудачных авторизаций и напримре писать их в базу или в лог
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 	                                        Authentication authResult) throws IOException, ServletException {
 
 		System.out.println("JWTLoginFilter.successfulAuthentication:");
-
-		// Write Authorization to Headers of Response.
 		TokenAuthenticationService.addAuthentication(response, authResult.getName());
-
 		String authorizationString = response.getHeader("Authorization");
-
 		System.out.println("Authorization String=" + authorizationString);
 	}
 

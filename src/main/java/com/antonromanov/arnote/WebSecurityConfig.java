@@ -36,11 +36,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().authorizeRequests()
 				// No need authentication.
-
 				.antMatchers("/").permitAll()
 				.antMatchers("/*.js").permitAll()
 				//.antMatchers("/index").permitAll() //
-				.antMatchers(HttpMethod.POST, "/login", "/rest/wishes/users").permitAll()
+				.antMatchers(HttpMethod.POST, "/login", "/rest/wishes/users", "/user").permitAll()
+				.antMatchers(HttpMethod.DELETE,  "/user").permitAll() //todo: вообще это конечно закрыть надо.
 				.antMatchers(HttpMethod.GET, "/login", "/favicon.ico").permitAll()
 				// Need authentication.
 				.anyRequest().authenticated()

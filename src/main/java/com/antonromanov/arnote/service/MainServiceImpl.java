@@ -1,8 +1,13 @@
 package com.antonromanov.arnote.service;
 
 import au.com.bytecode.opencsv.CSVReader;
+import com.antonromanov.arnote.dto.response.ResponseParseResult;
+import com.antonromanov.arnote.dto.response.WishDTO;
+import com.antonromanov.arnote.dto.response.WishList;
+import com.antonromanov.arnote.entity.LocalUser;
+import com.antonromanov.arnote.entity.Salary;
+import com.antonromanov.arnote.entity.Wish;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.repositoty.SalaryRepository;
 import com.antonromanov.arnote.repositoty.WishRepository;
 import org.apache.commons.math3.util.ArithmeticUtils;
@@ -47,11 +52,11 @@ public class MainServiceImpl implements MainService {
         }
     }
 
-    private void addItemInWishDTOListForNullPriorityWishes(List<WishDTOList> wishDTOListGlobal,
+    private void addItemInWishDTOListForNullPriorityWishes(List<WishList> wishDTOListGlobal,
                                                            List<WishDTO> wishDTOListFiltered,
                                                            int maxPrior,
                                                            LocalUser user) {
-        wishDTOListGlobal.add(WishDTOList.builder()
+        wishDTOListGlobal.add(WishList.builder()
                 .wishList(wishDTOListFiltered)
                 .monthNumber(computerMonthNumber(maxPrior + 1 > 12 ? (maxPrior + 1 - 12) : maxPrior + 1))
                 .monthName(computerMonth(maxPrior))
@@ -71,10 +76,10 @@ public class MainServiceImpl implements MainService {
      *
      */
     @Override
-    public List<WishDTOList> getAllWishesWithGroupPriority(LocalUser user) {
+    public List<WishList> getAllWishesWithGroupPriority(LocalUser user) {
 
         int maxPrior = getMaxPriority(user);
-        List<WishDTOList> wishDTOListGlobal = new ArrayList<>();
+        List<WishList> wishDTOListGlobal = new ArrayList<>();
 
         if (maxPrior - 1 > 0) {
             int currentMonth = 1;
@@ -92,7 +97,7 @@ public class MainServiceImpl implements MainService {
                 Integer sum = wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
                 amountForAllMonths = (getLastSalary(user).getResidualSalary()-sum) + amountForAllMonths; //считаем набегающий баланс
 
-                wishDTOListGlobal.add(WishDTOList.builder()
+                wishDTOListGlobal.add(WishList.builder()
                         .wishList(wishDTOListFiltered)
                         .monthNumber(computerMonthNumber(currentMonth))
                         .monthName(computerMonth(currentMonth))

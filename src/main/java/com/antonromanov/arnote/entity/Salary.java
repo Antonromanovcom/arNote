@@ -1,5 +1,6 @@
-package com.antonromanov.arnote.model;
+package com.antonromanov.arnote.entity;
 
+import com.antonromanov.arnote.entity.LocalUser;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;

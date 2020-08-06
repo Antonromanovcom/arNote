@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.model;
+package com.antonromanov.arnote.dto;
 
 import lombok.Getter;
 import lombok.Setter;
