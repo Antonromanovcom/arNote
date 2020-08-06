@@ -26,7 +26,6 @@ import java.util.Arrays;
 		prePostEnabled = true
 )
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-//public class WebSecurityConfig {
 
 	@Autowired
 	UserDetailsServiceImpl userDetailsService;
@@ -39,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/").permitAll()
 				.antMatchers("/*.js").permitAll()
 				//.antMatchers("/index").permitAll() //
-				.antMatchers(HttpMethod.POST, "/login", "/rest/wishes/users", "/user").permitAll()
+				.antMatchers(HttpMethod.POST, "/login", "/rest/wishes/users", "/user", "/user/forget").permitAll()
 				.antMatchers(HttpMethod.DELETE,  "/user").permitAll() //todo: вообще это конечно закрыть надо.
 				.antMatchers(HttpMethod.GET, "/login", "/favicon.ico").permitAll()
 				// Need authentication.

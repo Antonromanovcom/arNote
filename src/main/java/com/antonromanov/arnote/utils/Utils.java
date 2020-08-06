@@ -8,6 +8,9 @@ import java.time.format.TextStyle;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.antonromanov.arnote.email.EmailSender;
+import com.antonromanov.arnote.email.EmailStatus;
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Salary;
 import com.antonromanov.arnote.exceptions.*;
@@ -23,6 +26,7 @@ import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -35,7 +39,13 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class Utils {
 
     @Autowired
-    UsersRepo usersRepo;
+    UsersRepo usersRepo; //todo: через конструктор!!!!
+
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder; //todo: через конструктор!!!!
+
+    @Autowired
+    EmailSender emailSender; //todo: через конструктор!!!!
 
     public enum ParseType {ADD, EDIT}
 
@@ -611,4 +621,18 @@ public class Utils {
         return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
     }
 
+
+    /**
+     * Смена пароля и отправка уведомления на почту.
+     *
+     * @param user
+     * @param email
+     * @return
+     */
+    public EmailStatus changePwd(LocalUser user, String email) {
+        String pwd = generateRandomPassword();
+        user.setPwd(passwordEncoder.encode(pwd));
+        usersRepo.save(user);
+        return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd + " [email - " + email + " ]");
+    }
 }

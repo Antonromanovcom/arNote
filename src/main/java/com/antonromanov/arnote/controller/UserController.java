@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.controller;
 
 import com.antonromanov.arnote.dto.request.UserDto;
-import com.antonromanov.arnote.email.EmailSender;
+import com.antonromanov.arnote.email.EmailStatus;
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
@@ -13,7 +13,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.util.List;
 
@@ -33,7 +32,6 @@ public class UserController {
     private final MainService mainService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UsersRepo usersRepo;
-    private final EmailSender emailSender;
     private final Utils utils;
 
     /**
@@ -82,7 +80,7 @@ public class UserController {
      * @param user объект типа UserDto с обновленными данными пользователя.
      * @return - объект типа LocalUser.
      * @throws UserNotFoundException
-     * @throws BadIncomeParameter - если пользователь не найден (id передается в UserDto)
+     * @throws BadIncomeParameter    - если пользователь не найден (id передается в UserDto)
      */
     @CrossOrigin(origins = "*")
     @PutMapping
@@ -99,141 +97,93 @@ public class UserController {
                     u.setFullname(user.getFullName());
                     u.setUserCryptoMode(user.getUserCryptoMode());
                     return usersRepo.saveAndFlush(u);
-                }).orElseThrow(()->new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST));
+                }).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST));
     }
 
-      /*
-
-//todo: АААААА! Это полная пизда вообще!!!!!! Должен быть отдельный контроллер для юзерских действий и там два метода отдельных! Один для получения, другой для добавления!
+    /**
+     * Получить текущего пользователя.
+     *
+     * @param principal - берется из JWT сессии.
+     * @return
+     * @throws UserNotFoundException
+     */
     @CrossOrigin(origins = "*")
-    @GetMapping("/users/toggle/{mode}")
-    public ResponseEntity<String> toggleUserMode(Principal principal, @PathVariable String mode, HttpServletResponse resp) {
+    @GetMapping("/current")
+    public LocalUser getCurrentUser(Principal principal) throws UserNotFoundException {
+                return utils.getUserFromPrincipal(principal); //todo: в теории мы наверное можем узнать сколько осталось жить токену и завернуть это в ДТО Юзера
+    }
 
-        return $do(s -> {
+    /**
+     * Установить пользователю режим отображения.
+     *
+     * @param principal - берется из JWT сессии.
+     * @param mode - режим отображения.
+     * @return
+     * @throws UserNotFoundException
+     */
+    @CrossOrigin(origins = "*")
+    @PostMapping("/mode")
+    public LocalUser toggleUserMode(Principal principal, @RequestParam String mode) throws UserNotFoundException {
 
             log.info("========= TOGGLE / GET USER MODE ============== ");
             log.info("MODE: " + mode);
 
-            LocalUser localuser = getUserFromPrincipal(principal);
+            LocalUser localuser = utils.getUserFromPrincipal(principal);
 
-            if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
+            if (("TABLE".equals(mode)) || ("TREE".equals(mode))) { //todo: в ЕНУМ !!!!
                 localuser.setViewMode(mode);
-                return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
-            } else if ("GET".equals(mode)) { //todo: вот эту жесть конечно же надо убрать будет и исправить на фронте
-              //  localuser.setViewMode("TABLE");
-                return $prepareResponse(createGsonBuilder().toJson(localuser));
+                return usersRepo.saveAndFlush(localuser);
             } else {
-                return $prepareBadResponse(createGsonBuilder().toJson("Bad mode parameter!"));
+                //todo: тут надо бросануть ЭКСЕПШН и завернуть его уже в ЕррорХендлере
+                return null;
             }
-
-        }, null, null, OperationType.TOGGLE_USER_MODE, resp);
     }
 
+    /**
+     * Вернуть всех пользователей.
+     *
+     * @return
+     */
     @CrossOrigin(origins = "*")
-    @GetMapping("/users/list")
-    public ResponseEntity<String> getAllUsers(Principal principal, HttpServletResponse resp) {
-
-        return $do(s -> {
+    @GetMapping("/list")
+    public List<LocalUser> getAllUsers() {
             log.info("========= GET ALL USERS  ============== ");
-
-            List<LocalUser> userList = usersRepo.findAll().stream().map(u -> {
-                if (u.getCreationDate() == null) u.setCreationDate(new Date());
-                return u;
-            }).collect(Collectors.toList());
-
-            return $prepareResponse(createGsonBuilder().toJson(userList));
-        }, null, null, null, resp);
-    }
-
-    private void fixNullUserFields(LocalUser localUser) {
-        // Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
-        if (localUser.getUserRole() == null) localUser.setUserRole(LocalUser.Role.USER);
-        if (localUser.getUserCryptoMode() == null) localUser.setUserCryptoMode(false);
-        if (localUser.getCreationDate() == null) localUser.setCreationDate(new Date());
-        if (localUser.getEmail() == null) localUser.setEmail("antonr0manov@yndex.ru");
-        if (localUser.getFullname() == null) localUser.setFullname("Имя неизвестно");
-        if (localUser.getViewMode() == null) localUser.setViewMode("TABLE");
-    }
-
-    @CrossOrigin(origins = "*")
-    @GetMapping("/users/getcurrent")
-    public ResponseEntity<String> getCurrentUser(Principal principal, HttpServletResponse resp) {
-
-        return $do(s -> {
-
-            LocalUser localUser = getUserFromPrincipal(principal);
-            // Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
-            fixNullUserFields(localUser);
-            return $prepareResponse(createGsonBuilder().toJson(localUser));
-        }, null, null, OperationType.GET_CURRENT_USER, resp);
+            return usersRepo.findAll();
     }
 
 
-    *//**
+    /**
      * Метод, который дергается, если пользователь забыл пароль.
      *
-     * @param email
-     * @param resp
-     * @return
-     *//*
+     * @param email - email пользователя, по которому ищем в Базе пользователей.
+     * @return - объект типа EmailStatus с результатами отправки нового пароля.
+     */
     @CrossOrigin(origins = "*")
-    @PostMapping(value = "/users/forget", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> returnUserPassword(Principal principal, @RequestParam(name = "email") String email, HttpServletResponse resp) {
+    @PostMapping(value = "/forget")
+    public EmailStatus returnUserPassword(@RequestParam(name = "email") String email) throws UserNotFoundException {
 
-        return $do(s -> {
-            log.info("========= FORGET PWD METHOD =============== ");
-            log.info("USER EMAIL - " + email);
-            try {
-                LocalUser localUser = usersRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
-                return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, email).getStatus()));
-            } catch (UserNotFoundException e) {
-                return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
-            }
-        }, null, null, null, resp);
+        log.info("========= FORGET PWD METHOD =============== ");
+        log.info("USER EMAIL - " + email);
+
+        return usersRepo.findByEmail(email)
+                .map(u -> utils.changePwd(u, email))
+                .orElseThrow(UserNotFoundException::new);
     }
 
-    *//**
+
+    /**
      * Сброс юзерского пароля админом.
      *
-     * @param id
-     * @param resp
-     * @return
-     *//*
+     * @param userId - id пользователя из БД.
+     * @return - объект типа EmailStatus с результатами отправки нового пароля.
+     */
     @CrossOrigin(origins = "*")
-    @GetMapping("/users/reset/{id}")
-    public ResponseEntity<String> resetUserPasswordByAdmin(Principal principal, @PathVariable String id, HttpServletResponse resp) {
+    @GetMapping("/reset")
+    public EmailStatus resetUserPasswordByAdmin(@RequestParam(name = "userid") String userId) throws UserNotFoundException {
 
-        return $do(s -> {
-		*//*	LOGGER.info("========= RESET USER PWD =============== ");
-			LOGGER.info("USER ID - " + id);*//*
-            try {
-                LocalUser localUser = usersRepo.findById(Long.parseLong(id)).orElseThrow(UserNotFoundException::new);
-                return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, localUser.getEmail()).getStatus()));
-            } catch (UserNotFoundException e) {
-                return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
-            }
-        }, null, null, null, resp);
+        return usersRepo.findById(Long.parseLong(userId))
+                .map(user -> utils.changePwd(user, user.getEmail()))
+                .orElseThrow(UserNotFoundException::new);
+
     }
-
-
-    *//**
-     * Смена pwd и отправка уведомления на почту.
-     *
-     * @param user
-     * @param email
-     * @return
-     *//*
-    private EmailStatus changePwd(LocalUser user, String email) {
-
-//		LOGGER.info("USER FOUND - " + user.toString());
-
-        String pwd = generateRandomPassword();
-//		LOGGER.info("NEW PWD - " + pwd);
-        user.setPwd(passwordEncoder.encode(pwd));
-        LocalUser updatedUser = usersRepo.saveAndFlush(user);
-//		LOGGER.info("UPDATED USER - " + updatedUser.toString());
-
-        return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd + " [email - " + email + " ]");
-
-    }*/
 }
