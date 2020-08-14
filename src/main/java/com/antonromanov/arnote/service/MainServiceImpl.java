@@ -148,8 +148,8 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public Optional<List<Wish>> getAllRealizedWishes(LocalUser user) {
-        return Optional.of(wishRepository.getAllRealizedWishes(user));
+    public List<Wish> getAllRealizedWishes(LocalUser user) {
+        return wishRepository.getAllRealizedWishes(user);
     }
 
     @Override

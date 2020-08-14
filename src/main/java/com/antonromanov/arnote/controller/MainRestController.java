@@ -300,52 +300,6 @@ public class MainRestController extends ControllerBase {
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/summ")
-    public ResponseEntity<String> getSum(Principal principal, HttpServletResponse resp) {
-
-        return $do(s -> {
-            int days = 0;
-            int implementedSumAllTime = 0;
-            int implementedSumMonth = 0;
-
-            LocalUser localUser = arnoteUtils.getUserFromPrincipal(principal);
-
-            if (mainService.getAllRealizedWishes(localUser).isPresent()) {
-
-                List<Long> realizedWishes = mainService.getAllRealizedWishes(localUser).get().stream()
-                        .filter(wf -> wf.getRealizationDate() != null && wf.getCreationDate() != null)
-                        .map(w -> (w.getRealizationDate().getTime() - w.getCreationDate().getTime())).collect(Collectors.toList());
-
-                days = (realizedWishes.size()==0) ? 0 : (30 / realizedWishes.size());
-                implementedSumAllTime = mainService.getImplementedSum(localUser, 1).orElseGet(() -> 0);
-                implementedSumMonth = mainService.getImplementedSum(localUser, 2).orElseGet(() -> 0);
-            }
-
-            if (mainService.getLastSalary(localUser) != null) {
-                String result = createGsonBuilder().toJson(SumEntity.builder()
-                        .all(mainService.getSumm4All(localUser))
-                        .allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser), localUser))
-                        .priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
-                        .lastSalary(mainService.getLastSalary(localUser).getResidualSalary())
-                        .averageImplementationTime(days)
-                        .implemetedSummAllTime(implementedSumAllTime)
-                        .implemetedSummMonth(implementedSumMonth)
-                        .priority(mainService.getSumm4Prior(localUser)).build());
-
-                log.info("==================== GET SUM ======================== ");
-                log.info("PAYLOAD: " + result);
-                log.info("PRINCIPAL: " + principal.getName());
-                log.info("===================================================== ");
-
-                return $prepareResponse(result);
-            } else {
-                return $prepareNoDataYetErrorResponse(true);
-            }
-        }, null, principal, OperationType.GET_SUMS, resp);
-    }
-
-
-    @CrossOrigin(origins = "*")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteWish(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 

@@ -49,7 +49,7 @@ public interface MainService {
 
 	Optional<List<Wish>> findAllWishesByWish(String Wish, LocalUser user);
 
-	Optional<List<Wish>> getAllRealizedWishes(LocalUser user);
+	List<Wish> getAllRealizedWishes(LocalUser user);
 
 	Wish updateMonthGroup(Wish wish) throws BadIncomeParameter;
 
