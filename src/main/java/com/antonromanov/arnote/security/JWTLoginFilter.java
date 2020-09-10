@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.security;
 
-
 import java.io.IOException;
 import java.util.Collections;
 import javax.servlet.FilterChain;
@@ -13,8 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-
 
 public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -37,7 +34,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 				.authenticate(new UsernamePasswordAuthenticationToken(username, password, Collections.emptyList()));
 	}
 
-	@Override //todo: надо оверрайдить метод обработки неудачных авторизаций и напримре писать их в базу или в лог
+	@Override //todo: надо оверрайдить метод обработки неудачных авторизаций и например писать их в базу или в лог
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 	                                        Authentication authResult) throws IOException, ServletException {
 

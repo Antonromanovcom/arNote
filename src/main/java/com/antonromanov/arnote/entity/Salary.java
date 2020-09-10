@@ -1,6 +1,8 @@
 package com.antonromanov.arnote.entity;
 
+import com.antonromanov.arnote.dto.request.NewSalaryRq;
 import com.antonromanov.arnote.entity.LocalUser;
+import com.antonromanov.arnote.utils.JSONTemplate;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,17 +25,16 @@ public class Salary {
 	private long id;
 
 	@Column(name = "fullslary", nullable = true)
-	private Integer fullSlary;
+	private Integer fullSlary; //todo: переименовать
 
 	@Column(name = "residualsalary", nullable = true)
 	private Integer residualSalary;
 
 	@Column(name = "date", nullable = true)
 	@Temporal(TemporalType.DATE)
-	private Date salarydate;
+	private Date salarydate; //todo: переименовать
 
 	@Column
-//	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime salaryTimeStamp;
 
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -42,5 +43,13 @@ public class Salary {
 	public Salary(Integer fullSlary, Integer residualSalary) {
 		this.fullSlary = fullSlary;
 		this.residualSalary = residualSalary;
+	}
+
+	public Salary(NewSalaryRq newSalaryRq, LocalUser user) {
+		this.fullSlary = newSalaryRq.getFullSalary();
+		this.residualSalary = newSalaryRq.getResidualSalary();
+		this.user = user;
+		Date currentDate = new Date();
+		this.setSalarydate(currentDate);
 	}
 }

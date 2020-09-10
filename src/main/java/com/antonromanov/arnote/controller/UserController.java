@@ -126,9 +126,7 @@ public class UserController {
 
             log.info("========= TOGGLE / GET USER MODE ============== ");
             log.info("MODE: " + mode);
-
             LocalUser localuser = utils.getUserFromPrincipal(principal);
-
             if (("TABLE".equals(mode)) || ("TREE".equals(mode))) { //todo: в ЕНУМ !!!!
                 localuser.setViewMode(mode);
                 return usersRepo.saveAndFlush(localuser);

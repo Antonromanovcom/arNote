@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 public class WishDTO {
 
+    @Getter
     private long id;
     @Getter
     private String wish;

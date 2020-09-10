@@ -1,14 +1,14 @@
 package com.antonromanov.arnote.dto.response;
 
-import com.antonromanov.arnote.dto.response.WishDTO;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 import java.util.List;
 
 
 @Builder //todo: где геттеры и сеттры, почему поля не приватные??? Что это за пиздец???
-public class WishList {
+@Data
+public class WishList { //todo: переименовать
 
-    @Getter
     List<WishDTO> wishList;
     String monthName;
     String year;
