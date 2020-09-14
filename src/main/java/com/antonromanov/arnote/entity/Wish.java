@@ -2,6 +2,7 @@ package com.antonromanov.arnote.entity;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import java.util.Date;
 
@@ -22,7 +23,7 @@ public class Wish {
     private long id;
 
     @Column(name = "wish", nullable = true, length = 255)
-    private String wish;
+    private String wish; //todo: переименовать в классе в wishName
 
     @Column(name = "price", nullable = true)
     private Integer price;
@@ -39,12 +40,14 @@ public class Wish {
     @Column(name = "url", nullable = true, length = 1024)
     private String url;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     private LocalUser user;
 
     @Column
     private Integer priorityGroup;
 
+    @JsonIgnore
     @Column
     private Integer priorityGroupOrder;
 

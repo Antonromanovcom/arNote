@@ -46,7 +46,7 @@ public class MonthPriorityController {
 
     @Data //todo: вынести отседава, добавить билдер, переименовать
     public static class MoveWishDto {
-        private String id;
+        private String id; //todo: почему string?????
         private String month;
         private String step; //todo: ENUM????
     }

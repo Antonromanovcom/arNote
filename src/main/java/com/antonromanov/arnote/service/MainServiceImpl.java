@@ -7,6 +7,7 @@ import com.antonromanov.arnote.dto.response.WishList;
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Salary;
 import com.antonromanov.arnote.entity.Wish;
+import com.antonromanov.arnote.enums.ListOfAllType;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.repositoty.SalaryRepository;
 import com.antonromanov.arnote.repositoty.WishRepository;
@@ -39,6 +40,17 @@ public class MainServiceImpl implements MainService {
     public List<Wish> getAllWishesWithPriority1(LocalUser user) {
         return wishRepository.getAllWithPriority1(user);
     }
+
+    @Override
+    public List<Wish> getAllWishes(LocalUser user, ListOfAllType type) {
+        switch (type){
+            case PRIORITY:
+                return getAllWishesWithPriority1(user);
+            default:
+                return getAllWishesByUserId(user);
+        }
+    }
+
 
     @Override
     public int getMaxPriority(LocalUser user) {
@@ -143,8 +155,8 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public Optional<List<Wish>> findAllWishesByWish(String wish, LocalUser user) {
-        return wishRepository.findAllByWishAndUser(wish, user.getId());
+    public Optional<List<Wish>> findAllWishesByWish(Wish wish, LocalUser user) {
+        return wishRepository.findAllByWishAndUser(wish.getWish(), user.getId());
     }
 
     @Override
@@ -160,8 +172,8 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public void updateWish(Wish wish) {
-        wishRepository.save(wish);
+    public Wish updateWish(Wish wish) {
+        return wishRepository.saveAndFlush(wish);
     }
 
     @Override
@@ -180,12 +192,12 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public Integer getSumm4All(LocalUser user) {
+    public Integer getSumForAllWishes(LocalUser user) {
         return wishRepository.findAllByIdSorted(user).stream().map(Wish::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
     @Override
-    public Integer getSumm4Prior(LocalUser user) {
+    public Integer getSumForPriorityWishes(LocalUser user) {
         return wishRepository.getAllWithPriority1(user).stream().map(Wish::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
     }
 

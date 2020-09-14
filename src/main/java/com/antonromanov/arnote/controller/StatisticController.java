@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigInteger;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -62,14 +61,14 @@ public class StatisticController {
                     implementedSumMonth = mainService.getImplementedSum(localUser, 2).orElse(0);
 
                     return SumEntity.builder()
-                            .all(mainService.getSumm4All(localUser))
-                            .allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser), localUser))
-                            .priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
+                            .all(mainService.getSumForAllWishes(localUser))
+                            .allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumForAllWishes(localUser), localUser))
+                            .priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumForPriorityWishes(localUser), localUser))
                             .lastSalary(mainService.getLastSalary(localUser).getResidualSalary())
                             .averageImplementationTime(days)
                             .implementedSumAllTime(implementedSumAllTime)
                             .implementedSumMonth(implementedSumMonth)
-                            .priority(mainService.getSumm4Prior(localUser)).build();
+                            .priority(mainService.getSumForPriorityWishes(localUser)).build();
                 })
                 .orElseThrow(() -> new RuntimeException()); //todo: тут надо нормальный эксепшн бросить
     }

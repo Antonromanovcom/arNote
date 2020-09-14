@@ -19,7 +19,7 @@ public class AopService {
 	UsersRepo usersRepo;
 
 
-	@Before("execution(* com.antonromanov.arnote.controller.MainRestController.*(..)) && args(principal,..)")
+	@Before("execution(* com.antonromanov.arnote.controller.WishController.*(..)) && args(principal,..)")
 	public void beforeAdvice(JoinPoint joinPoint, Principal principal) {
 
 		if (principal != null) {

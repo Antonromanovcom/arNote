@@ -41,11 +41,11 @@ public class SalaryController {
     public SumEntity getLastSalary(Principal principal) throws UserNotFoundException {
         LocalUser localUser = utils.getUserFromPrincipal(principal);
         return SumEntity.builder()
-                .all(mainService.getSumm4All(localUser))
-                .allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser), localUser))
-                .priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
+                .all(mainService.getSumForAllWishes(localUser))
+                .allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumForAllWishes(localUser), localUser))
+                .priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumForPriorityWishes(localUser), localUser))
                 .lastSalary(mainService.getLastSalary(localUser).getResidualSalary())
-                .priority(mainService.getSumm4Prior(localUser)).build();
+                .priority(mainService.getSumForPriorityWishes(localUser)).build();
     }
 
     /**

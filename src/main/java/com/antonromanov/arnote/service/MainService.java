@@ -5,6 +5,7 @@ import com.antonromanov.arnote.dto.response.WishList;
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Salary;
 import com.antonromanov.arnote.entity.Wish;
+import com.antonromanov.arnote.enums.ListOfAllType;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
@@ -17,6 +18,8 @@ public interface MainService {
 
 	List<Wish> getAllWishesWithPriority1(LocalUser user);
 
+	List<Wish> getAllWishes(LocalUser user, ListOfAllType type);
+
 	int getMaxPriority(LocalUser user);
 
 	/**
@@ -25,7 +28,7 @@ public interface MainService {
 	 */
 	List<WishList> getAllWishesWithGroupPriority(LocalUser user);
 
-	void updateWish(Wish log);
+	Wish updateWish(Wish log);
 
 	Wish updateAndFlushWish(Wish log);
 
@@ -33,9 +36,9 @@ public interface MainService {
 
 	Optional<Wish> getWishById(int id);
 
-	Integer getSumm4All(LocalUser user);
+	Integer getSumForAllWishes(LocalUser user);
 
-	Integer getSumm4Prior(LocalUser user);
+	Integer getSumForPriorityWishes(LocalUser user);
 
 	Optional<Integer> getImplementedSum(LocalUser user, int period);
 
@@ -47,7 +50,7 @@ public interface MainService {
 
 	List<Wish> getAllWishesByUserId(LocalUser user);
 
-	Optional<List<Wish>> findAllWishesByWish(String Wish, LocalUser user);
+	Optional<List<Wish>> findAllWishesByWish(Wish wish, LocalUser user);
 
 	List<Wish> getAllRealizedWishes(LocalUser user);
 
