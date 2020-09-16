@@ -2,6 +2,7 @@ package com.antonromanov.arnote.repositoty;
 
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Wish;
+import com.antonromanov.arnote.enums.SortMode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

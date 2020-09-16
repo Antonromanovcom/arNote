@@ -7,11 +7,11 @@ public class BadIncomeParameter extends Exception {
 
 	private String message;
 
-	public enum ParameterKind {PRIORITYCHANGE, WISH_ID_SEARCH, WRONG_ID, SUCH_USER_EXIST, SUCH_USER_NO_EXIST, NOTHING_FOUND, WRONG_MONTH}
+	public enum ParameterKind {PRIORITYCHANGE, WISH_ID_SEARCH, WRONG_ID, SUCH_USER_EXIST, SUCH_USER_NO_EXIST, NOTHING_FOUND, WRONG_MONTH, WRONG_PARAMETER}
 
 	public BadIncomeParameter(ParameterKind parameter) {
 
-		if (parameter == PRIORITYCHANGE) {
+		if (parameter == PRIORITYCHANGE) { //todo: вот этот весь пиздец конечно поменять надо!!!!
 			this.message = "Ошибка изменения приоритета: тип повышения может быть только 'up' или 'down'";
 		} else if (parameter == WISH_ID_SEARCH) {
 				this.message = "Ошибка поиска желания: желания с таким id не существует";

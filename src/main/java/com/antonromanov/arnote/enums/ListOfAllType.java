@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Режим вывода списка всех желаний.
+ * Режим вывода списка всех желаний: все или только приоритетные.
  */
 @AllArgsConstructor
 @Getter

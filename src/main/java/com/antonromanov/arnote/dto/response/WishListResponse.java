@@ -5,8 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import java.util.List;
 
+/**
+ * DTO со списком желаний, который отдаем на фронт.
+ */
 @Data
 @Builder
-public class DTO { //todo: ПЕРЕИМЕНОВАТЬ!!!!!
+public class WishListResponse {
     private List<Wish> list;
 }

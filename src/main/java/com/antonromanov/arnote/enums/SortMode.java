@@ -1,7 +1,9 @@
 package com.antonromanov.arnote.enums;
 
+import com.antonromanov.arnote.dto.response.WishResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import java.util.Comparator;
 
 /**
  * Режим сортировки.
@@ -9,11 +11,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum SortMode {
-    NAME("Сортировка по имени", "name"),
-    PRICE_ASC("Сортировка по возрастанию стоимости", "price-asc"),
-    PRICE_DESC("Сортировка по убыванию стоимости", "price-desc"),
-    ALL("Без сортировки", "all");
+    NAME(Comparator.comparing(WishResponse::getWish)),
+    PRICE_ASC(Comparator.comparing(WishResponse::getPrice)),
+    PRICE_DESC(Comparator.comparing(WishResponse::getPrice).reversed()),
+    ALL(Comparator.comparing(WishResponse::getId));
 
-    private String description;
-    private String uiValue;
+   private final Comparator<WishResponse> comparing;
 }
+

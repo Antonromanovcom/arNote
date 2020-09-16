@@ -1,9 +1,11 @@
 package com.antonromanov.arnote.controller;
 
-import com.antonromanov.arnote.dto.response.DTO;
+import com.antonromanov.arnote.dto.request.MoveWishDto;
+import com.antonromanov.arnote.dto.response.WishListResponse;
 import com.antonromanov.arnote.entity.Wish;
 import com.antonromanov.arnote.enums.ListOfAllType;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.exceptions.NoDataYetException;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.Utils;
@@ -44,8 +46,8 @@ public class WishController {
      */
     @CrossOrigin(origins = "*")
     @PostMapping("/filter")
-    public DTO findAll(Principal principal, @RequestBody Wish wish) throws Exception {
-        return DTO.builder()
+    public WishListResponse findAll(Principal principal, @RequestBody Wish wish) throws Exception {
+        return WishListResponse.builder()
                 .list(mainService
                         .findAllWishesByWish(wish, utils.getUserFromPrincipal(principal))
                         .orElseGet(ArrayList::new))
@@ -56,20 +58,25 @@ public class WishController {
      * Получить все желания.
      *
      * @param principal
-     * @param type      тип enum'а ListOfAllType.
+     * @param type - тип enum'а ListOfAllType.
      * @return
      */
     @CrossOrigin(origins = "*")
-    @GetMapping("/{type}") //todo: поменять на ?type=....
-    public DTO getAllWishes(Principal principal, @PathVariable String type) throws UserNotFoundException, BadIncomeParameter { //todo: эксепшены при пустых желаниях и неверном type.
-        return DTO.builder()
-                .list(mainService.getAllWishes(utils.getUserFromPrincipal(principal), Arrays
-                        .stream(ListOfAllType.values())
-                        .filter(t -> t.getUiValue().equals(type))
-                        .findFirst()
-                        .orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH)))) //todo: другой тип
-                .build();
+    @GetMapping
+    public WishListResponse getAllWishes(Principal principal, @RequestParam String type) throws UserNotFoundException,
+            BadIncomeParameter, NoDataYetException {
 
+        if (mainService.getAllWishesByUser(utils.getUserFromPrincipal(principal)).isEmpty()) {
+            throw new NoDataYetException(false); //todo: разобраться с этим моментом
+        } else {
+            return WishListResponse.builder()
+                    .list(mainService.getAllWishes(utils.getUserFromPrincipal(principal),
+                            Arrays.stream(ListOfAllType.values())
+                                    .filter(t -> t.getUiValue().equals(type))
+                                    .findFirst()
+                                    .orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_PARAMETER))))
+                    .build();
+        }
     }
 
     /**
@@ -106,27 +113,26 @@ public class WishController {
      * @return
      */
     @CrossOrigin(origins = "*")
-    @DeleteMapping("/{id}") //todo: тоже убирать надо, менять на ?id=...
-    public Wish deleteWish(Principal principal, @PathVariable String id) throws BadIncomeParameter {
-        Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID));
-        wish.setAc(true); //todo: надо подумать можно ли сделать одной строкой как-нить.
+    @DeleteMapping
+    public Wish deleteWish(Principal principal, @RequestParam String id) throws BadIncomeParameter {
+        Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() ->
+                new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
+        wish.setAc(true); //todo: билдер или отдельное дто для wishResponse ???
         return mainService.updateWish(wish);
     }
 
-
+    /**
+     * Дискретное изменение приоритета.
+     *
+     * @param principal
+     * @param dto
+     * @return
+     */
     @CrossOrigin(origins = "*")
     @PostMapping("/move")
-    public Wish changePriority(Principal principal, @RequestBody MonthPriorityController.MoveWishDto dto) {
-
-        if ("down".equals(dto.getStep())) {
-            if (mainService.getWishById(Integer.parseInt(dto.getId())).get().getPriority() > 1) { //todo: с этим пиздецом надо что-то думать
-                (mainService.getWishById(Integer.parseInt(dto.getId())).get())
-                        .setPriority((mainService.getWishById(Integer.parseInt(dto.getId())).get()).getPriority() - 1);
-            }
-            return mainService.updateWish(mainService.getWishById(Integer.parseInt(dto.getId())).get());
-        }
-        (mainService.getWishById(Integer.parseInt(dto.getId())).get())
-                .setPriority((mainService.getWishById(Integer.parseInt(dto.getId())).get()).getPriority() + 1);
-        return mainService.updateWish(mainService.getWishById(Integer.parseInt(dto.getId())).get());
+    public Wish changePriority(Principal principal, @RequestBody MoveWishDto dto) throws BadIncomeParameter {
+        return mainService.getWishById(dto.getId())
+                .map(wish ->  dto.getStep().getOperation().move(wish, mainService))
+                .orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
     }
 }

@@ -65,6 +65,10 @@ public class Wish {
     @ManyToOne(cascade = CascadeType.ALL)
     private WishGroup wishGroup;
 
+    public Wish setPriorityAndReturnWish(Integer priority) {
+        this.priority = priority;
+        return this;
+    }
 
     public Wish(String wish, Integer price, Integer priority, Integer priorityGroup, Boolean ac, String description,
                 String url, LocalUser user, Date creationDate) {

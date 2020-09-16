@@ -1,11 +1,12 @@
 package com.antonromanov.arnote.service;
 
 import com.antonromanov.arnote.dto.response.ResponseParseResult;
-import com.antonromanov.arnote.dto.response.WishList;
+import com.antonromanov.arnote.dto.response.monthgroupping.GroupOfWishesForOneMonth;
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Salary;
 import com.antonromanov.arnote.entity.Wish;
 import com.antonromanov.arnote.enums.ListOfAllType;
+import com.antonromanov.arnote.enums.SortMode;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
@@ -26,7 +27,7 @@ public interface MainService {
 	 * Получить все желания с помесячной группировкой и детализованным наполнением.
 	 *
 	 */
-	List<WishList> getAllWishesWithGroupPriority(LocalUser user);
+	Optional<List<GroupOfWishesForOneMonth>> getAllWishesWithGroupPriority(LocalUser user, SortMode sortType);
 
 	Wish updateWish(Wish log);
 
@@ -34,7 +35,7 @@ public interface MainService {
 
 	Wish addWish(Wish parseJsonToWish);
 
-	Optional<Wish> getWishById(int id);
+	Optional<Wish> getWishById(long id);
 
 	Integer getSumForAllWishes(LocalUser user);
 
@@ -48,7 +49,7 @@ public interface MainService {
 
 	Integer calculateImplementationPeriod(Integer summ, LocalUser localUser);
 
-	List<Wish> getAllWishesByUserId(LocalUser user);
+	List<Wish> getAllWishesByUser(LocalUser user);
 
 	Optional<List<Wish>> findAllWishesByWish(Wish wish, LocalUser user);
 

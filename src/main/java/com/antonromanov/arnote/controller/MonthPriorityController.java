@@ -1,11 +1,13 @@
 package com.antonromanov.arnote.controller;
 
-import com.antonromanov.arnote.dto.response.WishDTO;
-import com.antonromanov.arnote.dto.response.WishList;
+import com.antonromanov.arnote.dto.request.MoveWishDto;
+import com.antonromanov.arnote.dto.response.WishResponse;
+import com.antonromanov.arnote.dto.response.monthgroupping.ListOfMonthsResponse;
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Wish;
 import com.antonromanov.arnote.enums.SortMode;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.exceptions.NoDataYetException;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.MainService;
@@ -15,14 +17,10 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
-import java.util.regex.Pattern;
 import static com.antonromanov.arnote.utils.Utils.createNullableGsonBuilder;
 import static com.antonromanov.arnote.utils.Utils.parseMonthAndCalculatePriority;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * REST-контроллер для работы с приоритетом по месяцам.
@@ -39,17 +37,6 @@ public class MonthPriorityController {
     private final UsersRepo usersRepo;
     private final Utils utils;
 
-    @Data //todo: вынести отседава, добавить билдер, переименовать
-    private class DtoWithOrder {
-        private List<WishList> list = new ArrayList<>();
-    }
-
-    @Data //todo: вынести отседава, добавить билдер, переименовать
-    public static class MoveWishDto {
-        private String id; //todo: почему string?????
-        private String month;
-        private String step; //todo: ENUM????
-    }
 
     /**
      * Получить все желания с группировкой по месяцам.
@@ -60,58 +47,13 @@ public class MonthPriorityController {
      */
     @CrossOrigin(origins = "*")
     @GetMapping
-    public DtoWithOrder getAllWishesWithMonthGrouping(Principal principal,
-                                                      @RequestParam String sortType) throws UserNotFoundException { //todo: сорт-тайпы вынести в константы или енумы
+    public ListOfMonthsResponse getAllWishesWithMonthGrouping(Principal principal, @RequestParam SortMode sortType)
+            throws UserNotFoundException, NoDataYetException {
 
-        List<WishList> wishListWithMonthOrder;
-
-        log.info("============== GET ALL WISHES WITH MONTH GROUPING ============== ");
-        log.info("SORT TYPE: " + sortType);
-        log.info("PRINCIPAL: " + principal.getName());
-
-        LocalUser localUser = utils.getUserFromPrincipal(principal);
-
-        if (mainService.getAllWishesByUserId(localUser).size() > 0) {
-
-            DtoWithOrder dtOwithOrder = new DtoWithOrder(); // todo: билдер + вынести это куда-то
-            String result = "";
-            String finalSortType = sortType; // todo: очень не красивое решение - надо что-то с этим делать.
-            wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
-
-            dtOwithOrder.list.addAll(wishListWithMonthOrder); // todo: почему .list, а не getlist() ????
-
-            if (("all".equalsIgnoreCase(finalSortType))
-                    && (localUser.getSortMode() != SortMode.ALL)
-                    && (localUser.getSortMode() != null)) { // todo: проверяем не сохранен ли до этого режим отображения и если сохранен - выбираем его. Но  вообще это костылище и код не красивый - надо разбираться с этим
-                finalSortType = localUser.getSortMode().getUiValue();
-            }
-
-            if ("name".equalsIgnoreCase(finalSortType)) { // todo: обработать какой-нить мапой ИФы и сделать все в функциональном стиле
-                dtOwithOrder.list.forEach(wl -> wl.getWishList().sort(Comparator.comparing(WishDTO::getWish))); // todo: почему .list, а не getlist() ????
-                localUser.setSortMode(SortMode.NAME);
-                usersRepo.saveAndFlush(localUser);
-            } else if ("price-asc".equalsIgnoreCase(finalSortType)) {
-                dtOwithOrder.list.forEach(wl -> wl.getWishList().sort(Comparator.comparing(WishDTO::getPrice)));
-                localUser.setSortMode(SortMode.PRICE_ASC);
-                usersRepo.saveAndFlush(localUser);
-            } else if ("all".equalsIgnoreCase(finalSortType)) {
-                localUser.setSortMode(SortMode.ALL);
-                usersRepo.saveAndFlush(localUser);
-            } else if ("price-desc".equalsIgnoreCase(finalSortType)) { //todo: утащить в ЕНУМы
-                Comparator<WishDTO> comparator = Comparator.comparing(WishDTO::getPrice);
-                dtOwithOrder.list.forEach(wl -> wl.getWishList().sort(comparator.reversed()));
-                localUser.setSortMode(SortMode.PRICE_DESC);
-                usersRepo.saveAndFlush(localUser);
-            }
-
-            log.info("Данные по пользователю после запроса. Тип отображения: {}, Групповая сортировка: {}",
-                    localUser.getViewMode() == null ? "N/A" : localUser.getViewMode(),
-                    localUser.getSortMode() == null ? "N/A" : localUser.getSortMode().getUiValue());
-
-            return dtOwithOrder;
-        } else {
-            return null; // todo: тут надо подумать что делать. Тут не эксепшн надо пробрасывать, а просто возвращать пустой список
-        }
+            return ListOfMonthsResponse.builder()
+                    .list(mainService.getAllWishesWithGroupPriority(utils.getAndUpdateUser(principal, sortType), sortType)
+                            .orElseThrow(()->new NoDataYetException(false) ))
+                    .build();
     }
 
     /**
@@ -132,9 +74,9 @@ public class MonthPriorityController {
         log.info("PRINCIPAL: " + principal.getName());
         log.info("=========================================================== ");
 
-        Wish wish = mainService.getWishById(Integer.parseInt(payload.getId())).orElseThrow(() ->
+        Wish wish = mainService.getWishById(payload.getId()).orElseThrow(() ->
                 new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
-        wish.setPriorityGroup(parseMonthAndCalculatePriority(payload.getMonth()));
+        wish.setPriorityGroup(parseMonthAndCalculatePriority(payload.getMonth())); //todo: может добавить билдер в энтити или сделать отдельное ДТО для респонса с билдером
         Wish movedWish = mainService.updateAndFlushWish(wish);
         String result = createNullableGsonBuilder().toJson(movedWish);
         log.info("ОТВЕТ: {}", result); // todo: если prepareResponse отдает нормальный ответ - эту строчку удалим. Ну или надо сделать, чтобы он отдавал нормальный ответ
@@ -161,13 +103,13 @@ public class MonthPriorityController {
         log.info("PRINCIPAL: " + principal.getName());
 
 
-        Wish wish = checkParametersAndGetWish(payload.getId(), payload.getStep());
+        Wish wish = checkParametersAndGetWish(payload);
         int maxPrior = (mainService.getMaxPriority(localUser)) - 1;
         log.info("MAX PRIORITY: " + maxPrior);
 
 
         switch (payload.getStep()) {
-            case "down": //todo: вынести в Enum
+            case DOWN: //todo: вынести в Enum
 
                 if (maxPrior != 0) {
                     if (wish.getPriorityGroup() < maxPrior + 1) {
@@ -178,7 +120,7 @@ public class MonthPriorityController {
                     break;
                 }
 
-            case "up":
+            case UP:
 
                 if (maxPrior == 0) {
                     log.info("MAX PRIORITY = 0. MOVE SUM: 1");
@@ -206,12 +148,10 @@ public class MonthPriorityController {
         return wish;
     }
 
-    private Wish checkParametersAndGetWish(String id, String move) throws BadIncomeParameter { //todo: ЭТО ДУБЛИКАТ!!!! Вынести в Утилиты!
+    private Wish checkParametersAndGetWish(MoveWishDto payload) throws BadIncomeParameter {
 
-        if ((!"up".equals(move)) && (!"down".equals(move)))
+        if ((!"up".equals(payload.getStep())) && (!"down".equals(payload.getStep())))
             throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.PRIORITYCHANGE);
-        if ((isBlank(id)) || (!Pattern.compile("^\\d*$").matcher(id).matches()))
-            throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID);
-        return mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
+        return mainService.getWishById(payload.getId()).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
     }
 }

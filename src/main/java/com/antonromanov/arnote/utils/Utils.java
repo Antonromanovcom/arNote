@@ -1,21 +1,16 @@
 package com.antonromanov.arnote.utils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
-import java.sql.Time;
-import java.time.*;
-import java.time.format.TextStyle;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.antonromanov.arnote.dto.response.WishResponse;
 import com.antonromanov.arnote.email.EmailSender;
 import com.antonromanov.arnote.email.EmailStatus;
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Salary;
-import com.antonromanov.arnote.exceptions.*;
 import com.antonromanov.arnote.entity.Wish;
-import com.antonromanov.arnote.dto.response.WishDTO;
+import com.antonromanov.arnote.enums.SortMode;
+import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.exceptions.JsonNullException;
+import com.antonromanov.arnote.exceptions.JsonParseException;
+import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,6 +23,16 @@ import org.passay.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.sql.Time;
+import java.time.*;
+import java.time.format.TextStyle;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -231,7 +236,6 @@ public class Utils {
         return salary;
     }
 
-
     /**
      * Конвертим пришедший json в новый WISH
      */
@@ -318,8 +322,8 @@ public class Utils {
         return (month + (proirity - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
     }
 
-    public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
-        return WishDTO.builder()
+    public static WishResponse prepareWishDTO(Wish w, int maxPrior) {
+        return WishResponse.builder()
                 .id(w.getId())
 //				.wish(w.getWish().length()<50 ? w.getWish() : w.getWish().substring(0, 50) + "...")
                 .wish(w.getWish())
@@ -481,7 +485,7 @@ public class Utils {
                 result = 12;
                 break;
         }
-         log.info("Выcчитали месяц: {}", result);
+        log.info("Выcчитали месяц: {}", result);
         return result;
     }
 
@@ -567,46 +571,46 @@ public class Utils {
 
     private static String convertEnglishNames(String monthAndYear) throws BadIncomeParameter {
         String returnMonth = monthAndYear;
-            switch (monthAndYear) {
-                case "January":
-                    returnMonth = "Январь";
-                    break;
-                case "February":
-                    returnMonth = "Февраль";
-                    break;
-                case "March":
-                    returnMonth = "Март";
-                    break;
-                case "April":
-                    returnMonth = "Апрель";
-                    break;
-                case "May":
-                    returnMonth = "Май";
-                    break;
-                case "June":
-                    returnMonth = "Июнь";
-                    break;
-                case "July":
-                    returnMonth = "Июль";
-                    break;
-                case "August":
-                    returnMonth = "Август";
-                    break;
-                case "September":
-                    returnMonth = "Сентябрь";
-                    break;
-                case "October":
-                    returnMonth = "Октябрь";
-                    break;
-                case "November":
-                    returnMonth = "Ноябрь";
-                    break;
-                case "December":
-                    returnMonth = "Декабрь";
-                    break;
-                default:
-                    throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
-            }
+        switch (monthAndYear) {
+            case "January":
+                returnMonth = "Январь";
+                break;
+            case "February":
+                returnMonth = "Февраль";
+                break;
+            case "March":
+                returnMonth = "Март";
+                break;
+            case "April":
+                returnMonth = "Апрель";
+                break;
+            case "May":
+                returnMonth = "Май";
+                break;
+            case "June":
+                returnMonth = "Июнь";
+                break;
+            case "July":
+                returnMonth = "Июль";
+                break;
+            case "August":
+                returnMonth = "Август";
+                break;
+            case "September":
+                returnMonth = "Сентябрь";
+                break;
+            case "October":
+                returnMonth = "Октябрь";
+                break;
+            case "November":
+                returnMonth = "Ноябрь";
+                break;
+            case "December":
+                returnMonth = "Декабрь";
+                break;
+            default:
+                throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
+        }
         log.info("Перевели месяц на русский язык: {}", returnMonth);
         return returnMonth;
     }
@@ -619,6 +623,19 @@ public class Utils {
      */
     public LocalUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
         return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+    }
+
+    /**
+     * Вытаскиваем юзера из Принципала и обновляем его view-параметры.
+     *
+     * @param principal
+     * @return
+     */
+    public LocalUser getAndUpdateUser(Principal principal, SortMode sortType) throws UserNotFoundException {
+        return usersRepo.findByLogin(principal.getName()).map(u -> {
+            u.setSortMode(sortType);
+            return usersRepo.saveAndFlush(u);
+        }).orElseThrow(UserNotFoundException::new);
     }
 
 
