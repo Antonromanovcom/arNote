@@ -1,7 +1,6 @@
 package com.antonromanov.arnote.controller;
 
 import com.antonromanov.arnote.dto.request.MoveWishDto;
-import com.antonromanov.arnote.dto.response.WishResponse;
 import com.antonromanov.arnote.dto.response.monthgroupping.ListOfMonthsResponse;
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Wish;
@@ -17,7 +16,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
-import java.util.Comparator;
 import java.util.Date;
 import static com.antonromanov.arnote.utils.Utils.createNullableGsonBuilder;
 import static com.antonromanov.arnote.utils.Utils.parseMonthAndCalculatePriority;
