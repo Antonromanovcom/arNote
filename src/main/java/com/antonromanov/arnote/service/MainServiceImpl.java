@@ -58,7 +58,7 @@ public class MainServiceImpl implements MainService {
         List<Wish> wishDTOList = wishRepository.getAllWithGroupOrder(user);
         Comparator<Wish> comparator = Comparator.comparing(Wish::getPriorityGroup);
 
-        if ((wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).max(comparator).isPresent())) { //todo: при каких случаях он будет отсутствовать? Да и вообще упростить этот кода надо
+        if ((wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).max(comparator).isPresent())) { //todo: при каких случаях он будет отсутствовать? Да и вообще упростить этот код надо
             return (wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).max(comparator).get().getPriorityGroup()) + 1;
         } else {
             return 1;

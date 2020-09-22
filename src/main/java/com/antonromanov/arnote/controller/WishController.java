@@ -132,7 +132,7 @@ public class WishController {
     @PostMapping("/move")
     public Wish changePriority(Principal principal, @RequestBody MoveWishDto dto) throws BadIncomeParameter {
         return mainService.getWishById(dto.getId())
-                .map(wish ->  dto.getStep().getOperation().move(wish, mainService))
+                .map(wish ->  dto.getStep().getChangePriority().move(wish, mainService))
                 .orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
     }
 }
