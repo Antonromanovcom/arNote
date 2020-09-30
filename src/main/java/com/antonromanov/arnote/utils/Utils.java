@@ -569,6 +569,18 @@ public class Utils {
         }
     }
 
+    /**
+     * Поиск в enum'е сортировок подходящее по имени, переданному с UI.
+     * @param name
+     * @return
+     */
+    public static Optional<SortMode> lookUpSortType(String name) { // поиск в Енуме
+        for (SortMode mode : SortMode.values()) {
+            if (mode.getUiValue().equals(name)) return Optional.of(mode);
+        }
+        return null; // если не нашли
+    }
+
     private static String convertEnglishNames(String monthAndYear) throws BadIncomeParameter {
         String returnMonth = monthAndYear;
         switch (monthAndYear) {

@@ -41,7 +41,7 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{ //todo: п
 	Optional<Wish> findById(long l);
 
 
-	@Query(value="select * from wishes w where w.wish like " +
+	@Query(value="select * from wishes w where lower (w.wish) like " +
 			"(concat('%',:wish,'%')) and (w.realized = false or w.realized is null ) and user_id = :userId order by w.wish", nativeQuery = true)
 	Optional<List<Wish>> findAllByWishAndUser(String wish, long userId);
 
