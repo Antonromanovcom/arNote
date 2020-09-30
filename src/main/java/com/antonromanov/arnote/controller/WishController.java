@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 
 //todo: заменить логи на интерцепторы
@@ -88,7 +89,9 @@ public class WishController {
      */
     @CrossOrigin(origins = "*")
     @PutMapping
-    public Wish updateWish(Principal principal, @RequestBody Wish wish) throws BadIncomeParameter {
+    public Wish updateWish(Principal principal, @RequestBody Wish wish) throws BadIncomeParameter, UserNotFoundException {
+        wish.setUser(utils.getUserFromPrincipal(principal));
+        wish.setRealizationDate(new Date());
         return mainService.updateWish(mainService.updateMonthGroup(wish));
     }
 
@@ -96,12 +99,16 @@ public class WishController {
      * Добавить новое желание.
      *
      * @param principal
-     * @param wish      - новое желание.
+     * @param wish - новое желание.
      * @return
      */
     @CrossOrigin(origins = "*")
     @PostMapping
-    public Wish addWish(Principal principal, @RequestBody Wish wish) {
+    public Wish addWish(Principal principal, @RequestBody Wish wish) throws UserNotFoundException {
+        wish.setUser(utils.getUserFromPrincipal(principal));
+        wish.setCreationDate(new Date());
+        wish.setRealized(false);
+        wish.setAc(false);
         return mainService.addWish(wish);
     }
 

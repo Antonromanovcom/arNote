@@ -33,7 +33,7 @@ public interface MainService {
 
 	Wish updateAndFlushWish(Wish log);
 
-	Wish addWish(Wish parseJsonToWish);
+	Wish addWish(Wish wish);
 
 	Optional<Wish> getWishById(long id);
 

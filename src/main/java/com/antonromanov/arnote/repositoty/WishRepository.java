@@ -2,7 +2,6 @@ package com.antonromanov.arnote.repositoty;
 
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Wish;
-import com.antonromanov.arnote.enums.SortMode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,17 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface WishRepository extends JpaRepository<Wish, Integer>{
+public interface WishRepository extends JpaRepository<Wish, Integer>{ //todo: почему Integer ????
 
-	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.user = :user order by w.priorityGroup, w.priorityGroupOrder ASC ")
+	@Query(value="select w from Wish w where (w.ac = false or w.ac is null) and (w.realized = false or w.realized is null) and w.user = :user order by w.priorityGroup, w.priorityGroupOrder ASC ")
 	List<Wish> getAllWithGroupOrder(@Param("user") LocalUser user);
 
-	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.user = :user order by w.priority ASC ")
+	@Query(value="select w from Wish w where (w.ac = false or w.ac is null) and (w.realized = false or w.realized is null) and w.user = :user order by w.priority ASC ")
 	List<Wish> findAllByIdSorted(@Param("user") LocalUser user);
 
 
 
-	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.priority = 1 and  w.user = :user order by w.wish ASC ")
+	@Query(value="select w from Wish w where (w.ac = false or w.ac is null) and (w.realized = false or w.realized is null) and w.priority = 1 and  w.user = :user order by w.wish ASC ")
 	List<Wish> getAllWithPriority1(@Param("user") LocalUser user);
 
 
@@ -31,7 +30,7 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	 * @param user
 	 * @return
 	 */
-	@Query(value="select w from Wish w where w.ac = false and w.realized = true and  w.user = :user order by w.wish ASC ")
+	@Query(value="select w from Wish w where (w.ac = false or w.ac is null) and w.realized = true and  w.user = :user order by w.wish ASC ")
 	List<Wish> getAllRealizedWishes(@Param("user") LocalUser user);
 
 
