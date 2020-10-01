@@ -10,8 +10,9 @@ import lombok.Getter;
 @Getter
 public enum ListOfAllType {
     ALL("Все желания", "all"),
-    PRIORITY("Только приоритетные желания", "priority");
+    PRIORITY("Только приоритетные желания", "priority"),
+    DEFAULT("Предыдущая сортировка пользователя либо ALL", "default");
 
-    private String description;
-    private String uiValue;
+    private final String description;
+    private final String uiValue;
 }

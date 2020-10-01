@@ -6,6 +6,7 @@ import com.antonromanov.arnote.email.EmailStatus;
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Salary;
 import com.antonromanov.arnote.entity.Wish;
+import com.antonromanov.arnote.enums.FilterMode;
 import com.antonromanov.arnote.enums.SortMode;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.JsonNullException;
@@ -571,12 +572,13 @@ public class Utils {
 
     /**
      * Поиск в enum'е сортировок подходящее по имени, переданному с UI.
+     *
      * @param name
      * @return
      */
     public static Optional<SortMode> lookUpSortType(String name) { // поиск в Енуме
         for (SortMode mode : SortMode.values()) {
-            if (mode.getUiValue().equals(name)) return Optional.of(mode);
+            //   if (mode.getUiValue().equals(name)) return Optional.of(mode);
         }
         return null; // если не нашли
     }
@@ -628,7 +630,7 @@ public class Utils {
     }
 
     /**
-     * Вытаскиваем юзера из Принципала
+     * Вытаскиваем юзера из Принципала.
      *
      * @param principal
      * @return
@@ -638,14 +640,28 @@ public class Utils {
     }
 
     /**
-     * Вытаскиваем юзера из Принципала и обновляем его view-параметры.
+     * Обновить пользовательские настройки вида и сортировки.
      *
      * @param principal
      * @return
      */
-    public LocalUser getAndUpdateUser(Principal principal, SortMode sortType) throws UserNotFoundException {
+    public LocalUser updateUserViewSettings(Principal principal, FilterMode filterMode, SortMode sortMode) throws UserNotFoundException {
+        /*LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        user.setFilterMode(filterMode);
+        user.setSortMode(sortMode);*/
+    //    return usersRepo.saveAndFlush(user);
+        return null;
+    }
+
+    /**
+     * Вытаскиваем юзера из Принципала и обновляем его view-параметры для tree-вида.
+     *
+     * @param principal
+     * @return
+     */
+    public LocalUser getAndUpdateUserTreeViewSettings(Principal principal, SortMode sortType) throws UserNotFoundException {
         return usersRepo.findByLogin(principal.getName()).map(u -> {
-            u.setSortMode(sortType);
+            u.setTreeSortMode(sortType);
             return usersRepo.saveAndFlush(u);
         }).orElseThrow(UserNotFoundException::new);
     }

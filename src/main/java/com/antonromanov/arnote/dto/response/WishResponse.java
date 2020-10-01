@@ -3,7 +3,6 @@ package com.antonromanov.arnote.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 
-
 @Builder
 public class WishResponse {
 

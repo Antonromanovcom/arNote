@@ -7,10 +7,11 @@ import com.antonromanov.arnote.dto.response.monthgroupping.GroupOfWishesForOneMo
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Salary;
 import com.antonromanov.arnote.entity.Wish;
-import com.antonromanov.arnote.enums.ListOfAllType;
+import com.antonromanov.arnote.enums.FilterMode;
 import com.antonromanov.arnote.enums.SortMode;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.repositoty.SalaryRepository;
+import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.repositoty.WishRepository;
 import org.apache.commons.math3.util.ArithmeticUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,34 +25,70 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import static com.antonromanov.arnote.utils.Utils.*;
 
-
 @Service
 public class MainServiceImpl implements MainService {
 
-
-    @Autowired
+    @Autowired //todo: перенести на инжект через конструктор
     private WishRepository wishRepository;
 
     @Autowired
     private SalaryRepository salaryRepository;
 
-    Integer addCount = 0; // Количество добавлений
+    @Autowired
+    private UsersRepo usersRepo;
+
+
+    Integer addCount = 0;  //todo: почему это здесь???? (// Количество добавлений)
 
     @Override
     public List<Wish> getAllWishesWithPriority(LocalUser user) {
-        return wishRepository.getAllWithPriority1(user);
+        return wishRepository.getAllWithPriority1(user); //todo: переименовать
     }
 
     @Override
-    public List<Wish> getAllWishes(LocalUser user, ListOfAllType type) {
-        switch (type){
-            case PRIORITY:
-                return getAllWishesWithPriority1(user); //todo: переименовать
-            default:
-                return getAllWishesByUser(user);
+    public List<Wish> getAllWishesAndUpdateUser(LocalUser user, FilterMode filterType, SortMode sortType)  {
+
+        if (filterType == FilterMode.DEFAULT) {
+            filterType = (user.getFilterMode() != null) ? user.getFilterMode() : FilterMode.ALL;
         }
+
+        if ((sortType == SortMode.DEFAULT)) {
+            sortType = (user.getTableSortMode() != null) ? user.getTableSortMode() : SortMode.ALL;
+        }
+
+        user.setTableSortMode(sortType);
+        user.setFilterMode(filterType);
+        usersRepo.saveAndFlush(user);
+
+        return  wishRepository.findAllByIdSorted(user)
+                .stream()
+                .filter(filterType.getFilterPredicate())
+                .sorted(sortType.getWishComparator())
+                .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Wish> getAllWishes(LocalUser user, FilterMode filterType, SortMode sortType) {
+
+       /* if ((filterType == FilterMode.DEFAULT) && (user.getFilterMode() != null)) {
+            filterType = user.getFilterMode();
+        }
+
+        if ((sortType == SortMode.DEFAULT) && (user.getSortMainMode() != null)) {
+            sortType = user.getSortMainMode();
+        }
+
+        user.setSortMode(sortType);
+        user.setFilterMode(filterType);
+
+       return  wishRepository.findAllByIdSorted(user)
+               .stream()
+               .filter(filterType.getFilterPredicate())
+               .sorted(sortType.getWishComparator())
+               .collect(Collectors.toList());*/
+
+        return null;
+    }
 
     @Override
     public int getMaxPriority(LocalUser user) {
@@ -148,12 +185,29 @@ public class MainServiceImpl implements MainService {
                 addItemInWishDTOListForNullPriorityWishes(wishDTOListGlobal, wishDTOListFiltered, maxPrior, user);
             }
 
-            wishDTOListGlobal.forEach(wl -> wl.getWishList().sort(sortType.getComparing())); // сортируем
-            //return wishDTOListGlobal.size() == 0 ? Optional.empty() : Optional.of(wishDTOListGlobal);
+            wishDTOListGlobal.forEach(wl -> wl.getWishList().sort(checkTreeViewModeForUpdate(user,  sortType))); // сортируем
             return Optional.of(wishDTOListGlobal);
         } else {
             return Optional.empty();
         }
+    }
+
+    /**
+     * Проверить нужно ли менять тип сортировки для древовидного представления данных и если не нужно (sortType = DEFAULT),
+     * то проверяется, что выставлено у пользователя в качестве предыдущего типа сортировки.
+     *
+     * @param user
+     * @param sortType
+     * @return
+     */
+    private Comparator<WishResponse> checkTreeViewModeForUpdate(LocalUser user, SortMode sortType) {
+        if ((sortType == SortMode.DEFAULT)) {
+            sortType = (user.getTableSortMode() != null) ? user.getTreeSortMode() : SortMode.ALL;
+        } else {
+            user.setTreeSortMode(sortType);
+            usersRepo.saveAndFlush(user);
+        }
+        return sortType.getWishResponseComparator();
     }
 
     @Override
@@ -165,7 +219,6 @@ public class MainServiceImpl implements MainService {
     public Optional<List<Wish>> findAllWishesByWish(Wish wish, LocalUser user) {
         return wishRepository.findAllByWishAndUser(wish.getWish(), user.getId());
     }
-
 
     @Override
     public List<Wish> getAllRealizedWishes(LocalUser user) {

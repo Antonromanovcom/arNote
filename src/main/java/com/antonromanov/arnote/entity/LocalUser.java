@@ -1,11 +1,10 @@
 package com.antonromanov.arnote.entity;
 
 import com.antonromanov.arnote.dto.request.UserDto;
+import com.antonromanov.arnote.enums.FilterMode;
 import com.antonromanov.arnote.enums.SortMode;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -77,13 +76,19 @@ public class LocalUser {
 	 * Режим сортировки
 	 */
 	@Enumerated(EnumType.STRING)
-	private SortMode sortMode; //todo: переименовать
+	private SortMode treeSortMode;
 
 	/**
 	 * Режим сортировки основной таблицы.
 	 */
 	@Enumerated(EnumType.STRING)
-	private SortMode sortMainMode; //todo: переименовать
+	private SortMode tableSortMode;
+
+	/**
+	 * Режим фильтрации.
+	 */
+	@Enumerated(EnumType.STRING)
+	private FilterMode filterMode;
 
 	@Column
 	private LocalDateTime lastOperationTime;
@@ -96,9 +101,6 @@ public class LocalUser {
 	 */
 	@Column
 	private Boolean lastRequestWithPriority;
-
-
-
 
 	@Override
 	public String toString() {
@@ -142,6 +144,4 @@ public class LocalUser {
 		this.fullname = newUser.getFullName();
 		this.viewMode = "TABLE"; //todo: вынести в ЕНУМ
 	}
-
-
 }

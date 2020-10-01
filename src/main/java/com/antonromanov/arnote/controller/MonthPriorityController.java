@@ -46,8 +46,8 @@ public class MonthPriorityController {
             throws UserNotFoundException, NoDataYetException {
 
             return ListOfMonthsResponse.builder()
-                    .list(mainService.getAllWishesWithGroupPriority(utils.getAndUpdateUser(principal, sortType), sortType)
-                            .orElseThrow(()->new NoDataYetException(false) ))
+                    .list(mainService.getAllWishesWithGroupPriority(utils.getUserFromPrincipal(principal), sortType)
+                            .orElseThrow(()->new NoDataYetException(false)))
                     .build();
     }
 
@@ -78,7 +78,6 @@ public class MonthPriorityController {
     @CrossOrigin(origins = "*")
     @PostMapping("/one-step")
     public Wish changeMonth(Principal principal, @RequestBody MoveWishDto payload) throws BadIncomeParameter {
-
         return mainService.getWishById(payload.getId())
                 .map(wish -> payload.getStep().getChangeMonthOrder().move(wish, mainService))
                 .orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));

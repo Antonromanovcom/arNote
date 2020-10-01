@@ -5,10 +5,14 @@ import com.antonromanov.arnote.dto.response.monthgroupping.GroupOfWishesForOneMo
 import com.antonromanov.arnote.entity.LocalUser;
 import com.antonromanov.arnote.entity.Salary;
 import com.antonromanov.arnote.entity.Wish;
+import com.antonromanov.arnote.enums.FilterMode;
 import com.antonromanov.arnote.enums.ListOfAllType;
 import com.antonromanov.arnote.enums.SortMode;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +29,16 @@ public interface MainService {
 	 */
 	List<Wish> getAllWishesWithPriority(LocalUser user);
 
-	List<Wish> getAllWishes(LocalUser user, ListOfAllType type);
+	List<Wish> getAllWishes(LocalUser user, FilterMode filterMode, SortMode sortType);
+
+	/**
+	 * Получить желания согласно переданным настройкам сортировки/фильтрации и сохранить их.
+	 * @param user - пользователь.
+	 * @param filterMode
+	 * @param sortType
+	 * @return
+	 */
+	List<Wish> getAllWishesAndUpdateUser(LocalUser user, FilterMode filterMode, SortMode sortType) throws UserNotFoundException;
 
 	int getMaxPriority(LocalUser user);
 

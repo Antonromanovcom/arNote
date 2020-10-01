@@ -3,7 +3,9 @@ package com.antonromanov.arnote.controller;
 import com.antonromanov.arnote.dto.request.MoveWishDto;
 import com.antonromanov.arnote.dto.response.WishListResponse;
 import com.antonromanov.arnote.entity.Wish;
+import com.antonromanov.arnote.enums.FilterMode;
 import com.antonromanov.arnote.enums.ListOfAllType;
+import com.antonromanov.arnote.enums.SortMode;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.NoDataYetException;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
@@ -58,24 +60,21 @@ public class WishController {
     /**
      * Получить все желания.
      *
-     * @param principal
-     * @param type - тип enum'а ListOfAllType.
+     * @param principal - пользователь.
+     * @param filterType - Что показываем: все желания или приоритетные
+     * @param sortType - типы сортировки.
      * @return
      */
     @CrossOrigin(origins = "*")
     @GetMapping
-    public WishListResponse getAllWishes(Principal principal, @RequestParam String type) throws UserNotFoundException,
-            BadIncomeParameter, NoDataYetException {
+    public WishListResponse getAllWishes(Principal principal, @RequestParam FilterMode filterType, @RequestParam SortMode sortType)
+            throws UserNotFoundException, NoDataYetException {
 
         if (mainService.getAllWishesByUser(utils.getUserFromPrincipal(principal)).isEmpty()) {
             throw new NoDataYetException(false); //todo: разобраться с этим моментом
         } else {
             return WishListResponse.builder()
-                    .list(mainService.getAllWishes(utils.getUserFromPrincipal(principal),
-                            Arrays.stream(ListOfAllType.values())
-                                    .filter(t -> t.getUiValue().equals(type))
-                                    .findFirst()
-                                    .orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_PARAMETER))))
+                    .list(mainService.getAllWishesAndUpdateUser(utils.getUserFromPrincipal(principal), filterType, sortType))
                     .build();
         }
     }
