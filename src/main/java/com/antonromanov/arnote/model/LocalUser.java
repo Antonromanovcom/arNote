@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.model;
 
+import com.antonromanov.arnote.model.wish.SortMode;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;

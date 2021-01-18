@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.repositoty;
 
-import com.antonromanov.arnote.model.SearchCriteria;
-import com.antonromanov.arnote.model.Wish;
+import com.antonromanov.arnote.model.wish.SearchCriteria;
+import com.antonromanov.arnote.model.wish.Wish;
 import com.antonromanov.arnote.utils.WishSearchQueryCriteriaConsumer;
 import org.springframework.stereotype.Repository;
 import javax.persistence.*;

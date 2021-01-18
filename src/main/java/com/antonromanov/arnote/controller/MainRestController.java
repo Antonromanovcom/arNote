@@ -5,6 +5,7 @@ import com.antonromanov.arnote.email.EmailStatus;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.*;
+import com.antonromanov.arnote.model.wish.*;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
@@ -17,13 +18,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static com.antonromanov.arnote.utils.Utils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 

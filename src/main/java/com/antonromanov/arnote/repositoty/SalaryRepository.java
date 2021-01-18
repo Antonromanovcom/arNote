@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.repositoty;
 
 import com.antonromanov.arnote.model.LocalUser;
-import com.antonromanov.arnote.model.Salary;
+import com.antonromanov.arnote.model.wish.Salary;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

@@ -2,7 +2,9 @@ package com.antonromanov.arnote.service;
 
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.model.*;
-import com.antonromanov.arnote.utils.Utils;
+import com.antonromanov.arnote.model.wish.Salary;
+import com.antonromanov.arnote.model.wish.Wish;
+import com.antonromanov.arnote.model.wish.WishDTOList;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
