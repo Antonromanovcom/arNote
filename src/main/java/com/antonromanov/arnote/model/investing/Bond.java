@@ -4,6 +4,8 @@ import com.antonromanov.arnote.model.LocalUser;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,9 +31,6 @@ public class Bond {
 
     @Column
     private String description; //Развернутое описание
-
-    /*@Column
-    private List<Dividend> divSum; // Сумма дивов за предыдущий год*/
 
     @Column
     private String stockExchange; // Биржа
@@ -59,5 +58,9 @@ public class Bond {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private LocalUser user;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "post_id")
+    private List<Purchase> purchaseList = new ArrayList<>();
 }
 

@@ -1,9 +1,11 @@
 package com.antonromanov.arnote.service.investment.xmlparse;
 
+import com.antonromanov.arnote.exceptions.MoexXmlResponseMarshalingException;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.Currencies;
 import com.antonromanov.arnote.model.investing.response.DividendRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.MoexDocumentRs;
+import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -38,8 +40,8 @@ public class XmlHandlerImpl implements XmlHandler {
             NodeList rows = nodeList.item(0).getChildNodes();
 
             for (int i = 0; i < rows.getLength(); i++) {
-                Node nNode = rows.item(i+1);
-                if (nNode!=null && nNode.getNodeType() == Node.ELEMENT_NODE) {
+                Node nNode = rows.item(i + 1);
+                if (nNode != null && nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) nNode;
                     divList.add(DividendRs.builder()
                             .currencyId(Currencies.RUB)
@@ -49,28 +51,42 @@ public class XmlHandlerImpl implements XmlHandler {
                 }
             }
 
-            ConsolidatedDividendsRs result =  ConsolidatedDividendsRs
+            ConsolidatedDividendsRs result = ConsolidatedDividendsRs
                     .builder()
                     .dividendList(divList)
                     .build();
 
-         result.calculateSum();
+            result.calculateSum();
 
-         return Optional.of(result);
+            return Optional.of(result);
         } catch (Exception e) {
             return Optional.empty();
         }
     }
 
-    @Override
-    public Optional<MoexDocumentRs> marshall(ResponseEntity<String> response) {
-
+    /*@Override
+    public CommonMoexDoc marshall(ResponseEntity<String> response) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(MoexDocumentRs.class);
             Unmarshaller un = jaxbContext.createUnmarshaller();
-            return Optional.of((MoexDocumentRs) un.unmarshal(new InputSource(new StringReader(response.getBody()))));
+            return (CommonMoexDoc) un.unmarshal(new InputSource(new StringReader(response.getBody())));
         } catch (JAXBException e) {
-            return Optional.empty();
+            return null;
+        }
+    }*/
+
+    @Override
+    public CommonMoexDoc marshall(ResponseEntity<String> response, Class<?> moexClass) {
+        if (response.getBody() == null) {
+            throw new MoexXmlResponseMarshalingException();
+        } else {
+            try {
+                JAXBContext jaxbContext = JAXBContext.newInstance(moexClass);
+                Unmarshaller un = jaxbContext.createUnmarshaller();
+                return (CommonMoexDoc) un.unmarshal(new InputSource(new StringReader(response.getBody())));
+            } catch (JAXBException e) {
+                throw new MoexXmlResponseMarshalingException();
+            }
         }
     }
 }

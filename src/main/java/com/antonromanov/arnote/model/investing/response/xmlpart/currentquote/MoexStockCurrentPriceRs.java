@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.model.investing.response.xmlpart;
+package com.antonromanov.arnote.model.investing.response.xmlpart.currentquote;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
