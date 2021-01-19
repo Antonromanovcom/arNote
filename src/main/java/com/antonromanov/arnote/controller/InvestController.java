@@ -8,6 +8,10 @@ import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedInvestmentDataRs;
+import com.antonromanov.arnote.model.investing.response.StockExchange;
+import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexInstrumentDetailRowsRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
@@ -17,12 +21,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URL;
 import java.security.Principal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -59,30 +64,7 @@ public class InvestController {
         log.info("============== CONSOLIDATED INVESTMENT TABLE ============== ");
         log.info("PRINCIPAL: " + principal.getName());
 
-
         LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-        List<Purchase> testList = new ArrayList<>();
-        Purchase purchase1 = new Purchase();
-        purchase1.setId(1L);
-        purchase1.setLot(10);
-        purchase1.setPrice(137.0);
-        purchase1.setPurchaseDate(LocalDate.of(2021,1,6));
-
-        Purchase purchase2 = new Purchase();
-        purchase2.setId(2L);
-        purchase2.setLot(10);
-        purchase2.setPrice(133.0);
-        purchase2.setPurchaseDate(LocalDate.of(2021,01,15));
-
-        testList.add(purchase1);
-        testList.add(purchase2);
-
-        sendingService.getDelta("TQBR",
-                "SBER",
-                Double.valueOf("132.35"),
-                testList
-                );
-
         return ConsolidatedInvestmentDataRs.builder()
                 .bonds(bondsRepo.findAllByUser(user)
                         .stream()
@@ -109,7 +91,7 @@ public class InvestController {
                 .minLot(getMinimalLot(bond, user))
                 .finalPrice(calculateFinalPrice(bond, user))
                 .delta(sendingService.getDelta(getBoardId(bond.getTicker()), bond.getTicker(), getCurrentQuote(user, bond.getTicker()), bond.getPurchaseList())) // todo: а если список продаж в рублях, а определнная текущая цена в другой валюте????
-                .description(sendingService.getInstrumentName(bond.getTicker()).orElse("-"))
+                .description(sendingService.getInstrumentName(getBoardId(bond.getTicker()),bond.getTicker()).orElse("-"))
                 .build();
     }
 

@@ -13,7 +13,7 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.Moe
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
-import com.antonromanov.arnote.service.investment.http.client.HttpClient;
+import com.antonromanov.arnote.service.investment.http.client.ArNoteHttpClient;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,10 +29,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Service
 public class CalculateServiceImpl implements CalculateService {
 
-    private final HttpClient httpClient;
+    private final ArNoteHttpClient httpClient;
     private final BondsRepo repo;
 
-    public CalculateServiceImpl(HttpClient httpClient, BondsRepo repo) {
+    public CalculateServiceImpl(ArNoteHttpClient httpClient, BondsRepo repo) {
         this.httpClient = httpClient;
         this.repo = repo;
     }
@@ -68,7 +68,7 @@ public class CalculateServiceImpl implements CalculateService {
     public Optional<Double> getCurrentQuote(LocalUser user, String ticker) {
         if (!isBlank(ticker)) {
             String boardId = getBoardId(ticker).orElse("TQBR");
-            return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_LAST_QUOTE_MOEX, boardId))
+            return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_LAST_QUOTE_MOEX, null, boardId))
                     .map(MoexDocumentRs.class::cast)
                     .map(p -> p.getData()
                             .getRow()
@@ -91,7 +91,7 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     public Optional<MoexDetailInfoRs> getDetailInfo(LocalUser user, String ticker) {
         if (!isBlank(ticker)) {
-            return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(RestTemplateOperation.GET_INSTRUMENT_DETAIL_INFO, ticker)));
+            return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(RestTemplateOperation.GET_INSTRUMENT_DETAIL_INFO, ticker, null)));
         } else {
             return Optional.empty();
         }
@@ -103,7 +103,7 @@ public class CalculateServiceImpl implements CalculateService {
         if (!isBlank(ticker)) {
 
             return ((MoexDocumentForBoardIdRs)
-                    (httpClient.sendAndMarshall(RestTemplateOperation.GET_BOARD_ID, ticker)))
+                    (httpClient.sendAndMarshall(RestTemplateOperation.GET_BOARD_ID, ticker, null)))
                     .getData()
                     .getRowList()
                     .stream()
@@ -122,9 +122,9 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public Optional<String> getInstrumentName(String ticker) {
+    public Optional<String> getInstrumentName(String boardId, String ticker) {
         if (!isBlank(ticker)) {
-            return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_INSTRUMENT_NAME, ticker))
+            return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_INSTRUMENT_NAME, null, boardId))
                     .map(MoexDocumentRs.class::cast)
                     .map(p -> p.getData()
                             .getRow()
@@ -189,7 +189,7 @@ public class CalculateServiceImpl implements CalculateService {
           }
 
 
-            MoexDocumentRs doc = Optional.ofNullable(httpClient.sendAndMarshall2(RestTemplateOperation.GET_DELTA, boardId, ticker))
+            MoexDocumentRs doc = Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_DELTA, ticker, boardId))
                     .map(MoexDocumentRs.class::cast)
                     .orElseThrow(() -> new MoexXmlResponseMappingException("дельту изменения цены"));
 

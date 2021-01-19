@@ -7,7 +7,9 @@ import java.time.format.TextStyle;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.investing.response.RestTemplateOperation;
 import com.antonromanov.arnote.model.wish.Salary;
 import com.antonromanov.arnote.exceptions.*;
 import com.antonromanov.arnote.model.wish.Wish;
@@ -20,6 +22,10 @@ import org.aspectj.lang.Signature;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -463,7 +469,7 @@ public class Utils {
                 result = 12;
                 break;
         }
-         log.info("Выcчитали месяц: {}", result);
+        log.info("Выcчитали месяц: {}", result);
         return result;
     }
 
@@ -549,48 +555,68 @@ public class Utils {
 
     private static String convertEnglishNames(String monthAndYear) throws BadIncomeParameter {
         String returnMonth = monthAndYear;
-            switch (monthAndYear) {
-                case "January":
-                    returnMonth = "Январь";
-                    break;
-                case "February":
-                    returnMonth = "Февраль";
-                    break;
-                case "March":
-                    returnMonth = "Март";
-                    break;
-                case "April":
-                    returnMonth = "Апрель";
-                    break;
-                case "May":
-                    returnMonth = "Май";
-                    break;
-                case "June":
-                    returnMonth = "Июнь";
-                    break;
-                case "July":
-                    returnMonth = "Июль";
-                    break;
-                case "August":
-                    returnMonth = "Август";
-                    break;
-                case "September":
-                    returnMonth = "Сентябрь";
-                    break;
-                case "October":
-                    returnMonth = "Октябрь";
-                    break;
-                case "November":
-                    returnMonth = "Ноябрь";
-                    break;
-                case "December":
-                    returnMonth = "Декабрь";
-                    break;
-                default:
-                    throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
-            }
+        switch (monthAndYear) {
+            case "January":
+                returnMonth = "Январь";
+                break;
+            case "February":
+                returnMonth = "Февраль";
+                break;
+            case "March":
+                returnMonth = "Март";
+                break;
+            case "April":
+                returnMonth = "Апрель";
+                break;
+            case "May":
+                returnMonth = "Май";
+                break;
+            case "June":
+                returnMonth = "Июнь";
+                break;
+            case "July":
+                returnMonth = "Июль";
+                break;
+            case "August":
+                returnMonth = "Август";
+                break;
+            case "September":
+                returnMonth = "Сентябрь";
+                break;
+            case "October":
+                returnMonth = "Октябрь";
+                break;
+            case "November":
+                returnMonth = "Ноябрь";
+                break;
+            case "December":
+                returnMonth = "Декабрь";
+                break;
+            default:
+                throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
+        }
         log.info("Перевели месяц на русский язык: {}", returnMonth);
         return returnMonth;
+    }
+
+    /**
+     * Подставить ключевик в URL (например, тикер) и отдать готовый URL.
+     *
+     * @return
+     */
+    public static String prepareUrl(String urlBase,  RestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+                                    Map<String, String> pathParams) {
+
+        UriComponents uriComponents2 = UriComponentsBuilder
+                .newInstance()
+                .scheme("http")
+                .host(urlBase)
+                .path(operation.getUrl())
+                .queryParams(queryParameters)
+                .buildAndExpand(pathParams);
+
+
+        return uriComponents2.toString();
     }
 
 }

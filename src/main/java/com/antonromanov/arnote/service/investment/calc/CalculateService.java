@@ -44,7 +44,7 @@ public interface CalculateService {
      * @param ticker - тикер.
      * @return
      */
-    Optional<String> getInstrumentName(String ticker);
+    Optional<String> getInstrumentName(String boardId, String ticker);
 
     /**
      * Запросить и посчитать дельту.
