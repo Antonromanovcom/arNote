@@ -46,7 +46,7 @@ public class Application {
                 return new ConcurrentMapCache(
                         name,
                         CacheBuilder.newBuilder()
-                                .expireAfterWrite(10, TimeUnit.SECONDS)
+                                .expireAfterWrite(15, TimeUnit.MINUTES)
                                 .build().asMap(),
                         false);
             }

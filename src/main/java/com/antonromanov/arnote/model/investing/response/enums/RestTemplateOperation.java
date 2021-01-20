@@ -1,17 +1,15 @@
-package com.antonromanov.arnote.model.investing.response;
+package com.antonromanov.arnote.model.investing.response.enums;
 
-import com.antonromanov.arnote.model.investing.response.xmlpart.BoardsColumns;
-import com.antonromanov.arnote.model.investing.response.xmlpart.DataBlock;
-import com.antonromanov.arnote.model.investing.response.xmlpart.SecuritiesColumns;
+import com.antonromanov.arnote.model.investing.response.UrlRequestParams;
+import com.antonromanov.arnote.model.investing.response.xmlpart.enums.BoardsColumns;
+import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
+import com.antonromanov.arnote.model.investing.response.xmlpart.enums.SecuritiesColumns;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.EnumSet;
 
 

@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.antonromanov.arnote.model.LocalUser;
-import com.antonromanov.arnote.model.investing.response.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
 import com.antonromanov.arnote.model.wish.Salary;
 import com.antonromanov.arnote.exceptions.*;
 import com.antonromanov.arnote.model.wish.Wish;

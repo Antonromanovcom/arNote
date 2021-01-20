@@ -1,5 +1,6 @@
-package com.antonromanov.arnote.model.investing.response.xmlpart;
+package com.antonromanov.arnote.model.investing.response.xmlpart.enums;
 
+import com.antonromanov.arnote.model.investing.response.xmlpart.UrlQueryParameters;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

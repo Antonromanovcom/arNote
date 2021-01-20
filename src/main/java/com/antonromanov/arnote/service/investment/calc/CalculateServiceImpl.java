@@ -1,13 +1,14 @@
 package com.antonromanov.arnote.service.investment.calc;
 
+import com.antonromanov.arnote.exceptions.MoexRequestException;
 import com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException;
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
-import com.antonromanov.arnote.model.investing.response.RestTemplateOperation;
-import com.antonromanov.arnote.model.investing.response.xmlpart.DataBlock;
+import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexRowsForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
@@ -15,12 +16,12 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.M
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexInstrumentDetailRowsRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
+import com.antonromanov.arnote.service.investment.cache.CacheService;
 import com.antonromanov.arnote.service.investment.http.client.ArNoteHttpClient;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -34,10 +35,12 @@ public class CalculateServiceImpl implements CalculateService {
 
     private final ArNoteHttpClient httpClient;
     private final BondsRepo repo;
+    private final CacheService cacheService;
 
-    public CalculateServiceImpl(ArNoteHttpClient httpClient, BondsRepo repo) {
+    public CalculateServiceImpl(ArNoteHttpClient httpClient, BondsRepo repo, CacheService cacheService) {
         this.httpClient = httpClient;
         this.repo = repo;
+        this.cacheService = cacheService;
     }
 
 
@@ -71,6 +74,11 @@ public class CalculateServiceImpl implements CalculateService {
     public Optional<Double> getCurrentQuote(LocalUser user, String ticker) {
         if (!isBlank(ticker)) {
             String boardId = getBoardId(ticker).orElse("TQBR");
+
+           /* MoexDocumentRs doc = Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_LAST_QUOTE_MOEX, null, boardId))
+                    .map(MoexDocumentRs.class::cast).orElseThrow(MoexRequestException::new);
+
+            MoexDocumentRs doc = cacheService.getOrCreateLastQuote(boardId, doc);*/
             return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_LAST_QUOTE_MOEX, null, boardId))
                     .map(MoexDocumentRs.class::cast)
                     .map(p -> p.getData()

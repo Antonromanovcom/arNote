@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.model.investing.response;
+package com.antonromanov.arnote.model.investing.response.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.service.investment.http.client;
 
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
-import com.antonromanov.arnote.model.investing.response.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import org.springframework.util.MultiValueMap;
 import java.util.Optional;

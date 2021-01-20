@@ -1,9 +1,11 @@
 package com.antonromanov.arnote;
 
-
-import com.antonromanov.arnote.model.investing.response.RestTemplateOperation;
-import com.antonromanov.arnote.service.investment.HighloadService;
-import com.antonromanov.arnote.service.investment.Record;
+import com.antonromanov.arnote.model.investing.cache.CurrentQuoteCached;
+import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDataRs;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
+import com.antonromanov.arnote.service.investment.cache.CacheService;
 import com.antonromanov.arnote.service.investment.http.client.ArNoteHttpClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,10 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
+
 import static com.antonromanov.arnote.utils.Utils.prepareUrl;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 
 @RunWith(SpringRunner.class)
@@ -27,7 +30,7 @@ public class UtilsTest {
     private ArNoteHttpClient client;
 
     @Autowired
-    private HighloadService highloadService;
+    private CacheService cacheService;
 
     @Value("${moexUrl}")
     public String MOEX_URL;
@@ -50,17 +53,25 @@ public class UtilsTest {
 
     @Test
     public void getCache() throws InterruptedException {
+        MoexDocumentRs doc = new MoexDocumentRs();
+        MoexDataRs data = new MoexDataRs();
+        MoexRowsRs row = new MoexRowsRs();
+        row.setSecid("SBER");
+        row.setPrevAdmittedQuote("111");
+        ArrayList<MoexRowsRs> rowsList = new ArrayList<>();
+        rowsList.add(row);
+        data.setRow(rowsList);
+        doc.setData(data);
 
-        Record rec = highloadService.createOrUpdateRecord(1);
-        Record r1 = highloadService.getOrCreateRecord(rec.getId());
-        System.out.println("Достали из кэша  запись с id = " + r1.getId() + " и counter " + r1.getCount());
-        Record r2 = highloadService.getOrCreateRecord(rec.getId());
-        System.out.println("Достали из кэша  второй раз запись с id = " + r2.getId() + " и counter " + r2.getCount());
-Thread.sleep(9000);
-        Record r3 = highloadService.getOrCreateRecord(rec.getId());
-        System.out.println("Достали из кэша  третий раз запись с id = " + r3.getId() + " и counter " + r3.getCount());
+        CurrentQuoteCached recById1 = cacheService.justGetById("TQBR");
+        CurrentQuoteCached rec = cacheService.createOrUpdateRecord("TQBR", doc);
+        CurrentQuoteCached recById2 = cacheService.justGetById("TQBR");
+        CurrentQuoteCached rec1 = cacheService.getOrCreateLastQuote("TQBR", doc);
+        CurrentQuoteCached rec2 = cacheService.getOrCreateLastQuote("TABR", doc);
+        CurrentQuoteCached rec3 = cacheService.getOrCreateLastQuote("TABR", doc);
 
-        assertEquals(1, r2.getId());
+        assertEquals(1, rec1.getCount());
+        assertEquals(2, rec3.getCount());
 
     }
 }
