@@ -7,11 +7,13 @@ import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.xmlpart.DataBlock;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexRowsForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexInstrumentDetailRowsRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.service.investment.http.client.ArNoteHttpClient;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +54,7 @@ public class CalculateServiceImpl implements CalculateService {
             if (res.isPresent()) {
                 res.get().calculatePercent(repo.findBondByUserAndTicker(user, ticker)
                         .map(Bond::getPrice)
-                        .orElse(Double.NaN)); //todo: переделать
+                        .orElse((double) 0)); //todo: переделать
                 return res;
             }
         }
@@ -91,7 +94,8 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     public Optional<MoexDetailInfoRs> getDetailInfo(LocalUser user, String ticker) {
         if (!isBlank(ticker)) {
-            return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(RestTemplateOperation.GET_INSTRUMENT_DETAIL_INFO, ticker, null)));
+            return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(RestTemplateOperation.
+                    GET_INSTRUMENT_DETAIL_INFO, ticker, null)));
         } else {
             return Optional.empty();
         }
@@ -142,7 +146,7 @@ public class CalculateServiceImpl implements CalculateService {
      * Запросить и посчитать дельту.
      *
      * @param ticker            - тикер.
-     * @param currentStockPrice - текущая цена по рынку.
+     * @param currentStockPrice - текущая цена по рынку (всегда в рублях).
      * @param purchaseList      - список покупок пользователя.
      * @return
      */
@@ -151,35 +155,16 @@ public class CalculateServiceImpl implements CalculateService {
 
         if (!isBlank(ticker) &&  !isBlank(boardId) && (currentStockPrice!=null && currentStockPrice>0)) {
 
-            Double tinkoffDeltaFinal = (double) 0;
-            Double tinkoffDeltaPercent = (double) 0;
+            double tinkoffDeltaFinal = 0;
+            double tinkoffDeltaPercent = 0;
 
           if (purchaseList != null && purchaseList.size()>0) {
-              /**
-               * Нижеследующий блок оставлен из соображений - может пригодиться позже. В релизной ветке удалим
-               */
-              Double minPurchase = purchaseList.stream()
-                      .min(Comparator.comparing(Purchase::getPrice))
-                      .map(Purchase::getPrice)
-                      .orElse((double) 0);
-              Double maxPurchase = purchaseList.stream()
-                      .max(Comparator.comparing(Purchase::getPrice))
-                      .map(Purchase::getPrice)
-                      .orElse((double) 0);
-              LocalDate firstPurchase = purchaseList.stream()
-                      .min(Comparator.comparing(Purchase::getPurchaseDate))
-                      .map(Purchase::getPurchaseDate)
-                      .orElse(LocalDate.now());
-              LocalDate lastPurchase = purchaseList.stream()
-                      .max(Comparator.comparing(Purchase::getPurchaseDate))
-                      .map(Purchase::getPurchaseDate)
-                      .orElse(LocalDate.now());
 
               Double tkcAveragePurchasePrice = purchaseList.stream()
                       .map(p -> p.getPrice() * p.getLot())
                       .reduce((double) 0, Double::sum);
 
-              Double tinkoffSameLotButNewPrice = (purchaseList.stream()
+              double tinkoffSameLotButNewPrice = (purchaseList.stream()
                       .map(Purchase::getLot)
                       .reduce(0, Integer::sum)) * currentStockPrice;
 
@@ -220,5 +205,85 @@ public class CalculateServiceImpl implements CalculateService {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Подготовить финальную цену (цена * лот).
+     *
+     * @param bond
+     * @param user
+     * @return
+     */
+    @Override
+    public Integer calculateFinalPrice(Bond bond, LocalUser user) {
+        return (int) Math.round(bond.getLot() != null ?
+                ((getCurrentQuote(user, bond.getTicker())).orElse((double) 0)) * bond.getLot() :
+                (double) 0);
+    }
+
+    /**
+     * Подготовить дивиденды.
+     *
+     * @return
+     */
+    @Override
+    public ConsolidatedDividendsRs getDividends(Bond bond, LocalUser user) {
+        return getDivsByTicker(user, bond.getTicker())
+                .orElse(ConsolidatedDividendsRs.builder()
+                        .dividendList(Collections.emptyList())
+                        .percent(0)
+                        .divSum(Double.NaN)
+                        .build());
+    }
+
+    /**
+     * Достать board_id.
+     *
+     * @param ticker - тикер-бумаги.
+     * @return
+     */
+    @Override
+    public String prepareBoardId(String ticker) {
+        return getBoardId(ticker).orElse("TQBR");
+    }
+
+    /**
+     * Подготовить данные по валюте.
+     *
+     * @return
+     */
+    @Override
+    public String getCurrency(Bond bond, LocalUser user) {
+        return getDetailInfo(user, bond.getTicker())
+                .map(detailInfo -> detailInfo.getDataList().stream()
+                        .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
+                        .findFirst()
+                        .map(sc -> sc.getRowsList().stream()
+                                .filter(row -> prepareBoardId(bond.getTicker()).equals(row.getBoardId()))
+                                .findFirst()
+                                .map(MoexInstrumentDetailRowsRs::getCurrencyId)
+                                .orElse("-"))
+                        .orElse("-"))
+                .orElse("-");
+    }
+
+    /**
+     * Достать минимальный лот.
+     *
+     * @return
+     */
+    @Override
+    public Integer getMinimalLot(Bond bond, LocalUser user) {
+        return getDetailInfo(user, bond.getTicker())
+                .map(detailInfo -> detailInfo.getDataList().stream()
+                        .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
+                        .findFirst()
+                        .map(sc -> sc.getRowsList().stream()
+                                .filter(row -> prepareBoardId(bond.getTicker()).equals(row.getBoardId()))
+                                .findFirst()
+                                .map(share -> Integer.parseInt(share.getLotSize()))
+                                .orElse(1))
+                        .orElse(1))
+                .orElse(1);
     }
 }

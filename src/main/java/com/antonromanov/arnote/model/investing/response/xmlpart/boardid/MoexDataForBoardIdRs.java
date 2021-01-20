@@ -13,6 +13,6 @@ public class MoexDataForBoardIdRs {
 
     @XmlElementWrapper(name = "rows")
     @XmlElement(name = "row")
-    ArrayList<MoexRowsForBoardIdRs> rowList = new ArrayList <> (); // todo: упростить до 1 набора классов
+    ArrayList<MoexRowsForBoardIdRs> rowList = new ArrayList <> ();
 
 }

@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.service.investment.calc;
 
 import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
@@ -54,4 +55,43 @@ public interface CalculateService {
      * @return
      */
     DeltaRs getDelta(String boardId, String ticker, Double currentStockPrice, List<Purchase> purchaseList);
+
+    /**
+     * Подготовить финальную цену (цена * лот).
+     *
+     * @param bond
+     * @param user
+     * @return
+     */
+    Integer calculateFinalPrice(Bond bond, LocalUser user);
+
+    /**
+     * Подготовить дивиденды.
+     *
+     * @return
+     */
+    ConsolidatedDividendsRs getDividends(Bond bond, LocalUser user);
+
+    /**
+     * Достать board_id.
+     *
+     * @param ticker - тикер-бумаги.
+     * @return
+     */
+     String prepareBoardId(String ticker);
+
+    /**
+     * Подготовить данные по валюте.
+     *
+     * @return
+     */
+     String getCurrency(Bond bond, LocalUser user);
+
+    /**
+     * Достать минимальный лот.
+     *
+     * @return
+     */
+     Integer getMinimalLot(Bond bond, LocalUser user);
+
 }
