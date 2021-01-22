@@ -27,6 +27,7 @@ public class DeltaRs {
      * P - текущая цена бумаги сейчас
      * Sl - общий размер (сумма) приобретенных лотов
      */
+    @JsonSerialize(using = DoubleSerializer.class)
     private final Double tinkoffDelta;
 
     /**

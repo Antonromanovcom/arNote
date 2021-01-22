@@ -1,11 +1,8 @@
 package com.antonromanov.arnote;
 
-import com.antonromanov.arnote.model.investing.cache.CurrentQuoteCached;
 import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDataRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
-import com.antonromanov.arnote.service.investment.cache.CacheService;
+import com.antonromanov.arnote.repositoty.UsersRepo;
+import com.antonromanov.arnote.service.investment.calc.CalculateService;
 import com.antonromanov.arnote.service.investment.http.client.ArNoteHttpClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,24 +10,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.Map;
 import static com.antonromanov.arnote.utils.Utils.prepareUrl;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UtilsTest {
 
-
-
     @Autowired
     private ArNoteHttpClient client;
 
     @Autowired
-    private CacheService cacheService;
+    private CalculateService cacheService;
+
+    @Autowired
+    ArNoteHttpClient httpClient;
+
+    @Autowired
+    UsersRepo repo;
 
     @Value("${moexUrl}")
     public String MOEX_URL;
@@ -42,7 +42,8 @@ public class UtilsTest {
         m.put("p1", "1");
         m.put("p2", "2");
 
-        String url = prepareUrl(MOEX_URL, RestTemplateOperation.GET_DIVS_MOEX, client.serializeObjectToMVMap(RestTemplateOperation.GET_LAST_QUOTE_MOEX), m);
+        String url = prepareUrl(MOEX_URL, RestTemplateOperation.GET_DIVS_MOEX,
+                client.serializeObjectToMVMap(RestTemplateOperation.GET_LAST_QUOTE_MOEX), m);
         String urlToCheck = url.substring("http://".length() + MOEX_URL.length());
 
 
@@ -52,26 +53,19 @@ public class UtilsTest {
     }
 
     @Test
-    public void getCache() throws InterruptedException {
-        MoexDocumentRs doc = new MoexDocumentRs();
-        MoexDataRs data = new MoexDataRs();
-        MoexRowsRs row = new MoexRowsRs();
-        row.setSecid("SBER");
-        row.setPrevAdmittedQuote("111");
-        ArrayList<MoexRowsRs> rowsList = new ArrayList<>();
-        rowsList.add(row);
-        data.setRow(rowsList);
-        doc.setData(data);
+    public void getCache() {
+        cacheService.getCurrentQuoteByBoardId("TQBR");
+        cacheService.getCurrentQuoteByBoardId("TQBR");
+        assertEquals(1, httpClient.getCounter());
+        cacheService.getCurrentQuoteByBoardId("TQBS");
+        assertEquals(2, httpClient.getCounter());
+    }
 
-        CurrentQuoteCached recById1 = cacheService.justGetById("TQBR");
-        CurrentQuoteCached rec = cacheService.createOrUpdateRecord("TQBR", doc);
-        CurrentQuoteCached recById2 = cacheService.justGetById("TQBR");
-        CurrentQuoteCached rec1 = cacheService.getOrCreateLastQuote("TQBR", doc);
-        CurrentQuoteCached rec2 = cacheService.getOrCreateLastQuote("TABR", doc);
-        CurrentQuoteCached rec3 = cacheService.getOrCreateLastQuote("TABR", doc);
-
-        assertEquals(1, rec1.getCount());
-        assertEquals(2, rec3.getCount());
-
+    @Test
+    public void getCachedDivsByTicker() {
+        assertEquals(0, httpClient.getCounter());
+        cacheService.getDivsByTicker(repo.findById(1L).get(),"SBER");
+        cacheService.getDivsByTicker(repo.findById(1L).get(),"SBER");
+        assertEquals(1, httpClient.getCounter());
     }
 }

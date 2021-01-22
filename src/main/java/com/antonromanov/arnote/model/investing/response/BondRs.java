@@ -14,6 +14,7 @@ public class BondRs {
     private final String ticker;
     private final Double currentPrice;
     private final String currency;
+    private final String type;
     private final ConsolidatedDividendsRs dividends;
     private final Integer minLot; // минимальный лот
     private final Integer finalPrice; // currentPrice * minLot

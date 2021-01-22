@@ -12,11 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Service
-@Slf4j
+//@Service
+//@Slf4j
 public class CacheService {
 
-    private long counter;
+   /* private long counter;
 
     @Cacheable(cacheNames = "lastQuoteCache", key = "#boardId")
     public CurrentQuoteCached getOrCreateLastQuote(String boardId, MoexDocumentRs data) {
@@ -45,7 +45,7 @@ public class CacheService {
         Map<String, MoexDocumentRs> map = new HashMap<>();
         map.put(boardId, data);
         return new CurrentQuoteCached(UUID.randomUUID(), counter, map, LocalTime.now());
-    }
+    }*/
 
     /*
     @CacheEvict(cacheNames = "recordsCache", key = "#recordId")

@@ -28,6 +28,8 @@ public class UrlRequestParamsAdapter {
     private String securitiesColumns;
     @JsonProperty("boards.columns")
     private String boardsColumns;
+    @JsonProperty("marketdata.columns")
+    private String marketDataColumns;
     private String from;
 
 }

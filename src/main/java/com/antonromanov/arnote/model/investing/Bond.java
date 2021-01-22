@@ -27,7 +27,8 @@ public class Bond {
     private String ticker; // биржевой тикер
 
     @Column
-    private String type; // тип бумаги - облигация, фонд, акция
+    @Enumerated(EnumType.STRING)
+    private BondType type; // тип бумаги - облигация, фонд, акция
 
     @Column
     private String description; //Развернутое описание

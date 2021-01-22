@@ -24,14 +24,6 @@ public interface ArNoteHttpClient {
     CommonMoexDoc sendAndMarshall(RestTemplateOperation type, String ticker, String boardId);
 
 
-    /**
-     * Временный метод, потом переделаем.
-     *
-     * @param type
-     * @return
-     */
-    CommonMoexDoc sendAndMarshall2(RestTemplateOperation type, String boardId, String ticker);
-
 
     /**
      * Сериализовать параметры запроса в MultiValueMap.
@@ -40,4 +32,7 @@ public interface ArNoteHttpClient {
      * @return
      */
     MultiValueMap<String, String> serializeObjectToMVMap(RestTemplateOperation type);
+
+    int getCounter();
+
 }

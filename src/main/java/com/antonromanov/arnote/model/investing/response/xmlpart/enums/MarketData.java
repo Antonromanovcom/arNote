@@ -4,9 +4,9 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.UrlQueryParamete
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
-public enum DataBlock implements UrlQueryParameters {
-    SECURITIES("securities"), BOARDS("boards"), MARKETDATA("marketdata");
+@Getter
+public enum MarketData implements UrlQueryParameters {
+    SECID("SECID"), YIELD("YIELD"), DURATION("DURATION");
     private final String code;
 }

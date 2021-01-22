@@ -2,6 +2,7 @@ package com.antonromanov.arnote.model.investing.response;
 
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.BoardsColumns;
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
+import com.antonromanov.arnote.model.investing.response.xmlpart.enums.MarketData;
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.SecuritiesColumns;
 import com.antonromanov.arnote.model.investing.response.xmlpart.UrlQueryParameters;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -25,6 +26,7 @@ public class UrlRequestParams {
     private EnumSet<DataBlock> issOnly;
     private EnumSet<SecuritiesColumns> securitiesColumns;
     private EnumSet<BoardsColumns> boardsColumns;
+    private EnumSet<MarketData> marketDataColumns;
     private String from;
 
     public UrlRequestParamsAdapter convertByAdapter(){
@@ -36,6 +38,7 @@ public class UrlRequestParams {
                 .issOnly(convertEnumSet(this.issOnly, (UrlQueryParameters::getCode)))
                 .securitiesColumns(convertEnumSet(this.securitiesColumns, (UrlQueryParameters::getCode)))
                 .boardsColumns(convertEnumSet(this.boardsColumns, (UrlQueryParameters::getCode)))
+                .marketDataColumns(convertEnumSet(this.marketDataColumns, (UrlQueryParameters::getCode)))
                 .build();
     }
 
@@ -49,8 +52,4 @@ public class UrlRequestParams {
                 .map((T n) -> func.castIt((UrlQueryParameters) n))
                 .collect(Collectors.joining(","));
     }
-
-
- //   DataBlock.SECURITIES.getCode()
-
 }

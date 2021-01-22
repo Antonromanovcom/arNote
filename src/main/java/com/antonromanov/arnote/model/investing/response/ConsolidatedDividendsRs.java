@@ -14,7 +14,7 @@ import java.util.List;
 public class ConsolidatedDividendsRs {
     private final List<DividendRs> dividendList;
     private Double divSum; // Сумма дивидендов за прошлый год
-    private Integer percent; // Сумма дивидендов за прошлый год
+    private Integer percent;
 
     /**
      * Подсчитать сумму дивидендов.

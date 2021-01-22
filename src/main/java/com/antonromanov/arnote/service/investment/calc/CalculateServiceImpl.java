@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.service.investment.calc;
 
-import com.antonromanov.arnote.exceptions.MoexRequestException;
 import com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException;
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.investing.Bond;
@@ -8,24 +7,22 @@ import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
-import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexRowsForBoardIdRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
+import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
+import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexInstrumentDetailRowsRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
-import com.antonromanov.arnote.service.investment.cache.CacheService;
 import com.antonromanov.arnote.service.investment.http.client.ArNoteHttpClient;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -35,12 +32,11 @@ public class CalculateServiceImpl implements CalculateService {
 
     private final ArNoteHttpClient httpClient;
     private final BondsRepo repo;
-    private final CacheService cacheService;
+    private final List<String> BOARD_GROUP_LIST = Arrays.asList("58", "193", "7", "67", "207");
 
-    public CalculateServiceImpl(ArNoteHttpClient httpClient, BondsRepo repo, CacheService cacheService) {
+    public CalculateServiceImpl(ArNoteHttpClient httpClient, BondsRepo repo) {
         this.httpClient = httpClient;
         this.repo = repo;
-        this.cacheService = cacheService;
     }
 
 
@@ -51,13 +47,15 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
+    @Cacheable(cacheNames = "divsByTicker", key = "#user.id")
     public Optional<ConsolidatedDividendsRs> getDivsByTicker(LocalUser user, String ticker) {
         if (!isBlank(ticker)) {
             Optional<ConsolidatedDividendsRs> res = httpClient.sendAndParse(ticker);
+
             if (res.isPresent()) {
                 res.get().calculatePercent(repo.findBondByUserAndTicker(user, ticker)
                         .map(Bond::getPrice)
-                        .orElse((double) 0)); //todo: переделать
+                        .orElse((double) 0));
                 return res;
             }
         }
@@ -71,26 +69,31 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public Optional<Double> getCurrentQuote(LocalUser user, String ticker) {
+    public Optional<Double> getCurrentQuoteByTicker(LocalUser user, String ticker) {
         if (!isBlank(ticker)) {
+
             String boardId = getBoardId(ticker).orElse("TQBR");
 
-           /* MoexDocumentRs doc = Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_LAST_QUOTE_MOEX, null, boardId))
-                    .map(MoexDocumentRs.class::cast).orElseThrow(MoexRequestException::new);
-
-            MoexDocumentRs doc = cacheService.getOrCreateLastQuote(boardId, doc);*/
-            return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_LAST_QUOTE_MOEX, null, boardId))
-                    .map(MoexDocumentRs.class::cast)
-                    .map(p -> p.getData()
+            return (getCurrentQuoteByBoardId(boardId))
+                    .map(lq -> lq.getData()
                             .getRow()
                             .stream()
                             .filter(r -> ticker.equals(r.getSecid()))
                             .findFirst()
                             .map(q -> Double.valueOf(q.getPrevAdmittedQuote())))
-                    .orElse(null);
+                    .orElse(Optional.of((double) 0));
+
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    @Cacheable(cacheNames = "lastQuoteCache", key = "#boardId")
+    public Optional<MoexDocumentRs> getCurrentQuoteByBoardId(String boardId) {
+
+        return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_LAST_QUOTE_MOEX, null, boardId))
+                .map(MoexDocumentRs.class::cast);
     }
 
     /**
@@ -100,6 +103,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
+    @Cacheable(cacheNames = "detailInfo", key = "#user.id")
     public Optional<MoexDetailInfoRs> getDetailInfo(LocalUser user, String ticker) {
         if (!isBlank(ticker)) {
             return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(RestTemplateOperation.
@@ -111,6 +115,7 @@ public class CalculateServiceImpl implements CalculateService {
 
 
     @Override
+    @Cacheable(cacheNames = "boardIds", key = "#ticker")
     public Optional<String> getBoardId(String ticker) {
         if (!isBlank(ticker)) {
 
@@ -134,6 +139,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
+    @Cacheable(cacheNames = "instrumentNames", key = "#boardId + #ticker")
     public Optional<String> getInstrumentName(String boardId, String ticker) {
         if (!isBlank(ticker)) {
             return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_INSTRUMENT_NAME, null, boardId))
@@ -159,32 +165,32 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public DeltaRs getDelta(String boardId, String ticker, Double currentStockPrice, List<Purchase> purchaseList) {
+    public DeltaRs calculateDelta(String boardId, String ticker, Double currentStockPrice, List<Purchase> purchaseList) {
 
-        if (!isBlank(ticker) &&  !isBlank(boardId) && (currentStockPrice!=null && currentStockPrice>0)) {
+        if (!isBlank(ticker) && !isBlank(boardId) && (currentStockPrice != null && currentStockPrice > 0)) {
 
             double tinkoffDeltaFinal = 0;
             double tinkoffDeltaPercent = 0;
 
-          if (purchaseList != null && purchaseList.size()>0) {
+            if (purchaseList != null && purchaseList.size() > 0) {
 
-              Double tkcAveragePurchasePrice = purchaseList.stream()
-                      .map(p -> p.getPrice() * p.getLot())
-                      .reduce((double) 0, Double::sum);
+                /**
+                 * Считаем среднюю цену покупки (сумма цена * лот)
+                 */
+                Double tkcAveragePurchasePrice = purchaseList.stream()
+                        .map(p -> p.getPrice() * p.getLot())
+                        .reduce((double) 0, Double::sum);
 
-              double tinkoffSameLotButNewPrice = (purchaseList.stream()
-                      .map(Purchase::getLot)
-                      .reduce(0, Integer::sum)) * currentStockPrice;
+                double tinkoffSameLotButNewPrice = (purchaseList.stream()
+                        .map(Purchase::getLot)
+                        .reduce(0, Integer::sum)) * currentStockPrice;
 
-              tinkoffDeltaFinal = tinkoffSameLotButNewPrice - tkcAveragePurchasePrice;
-              tinkoffDeltaPercent = (tinkoffDeltaFinal *100)/tinkoffSameLotButNewPrice;
+                tinkoffDeltaFinal = tinkoffSameLotButNewPrice - tkcAveragePurchasePrice;
+                tinkoffDeltaPercent = (tinkoffDeltaFinal * 100) / tinkoffSameLotButNewPrice;
 
-          }
+            }
 
-
-            MoexDocumentRs doc = Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_DELTA, ticker, boardId))
-                    .map(MoexDocumentRs.class::cast)
-                    .orElseThrow(() -> new MoexXmlResponseMappingException("дельту изменения цены"));
+            MoexDocumentRs doc = getHistory(ticker, boardId);
 
             return DeltaRs.builder()
                     .tinkoffDelta(tinkoffDeltaFinal)
@@ -225,7 +231,7 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     public Integer calculateFinalPrice(Bond bond, LocalUser user) {
         return (int) Math.round(bond.getLot() != null ?
-                ((getCurrentQuote(user, bond.getTicker())).orElse((double) 0)) * bond.getLot() :
+                ((getCurrentQuoteByTicker(user, bond.getTicker())).orElse((double) 0)) * bond.getLot() :
                 (double) 0);
     }
 
@@ -261,6 +267,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
+    @Cacheable(cacheNames = "currenciesCache", key = "#user.id")
     public String getCurrency(Bond bond, LocalUser user) {
         return getDetailInfo(user, bond.getTicker())
                 .map(detailInfo -> detailInfo.getDataList().stream()
@@ -281,6 +288,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
+    @Cacheable(cacheNames = "minimalLotsCache", key = "#user.id")
     public Integer getMinimalLot(Bond bond, LocalUser user) {
         return getDetailInfo(user, bond.getTicker())
                 .map(detailInfo -> detailInfo.getDataList().stream()
@@ -293,5 +301,36 @@ public class CalculateServiceImpl implements CalculateService {
                                 .orElse(1))
                         .orElse(1))
                 .orElse(1);
+    }
+
+    @Override
+    @Cacheable(cacheNames = "history", key = "#boardId + #ticker")
+    public MoexDocumentRs getHistory(String ticker, String boardId) {
+        return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_DELTA, ticker, boardId))
+                .map(MoexDocumentRs.class::cast)
+                .orElseThrow(() -> new MoexXmlResponseMappingException("дельту изменения цены"));
+    }
+
+    @Override
+    public MoexDocumentRs getBondsFromMoexForBoardGroup(String boardGroup) {
+
+        return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_BONDS, boardGroup, null))
+                .map(MoexDocumentRs.class::cast)
+                .orElseThrow(() -> new MoexXmlResponseMappingException("сводные данные по облигации"));
+    }
+
+    @Override
+    public MoexDocumentRs getBondsFromMoex() {
+
+        Iterator<String> it = BOARD_GROUP_LIST.iterator();
+        MoexDocumentRs result = new MoexDocumentRs();
+        while (it.hasNext()) {
+            if (result.getData() == null) {
+                result = getBondsFromMoexForBoardGroup(it.next());
+            } else {
+                result.getData().getRow().addAll((getBondsFromMoexForBoardGroup(it.next())).getData().getRow());
+            }
+        }
+        return result;
     }
 }

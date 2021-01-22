@@ -63,17 +63,6 @@ public class XmlHandlerImpl implements XmlHandler {
         }
     }
 
-    /*@Override
-    public CommonMoexDoc marshall(ResponseEntity<String> response) {
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(MoexDocumentRs.class);
-            Unmarshaller un = jaxbContext.createUnmarshaller();
-            return (CommonMoexDoc) un.unmarshal(new InputSource(new StringReader(response.getBody())));
-        } catch (JAXBException e) {
-            return null;
-        }
-    }*/
-
     @Override
     public CommonMoexDoc marshall(ResponseEntity<String> response, Class<?> moexClass) {
         if (response.getBody() == null) {

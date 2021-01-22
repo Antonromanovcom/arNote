@@ -3,6 +3,7 @@ package com.antonromanov.arnote.model.investing.response.enums;
 import com.antonromanov.arnote.model.investing.response.UrlRequestParams;
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.BoardsColumns;
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
+import com.antonromanov.arnote.model.investing.response.xmlpart.enums.MarketData;
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.SecuritiesColumns;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
@@ -49,6 +50,17 @@ public enum RestTemplateOperation {
             UrlRequestParams.builder()
                     .issMeta(false)
                     .from("2000-01-01")
+                    .build(),
+            MoexDocumentRs.class),
+    GET_BONDS( "/engines/stock/markets/bonds/boardgroups/{p1:[a-z]{1,5}}/securities.xml",
+            UrlRequestParams.builder()
+                    .issMeta(false)
+                    .issDp("comma")
+                    .issOnly(EnumSet.of(DataBlock.SECURITIES))
+                    .securitiesColumns(EnumSet.of(SecuritiesColumns.SECID, SecuritiesColumns.SECNAME, SecuritiesColumns.PREVLEGALCLOSEPRICE,
+                            SecuritiesColumns.COUPONVALUE,  SecuritiesColumns.COUPONPERCENT,SecuritiesColumns.LOTVALUE,
+                            SecuritiesColumns.COUPONPERIOD, SecuritiesColumns.CURRENCYID))
+                   // .marketDataColumns(EnumSet.of(MarketData.SECID, MarketData.YIELD, MarketData.DURATION))
                     .build(),
             MoexDocumentRs.class);
 
