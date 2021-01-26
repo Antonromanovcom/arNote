@@ -9,13 +9,14 @@ import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
-
 import java.util.List;
 import java.util.Optional;
 
 public interface CalculateService {
+
+
     /**
-     * Запросить дивиденды через API биржи, подсчитать сумму проценты относительно текущей цены акции и вернуть все это.
+     * Запросить дивиденды через API биржи, подсчитать сумму и проценты относительно текущей цены акции и вернуть все это.
      *
      * @param user - текущий авторизовавшийся пользователь
      * @return
@@ -178,4 +179,19 @@ public interface CalculateService {
      * @return
      */
     ConsolidatedDividendsRs getCoupons(Bond bond, LocalUser user);
+
+
+    /**
+     * Поиск акций по boardId.
+     *
+     * @return
+     */
+    MoexDocumentRs findSharesByBoardId(String boardId);
+
+    /**
+     * Выкачать и закэшировать режимы торгов.
+     *
+     * @return
+     */
+    List<String> getTradeModes();
 }

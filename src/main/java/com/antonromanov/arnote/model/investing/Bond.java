@@ -12,13 +12,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "id")
-@EqualsAndHashCode
 @Table(name = "bond")
 public class Bond {
 
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bonds_seq_gen")
     @SequenceGenerator(name = "bonds_seq_gen", sequenceName = "bonds_id_seq", allocationSize = 1)
     private long id;
@@ -31,9 +29,6 @@ public class Bond {
     private BondType type; // тип бумаги - облигация, фонд, акция
 
     @Column
-    private String description; //Развернутое описание
-
-    @Column
     private String stockExchange; // Биржа
 
     @Column
@@ -43,19 +38,7 @@ public class Bond {
     private Integer lot; // Сколько акций в лоте
 
     @Column
-    private Long fullPeriodDelta; // Рост за весь период
-
-    @Column
     private Boolean isBought; // факт / План
-
-    @Column
-    private Long dayDelta; // рост/падение за сегодня
-
-    @Column
-    private Long deltaFromPurchaseDate; // рост/падение за сегодня
-
-    @Column
-    private LocalDateTime purchaseDate; // дата и время покупки
 
     @ManyToOne(cascade = CascadeType.ALL)
     private LocalUser user;

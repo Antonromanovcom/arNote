@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.model.investing;
+package com.antonromanov.arnote.model.investing.response;
 
 import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;

@@ -1,17 +1,14 @@
 package com.antonromanov.arnote.model.investing.response.enums;
 
 import com.antonromanov.arnote.model.investing.response.UrlRequestParams;
-import com.antonromanov.arnote.model.investing.response.xmlpart.enums.BoardsColumns;
-import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
-import com.antonromanov.arnote.model.investing.response.xmlpart.enums.MarketData;
-import com.antonromanov.arnote.model.investing.response.xmlpart.enums.SecuritiesColumns;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.model.investing.response.xmlpart.enums.BoardsColumns;
+import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
+import com.antonromanov.arnote.model.investing.response.xmlpart.enums.SecuritiesColumns;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.EnumSet;
 
 
@@ -61,7 +58,6 @@ public enum RestTemplateOperation {
                     .securitiesColumns(EnumSet.of(SecuritiesColumns.SECID, SecuritiesColumns.SECNAME, SecuritiesColumns.PREVLEGALCLOSEPRICE,
                             SecuritiesColumns.COUPONVALUE, SecuritiesColumns.COUPONPERCENT, SecuritiesColumns.LOTVALUE,
                             SecuritiesColumns.COUPONPERIOD, SecuritiesColumns.CURRENCYID, SecuritiesColumns.LOTSIZE))
-                    // .marketDataColumns(EnumSet.of(MarketData.SECID, MarketData.YIELD, MarketData.DURATION))
                     .build(),
             MoexDocumentRs.class),
     GET_CURRENCY_CHANGE_COURSES("/statistics/engines/futures/markets/indicativerates/securities",
@@ -69,20 +65,22 @@ public enum RestTemplateOperation {
                     .issMeta(false)
                     .issOnly(EnumSet.of(DataBlock.SECURITIES))
                     .build(),
+            MoexDocumentRs.class),
+     GET_ALL_SHARES("/engines/stock/markets/shares/boards/{p2:[a-z]{1,5}}/securities.xml",
+            UrlRequestParams.builder()
+                    .issMeta(false)
+                    .issOnly(EnumSet.of(DataBlock.SECURITIES))
+                    .build(),
+            MoexDocumentRs.class),
+    GET_TRADE_MODES("/engines/stock/markets/shares/boards.xml",
+            UrlRequestParams.builder()
+                    .issMeta(false)
+                    .build(),
             MoexDocumentRs.class);
 
+
     private final String url;
-    private final UrlRequestParams requestParams; // количество параметризированных кусков пути
+    private final UrlRequestParams requestParams;
     private final Class<?> className;
 
-
-    /**
-     * Поиск кол-ва параметров в строке
-     *
-     * @param
-     * @return
-     */
-    public int calculateStringParametersCount() {
-        return StringUtils.countMatches(url, "/{p");
-    }
 }

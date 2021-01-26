@@ -62,4 +62,16 @@ public class MoexRowsRs {
         @XmlAttribute(name = "rate")
         private String rate;
 
+        //============= ТОРГОВЫЕ РЕЖИМЫ ================
+
+        @XmlAttribute(name = "boardid")
+        private String boardId;
+
+        @XmlAttribute(name = "title")
+        private String title;
+
+        @XmlAttribute(name = "is_traded")
+        private String isTraded;
+
+
 }

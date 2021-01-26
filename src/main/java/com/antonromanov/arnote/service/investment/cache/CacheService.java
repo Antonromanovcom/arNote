@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.service.investment.cache;
 
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,4 +17,10 @@ public interface CacheService {
 
     void putBondsByBoardsGroup(String boardGroup, MoexDocumentRs doc);
     Optional<MoexDocumentRs> getBondsByBoardGroup(String boardId);
+
+    void putTradeModes(List<String> tradeModes);
+    List<String> getTradeModes();
+
+    void putHistory(String key, MoexDocumentRs doc);
+    Optional<MoexDocumentRs> getHistory(String key);
 }

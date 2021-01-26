@@ -68,41 +68,6 @@ public class Utils {
         return time.toLocalTime();
     }
 
-    // Проверяем таймут до последнего пинга.
-    public static Boolean checkTimeout(Time lastPingTime) {
-
-        Date date = new Date();
-        Time time = new Time(date.getTime());
-        Boolean result = true;
-
-        if (lastPingTime != null) { // время должно быть не ноль, иначе все наебнется
-            // TODO надо еще проверить, чтобы дата была именно сегодняшняя
-            LocalTime offsetTime = toLocalTime(lastPingTime).plusMinutes(15);
-            result = isBetween(toLocalTime(time), toLocalTime(lastPingTime), offsetTime);
-        }
-        return result;
-
-    }
-
-
-    /**
-     * Проверяем ip
-     */
-    public static String getIp(HttpServletRequest request) {
-
-        String remoteAddr = "";
-
-        // Пытаемся взять ip
-        if (request != null) {
-            remoteAddr = request.getHeader("X-FORWARDED-FOR");
-            if (remoteAddr == null || "".equals(remoteAddr)) {
-                remoteAddr = request.getRemoteAddr();
-                log.info("GETTING REQUEST FROM:  " + remoteAddr);
-            }
-        }
-        return remoteAddr;
-    }
-
     /**
      * Создаем gson builder
      */
@@ -618,5 +583,7 @@ public class Utils {
 
         return uriComponents2.toString();
     }
+
+
 
 }

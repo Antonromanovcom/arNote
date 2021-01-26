@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -39,11 +40,7 @@ public class CalculateServiceImpl implements CalculateService {
     private final BondsRepo repo;
     private final List<String> BOARD_GROUP_LIST = Arrays.asList("58", "193", "7", "67", "207");
     private Long lastQuote = 0L;
-    private Long getInfoCount = 0L;
-    private Long getBoardIdCount = 0L;
-    private Long getInstrumentNameCount = 0L;
-    private Long getCurrencyCount = 0L;
-    private Long getHistoryCount = 0L;
+    private Long getAllSharesCount = 0L;
 
     public CalculateServiceImpl(ArNoteHttpClient httpClient, BondsRepo repo, CacheService cacheService) {
         this.httpClient = httpClient;
@@ -65,9 +62,7 @@ public class CalculateServiceImpl implements CalculateService {
             Optional<ConsolidatedDividendsRs> res = httpClient.sendAndParse(ticker);
 
             if (res.isPresent()) {
-                res.get().calculatePercent(repo.findBondByUserAndTicker(user, ticker)
-                        .map(Bond::getPrice)
-                        .orElse((double) 0));
+                res.get().calculatePercent(getHistory(ticker, getBoardId(ticker)));
                 return res;
             }
         }
@@ -119,8 +114,6 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     public Optional<MoexDetailInfoRs> getDetailInfo(LocalUser user, String ticker) {
-        getInfoCount = getInfoCount + 1;
-        log.info("Запрос детальной инфы по userId: {}. Запрос №: {}", user.getId(), getInfoCount);
         if (!isBlank(ticker)) {
             return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(RestTemplateOperation.
                     GET_INSTRUMENT_DETAIL_INFO, ticker, null)));
@@ -129,13 +122,15 @@ public class CalculateServiceImpl implements CalculateService {
         }
     }
 
-
+    /**
+     * Запросить board_id.
+     *
+     * @param ticker - тикер.
+     * @return
+     */
     @Override
     public String getBoardId(String ticker) {
         return cacheService.getBoardIdByTicker(ticker).orElseGet(() -> {
-
-            getBoardIdCount = getBoardIdCount + 1;
-            log.info("Запрос Board Id  по тикеру: {}. Запрос №: {}", ticker, getBoardIdCount);
 
             String boardId = ((MoexDocumentForBoardIdRs)
                     (httpClient.sendAndMarshall(RestTemplateOperation.GET_BOARD_ID, ticker, null)))
@@ -161,8 +156,6 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     @Cacheable(cacheNames = "instrumentNames", key = "#boardId + #ticker")
     public Optional<String> getInstrumentName(String boardId, String ticker) {
-        getInstrumentNameCount = getInstrumentNameCount + 1;
-        log.info("Запрос instrument name  по тикеру: {} и boardId {}. Запрос №: {}", ticker, boardId, getInstrumentNameCount);
         if (!isBlank(ticker)) {
             return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_INSTRUMENT_NAME, null, boardId))
                     .map(MoexDocumentRs.class::cast)
@@ -260,13 +253,13 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     public Integer calculateFinalPrice(Bond bond, LocalUser user) {
         if (bond.getType() == BondType.SHARE) {
-            return (int) Math.round(bond.getLot() != null ?
+            return (int) Math.round(bond.getLot() != null ? //todo: почему лот-то отсюда берем????
                     ((getCurrentQuoteByTicker(bond.getTicker(),
                             getBoardId(bond.getTicker()))).orElse((double) 0)) * bond.getLot() :
                     (double) 0);
         } else {
             return (int) Math.round(bond.getLot() != null ?
-                    (getCurrentBondPrice(bond.getTicker())) * bond.getLot() :
+                    (getCurrentBondPrice(bond.getTicker())) * bond.getLot() : //todo: почему лот-то отсюда берем????
                     (double) 0);
         }
     }
@@ -281,7 +274,7 @@ public class CalculateServiceImpl implements CalculateService {
         return getDivsByTicker(user, bond.getTicker())
                 .orElse(ConsolidatedDividendsRs.builder()
                         .dividendList(Collections.emptyList())
-                        .percent(0)
+                        .percent(0D)
                         .divSum(Double.NaN)
                         .build());
     }
@@ -294,8 +287,6 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     @Cacheable(cacheNames = "currenciesCache", key = "#user.id")
     public String getCurrencyOfShareFromDetailInfo(Bond bond, LocalUser user) {
-        getCurrencyCount = getCurrencyCount + 1;
-        log.info("Запрос валют: bond.id: {}. Запрос №: {}", bond.getId(), getCurrencyCount);
         return getDetailInfo(user, bond.getTicker())
                 .map(detailInfo -> detailInfo.getDataList().stream()
                         .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
@@ -332,23 +323,24 @@ public class CalculateServiceImpl implements CalculateService {
                 .orElse(1);
     }
 
+    /**
+     * Запросить исторические данные по котировкам с биржи.
+     *
+     * @param ticker
+     * @param boardId
+     * @return
+     */
     @Override
-    @Cacheable(cacheNames = "history", key = "#boardId + #ticker")
     public MoexDocumentRs getHistory(String ticker, String boardId) {
-        getHistoryCount = getHistoryCount + 1;
-        log.info("Запрос истории: тикер: {}, boardId: {}. Запрос №: {}", ticker, boardId, getHistoryCount);
-        return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_DELTA, ticker, boardId))
-                .map(MoexDocumentRs.class::cast)
-                .orElseThrow(() -> new MoexXmlResponseMappingException("дельту изменения цены"));
+        return cacheService.getHistory(ticker+boardId)
+                .orElseGet(() -> (MoexDocumentRs) httpClient.sendAndMarshall(RestTemplateOperation.GET_DELTA, ticker, boardId));
     }
 
     @Override
     public MoexDocumentRs getBondsFromMoexForBoardGroup(String boardGroup) {
-
-        return cacheService.getBondsByBoardGroup(boardGroup).orElseGet(() -> {
-            MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(RestTemplateOperation.GET_BONDS, boardGroup, null);
-            return doc;
-        });
+        return cacheService.getBondsByBoardGroup(boardGroup)
+                .orElseGet(() -> (MoexDocumentRs) httpClient
+                        .sendAndMarshall(RestTemplateOperation.GET_BONDS, boardGroup, null));
 
     }
 
@@ -479,8 +471,46 @@ public class CalculateServiceImpl implements CalculateService {
                 .percent(getBondDataByTicker(bond.getTicker())
                         .map(MoexRowsRs::getCouponPercent)
                         .map(Double::parseDouble)
-                        .map(v -> (int) Math.round(v))
-                        .orElse(0))
+                       // .map(v -> (int) Math.round(v))
+                        .orElse(0D))
                 .build();
+    }
+
+
+    /**
+     * Поиск акций по boardId.
+     *
+     * @return
+     */
+    @Override
+    @Cacheable(cacheNames = "allshares", key = "#boardId")
+    public MoexDocumentRs findSharesByBoardId(String boardId) {
+        getAllSharesCount = getAllSharesCount + 1;
+        log.info("getAllSharesCount по boardId: {}. Запрос №: {}", boardId, getAllSharesCount);
+        MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(RestTemplateOperation.GET_ALL_SHARES, null, boardId);
+
+        return doc;
+    }
+
+    /**
+     * Выкачать и закэшировать режимы торгов.
+     *
+     * @return
+     */
+    @Override
+    public List<String> getTradeModes() {
+
+        if (cacheService.getTradeModes() != null && cacheService.getTradeModes().size()>0) {
+            return cacheService.getTradeModes();
+        } else {
+            MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(
+                    RestTemplateOperation.GET_TRADE_MODES, null, null);
+            List<String> res =  doc.getData().getRow().stream()
+                    .filter(r->"1".equals(r.getIsTraded()))
+                    .map(MoexRowsRs::getBoardId)
+                    .collect(Collectors.toList());
+            cacheService.putTradeModes(res);
+            return res;
+        }
     }
 }
