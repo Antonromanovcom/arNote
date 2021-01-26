@@ -16,7 +16,7 @@ public class BondRs {
     private final String currency;
     private final String type;
     private final ConsolidatedDividendsRs dividends;
-    private final Integer minLot; // минимальный лот
+    private final Integer minLot; // минимальный лот или сколько куплено уже пользователем
     private final Integer finalPrice; // currentPrice * minLot
     private final String description; // описание бумаги
     private final DeltaRs delta; // доступный в истории биржи период дельты

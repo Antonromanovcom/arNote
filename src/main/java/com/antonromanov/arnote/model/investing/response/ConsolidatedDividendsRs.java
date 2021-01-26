@@ -1,5 +1,7 @@
 package com.antonromanov.arnote.model.investing.response;
 
+import com.antonromanov.arnote.model.investing.response.serializers.DoubleSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ConsolidatedDividendsRs {
     private final List<DividendRs> dividendList;
+
+    @JsonSerialize(using = DoubleSerializer.class)
     private Double divSum; // Сумма дивидендов за прошлый год
     private Integer percent;
 

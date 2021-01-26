@@ -11,6 +11,7 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.M
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+
 import java.util.EnumSet;
 
 
@@ -28,17 +29,17 @@ public enum RestTemplateOperation {
                     .securitiesColumns(EnumSet.of(SecuritiesColumns.SECID, SecuritiesColumns.PREVADMITTEDQUOTE))
                     .build(),
             MoexDocumentRs.class),
-    GET_INSTRUMENT_DETAIL_INFO( "/engines/stock/markets/shares/securities/{p1:[a-z]{1,5}}",
+    GET_INSTRUMENT_DETAIL_INFO("/engines/stock/markets/shares/securities/{p1:[a-z]{1,5}}",
             UrlRequestParams.builder().issMeta(false).build(),
             MoexDetailInfoRs.class),
-    GET_BOARD_ID( "/securities/{p1:[a-z]{1,5}}.xml",
+    GET_BOARD_ID("/securities/{p1:[a-z]{1,5}}.xml",
             UrlRequestParams.builder()
                     .issMeta(false)
                     .issOnly(EnumSet.of(DataBlock.BOARDS))
                     .boardsColumns(EnumSet.of(BoardsColumns.SECID, BoardsColumns.BOARDID, BoardsColumns.IS_PRIMARY))
                     .build(),
             MoexDocumentForBoardIdRs.class),
-    GET_INSTRUMENT_NAME( "/engines/stock/markets/shares/boards/{p2:[a-z]{1,5}}/securities.xml",
+    GET_INSTRUMENT_NAME("/engines/stock/markets/shares/boards/{p2:[a-z]{1,5}}/securities.xml",
             UrlRequestParams.builder()
                     .issMeta(false)
                     .issDp("comma")
@@ -46,24 +47,29 @@ public enum RestTemplateOperation {
                     .securitiesColumns(EnumSet.of(SecuritiesColumns.SECID, SecuritiesColumns.SECNAME))
                     .build(),
             MoexDocumentRs.class),
-    GET_DELTA( "/history/engines/stock/markets/shares/boards/{p2:[a-z]{1,5}}/securities/{p1:[a-z]{1,5}}/candles.xml",
+    GET_DELTA("/history/engines/stock/markets/shares/boards/{p2:[a-z]{1,5}}/securities/{p1:[a-z]{1,5}}/candles.xml",
             UrlRequestParams.builder()
                     .issMeta(false)
                     .from("2000-01-01")
                     .build(),
             MoexDocumentRs.class),
-    GET_BONDS( "/engines/stock/markets/bonds/boardgroups/{p1:[a-z]{1,5}}/securities.xml",
+    GET_BONDS("/engines/stock/markets/bonds/boardgroups/{p1:[a-z]{1,5}}/securities.xml",
             UrlRequestParams.builder()
                     .issMeta(false)
                     .issDp("comma")
                     .issOnly(EnumSet.of(DataBlock.SECURITIES))
                     .securitiesColumns(EnumSet.of(SecuritiesColumns.SECID, SecuritiesColumns.SECNAME, SecuritiesColumns.PREVLEGALCLOSEPRICE,
-                            SecuritiesColumns.COUPONVALUE,  SecuritiesColumns.COUPONPERCENT,SecuritiesColumns.LOTVALUE,
-                            SecuritiesColumns.COUPONPERIOD, SecuritiesColumns.CURRENCYID))
-                   // .marketDataColumns(EnumSet.of(MarketData.SECID, MarketData.YIELD, MarketData.DURATION))
+                            SecuritiesColumns.COUPONVALUE, SecuritiesColumns.COUPONPERCENT, SecuritiesColumns.LOTVALUE,
+                            SecuritiesColumns.COUPONPERIOD, SecuritiesColumns.CURRENCYID, SecuritiesColumns.LOTSIZE))
+                    // .marketDataColumns(EnumSet.of(MarketData.SECID, MarketData.YIELD, MarketData.DURATION))
+                    .build(),
+            MoexDocumentRs.class),
+    GET_CURRENCY_CHANGE_COURSES("/statistics/engines/futures/markets/indicativerates/securities",
+            UrlRequestParams.builder()
+                    .issMeta(false)
+                    .issOnly(EnumSet.of(DataBlock.SECURITIES))
                     .build(),
             MoexDocumentRs.class);
-
 
     private final String url;
     private final UrlRequestParams requestParams; // количество параметризированных кусков пути
@@ -71,12 +77,12 @@ public enum RestTemplateOperation {
 
 
     /**
-     *  Поиск кол-ва параметров в строке
+     * Поиск кол-ва параметров в строке
      *
      * @param
      * @return
      */
-    public int calculateStringParametersCount(){
+    public int calculateStringParametersCount() {
         return StringUtils.countMatches(url, "/{p");
     }
 }

@@ -3,9 +3,11 @@ package com.antonromanov.arnote.service.investment.calc;
 import com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException;
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.investing.Bond;
+import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
+import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexRowsForBoardIdRs;
@@ -15,11 +17,12 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexInstrumentDetailRowsRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
+import com.antonromanov.arnote.service.investment.cache.CacheService;
 import com.antonromanov.arnote.service.investment.http.client.ArNoteHttpClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
@@ -28,15 +31,24 @@ import java.util.concurrent.TimeUnit;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
+@Slf4j
 public class CalculateServiceImpl implements CalculateService {
 
     private final ArNoteHttpClient httpClient;
+    private final CacheService cacheService;
     private final BondsRepo repo;
     private final List<String> BOARD_GROUP_LIST = Arrays.asList("58", "193", "7", "67", "207");
+    private Long lastQuote = 0L;
+    private Long getInfoCount = 0L;
+    private Long getBoardIdCount = 0L;
+    private Long getInstrumentNameCount = 0L;
+    private Long getCurrencyCount = 0L;
+    private Long getHistoryCount = 0L;
 
-    public CalculateServiceImpl(ArNoteHttpClient httpClient, BondsRepo repo) {
+    public CalculateServiceImpl(ArNoteHttpClient httpClient, BondsRepo repo, CacheService cacheService) {
         this.httpClient = httpClient;
         this.repo = repo;
+        this.cacheService = cacheService;
     }
 
 
@@ -65,15 +77,12 @@ public class CalculateServiceImpl implements CalculateService {
     /**
      * Запросить текущую цену (ставку) бумаги.
      *
-     * @param user - текущий авторизовавшийся пользователь
+     * @param boardId
      * @return
      */
     @Override
-    public Optional<Double> getCurrentQuoteByTicker(LocalUser user, String ticker) {
+    public Optional<Double> getCurrentQuoteByTicker(String ticker, String boardId) {
         if (!isBlank(ticker)) {
-
-            String boardId = getBoardId(ticker).orElse("TQBR");
-
             return (getCurrentQuoteByBoardId(boardId))
                     .map(lq -> lq.getData()
                             .getRow()
@@ -89,11 +98,17 @@ public class CalculateServiceImpl implements CalculateService {
     }
 
     @Override
-    @Cacheable(cacheNames = "lastQuoteCache", key = "#boardId")
     public Optional<MoexDocumentRs> getCurrentQuoteByBoardId(String boardId) {
+        MoexDocumentRs resultDoc = cacheService.getQuotesByBoardId(boardId).orElseGet(() -> {
+            lastQuote = lastQuote + 1;
+            log.info("Запрос последней ставки по boardId: {}. Запрос №: {}", boardId, lastQuote);
 
-        return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_LAST_QUOTE_MOEX, null, boardId))
-                .map(MoexDocumentRs.class::cast);
+            MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(RestTemplateOperation.GET_LAST_QUOTE_MOEX, null, boardId);
+            cacheService.putLastQuotes(boardId, doc);
+            return doc;
+        });
+
+        return Optional.of(resultDoc);
     }
 
     /**
@@ -103,8 +118,9 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    @Cacheable(cacheNames = "detailInfo", key = "#user.id")
     public Optional<MoexDetailInfoRs> getDetailInfo(LocalUser user, String ticker) {
+        getInfoCount = getInfoCount + 1;
+        log.info("Запрос детальной инфы по userId: {}. Запрос №: {}", user.getId(), getInfoCount);
         if (!isBlank(ticker)) {
             return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(RestTemplateOperation.
                     GET_INSTRUMENT_DETAIL_INFO, ticker, null)));
@@ -115,21 +131,25 @@ public class CalculateServiceImpl implements CalculateService {
 
 
     @Override
-    @Cacheable(cacheNames = "boardIds", key = "#ticker")
-    public Optional<String> getBoardId(String ticker) {
-        if (!isBlank(ticker)) {
+    public String getBoardId(String ticker) {
+        return cacheService.getBoardIdByTicker(ticker).orElseGet(() -> {
 
-            return ((MoexDocumentForBoardIdRs)
+            getBoardIdCount = getBoardIdCount + 1;
+            log.info("Запрос Board Id  по тикеру: {}. Запрос №: {}", ticker, getBoardIdCount);
+
+            String boardId = ((MoexDocumentForBoardIdRs)
                     (httpClient.sendAndMarshall(RestTemplateOperation.GET_BOARD_ID, ticker, null)))
                     .getData()
                     .getRowList()
                     .stream()
                     .filter(MoexRowsForBoardIdRs::getIsPrimary)
                     .findFirst()
-                    .map(MoexRowsForBoardIdRs::getBoardId);
-        } else {
-            return Optional.empty();
-        }
+                    .map(MoexRowsForBoardIdRs::getBoardId)
+                    .orElse(null);
+
+            cacheService.putBoardId(ticker, boardId);
+            return boardId;
+        });
     }
 
     /**
@@ -141,6 +161,8 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     @Cacheable(cacheNames = "instrumentNames", key = "#boardId + #ticker")
     public Optional<String> getInstrumentName(String boardId, String ticker) {
+        getInstrumentNameCount = getInstrumentNameCount + 1;
+        log.info("Запрос instrument name  по тикеру: {} и boardId {}. Запрос №: {}", ticker, boardId, getInstrumentNameCount);
         if (!isBlank(ticker)) {
             return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_INSTRUMENT_NAME, null, boardId))
                     .map(MoexDocumentRs.class::cast)
@@ -174,7 +196,7 @@ public class CalculateServiceImpl implements CalculateService {
 
             if (purchaseList != null && purchaseList.size() > 0) {
 
-                /**
+                /*
                  * Считаем среднюю цену покупки (сумма цена * лот)
                  */
                 Double tkcAveragePurchasePrice = purchaseList.stream()
@@ -192,6 +214,13 @@ public class CalculateServiceImpl implements CalculateService {
 
             MoexDocumentRs doc = getHistory(ticker, boardId);
 
+            /*
+             * Как считаем:
+             *
+             * deltaInRubles = текущая цена - (цена по самой ранней дате)
+             * deltaPeriod = Миллисекунды от (текущая дата - (самая ранняя дата истории))
+             * tinkoffDelta = (сумма покупок * текущую цену рынка) - (Сумма(лот * цену по каждой покупке))
+             */
             return DeltaRs.builder()
                     .tinkoffDelta(tinkoffDeltaFinal)
                     .tinkoffDeltaPercent(tinkoffDeltaPercent)
@@ -230,9 +259,16 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     public Integer calculateFinalPrice(Bond bond, LocalUser user) {
-        return (int) Math.round(bond.getLot() != null ?
-                ((getCurrentQuoteByTicker(user, bond.getTicker())).orElse((double) 0)) * bond.getLot() :
-                (double) 0);
+        if (bond.getType() == BondType.SHARE) {
+            return (int) Math.round(bond.getLot() != null ?
+                    ((getCurrentQuoteByTicker(bond.getTicker(),
+                            getBoardId(bond.getTicker()))).orElse((double) 0)) * bond.getLot() :
+                    (double) 0);
+        } else {
+            return (int) Math.round(bond.getLot() != null ?
+                    (getCurrentBondPrice(bond.getTicker())) * bond.getLot() :
+                    (double) 0);
+        }
     }
 
     /**
@@ -251,32 +287,25 @@ public class CalculateServiceImpl implements CalculateService {
     }
 
     /**
-     * Достать board_id.
-     *
-     * @param ticker - тикер-бумаги.
-     * @return
-     */
-    @Override
-    public String prepareBoardId(String ticker) {
-        return getBoardId(ticker).orElse("TQBR");
-    }
-
-    /**
      * Подготовить данные по валюте.
      *
      * @return
      */
     @Override
     @Cacheable(cacheNames = "currenciesCache", key = "#user.id")
-    public String getCurrency(Bond bond, LocalUser user) {
+    public String getCurrencyOfShareFromDetailInfo(Bond bond, LocalUser user) {
+        getCurrencyCount = getCurrencyCount + 1;
+        log.info("Запрос валют: bond.id: {}. Запрос №: {}", bond.getId(), getCurrencyCount);
         return getDetailInfo(user, bond.getTicker())
                 .map(detailInfo -> detailInfo.getDataList().stream()
                         .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
                         .findFirst()
                         .map(sc -> sc.getRowsList().stream()
-                                .filter(row -> prepareBoardId(bond.getTicker()).equals(row.getBoardId()))
+                                .filter(row -> getBoardId(bond.getTicker()).equals(row.getBoardId()))
                                 .findFirst()
                                 .map(MoexInstrumentDetailRowsRs::getCurrencyId)
+                                .map(Currencies::search)
+                                .map(Enum::name)
                                 .orElse("-"))
                         .orElse("-"))
                 .orElse("-");
@@ -295,7 +324,7 @@ public class CalculateServiceImpl implements CalculateService {
                         .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
                         .findFirst()
                         .map(sc -> sc.getRowsList().stream()
-                                .filter(row -> prepareBoardId(bond.getTicker()).equals(row.getBoardId()))
+                                .filter(row -> getBoardId(bond.getTicker()).equals(row.getBoardId()))
                                 .findFirst()
                                 .map(share -> Integer.parseInt(share.getLotSize()))
                                 .orElse(1))
@@ -306,6 +335,8 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     @Cacheable(cacheNames = "history", key = "#boardId + #ticker")
     public MoexDocumentRs getHistory(String ticker, String boardId) {
+        getHistoryCount = getHistoryCount + 1;
+        log.info("Запрос истории: тикер: {}, boardId: {}. Запрос №: {}", ticker, boardId, getHistoryCount);
         return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_DELTA, ticker, boardId))
                 .map(MoexDocumentRs.class::cast)
                 .orElseThrow(() -> new MoexXmlResponseMappingException("дельту изменения цены"));
@@ -314,9 +345,11 @@ public class CalculateServiceImpl implements CalculateService {
     @Override
     public MoexDocumentRs getBondsFromMoexForBoardGroup(String boardGroup) {
 
-        return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_BONDS, boardGroup, null))
-                .map(MoexDocumentRs.class::cast)
-                .orElseThrow(() -> new MoexXmlResponseMappingException("сводные данные по облигации"));
+        return cacheService.getBondsByBoardGroup(boardGroup).orElseGet(() -> {
+            MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(RestTemplateOperation.GET_BONDS, boardGroup, null);
+            return doc;
+        });
+
     }
 
     @Override
@@ -332,5 +365,122 @@ public class CalculateServiceImpl implements CalculateService {
             }
         }
         return result;
+    }
+
+    /**
+     * Запросить Облигацию по тикеру.
+     *
+     * @param ticker - тикер
+     * @return
+     */
+    @Override
+    public Optional<MoexRowsRs> getBondDataByTicker(String ticker) {
+
+        return getBondsFromMoex()
+                .getData()
+                .getRow()
+                .stream()
+                .filter(b -> ticker.equals(b.getSecid()))
+                .findFirst();
+    }
+
+    /**
+     * Определить валюту и курсовой-множитель для рубля.
+     *
+     * @param currency - валютный идентификатор
+     * @return
+     */
+    @Override
+    public Double getCurrencyMultiplier(String currency) {
+
+        if (Currencies.getTransferByCodes(currency) == null) {
+            return (1d);
+        } else {
+
+            return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_CURRENCY_CHANGE_COURSES,
+                    null, null))
+                    .map(MoexDocumentRs.class::cast)
+                    .orElseThrow(() -> new MoexXmlResponseMappingException("курсы валют"))
+                    .getData()
+                    .getRow()
+                    .stream()
+                    .filter(curr -> curr.getCurrencyExchangeType().equals(Currencies.getTransferByCodes(currency)))
+                    .findFirst()
+                    .map(MoexRowsRs::getRate)
+                    .map(Double::valueOf)
+                    .orElse(Double.valueOf("1"));
+        }
+    }
+
+    @Override
+    public Double getCurrentBondPrice(String ticker) {
+        return getBondDataByTicker(ticker)
+                .map(p -> (
+                        (Double.parseDouble(p.getLotValue()) * Double.parseDouble(p.getPrevLegalClosePrice())) / 100)
+                        * getCurrencyMultiplier(p.getCurrencyId())).orElse(0D);
+
+    }
+
+    @Override
+    public Currencies getBondCurrency(String ticker) {
+        return getBondDataByTicker(ticker)
+                .map(MoexRowsRs::getCurrencyId)
+                .map(Currencies::search)
+                .orElse(Currencies.RUB);
+
+    }
+
+    /**
+     * Получить имя облигации.
+     *
+     * @param ticker
+     * @return
+     */
+    @Override
+    public Optional<String> getBondName(String ticker) {
+        return getBondDataByTicker(ticker).map(MoexRowsRs::getSecName);
+    }
+
+    /**
+     * Получить минимальный лот облигации или сколько куплено уже.
+     *
+     * @return
+     */
+    @Override
+    public Integer getBondLot(Bond bond, LocalUser user, List<Purchase> purchaseList) {
+
+        if (!bond.getIsBought()) { // если это план по облигации
+            return getBondDataByTicker(bond.getTicker())
+                    .map(MoexRowsRs::getLotSize)
+                    .map(Integer::parseInt).orElse(0);
+        } else { // а если есть реальные покупки по облигации
+
+            /*
+             * Считаем сумму покупок (сколько всего купили бумаг то)
+             */
+            return purchaseList.stream()
+                    .map(Purchase::getLot)
+                    .reduce(0, Integer::sum);
+        }
+    }
+
+    @Override
+    public ConsolidatedDividendsRs getCoupons(Bond bond, LocalUser user) {
+
+        return ConsolidatedDividendsRs.builder()
+                .dividendList(null)
+                .divSum((365 / getBondDataByTicker(bond.getTicker())
+                        .map(MoexRowsRs::getCouponPeriod)
+                        .map(Double::parseDouble).orElse(1D)) * ((getBondDataByTicker(bond.getTicker())
+                        .map(MoexRowsRs::getCouponValue)
+                        .map(Double::parseDouble)
+                        .map(v -> (int) Math.round(v))
+                        .orElse(0))))
+                .percent(getBondDataByTicker(bond.getTicker())
+                        .map(MoexRowsRs::getCouponPercent)
+                        .map(Double::parseDouble)
+                        .map(v -> (int) Math.round(v))
+                        .orElse(0))
+                .build();
     }
 }

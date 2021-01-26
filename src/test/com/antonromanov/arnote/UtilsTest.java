@@ -68,4 +68,14 @@ public class UtilsTest {
         cacheService.getDivsByTicker(repo.findById(1L).get(),"SBER");
         assertEquals(1, httpClient.getCounter());
     }
+
+    @Test
+    public void getCachedBoardId() {
+        assertEquals(0, httpClient.getCounter());
+        cacheService.getBoardId("SBER");
+        cacheService.getBoardId("SBER");
+        cacheService.getBoardId("SBER");
+        cacheService.getBoardId("SBER");
+        assertEquals(1, httpClient.getCounter());
+    }
 }

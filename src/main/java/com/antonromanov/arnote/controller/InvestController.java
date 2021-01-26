@@ -6,18 +6,17 @@ import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.ConsolidatedReturnsRs;
 import com.antonromanov.arnote.model.investing.response.BondRs;
+import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedInvestmentDataRs;
+import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.investment.calc.CalculateService;
 import com.antonromanov.arnote.service.investment.calc.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,13 +57,6 @@ public class InvestController {
         log.info("============== CONSOLIDATED INVESTMENT TABLE ============== ");
         log.info("PRINCIPAL: " + principal.getName());
 
-      // calculateService.getBondsFromMoexForBoardGroup("58");
-       MoexRowsRs row = calculateService.getBondsFromMoex()
-               .getData()
-               .getRow()
-               .stream()
-               .filter(b->"SU26224RMFS4".equals(b.getSecid()))
-       .findFirst().get();
 
         LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
         return ConsolidatedInvestmentDataRs.builder()
@@ -107,6 +99,25 @@ public class InvestController {
                 .build();
     }
 
+    /**
+     * Консолидированные данные по доходности.
+     *
+     * @param principal - пользак
+     * @param keyword - искомое слово или часть его
+     * @return
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping("/search")
+    public String findInstrumentByName(Principal principal, @RequestParam String keyword) throws UserNotFoundException {
+
+        log.info("============== FIND INSTRUMENT ============== ");
+        LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        log.info("USER ID: " + user.getId());
+        log.info("keyword: " + keyword);
+
+
+        return "1";
+    }
 
     /**
      * Подготовить респонс бумаги.
@@ -120,17 +131,53 @@ public class InvestController {
                 .type(bond.getType().name())
                 .isBought(bond.getIsBought())
                 .stockExchange(bond.getStockExchange()) //todo: сделать поиск и автоматическое определение что за биржа
-                .currentPrice(bond.getType()== BondType.SHARE ? (calculateService.getCurrentQuoteByTicker(user, bond.getTicker()).orElse((double) 0)) : null) //todo: кэш или БД??
-                .currency(bond.getType()== BondType.SHARE ? calculateService.getCurrency(bond, user) : null)
-                .dividends(bond.getType()== BondType.SHARE ? calculateService.getDividends(bond, user) : null)
-                .minLot(bond.getType()== BondType.SHARE ? calculateService.getMinimalLot(bond, user): null)
-                .finalPrice(bond.getType()== BondType.SHARE ? (calculateService.calculateFinalPrice(bond, user)) : null)
-                .delta(bond.getType()== BondType.SHARE ? (calculateService
-                        .calculateDelta(calculateService.prepareBoardId(bond.getTicker()), bond.getTicker(),
-                                calculateService.getCurrentQuoteByTicker(user, bond.getTicker()).orElse((double) 0),
-                                bond.getPurchaseList())) : null) // todo: а если список продаж в рублях, а определнная текущая цена в другой валюте????
-                .description(bond.getType()== BondType.SHARE ? (calculateService.getInstrumentName(calculateService.prepareBoardId(bond.getTicker()),
-                        bond.getTicker()).orElse("-")): null)
+                .currentPrice(prepareCurrentPrice(bond))
+                .currency(bond.getType()== BondType.SHARE ? calculateService.getCurrencyOfShareFromDetailInfo(bond, user) :
+                        calculateService.getBondCurrency(bond.getTicker()).name())
+                .dividends(bond.getType()== BondType.SHARE ? calculateService.getDividends(bond, user) :
+                        calculateService.getCoupons(bond, user))
+                .minLot(bond.getType()== BondType.SHARE ? calculateService.getMinimalLot(bond, user):
+                        calculateService.getBondLot(bond, user, bond.getPurchaseList()))
+                .finalPrice(calculateService.calculateFinalPrice(bond, user))
+                .delta(prepareDelta(bond)) // todo: а если список продаж в рублях, а определенная текущая цена в другой валюте????
+                .description(bond.getType()== BondType.SHARE ? (calculateService.getInstrumentName(calculateService.getBoardId(bond.getTicker()),
+                        bond.getTicker()).orElse("-")):
+                        (calculateService.getBondName(bond.getTicker()).orElse("-")))
+                .build();
+    }
+
+    /**
+     * Посчитать текущую цены бумаги.
+     *
+     * @param bond
+     *
+     * @return
+     */
+    private Double prepareCurrentPrice(Bond bond) {
+        return bond.getType()== BondType.SHARE ?
+                (calculateService.getCurrentQuoteByTicker(bond.getTicker(),
+                        calculateService.getBoardId(bond.getTicker())).orElse((double) 0)) :
+                calculateService.getCurrentBondPrice(bond.getTicker());
+    }
+
+    /**
+     * Посчитать дельту.
+     *
+     * @param bond
+     *
+     * @return
+     */
+    private DeltaRs prepareDelta(Bond bond) {
+        return bond.getType()== BondType.SHARE ? (calculateService
+                .calculateDelta(calculateService.getBoardId(bond.getTicker()), bond.getTicker(),
+                        calculateService.getCurrentQuoteByTicker(bond.getTicker(),
+                                calculateService.getBoardId(bond.getTicker())).orElse((double) 0),
+                        bond.getPurchaseList())) :
+                DeltaRs.builder()
+                .tinkoffDeltaPercent(0D)
+                        .deltaInRubles(0L)
+                .deltaPeriod(0L)
+                .tinkoffDelta(0D)
                 .build();
     }
 }

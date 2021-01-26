@@ -39,10 +39,27 @@ public class MoexRowsRs {
         @XmlAttribute(name = "LOTVALUE")
         private String lotValue; // Номинальная стоимость лота, в валюте номинала
 
+        @XmlAttribute(name = "LOTSIZE")
+        private String lotSize; // минимальный размер лота
+
         @XmlAttribute(name = "COUPONPERIOD")
         private String couponPeriod; // Длительность купона
 
         @XmlAttribute(name = "CURRENCYID")
         private String currencyId; // Длительность купона
+
+        //============= КУРСЫ ВАЛЮТ ================
+
+        @XmlAttribute(name = "tradedate")
+        private String tradeDateForCurrencies;
+
+        @XmlAttribute(name = "tradetime")
+        private String tradeTime;
+
+        @XmlAttribute(name = "secid")
+        private String currencyExchangeType;
+
+        @XmlAttribute(name = "rate")
+        private String rate;
 
 }

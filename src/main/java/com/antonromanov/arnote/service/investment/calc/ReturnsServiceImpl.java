@@ -41,8 +41,9 @@ public class ReturnsServiceImpl implements ReturnsService {
         return Optional.of(repo.findAllByUser(user).stream()
                 .map(b -> {
                     DeltaRs deltaRs = calcService
-                            .calculateDelta(calcService.prepareBoardId(b.getTicker()), b.getTicker(),
-                                    calcService.getCurrentQuoteByTicker(user, b.getTicker()).orElse((double) 0),
+                            .calculateDelta(calcService.getBoardId(b.getTicker()), b.getTicker(),
+                                    calcService.getCurrentQuoteByTicker(b.getTicker(),
+                                            calcService.getBoardId(b.getTicker())).orElse((double) 0),
                                     b.getPurchaseList());
 
                     return deltaRs.getDeltaInRubles();
