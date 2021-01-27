@@ -4,6 +4,7 @@ import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.BondType;
+import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.request.AddInstrumentRq;
 import com.antonromanov.arnote.model.investing.response.*;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
@@ -12,15 +13,16 @@ import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
+import com.antonromanov.arnote.repositoty.PurchasesRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.investment.calc.CalculateService;
 import com.antonromanov.arnote.service.investment.calc.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,16 +37,19 @@ import java.util.stream.Stream;
 public class InvestController {
 
     private final UsersRepo usersRepo;
+    private final PurchasesRepo purchasesRepo;
     private final BondsRepo bondsRepo;
     private final CalculateService calculateService;
     private final ReturnsService returnsService;
 
 
-    public InvestController(UsersRepo usersRepo, CalculateService calculateService, BondsRepo bondsRepo, ReturnsService returnsService) {
+    public InvestController(UsersRepo usersRepo, CalculateService calculateService, BondsRepo bondsRepo,
+                            ReturnsService returnsService, PurchasesRepo purchasesRepo) {
         this.usersRepo = usersRepo;
         this.calculateService = calculateService;
         this.bondsRepo = bondsRepo;
         this.returnsService = returnsService;
+        this.purchasesRepo = purchasesRepo;
     }
 
     /**
@@ -133,17 +138,17 @@ public class InvestController {
         }
 
         List<MoexRowsRs> findedShares = allShares.getData().getRow().stream()
-                .filter(s->(s.getSecName().toLowerCase().contains(keyword.toLowerCase()) || s.getSecid().toLowerCase().contains(keyword)))
+                .filter(s -> (s.getSecName().toLowerCase().contains(keyword.toLowerCase()) || s.getSecid().toLowerCase().contains(keyword)))
                 .collect(Collectors.toList());
 
 
         List<MoexRowsRs> findedBonds = calculateService.getBondsFromMoex().getData().getRow().stream()
-                .filter(s->(s.getSecName().toLowerCase().contains(keyword.toLowerCase()) || s.getSecid().toLowerCase().contains(keyword)))
+                .filter(s -> (s.getSecName().toLowerCase().contains(keyword.toLowerCase()) || s.getSecid().toLowerCase().contains(keyword)))
                 .collect(Collectors.toList());
 
         SearchResultsRs searchResults = new SearchResultsRs();
         searchResults.setInstruments(findedShares.stream()
-                .map(r-> FoundInstrumentRs.builder()
+                .map(r -> FoundInstrumentRs.builder()
                         .ticker(r.getSecid())
                         .currencies(Currencies.search(r.getCurrencyId()))
                         .description(r.getSecName())
@@ -152,7 +157,7 @@ public class InvestController {
                         .build()).collect(Collectors.toList()));
 
         searchResults.getInstruments().addAll(findedBonds.stream()
-                .map(r-> FoundInstrumentRs.builder()
+                .map(r -> FoundInstrumentRs.builder()
                         .ticker(r.getSecid())
                         .currencies(Currencies.search(r.getCurrencyId()))
                         .description(r.getSecName())
@@ -179,9 +184,37 @@ public class InvestController {
         log.info("USER ID: " + user.getId());
         log.info("ticker: " + request.getTicker());
 
-        Bond b = new Bond();
-        b.setTicker("222");
-        bondsRepo.save(b);
+        if (!request.isPlan() && (request.getLot() != 0 && request.getPrice() != null && request.getPurchaseDate() != null)) {
+
+            Optional<Bond> existingBond = bondsRepo.findBondByUserAndTicker(user, request.getTicker());
+            Purchase purchase = new Purchase();
+            purchase.setPrice(request.getPrice());
+            purchase.setLot(request.getLot());
+            purchase.setPurchaseDate(request.getPurchaseDate());
+
+            if (existingBond.isPresent()) {
+                existingBond.get().getPurchaseList().add(purchase);
+                bondsRepo.save(existingBond.get());
+            } else {
+                Bond b = new Bond();
+                b.setTicker(request.getTicker());
+                b.setIsBought(true);
+                b.setPurchaseList(Arrays.asList(purchase));
+                b.setType(BondType.valueOf(request.getBondType()));
+                b.setUser(user);
+                b.setStockExchange(StockExchange.MOEX);
+                bondsRepo.save(b);
+
+            }
+        } else {
+            Bond b = new Bond();
+            b.setTicker(request.getTicker());
+            b.setIsBought(false);
+            b.setType(BondType.valueOf(request.getBondType()));
+            b.setUser(user);
+            b.setStockExchange(StockExchange.MOEX);
+            bondsRepo.save(b);
+        }
 
         return "1";
     }
@@ -197,7 +230,7 @@ public class InvestController {
                 .ticker(bond.getTicker())
                 .type(bond.getType().name())
                 .isBought(bond.getIsBought())
-                .stockExchange(bond.getStockExchange())
+                .stockExchange(bond.getStockExchange().name())
                 .currentPrice(prepareCurrentPrice(bond))
                 .currency(bond.getType() == BondType.SHARE ? calculateService.getCurrencyOfShareFromDetailInfo(bond, user) :
                         calculateService.getBondCurrency(bond.getTicker()).name())

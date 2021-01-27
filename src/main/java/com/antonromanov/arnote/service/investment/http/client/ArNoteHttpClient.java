@@ -23,6 +23,14 @@ public interface ArNoteHttpClient {
      */
     CommonMoexDoc sendAndMarshall(RestTemplateOperation type, String ticker, String boardId);
 
+    /**
+     * Специфический запрос для запроса истории.
+     *
+     * @param type
+     * @return
+     */
+    CommonMoexDoc getHistory(RestTemplateOperation type, String ticker, String boardId, String dateFrom, String dateTill, int start);
+
 
 
     /**

@@ -1,7 +1,5 @@
 package com.antonromanov.arnote.utils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.sql.Time;
 import java.time.*;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -565,14 +563,18 @@ public class Utils {
     }
 
     /**
-     * Подставить ключевик в URL (например, тикер) и отдать готовый URL.
+     * Сформировать специальный URL для запроса истории.
      *
      * @return
      */
-    public static String prepareUrl(String urlBase,  RestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
-                                    Map<String, String> pathParams) {
+    public static String prepareUrlForHistory(String urlBase, RestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+                                              Map<String, String> pathParams, String dateFrom, String dateTill, int start) {
 
-        UriComponents uriComponents2 = UriComponentsBuilder
+
+        queryParameters.put("start", Collections.singletonList(String.valueOf(start)));
+        queryParameters.put("till", Collections.singletonList(dateTill));
+
+        UriComponents uriComponents = UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
                 .host(urlBase)
@@ -581,9 +583,26 @@ public class Utils {
                 .buildAndExpand(pathParams);
 
 
-        return uriComponents2.toString();
+        return uriComponents.toString();
     }
 
+    /**
+     * Подставить ключевик в URL (например, тикер) и отдать готовый URL.
+     *
+     * @return
+     */
+    public static String prepareUrl(String urlBase,  RestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+                                    Map<String, String> pathParams) {
+
+        UriComponents uriComponents = UriComponentsBuilder
+                .newInstance()
+                .scheme("http")
+                .host(urlBase)
+                .path(operation.getUrl())
+                .queryParams(queryParameters)
+                .buildAndExpand(pathParams);
 
 
+        return uriComponents.toString();
+    }
 }

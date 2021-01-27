@@ -1,9 +1,12 @@
 package com.antonromanov.arnote.model.investing;
 
 import com.antonromanov.arnote.model.LocalUser;
-import lombok.*;
+import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,13 +32,8 @@ public class Bond {
     private BondType type; // тип бумаги - облигация, фонд, акция
 
     @Column
-    private String stockExchange; // Биржа
-
-    @Column
-    private Double price; // Цена / Номинал на момент покупки
-
-    @Column
-    private Integer lot; // Сколько акций в лоте
+    @Enumerated(EnumType.STRING)
+    private StockExchange stockExchange; // Биржа
 
     @Column
     private Boolean isBought; // факт / План

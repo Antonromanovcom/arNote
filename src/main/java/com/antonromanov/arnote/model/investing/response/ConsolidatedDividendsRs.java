@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Консолидированная инвест-таблица.
@@ -24,6 +25,7 @@ public class ConsolidatedDividendsRs {
 
     @JsonSerialize(using = DoubleSerializer.class)
     private Double divSum; // Сумма дивидендов за прошлый год
+    @JsonSerialize(using = DoubleSerializer.class)
     private Double percent;
 
     /**
@@ -77,7 +79,7 @@ public class ConsolidatedDividendsRs {
                 .map(d -> LocalDate.parse(d.getRegistryCloseDate()));
 
         return dateOfDid.map(dat -> history.getData().getRow().stream()
-                .filter(r -> LocalDate.parse(r.getTradeDate()) == dat)
+                .filter(r -> LocalDate.parse(r.getTradeDate()).isEqual(dat))
                 .findFirst()
                 .map(MoexRowsRs::getLegalClosePrice)
                 .orElse("0.0"))

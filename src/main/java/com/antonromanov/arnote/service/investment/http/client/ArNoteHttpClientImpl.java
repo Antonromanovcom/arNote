@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.antonromanov.arnote.utils.Utils.prepareUrl;
+import static com.antonromanov.arnote.utils.Utils.prepareUrlForHistory;
 
 @Service
 @Slf4j
@@ -72,13 +73,9 @@ public class ArNoteHttpClientImpl implements ArNoteHttpClient {
     public CommonMoexDoc sendAndMarshall(RestTemplateOperation type, String ticker, String boardId) {
         if (type != RestTemplateOperation.GET_DIVS_MOEX) {
             try {
-
-                Map<String, String> m = new HashMap<>();
-                m.put("p1", ticker);
-                m.put("p2", boardId);
                 counter += 1;
-                log.info("Sending request to: {}", prepareUrl(MOEX_URL, type, serializeObjectToMVMap(type), m));
-                return xmlParser.marshall(rt.getForEntity(prepareUrl(MOEX_URL, type, serializeObjectToMVMap(type), m), String.class),
+                log.info("Sending request to: {}", prepareUrl(MOEX_URL, type, serializeObjectToMVMap(type), prepareParametersMap(ticker, boardId)));
+                return xmlParser.marshall(rt.getForEntity(prepareUrl(MOEX_URL, type, serializeObjectToMVMap(type), prepareParametersMap(ticker, boardId)), String.class),
                         type.getClassName());
             } catch (Exception e) {
                 throw new MoexRequestException();
@@ -86,6 +83,28 @@ public class ArNoteHttpClientImpl implements ArNoteHttpClient {
         } else {
             throw new MoexRequestException();
         }
+    }
+
+    @Override
+    public CommonMoexDoc getHistory(RestTemplateOperation type, String ticker, String boardId, String dateFrom, String dateTill, int start) {
+        try {
+            log.info("Sending request for history. Url: {}",
+                    prepareUrlForHistory(MOEX_URL, type, serializeObjectToMVMap(type), prepareParametersMap(ticker, boardId), dateFrom, dateTill, start));
+
+            return xmlParser.marshall(
+                    rt.getForEntity(prepareUrlForHistory(MOEX_URL, type, serializeObjectToMVMap(type),
+                            prepareParametersMap(ticker, boardId), dateFrom, dateTill,  start), String.class),
+                    type.getClassName());
+        } catch (Exception e) {
+            throw new MoexRequestException();
+        }
+    }
+
+    private Map<String, String> prepareParametersMap(String ticker, String boardId) {
+        Map<String, String> m = new HashMap<>();
+        m.put("p1", ticker);
+        m.put("p2", boardId);
+        return m;
     }
 
     /**
