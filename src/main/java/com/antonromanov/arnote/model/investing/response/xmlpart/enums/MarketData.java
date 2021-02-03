@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum MarketData implements UrlQueryParameters {
-    SECID("SECID"), YIELD("YIELD"), DURATION("DURATION");
+    SECID("SECID"), YIELD("YIELD"), DURATION("DURATION"), BOARDID("BOARDID"), LAST("LAST"),
+    UPDATETIME("UPDATETIME"), LASTCHANGE("LASTCHANGE"), LASTCHANGEPRCNT("LASTCHANGEPRCNT");
     private final String code;
 }

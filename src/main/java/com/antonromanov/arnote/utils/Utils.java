@@ -1,13 +1,25 @@
 package com.antonromanov.arnote.utils;
 
+import java.security.Principal;
 import java.time.*;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.investing.BondType;
+import com.antonromanov.arnote.model.investing.InvestingFilterMode;
+import com.antonromanov.arnote.model.investing.response.BondRs;
+import com.antonromanov.arnote.model.investing.response.FoundInstrumentRs;
+import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.model.wish.Salary;
 import com.antonromanov.arnote.exceptions.*;
 import com.antonromanov.arnote.model.wish.Wish;
@@ -585,6 +597,67 @@ public class Utils {
 
         return uriComponents.toString();
     }
+
+    /**
+     * Предикат distinctBy для выкидывания одинаковых тикеров (дублей) при поиске.
+     *
+     * @param keyExtractor
+     * @param <T>
+     * @return
+     */
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+
+    /**
+     * Предикат для фильтра по ключевому слову при поиске инструмента.
+     *
+     * @return
+     */
+    public static Predicate<MoexRowsRs> filterByKeyword(String keyword) {
+        return s -> (s.getSecName().toLowerCase().contains(keyword.toLowerCase()) ||
+                s.getSecid().toLowerCase().contains(keyword.toLowerCase()));
+    }
+
+    /**
+     * Предикат для универсального фильтра.
+     *
+     * @return
+     */
+    public static Predicate<BondRs> complexPredicate(Map<String, String> investingFilterMode) {
+
+        List<Predicate<BondRs>> arr = investingFilterMode.values().stream()
+                .map(s -> InvestingFilterMode.valueOf(s).getFilter())
+                .collect(Collectors.toList());
+
+        if (arr.size()==1){
+            return arr.get(0);
+        } else {
+            return arr.stream().reduce(t -> true, Predicate::and);
+        }
+    }
+
+
+    /**
+     * Подготовить список инструментов
+     * @return
+     */
+    public static  List<FoundInstrumentRs> prepareInstruments(List<MoexRowsRs> list, BondType type) {
+        return list.stream()
+                .map(r -> FoundInstrumentRs.builder()
+                        .ticker(r.getSecid())
+                        .currencies(Currencies.search(r.getCurrencyId()))
+                        .description(r.getSecName())
+                        .stockExchange(StockExchange.MOEX)
+                        .type(type)
+                        .build())
+                .filter(distinctByKey(FoundInstrumentRs::getTicker))
+                .limit(5)
+                .collect(Collectors.toList());
+    }
+
 
     /**
      * Подставить ключевик в URL (например, тикер) и отдать готовый URL.

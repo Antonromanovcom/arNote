@@ -5,6 +5,7 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocu
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.BoardsColumns;
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
+import com.antonromanov.arnote.model.investing.response.xmlpart.enums.MarketData;
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.SecuritiesColumns;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public enum RestTemplateOperation {
                     .issMeta(false)
                     .issDp("comma")
                     .issOnly(EnumSet.of(DataBlock.SECURITIES))
-                    .securitiesColumns(EnumSet.of(SecuritiesColumns.SECID, SecuritiesColumns.PREVADMITTEDQUOTE))
+                    .securitiesColumns(EnumSet.of(SecuritiesColumns.SECID, SecuritiesColumns.PREVADMITTEDQUOTE, SecuritiesColumns.COUPONPERIOD))
                     .build(),
             MoexDocumentRs.class),
     GET_INSTRUMENT_DETAIL_INFO("/engines/stock/markets/shares/securities/{p1:[a-z]{1,5}}",
@@ -76,8 +77,15 @@ public enum RestTemplateOperation {
             UrlRequestParams.builder()
                     .issMeta(false)
                     .build(),
+            MoexDocumentRs.class),
+    GET_15_MINUTE_PRICE_UPDATE("/engines/stock/markets/shares/securities/{p1:[a-z]{1,5}}.xml",
+            UrlRequestParams.builder()
+                    .issMeta(false)
+                    .issOnly(EnumSet.of(DataBlock.MARKETDATA))
+                    .marketDataColumns(EnumSet.of(MarketData.SECID, MarketData.BOARDID, MarketData.LAST, MarketData.UPDATETIME,
+                            MarketData.LASTCHANGE, MarketData.LASTCHANGEPRCNT))
+                    .build(),
             MoexDocumentRs.class);
-
 
     private final String url;
     private final UrlRequestParams requestParams;

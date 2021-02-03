@@ -1,5 +1,7 @@
 package com.antonromanov.arnote;
 
+import com.antonromanov.arnote.model.investing.response.BondRs;
+import com.antonromanov.arnote.model.investing.response.ConsolidatedInvestmentDataRs;
 import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.investment.calc.CalculateService;
@@ -10,8 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static com.antonromanov.arnote.utils.Utils.complexPredicate;
 import static com.antonromanov.arnote.utils.Utils.prepareUrl;
 import static org.junit.Assert.assertEquals;
 
@@ -63,9 +72,32 @@ public class UtilsTest {
 
     @Test
     public void getCachedDivsByTicker() {
+
         assertEquals(0, httpClient.getCounter());
         cacheService.getDivsByTicker(repo.findById(1L).get(),"SBER");
         cacheService.getDivsByTicker(repo.findById(1L).get(),"SBER");
         assertEquals(1, httpClient.getCounter());
+    }
+
+    /**
+     * Тест правильности составления предикатов для фильтров
+     */
+    @Test
+    public void filterPredicateTest() {
+
+        Map<String, String> investingFilterMode = new HashMap<>();
+        investingFilterMode.put("BOND_TYPE", "TYPE_SHARE");
+        Predicate<BondRs> predicate = complexPredicate(investingFilterMode);
+
+        BondRs b1 = BondRs.builder().type("SHARE").ticker("TICKER1").build();
+        BondRs b2 = BondRs.builder().type("SHARE").ticker("TICKER2").build();
+        BondRs b3 = BondRs.builder().type("BOND").ticker("TICKER3").build();
+        ConsolidatedInvestmentDataRs mockObject = ConsolidatedInvestmentDataRs.builder().bonds(Arrays.asList(b1, b2, b3)).build();
+        List<BondRs> mockListFilteredWithOne = mockObject.getBonds().stream().filter(predicate).collect(Collectors.toList());
+        assertEquals(2, mockListFilteredWithOne.size());
+        investingFilterMode.clear();
+        Predicate<BondRs> predicateAfterClear = complexPredicate(investingFilterMode);
+        List<BondRs> mockListFilteredWithEmpty = mockObject.getBonds().stream().filter(predicateAfterClear).collect(Collectors.toList());
+        assertEquals(3, mockListFilteredWithEmpty.size());
     }
 }

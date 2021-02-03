@@ -42,4 +42,11 @@ public class DeltaRs {
      * ранняя ранняя бумага. Далее - количество дней в миллисекундах от текущей даты до найденной.
      */
     private final Long deltaPeriod;
+
+
+    /**
+     * Общий процент. То есть на сколько процентов произошло изменение с начала истории.
+     */
+    @JsonSerialize(using = DoubleSerializer.class)
+    private final Double totalPercent;
 }

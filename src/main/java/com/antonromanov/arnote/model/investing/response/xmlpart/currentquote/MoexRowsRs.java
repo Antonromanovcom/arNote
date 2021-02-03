@@ -73,5 +73,20 @@ public class MoexRowsRs {
         @XmlAttribute(name = "is_traded")
         private String isTraded;
 
+        //========== 15-МИНУТНОЕ ОБНОВЛЕНИЕ ЦЕНЫ ===========
 
+        @XmlAttribute(name = "LAST")
+        private String last15MinuteQuote; // последняя ставка
+
+        @XmlAttribute(name = "BOARDID")
+        private String tradeMode; // последняя ставка
+
+        @XmlAttribute(name = "UPDATETIME")
+        private String updateTime;
+
+        @XmlAttribute(name = "LASTCHANGE")
+        private String lastChange; // последнее изменение цены относительно присланного 15 минут назад. Скорее всего в рублях
+
+        @XmlAttribute(name = "LASTCHANGEPRCNT")
+        private String lastChangePrcnt; // последнее изменение цены относительно присланного 15 минут назад в процентах
 }

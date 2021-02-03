@@ -42,8 +42,8 @@ public class ReturnsServiceImpl implements ReturnsService {
                 .map(b -> {
                     DeltaRs deltaRs = calcService
                             .calculateDelta(calcService.getBoardId(b.getTicker()), b.getTicker(),
-                                    calcService.getCurrentQuoteByTicker(b.getTicker(),
-                                            calcService.getBoardId(b.getTicker())).orElse((double) 0),
+                                    calcService.getCurrentQuoteByTicker(b.getTicker()
+                                    ).orElse((double) 0),
                                     b.getPurchaseList());
 
                     return deltaRs.getDeltaInRubles();

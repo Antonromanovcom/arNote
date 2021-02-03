@@ -6,6 +6,7 @@ import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
+import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
@@ -25,6 +26,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Period;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -39,14 +41,12 @@ public class CalculateServiceImpl implements CalculateService {
 
     private final ArNoteHttpClient httpClient;
     private final CacheService cacheService;
-    private final BondsRepo repo;
     private final List<String> BOARD_GROUP_LIST = Arrays.asList("58", "193", "7", "67", "207");
     private Long lastQuote = 0L;
     private Long getAllSharesCount = 0L;
 
     public CalculateServiceImpl(ArNoteHttpClient httpClient, BondsRepo repo, CacheService cacheService) {
         this.httpClient = httpClient;
-        this.repo = repo;
         this.cacheService = cacheService;
     }
 
@@ -62,7 +62,6 @@ public class CalculateServiceImpl implements CalculateService {
     public Optional<ConsolidatedDividendsRs> getDivsByTicker(LocalUser user, String ticker) {
         if (!isBlank(ticker)) {
             Optional<ConsolidatedDividendsRs> res = httpClient.sendAndParse(ticker);
-
             if (res.isPresent()) {
                 res.get().calculatePercent(getHistory(ticker, getBoardId(ticker)));
                 return res;
@@ -74,13 +73,12 @@ public class CalculateServiceImpl implements CalculateService {
     /**
      * Запросить текущую цену (ставку) бумаги.
      *
-     * @param boardId
      * @return
      */
     @Override
-    public Optional<Double> getCurrentQuoteByTicker(String ticker, String boardId) {
+    public Optional<Double> getCurrentQuoteByTicker(String ticker) {
         if (!isBlank(ticker)) {
-            return (getCurrentQuoteByBoardId(boardId))
+            return (getCurrentQuoteByBoardId(getBoardId(ticker)))
                     .map(lq -> lq.getData()
                             .getRow()
                             .stream()
@@ -88,6 +86,89 @@ public class CalculateServiceImpl implements CalculateService {
                             .findFirst()
                             .map(q -> Double.valueOf(q.getPrevAdmittedQuote())))
                     .orElse(Optional.of((double) 0));
+
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Запросить текущую цену акции по тикеру. Та, что обновляется раз в 15 минут с торгов.
+     *
+     * @return
+     */
+    @Override
+    public CurrentPriceRs getCurrentQuoteWith15MinuteUpdate(String ticker) {
+
+            if (LocalTime.now().isBefore(LocalTime.of(10, 30))){
+                return getCurrentQuoteByTicker(ticker)
+                        .map(cp-> CurrentPriceRs.builder()
+                                .ticker(ticker)
+                                .currency(Currencies.RUB)
+                                .currentPrice(cp)
+                                .date(LocalDate.now())
+                                .time(LocalTime.now())
+                                .lastChange(null)
+                                .lastChangePrcnt(null)
+                                .build())
+                        .orElse(CurrentPriceRs.builder()
+                                .ticker(ticker)
+                                .currency(Currencies.RUB)
+                                .currentPrice(null)
+                                .date(LocalDate.now())
+                                .time(LocalTime.now())
+                                .lastChange(null)
+                                .lastChangePrcnt(null)
+                                .build());
+            } else {
+
+                MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(RestTemplateOperation.GET_15_MINUTE_PRICE_UPDATE,
+                        ticker, null);
+
+                return CurrentPriceRs.builder()
+                        .ticker(ticker)
+                        .currency(Currencies.RUB)
+                        .currentPrice(doc.getData().getRow().stream()
+                                .filter(r->getBoardId(ticker).equals(r.getTradeMode()))
+                                .findFirst()
+                                .map(MoexRowsRs::getLast15MinuteQuote)
+                                .map(Double::parseDouble).orElse(0D))
+                        .date(LocalDate.now())
+                        .time(doc.getData().getRow().stream()
+                                .filter(r->getBoardId(ticker).equals(r.getTradeMode()))
+                                .findFirst()
+                                .map(MoexRowsRs::getUpdateTime)
+                                .map(LocalTime::parse).orElse(LocalTime.now()))
+                        .lastChange(doc.getData().getRow().stream()
+                                .filter(r->getBoardId(ticker).equals(r.getTradeMode()))
+                                .findFirst()
+                                .map(MoexRowsRs::getLastChange)
+                                .map(Double::parseDouble).orElse(0D))
+                        .lastChangePrcnt(doc.getData().getRow().stream()
+                                .filter(r->getBoardId(ticker).equals(r.getTradeMode()))
+                                .findFirst()
+                                .map(MoexRowsRs::getLastChangePrcnt)
+                                .map(Double::parseDouble).orElse(0D))
+                        .build();
+            }
+    }
+
+    /**
+     * Запросить дату по текущей цене акции по тикеру.
+     *
+     * @return
+     */
+    @Override
+    public Optional<LocalDate> getCurrentQuoteDateByTicker(String ticker) {
+        if (!isBlank(ticker)) {
+            return (getCurrentQuoteByBoardId(getBoardId(ticker)))
+                    .map(lq -> lq.getData()
+                            .getRow()
+                            .stream()
+                            .filter(r -> ticker.equals(r.getSecid()))
+                            .findFirst()
+                            .map(q -> LocalDate.parse(q.getTradeDate()))
+                            .orElse(LocalDate.now()));
 
         } else {
             return Optional.empty();
@@ -227,6 +308,13 @@ public class CalculateServiceImpl implements CalculateService {
                             .map(Math::round)
                             .map(n -> Math.round(currentStockPrice) - n)
                             .orElse(0L))
+                    .totalPercent(doc.getData()
+                            .getRow()
+                            .stream()
+                            .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                            .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
+                            .map(n -> ((Math.round(currentStockPrice) - n)/n)*100)
+                            .orElse(0D))
                     .deltaPeriod(doc.getData()
                             .getRow()
                             .stream()
@@ -261,8 +349,8 @@ public class CalculateServiceImpl implements CalculateService {
                         .map(p -> p.getLot() * p.getPrice())
                         .reduce((double) 0, Double::sum).intValue();
             } else { // если ПЛАН
-                return (int) Math.round(((getCurrentQuoteByTicker(bond.getTicker(),
-                        getBoardId(bond.getTicker()))).orElse((double) 0)) * getMinimalLot(bond, user));
+                return (int) Math.round(((getCurrentQuoteWith15MinuteUpdate(bond.getTicker()
+                )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user));
             }
 
         } else {
@@ -271,7 +359,7 @@ public class CalculateServiceImpl implements CalculateService {
                         .map(p -> p.getLot() * p.getPrice())
                         .reduce((double) 0, Double::sum).intValue();
             } else { // если ПЛАН
-                return (getBondLot(bond, user, bond.getPurchaseList()))*(getCurrentBondPrice(bond.getTicker()).intValue());
+                return (getBondLot(bond, user, bond.getPurchaseList())) * (getCurrentBondPrice(bond.getTicker()).intValue());
             }
 
         }
@@ -288,7 +376,7 @@ public class CalculateServiceImpl implements CalculateService {
                 .orElse(ConsolidatedDividendsRs.builder()
                         .dividendList(Collections.emptyList())
                         .percent(0D)
-                        .divSum(Double.NaN)
+                        .divSum(0D)
                         .build());
     }
 
@@ -299,20 +387,20 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     @Cacheable(cacheNames = "currenciesCache", key = "#user.id")
-    public String getCurrencyOfShareFromDetailInfo(Bond bond, LocalUser user) {
-        return getDetailInfo(user, bond.getTicker())
+    public String getCurrencyOfShareFromDetailInfo(String ticker, LocalUser user) {
+        return getDetailInfo(user, ticker)
                 .map(detailInfo -> detailInfo.getDataList().stream()
                         .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
                         .findFirst()
                         .map(sc -> sc.getRowsList().stream()
-                                .filter(row -> getBoardId(bond.getTicker()).equals(row.getBoardId()))
+                                .filter(row -> getBoardId(ticker).equals(row.getBoardId()))
                                 .findFirst()
                                 .map(MoexInstrumentDetailRowsRs::getCurrencyId)
                                 .map(Currencies::search)
                                 .map(Enum::name)
-                                .orElse("-"))
-                        .orElse("-"))
-                .orElse("-");
+                                .orElse("RUB"))
+                        .orElse("RUB"))
+                .orElse("RUB");
     }
 
     /**
@@ -322,13 +410,13 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     @Cacheable(cacheNames = "minimalLotsCache", key = "#user.id")
-    public Integer getMinimalLot(Bond bond, LocalUser user) {
-        return getDetailInfo(user, bond.getTicker())
+    public Integer getMinimalLot(String ticker, LocalUser user) {
+        return getDetailInfo(user, ticker)
                 .map(detailInfo -> detailInfo.getDataList().stream()
                         .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
                         .findFirst()
                         .map(sc -> sc.getRowsList().stream()
-                                .filter(row -> getBoardId(bond.getTicker()).equals(row.getBoardId()))
+                                .filter(row -> getBoardId(ticker).equals(row.getBoardId()))
                                 .findFirst()
                                 .map(share -> Integer.parseInt(share.getLotSize()))
                                 .orElse(1))

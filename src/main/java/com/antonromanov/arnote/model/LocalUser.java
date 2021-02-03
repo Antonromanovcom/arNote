@@ -1,12 +1,20 @@
 package com.antonromanov.arnote.model;
 
+
+import com.antonromanov.arnote.model.investing.InvestingSortMode;
 import com.antonromanov.arnote.model.wish.SortMode;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Entity
 @Getter
 @Setter
@@ -92,7 +100,18 @@ public class LocalUser {
 	@Column
 	private String lastOperation;
 
+	/**
+	 * Режим сортировки для ценных бумаг
+	 */
+	@Enumerated(EnumType.STRING)
+	private InvestingSortMode investingSortMode;
 
+	/**
+	 * Режим фильтрации для ценных бумаг
+	 */
+	@Type(type = "jsonb")
+	@Column(columnDefinition = "jsonb")
+	private Map<String, String> investingFilterMode = new HashMap<>();
 
 
 	@Override
@@ -113,7 +132,6 @@ public class LocalUser {
 		this.login = login;
 		this.pwd = pw;
 		this.userCryptoMode = false;
-		this.userRole = Role.USER;
 	}
 
 	public LocalUser() {

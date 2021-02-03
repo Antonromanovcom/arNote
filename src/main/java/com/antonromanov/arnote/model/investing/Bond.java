@@ -38,7 +38,7 @@ public class Bond {
     @Column
     private Boolean isBought; // факт / План
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.DETACH)
     private LocalUser user;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

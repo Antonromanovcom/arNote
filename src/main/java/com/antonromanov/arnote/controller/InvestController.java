@@ -4,10 +4,10 @@ import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.BondType;
+import com.antonromanov.arnote.model.investing.InvestingFilterMode;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.request.AddInstrumentRq;
 import com.antonromanov.arnote.model.investing.response.*;
-import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
@@ -22,9 +22,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.antonromanov.arnote.utils.Utils.*;
 
 
 /**
@@ -37,8 +42,8 @@ import java.util.stream.Stream;
 public class InvestController {
 
     private final UsersRepo usersRepo;
-    private final PurchasesRepo purchasesRepo;
     private final BondsRepo bondsRepo;
+    private final PurchasesRepo purchasesRepo;
     private final CalculateService calculateService;
     private final ReturnsService returnsService;
 
@@ -60,17 +65,56 @@ public class InvestController {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/consolidated")
-    public ConsolidatedInvestmentDataRs consolidatedBondsInfo(Principal principal) throws UserNotFoundException {
+    public ConsolidatedInvestmentDataRs consolidatedBondsInfo(Principal principal,
+                                                              @RequestParam(required = false) String filter,
+                                                              @RequestParam(required = false) String sort)
+            throws UserNotFoundException {
 
         log.info("============== CONSOLIDATED INVESTMENT TABLE ============== ");
         log.info("PRINCIPAL: " + principal.getName());
-
+        log.info("FILTER: " + filter);
+        log.info("SORT: " + sort);
 
         LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+
+        /*
+         * Логика такая:
+         *
+         * - если фильтр приходит не пустой - задаем и сохраняем новый фильтр.
+         * - если фильтр приходит не пустой, но он NONE, просто удаляем мапу с фильтрами из записи пользака.
+         * - если filter пришел пустой - выдаем то, что есть с той фильтрацией, что сохранена.
+         *
+         */
+        if (filter != null) {
+            if (InvestingFilterMode.valueOf(filter) == InvestingFilterMode.NONE) {
+                user.setInvestingFilterMode(null);
+                user = usersRepo.saveAndFlush(user);
+            } else {
+                if (user.getInvestingFilterMode() != null && user.getInvestingFilterMode().size() > 0) {
+                    user.getInvestingFilterMode().put(InvestingFilterMode.valueOf(filter).getKey(), filter);
+                } else {
+                    Map<String, String> filterMap = new HashMap<>();
+                    filterMap.put(InvestingFilterMode.valueOf(filter).getKey(), filter);
+                    user.setInvestingFilterMode(filterMap);
+                }
+                user = usersRepo.saveAndFlush(user);
+            }
+        }
+
+        if (sort != null) {
+
+        }
+
+
+
+        LocalUser finalUser = user;
+        log.info("USER FILTER MAP: " + user.getInvestingFilterMode());
         return ConsolidatedInvestmentDataRs.builder()
                 .bonds(bondsRepo.findAllByUser(user)
                         .stream()
-                        .map(bond -> prepareBondRs(bond, user))
+                        .map(bond -> prepareBondRs(bond, finalUser))
+                        .filter(user.getInvestingFilterMode() != null ? complexPredicate(user.getInvestingFilterMode()) :
+                                s -> s.getTicker() != null)
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -89,7 +133,6 @@ public class InvestController {
         log.info("PRINCIPAL: " + principal.getName());
 
         LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-
 
         return ConsolidatedReturnsRs.builder()
                 .invested(returnsService.getTotalInvestment(user).orElse(0L))
@@ -137,36 +180,109 @@ public class InvestController {
             }
         }
 
-        List<MoexRowsRs> findedShares = allShares.getData().getRow().stream()
-                .filter(s -> (s.getSecName().toLowerCase().contains(keyword.toLowerCase()) || s.getSecid().toLowerCase().contains(keyword)))
+        List<MoexRowsRs> foundShares = allShares.getData().getRow().stream()
+                .filter(filterByKeyword(keyword))
                 .collect(Collectors.toList());
 
 
-        List<MoexRowsRs> findedBonds = calculateService.getBondsFromMoex().getData().getRow().stream()
-                .filter(s -> (s.getSecName().toLowerCase().contains(keyword.toLowerCase()) || s.getSecid().toLowerCase().contains(keyword)))
+        List<MoexRowsRs> foundBonds = calculateService.getBondsFromMoex().getData().getRow().stream()
+                .filter(filterByKeyword(keyword))
                 .collect(Collectors.toList());
 
         SearchResultsRs searchResults = new SearchResultsRs();
-        searchResults.setInstruments(findedShares.stream()
-                .map(r -> FoundInstrumentRs.builder()
-                        .ticker(r.getSecid())
-                        .currencies(Currencies.search(r.getCurrencyId()))
-                        .description(r.getSecName())
-                        .stockExchange(StockExchange.MOEX)
-                        .type(BondType.SHARE)
-                        .build()).collect(Collectors.toList()));
-
-        searchResults.getInstruments().addAll(findedBonds.stream()
-                .map(r -> FoundInstrumentRs.builder()
-                        .ticker(r.getSecid())
-                        .currencies(Currencies.search(r.getCurrencyId()))
-                        .description(r.getSecName())
-                        .stockExchange(StockExchange.MOEX)
-                        .type(BondType.BOND)
-                        .build()).collect(Collectors.toList()));
+        searchResults.setInstruments(prepareInstruments(foundShares, BondType.SHARE));
+        searchResults.getInstruments().addAll(prepareInstruments(foundBonds, BondType.BOND));
 
         return searchResults;
     }
+
+    /**
+     * Получить текущую цену по тикеру
+     *
+     * @param principal - пользак
+     * @param ticker    - тикер.
+     * @return
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping("/price")
+    public CurrentPriceRs getCurrentPriceByTicker(Principal principal, @RequestParam @NotNull String ticker) throws UserNotFoundException {
+
+        log.info("============== GET CURRENT PRICE BY TICKER ============== ");
+        LocalUser user = getLocalUserFromPrincipal(principal);
+        log.info("USER ID: " + user.getId());
+        log.info("keyword: " + ticker);
+
+        CurrentPriceRs resp = calculateService.getCurrentQuoteWith15MinuteUpdate(ticker);
+        resp.setMinLot(calculateService.getMinimalLot(ticker, user));
+
+        return resp;
+    }
+
+    /**
+     * Получить текущую цену по тикеру на конкретную дату
+     *
+     * @param principal    - пользак
+     * @param ticker       - тикер.
+     * @param purchaseDate - дата покупки.
+     * @return
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping("/price-by-date")
+    public CurrentPriceRs getCurrentPriceByTicker(Principal principal, @RequestParam @NotNull String ticker,
+                                                  @RequestParam @NotNull String purchaseDate) throws UserNotFoundException {
+
+        log.info("============== GET CURRENT PRICE BY TICKER AND PURCHASE DATE ============== ");
+        LocalUser user = getLocalUserFromPrincipal(principal);
+        log.info("USER ID: " + user.getId());
+        log.info("ticker: " + ticker);
+        log.info("purchase date: " + purchaseDate);
+
+        if (LocalDate.parse(purchaseDate).isAfter(LocalDate.now())) {
+            purchaseDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
+
+        final String finalPurchaseDate = purchaseDate;
+        return calculateService.getHistory(ticker, calculateService.getBoardId(ticker))
+                .getData()
+                .getRow()
+                .stream()
+                .filter(row -> LocalDate.parse(row.getTradeDate()).isEqual(LocalDate.parse(finalPurchaseDate)))
+                .findFirst()
+                .map(data -> CurrentPriceRs.builder()
+                        .currentPrice(Double.valueOf(data.getLegalClosePrice()))
+                        .date(LocalDate.parse(finalPurchaseDate))
+                        .build())
+                .orElse(calculateService.getCurrentQuoteWith15MinuteUpdate(ticker));
+
+    }
+
+    /**
+     * Удалить бумагу
+     *
+     * @param principal - пользак
+     * @param ticker    - тикер удаляемой бумаги
+     * @return
+     */
+    @CrossOrigin(origins = "*")
+    @DeleteMapping()
+    public ConsolidatedInvestmentDataRs deleteInstrument(Principal principal, @RequestParam @NotNull String ticker) throws UserNotFoundException {
+
+        log.info("============== DELETE PAPER ============== ");
+        LocalUser user = getLocalUserFromPrincipal(principal);
+        log.info("USER ID: " + user.getId());
+        log.info("ticker: " + ticker);
+
+        Optional<Bond> bond = bondsRepo.findBondByUserAndTicker(user, ticker);
+        bond.ifPresent(bondsRepo::delete);
+
+        return ConsolidatedInvestmentDataRs.builder()
+                .bonds(bondsRepo.findAllByUser(user)
+                        .stream()
+                        .map(b -> prepareBondRs(b, user))
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
 
     /**
      * Добавить бумагу (с покупкой или в качестве плана).
@@ -177,12 +293,13 @@ public class InvestController {
      */
     @CrossOrigin(origins = "*")
     @PostMapping()
-    public String addInstrument(Principal principal, @RequestBody AddInstrumentRq request) throws UserNotFoundException {
+    public BondRs addInstrument(Principal principal, @RequestBody AddInstrumentRq request) throws UserNotFoundException {
 
         log.info("============== ADD INSTRUMENT ============== ");
         LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
         log.info("USER ID: " + user.getId());
         log.info("ticker: " + request.getTicker());
+        Bond newOrUpdatedBond;
 
         if (!request.isPlan() && (request.getLot() != 0 && request.getPrice() != null && request.getPurchaseDate() != null)) {
 
@@ -194,17 +311,16 @@ public class InvestController {
 
             if (existingBond.isPresent()) {
                 existingBond.get().getPurchaseList().add(purchase);
-                bondsRepo.save(existingBond.get());
+                newOrUpdatedBond = bondsRepo.saveAndFlush(existingBond.get());
             } else {
                 Bond b = new Bond();
                 b.setTicker(request.getTicker());
                 b.setIsBought(true);
-                b.setPurchaseList(Arrays.asList(purchase));
+                b.setPurchaseList(Collections.singletonList(purchase));
                 b.setType(BondType.valueOf(request.getBondType()));
                 b.setUser(user);
                 b.setStockExchange(StockExchange.MOEX);
-                bondsRepo.save(b);
-
+                newOrUpdatedBond = bondsRepo.saveAndFlush(b);
             }
         } else {
             Bond b = new Bond();
@@ -213,10 +329,15 @@ public class InvestController {
             b.setType(BondType.valueOf(request.getBondType()));
             b.setUser(user);
             b.setStockExchange(StockExchange.MOEX);
-            bondsRepo.save(b);
+            newOrUpdatedBond = bondsRepo.saveAndFlush(b);
         }
 
-        return "1";
+        return BondRs.builder()
+                .ticker(newOrUpdatedBond.getTicker())
+                .isBought(newOrUpdatedBond.getIsBought())
+                .type(newOrUpdatedBond.getType().name())
+                .stockExchange(newOrUpdatedBond.getStockExchange().name())
+                .build();
     }
 
     /**
@@ -226,17 +347,18 @@ public class InvestController {
      * @return
      */
     private BondRs prepareBondRs(Bond bond, LocalUser user) {
+
         return BondRs.builder()
                 .ticker(bond.getTicker())
                 .type(bond.getType().name())
                 .isBought(bond.getIsBought())
                 .stockExchange(bond.getStockExchange().name())
                 .currentPrice(prepareCurrentPrice(bond))
-                .currency(bond.getType() == BondType.SHARE ? calculateService.getCurrencyOfShareFromDetailInfo(bond, user) :
-                        calculateService.getBondCurrency(bond.getTicker()).name())
+                .currency(bond.getType() == BondType.SHARE ? calculateService.getCurrencyOfShareFromDetailInfo(bond.getTicker(), user) :
+                        calculateService.getBondCurrency(bond.getTicker()).name()) //todo: сделать фабрику по бирже / типу бумаги
                 .dividends(bond.getType() == BondType.SHARE ? calculateService.getDividends(bond, user) :
                         calculateService.getCoupons(bond, user))
-                .minLot(bond.getType() == BondType.SHARE ? calculateService.getMinimalLot(bond, user) :
+                .minLot(bond.getType() == BondType.SHARE ? calculateService.getMinimalLot(bond.getTicker(), user) :
                         calculateService.getBondLot(bond, user, bond.getPurchaseList()))
                 .finalPrice(calculateService.calculateFinalPrice(bond, user))
                 .delta(prepareDelta(bond)) // todo: а если список продаж в рублях, а определенная текущая цена в другой валюте????
@@ -254,8 +376,7 @@ public class InvestController {
      */
     private Double prepareCurrentPrice(Bond bond) {
         return bond.getType() == BondType.SHARE ?
-                (calculateService.getCurrentQuoteByTicker(bond.getTicker(),
-                        calculateService.getBoardId(bond.getTicker())).orElse((double) 0)) :
+                (calculateService.getCurrentQuoteWith15MinuteUpdate(bond.getTicker()).getCurrentPrice()) :
                 calculateService.getCurrentBondPrice(bond.getTicker());
     }
 
@@ -266,10 +387,9 @@ public class InvestController {
      * @return
      */
     private DeltaRs prepareDelta(Bond bond) {
-        return bond.getType() == BondType.SHARE ? (calculateService
-                .calculateDelta(calculateService.getBoardId(bond.getTicker()), bond.getTicker(),
-                        calculateService.getCurrentQuoteByTicker(bond.getTicker(),
-                                calculateService.getBoardId(bond.getTicker())).orElse((double) 0),
+        return bond.getType() == BondType.SHARE ?
+                (calculateService.calculateDelta(calculateService.getBoardId(bond.getTicker()), bond.getTicker(),
+                        calculateService.getCurrentQuoteWith15MinuteUpdate(bond.getTicker()).getCurrentPrice(),
                         bond.getPurchaseList())) :
                 DeltaRs.builder()
                         .tinkoffDeltaPercent(0D)
@@ -277,5 +397,14 @@ public class InvestController {
                         .deltaPeriod(0L)
                         .tinkoffDelta(0D)
                         .build();
+    }
+
+    /**
+     * Достать юзера из Принципала
+     *
+     * @return LocalUser
+     */
+    public LocalUser getLocalUserFromPrincipal(Principal principal) throws UserNotFoundException {
+        return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
     }
 }

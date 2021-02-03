@@ -4,11 +4,13 @@ import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
+import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +26,26 @@ public interface CalculateService {
     Optional<ConsolidatedDividendsRs> getDivsByTicker(LocalUser user, String ticker);
 
     /**
-     * Запросить текущую цену бумаги по тикеру.
+     * Запросить текущую цену акции по тикеру.
      *
-     * @param boardId
      * @return
      */
-    Optional<Double> getCurrentQuoteByTicker(String ticker, String boardId);
+    Optional<Double> getCurrentQuoteByTicker(String ticker);
+
+    /**
+     * Запросить текущую цену акции по тикеру. Та, что обновляется раз в 15 минут с торгов.
+     *
+     * @return
+     */
+    CurrentPriceRs getCurrentQuoteWith15MinuteUpdate(String ticker);
+
+
+    /**
+     * Запросить дату по текущей цене акции по тикеру.
+     *
+     * @return
+     */
+    Optional<LocalDate> getCurrentQuoteDateByTicker(String ticker);
 
     /**
      * Запросить текущую цену бумаги по board_id.
@@ -96,14 +112,14 @@ public interface CalculateService {
      *
      * @return
      */
-    String getCurrencyOfShareFromDetailInfo(Bond bond, LocalUser user);
+    String getCurrencyOfShareFromDetailInfo(String ticker, LocalUser user);
 
     /**
      * Достать минимальный лот.
      *
      * @return
      */
-    Integer getMinimalLot(Bond bond, LocalUser user);
+    Integer getMinimalLot(String ticker, LocalUser user);
 
     /**
      * Запросить исторические данные.

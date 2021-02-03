@@ -38,7 +38,7 @@ public class ConsolidatedDividendsRs {
                     .map(DividendRs::getValue)
                     .mapToDouble(Double::doubleValue).sum();
         } else {
-            this.divSum = Double.NaN;
+            this.divSum = 0D;
         }
     }
 
