@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.model.investing.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,8 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class BondRs {
+    @JsonIgnore
+    private final Long id;
     private final String ticker;
     private final Double currentPrice;
     private final String currency;

@@ -13,7 +13,7 @@ public interface ReturnsService {
     Optional<Long> getTotalInvestment(LocalUser user);
 
     /**
-     * Получить дельту по всем бумагам пользователя.
+     * Получить дельту по акциям пользователя.
      * @param user
      * @return
      */
@@ -40,5 +40,10 @@ public interface ReturnsService {
      */
     Long calculateTotalReturns(LocalUser user);
 
-
+    /**
+     * Получить общий купонный доход по всем облигациям пользователя.
+     * @param user
+     * @return
+     */
+    Optional<Long> getTotalBondsReturns(LocalUser user);
 }

@@ -6,6 +6,7 @@ import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
+import com.antonromanov.arnote.model.investing.response.DividendRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
@@ -210,4 +211,11 @@ public interface CalculateService {
      * @return
      */
     List<String> getTradeModes();
+
+    /**
+     * Подготовить список купонов в формате списка дивидендов.
+     *
+     * @return
+     */
+    List<DividendRs> prepareCouponList(MoexRowsRs bondData);
 }

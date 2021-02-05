@@ -8,6 +8,7 @@ import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
+import com.antonromanov.arnote.model.investing.response.DividendRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
@@ -28,11 +29,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.antonromanov.arnote.utils.Utils.isInteger;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
@@ -619,7 +622,7 @@ public class CalculateServiceImpl implements CalculateService {
     public ConsolidatedDividendsRs getCoupons(Bond bond, LocalUser user) {
 
         return ConsolidatedDividendsRs.builder()
-                .dividendList(null)
+                .dividendList(prepareCouponList(getBondDataByTicker(bond.getTicker()).orElse(null)))
                 .divSum((365 / getBondDataByTicker(bond.getTicker())
                         .map(MoexRowsRs::getCouponPeriod)
                         .map(Double::parseDouble).orElse(1D)) * ((getBondDataByTicker(bond.getTicker())
@@ -630,7 +633,6 @@ public class CalculateServiceImpl implements CalculateService {
                 .percent(getBondDataByTicker(bond.getTicker())
                         .map(MoexRowsRs::getCouponPercent)
                         .map(Double::parseDouble)
-                        // .map(v -> (int) Math.round(v))
                         .orElse(0D))
                 .build();
     }
@@ -671,5 +673,38 @@ public class CalculateServiceImpl implements CalculateService {
             cacheService.putTradeModes(res);
             return res;
         }
+    }
+
+    /**
+     * Подготовить список купонов в формате списка дивидендов.
+     *
+     * @return
+     */
+    @Override
+    public List<DividendRs> prepareCouponList(MoexRowsRs bondData) {
+
+        List<DividendRs> resultList = new ArrayList<>();
+
+            if (bondData!=null && bondData.getCouponPeriod() != null && isInteger(bondData.getCouponPeriod())){
+                int couponsCountPerYear =  Math.toIntExact(365 / Integer.parseInt(bondData.getCouponPeriod()));
+
+                resultList.add(DividendRs.builder()
+                        .value(Double.valueOf(bondData.getCouponValue()))
+                        .currencyId(Currencies.search(bondData.getCurrencyId()))
+                        .registryCloseDate(bondData.getNextCoupon())
+                        .build());
+
+                for (int i = 1; i < couponsCountPerYear; i++) {
+                    resultList.add(DividendRs.builder()
+                            .value(Double.valueOf(bondData.getCouponValue()))
+                            .currencyId(Currencies.search(bondData.getCurrencyId()))
+                            .registryCloseDate(LocalDate.parse(bondData.getNextCoupon())
+                                    .plusDays(Integer.parseInt(bondData.getCouponPeriod())).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                            .build());
+                }
+                return resultList;
+            } else {
+                return null;
+            }
     }
 }

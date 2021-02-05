@@ -395,7 +395,7 @@ public class Utils {
         return action;
     }
 
-    private static boolean isInteger(String value) {
+    public static boolean isInteger(String value) {
         try {
             Integer.parseInt(value);
             return true;

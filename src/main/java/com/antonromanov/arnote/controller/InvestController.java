@@ -2,30 +2,33 @@ package com.antonromanov.arnote.controller;
 
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.LocalUser;
-import com.antonromanov.arnote.model.investing.Bond;
-import com.antonromanov.arnote.model.investing.BondType;
-import com.antonromanov.arnote.model.investing.InvestingFilterMode;
-import com.antonromanov.arnote.model.investing.Purchase;
+import com.antonromanov.arnote.model.investing.*;
 import com.antonromanov.arnote.model.investing.request.AddInstrumentRq;
 import com.antonromanov.arnote.model.investing.response.*;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
+import com.antonromanov.arnote.model.temp.SalePointInfo;
+import com.antonromanov.arnote.model.temp.SalePointListRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.PurchasesRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.investment.calc.CalculateService;
 import com.antonromanov.arnote.service.investment.calc.ReturnsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -102,19 +105,27 @@ public class InvestController {
         }
 
         if (sort != null) {
-
+            if (InvestingSortMode.valueOf(sort) == InvestingSortMode.NONE) {
+                user.setInvestingSortMode(null);
+                user = usersRepo.saveAndFlush(user);
+            } else {
+                user.setInvestingSortMode(InvestingSortMode.valueOf(sort));
+                user = usersRepo.saveAndFlush(user);
+            }
         }
-
 
 
         LocalUser finalUser = user;
         log.info("USER FILTER MAP: " + user.getInvestingFilterMode());
+        log.info("USER SORT MODE: " + user.getInvestingSortMode());
         return ConsolidatedInvestmentDataRs.builder()
                 .bonds(bondsRepo.findAllByUser(user)
                         .stream()
                         .map(bond -> prepareBondRs(bond, finalUser))
                         .filter(user.getInvestingFilterMode() != null ? complexPredicate(user.getInvestingFilterMode()) :
                                 s -> s.getTicker() != null)
+                        .sorted(user.getInvestingSortMode() == null ? InvestingSortMode.NONE.getComparator() :
+                                user.getInvestingSortMode().getComparator())
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -136,7 +147,7 @@ public class InvestController {
 
         return ConsolidatedReturnsRs.builder()
                 .invested(returnsService.getTotalInvestment(user).orElse(0L))
-                .bondsReturns(0L) // todo: облигации у меня пока вообще не реализованы никак. Нужно научиться определять тип бумаги
+                .bondsReturns(returnsService.getTotalBondsReturns(user).orElse(0L))
                 .sharesDelta(returnsService.getSharesDelta(user).orElse(0L))
                 .sharesReturns(returnsService.getTotalDivsReturn(user).orElse(0L))
                 .sum((returnsService.calculateTotalReturns(user)))
@@ -283,6 +294,44 @@ public class InvestController {
                 .build();
     }
 
+    private File getFileFromResource(String fileName) throws URISyntaxException {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL resource = classLoader.getResource(fileName);
+        if (resource == null) {
+            throw new IllegalArgumentException("file not found! " + fileName);
+        } else {
+            return new File(resource.toURI());
+        }
+
+    }
+
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/test-json")
+    public BondRs testTest(Principal principal) throws IOException, URISyntaxException {
+        File f = getFileFromResource("data/temp.json");
+        ObjectMapper mapper = new ObjectMapper();
+        SalePointListRs result = mapper.readValue(f, SalePointListRs.class);
+
+        result.getBody().getListOfSalePoint().stream()
+                .filter(r->r.getAccountInfo().getId().equals("1-CEJXX"))
+                .map(s->s.getSalePointInfo())
+                .map(SalePointInfo::getListOfContact)
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        result.getBody().getListOfSalePoint().stream()
+                .map(s->s.getSalePointInfo())
+                .map(SalePointInfo::getListOfContact)
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        return null;
+    }
+
 
     /**
      * Добавить бумагу (с покупкой или в качестве плана).
@@ -349,6 +398,7 @@ public class InvestController {
     private BondRs prepareBondRs(Bond bond, LocalUser user) {
 
         return BondRs.builder()
+                .id(bond.getId())
                 .ticker(bond.getTicker())
                 .type(bond.getType().name())
                 .isBought(bond.getIsBought())

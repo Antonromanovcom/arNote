@@ -48,6 +48,16 @@ public class MoexRowsRs {
         @XmlAttribute(name = "CURRENCYID")
         private String currencyId; // Длительность купона
 
+        @XmlAttribute(name = "NEXTCOUPON")
+        private String nextCoupon; // Дата выплаты следующего купона
+
+        @XmlAttribute(name = "FACEUNIT")
+        private String faceUnit; // Денежная еденица купона
+
+
+
+
+
         //============= КУРСЫ ВАЛЮТ ================
 
         @XmlAttribute(name = "tradedate")

@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.service.investment.calc;
 
 import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
@@ -39,11 +40,11 @@ public class ReturnsServiceImpl implements ReturnsService {
     @Override
     public Optional<Long> getSharesDelta(LocalUser user) {
         return Optional.of(repo.findAllByUser(user).stream()
+                .filter(bond->bond.getType()== BondType.SHARE)
                 .map(b -> {
                     DeltaRs deltaRs = calcService
                             .calculateDelta(calcService.getBoardId(b.getTicker()), b.getTicker(),
-                                    calcService.getCurrentQuoteByTicker(b.getTicker()
-                                    ).orElse((double) 0),
+                                    calcService.getCurrentQuoteByTicker(b.getTicker()).orElse((double) 0),
                                     b.getPurchaseList());
 
                     return deltaRs.getDeltaInRubles();
@@ -60,6 +61,7 @@ public class ReturnsServiceImpl implements ReturnsService {
     @Override
     public Optional<Long> getTotalDivsReturn(LocalUser user) {
         return Optional.of(repo.findAllByUser(user).stream()
+                .filter(bond -> bond.getType()==BondType.SHARE)
                 .map(b -> {
                     ConsolidatedDividendsRs divs = calcService.getDividends(b, user);
                     return divs.getDivSum();
@@ -88,5 +90,22 @@ public class ReturnsServiceImpl implements ReturnsService {
     @Override
     public Long calculateTotalReturns(LocalUser user) {
         return (getSharesDelta(user).orElse(0L)) + 1L + getTotalDivsReturn(user).orElse(0L);
+    }
+
+    /**
+     * Получить общий купонный доход по всем облигациям пользователя.
+     * @param user
+     * @return
+     */
+    @Override
+    public Optional<Long> getTotalBondsReturns(LocalUser user) {
+        return Optional.of(repo.findAllByUser(user).stream()
+                .filter(bond -> bond.getType()==BondType.BOND)
+                .map(b -> {
+                    ConsolidatedDividendsRs divs = calcService.getCoupons(b, user);
+                    return divs.getDivSum();
+                })
+                .reduce((double) 0, Double::sum))
+                .map(Math::round);
     }
 }

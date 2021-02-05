@@ -56,9 +56,10 @@ public enum RestTemplateOperation {
                     .issMeta(false)
                     .issDp("comma")
                     .issOnly(EnumSet.of(DataBlock.SECURITIES))
-                    .securitiesColumns(EnumSet.of(SecuritiesColumns.SECID, SecuritiesColumns.SECNAME, SecuritiesColumns.PREVLEGALCLOSEPRICE,
-                            SecuritiesColumns.COUPONVALUE, SecuritiesColumns.COUPONPERCENT, SecuritiesColumns.LOTVALUE,
-                            SecuritiesColumns.COUPONPERIOD, SecuritiesColumns.CURRENCYID, SecuritiesColumns.LOTSIZE))
+                    .securitiesColumns(EnumSet.of(SecuritiesColumns.SECID, SecuritiesColumns.SECNAME,
+                            SecuritiesColumns.PREVLEGALCLOSEPRICE, SecuritiesColumns.COUPONVALUE,
+                            SecuritiesColumns.COUPONPERCENT, SecuritiesColumns.LOTVALUE, SecuritiesColumns.COUPONPERIOD,
+                            SecuritiesColumns.CURRENCYID, SecuritiesColumns.LOTSIZE, SecuritiesColumns.NEXTCOUPON, SecuritiesColumns.FACEUNIT))
                     .build(),
             MoexDocumentRs.class),
     GET_CURRENCY_CHANGE_COURSES("/statistics/engines/futures/markets/indicativerates/securities",
