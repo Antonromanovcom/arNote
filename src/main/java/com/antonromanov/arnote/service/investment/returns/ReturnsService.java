@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.service.investment.calc;
+package com.antonromanov.arnote.service.investment.returns;
 
 import com.antonromanov.arnote.model.LocalUser;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;

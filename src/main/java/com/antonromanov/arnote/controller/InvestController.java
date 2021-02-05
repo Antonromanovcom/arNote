@@ -9,22 +9,17 @@ import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
-import com.antonromanov.arnote.model.temp.SalePointInfo;
-import com.antonromanov.arnote.model.temp.SalePointListRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.PurchasesRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.investment.calc.CalculateService;
-import com.antonromanov.arnote.service.investment.calc.ReturnsService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.antonromanov.arnote.service.investment.calendar.CalendarService;
+import com.antonromanov.arnote.service.investment.returns.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -46,18 +41,18 @@ public class InvestController {
 
     private final UsersRepo usersRepo;
     private final BondsRepo bondsRepo;
-    private final PurchasesRepo purchasesRepo;
+    private final CalendarService calendarService;
     private final CalculateService calculateService;
     private final ReturnsService returnsService;
 
 
     public InvestController(UsersRepo usersRepo, CalculateService calculateService, BondsRepo bondsRepo,
-                            ReturnsService returnsService, PurchasesRepo purchasesRepo) {
+                            ReturnsService returnsService, CalendarService calendarService) {
         this.usersRepo = usersRepo;
         this.calculateService = calculateService;
         this.bondsRepo = bondsRepo;
         this.returnsService = returnsService;
-        this.purchasesRepo = purchasesRepo;
+        this.calendarService = calendarService;
     }
 
     /**
@@ -294,42 +289,11 @@ public class InvestController {
                 .build();
     }
 
-    private File getFileFromResource(String fileName) throws URISyntaxException {
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(fileName);
-        if (resource == null) {
-            throw new IllegalArgumentException("file not found! " + fileName);
-        } else {
-            return new File(resource.toURI());
-        }
-
-    }
-
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/test-json")
-    public BondRs testTest(Principal principal) throws IOException, URISyntaxException {
-        File f = getFileFromResource("data/temp.json");
-        ObjectMapper mapper = new ObjectMapper();
-        SalePointListRs result = mapper.readValue(f, SalePointListRs.class);
-
-        result.getBody().getListOfSalePoint().stream()
-                .filter(r->r.getAccountInfo().getId().equals("1-CEJXX"))
-                .map(s->s.getSalePointInfo())
-                .map(SalePointInfo::getListOfContact)
-                .filter(Objects::nonNull)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-
-        result.getBody().getListOfSalePoint().stream()
-                .map(s->s.getSalePointInfo())
-                .map(SalePointInfo::getListOfContact)
-                .filter(Objects::nonNull)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-
-        return null;
+    @GetMapping("/calendar")
+    public CalendarRs getCalendar(Principal principal) throws UserNotFoundException {
+        return calendarService.getCalendar(getLocalUserFromPrincipal(principal));
     }
 
 
