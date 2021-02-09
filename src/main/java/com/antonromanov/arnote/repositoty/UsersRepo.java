@@ -1,17 +1,17 @@
 package com.antonromanov.arnote.repositoty;
 
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.ArNoteUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
-public interface UsersRepo extends JpaRepository<LocalUser, Integer> {
+public interface UsersRepo extends JpaRepository<ArNoteUser, Integer> {
 
-	Optional<LocalUser> findByLogin(String login);
+	Optional<ArNoteUser> findByLogin(String login);
 
-	Optional<LocalUser> findByEmail(String email);
+	Optional<ArNoteUser> findByEmail(String email);
 
-	Optional<LocalUser> findById(Long id);
+	Optional<ArNoteUser> findById(Long id);
 
 	@Transactional
 	void deleteById(Long id);

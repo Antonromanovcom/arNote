@@ -14,7 +14,7 @@ import java.security.Principal;
 @Slf4j
 public class ControllerBase {
 
-	protected <T,E>T $do(SomeProcess<T, E> process, E s, Principal user, Utils.OperationType operationType, HttpServletResponse response){
+	protected <T,E>T $do(SomeProcess<T, E> process, E s, Principal user, ArNoteUtils.OperationType operationType, HttpServletResponse response){
 		try {
 			return process.aplly(s);
 		} catch (Exception ex) {

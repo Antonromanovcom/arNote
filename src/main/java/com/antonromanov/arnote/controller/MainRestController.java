@@ -4,11 +4,13 @@ import com.antonromanov.arnote.email.EmailSender;
 import com.antonromanov.arnote.email.EmailStatus;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.model.*;
+import com.antonromanov.arnote.model.ArNoteUser;
+import com.antonromanov.arnote.model.ResponseStatusDTO;
+import com.antonromanov.arnote.model.wish.*;
+import com.antonromanov.arnote.model.wish.enums.FilterMode;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
-import com.antonromanov.arnote.utils.Utils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +19,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static com.antonromanov.arnote.utils.Utils.*;
+import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -48,17 +51,17 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class MainRestController extends ControllerBase {
 
     @Data
-    private class DTO {
+    private static class DTO {
         private List<Wish> list = new ArrayList<>();
     }
 
     @Data
-    private class DtoWithOrder {
+    private static class DtoWithOrder {
         private List<WishDTOList> list = new ArrayList<>();
     }
 
     @Autowired //переехать на связывание через конструктор
-    MainService mainService;
+            MainService mainService;
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
@@ -74,34 +77,17 @@ public class MainRestController extends ControllerBase {
      * Поиск желаний.
      *
      * @param principal
-     * @param requestParam
-     * @param resp
      * @return
      */
     @CrossOrigin(origins = "*")
     @PostMapping("/filter")
-    public ResponseEntity<String> findAll(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
-
-        return $do(s -> {
-            log.info("============== FILTER/SEARCH WISHES ============== ");
-            log.info("SEARCH KEYWORD: " + requestParam);
-            log.info("PRINCIPAL: " + principal.getName());
-
-            LocalUser localUser = getUserFromPrincipal(principal);
-
-            List<Wish> wishes = mainService
-                    .findAllWishesByWish(parseJsonToWish(Utils.ParseType.EDIT, requestParam, localUser).getWish(), localUser)
-                    .orElseGet(ArrayList::new);
-
-            DTO dto = new DTO(); //todo: добавить билдеры
-            dto.list.addAll(wishes);
-
-            String res = createGsonBuilder().toJson(dto);
-            log.info("PAYLOAD: " + res);
-
-            return $prepareResponse(res);
-
-        }, null, null, null, resp);
+    public DTO findAll(Principal principal, @RequestBody SearchRq request) throws UserNotFoundException {
+        log.info("============== FILTER/SEARCH WISHES ============== ");
+        log.info("SEARCH KEYWORD: " + request.getWishName());
+        List<Wish> wishes = mainService.findAllWishesByWishName(request, getUserFromPrincipal(principal));
+        DTO dto = new DTO(); //todo: добавить билдеры
+        dto.list.addAll(wishes);
+        return dto;
     }
 
     /**
@@ -115,7 +101,7 @@ public class MainRestController extends ControllerBase {
     @CrossOrigin(origins = "*")
     @GetMapping("/groups") // todo: переименовать
     public ResponseEntity<String> getAllWishesWithMonthGrouping(Principal principal,
-                                                                @RequestParam String sortType, //todo: сорт-тайпы вынести в константы или енумы
+                                                                @RequestParam String sortType,
                                                                 HttpServletResponse resp) {
 
         return $do(s -> {
@@ -125,7 +111,7 @@ public class MainRestController extends ControllerBase {
             log.info("SORT TYPE: " + sortType);
             log.info("PRINCIPAL: " + principal.getName());
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            ArNoteUser localUser = getUserFromPrincipal(principal);
 
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
@@ -137,8 +123,8 @@ public class MainRestController extends ControllerBase {
                 dtOwithOrder.list.addAll(wishListWithMonthOrder); //todo: почему .list, а не getlist() ????
 
                 if (("all".equalsIgnoreCase(finalSortType))
-                        && (localUser.getSortMode()!=SortMode.ALL)
-                        && (localUser.getSortMode()!=null)) { //todo: проверяем не сохранен ли до этого режим отображения и если сохранен - выбираем его. Но  вообще это костылище и код не красивый - надо разбираться с этим
+                        && (localUser.getSortMode() != SortMode.ALL)
+                        && (localUser.getSortMode() != null)) { //todo: проверяем не сохранен ли до этого режим отображения и если сохранен - выбираем его. Но  вообще это костылище и код не красивый - надо разбираться с этим
                     finalSortType = localUser.getSortMode().getUiValue();
                 }
 
@@ -161,8 +147,8 @@ public class MainRestController extends ControllerBase {
                 }
 
                 log.info("Данные по пользователю после запроса. Тип отображения: {}, Групповая сортировка: {}",
-                        localUser.getViewMode()==null? "N/A" : localUser.getViewMode(),
-                        localUser.getSortMode()==null ? "N/A": localUser.getSortMode().getUiValue());
+                        localUser.getViewMode() == null ? "N/A" : localUser.getViewMode(),
+                        localUser.getSortMode() == null ? "N/A" : localUser.getSortMode().getUiValue());
                 result = createNullableGsonBuilder().toJson(dtOwithOrder);
 
                 return $prepareResponse(result);
@@ -197,43 +183,74 @@ public class MainRestController extends ControllerBase {
      * Получить все желания.
      *
      * @param principal
-     * @param type
+     * @param filter    - тип фильтраци: все или только приоритетные
+     * @param sort      - собственно сортировка
      * @param resp
      * @return
      */
     @CrossOrigin(origins = "*")
-    @GetMapping("/{type}")
-    public ResponseEntity<String> getAllWishes(Principal principal, @PathVariable String type, HttpServletResponse resp) {
+    @GetMapping
+    public ResponseEntity<String> getAllWishes(Principal principal,
+                                               @RequestParam(required = false) String filter,
+                                               @RequestParam(required = false) String sort,
+                                               HttpServletResponse resp) {
 
         return $do(s -> {
             List<Wish> wishList;
 
             log.info("==================== GET WISHES ======================== ");
-            log.info("type: " + type);
+            log.info("filter: " + filter);
+            log.info("sort: " + sort);
             log.info("PRINCIPAL: " + principal.getName());
             log.info("======================================================== ");
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            ArNoteUser localUser = getUserFromPrincipal(principal);
+
+            /*
+             * Логика такая:
+             *
+             * - если фильтр приходит не пустой - задаем и сохраняем новый фильтр.
+             * - если фильтр приходит не пустой, но он NONE, просто удаляем сохраненный фильтр из записи пользака.
+             * - если filter пришел пустой - выдаем то, что есть с той фильтрацией, что сохранена.
+             *
+             */
+            if (filter != null) {
+                    localUser.setFilterMode(FilterMode.valueOf(filter));
+                    localUser = usersRepo.saveAndFlush(localUser);
+            }
+            if (localUser.getFilterMode() == null) {
+                localUser.setFilterMode(FilterMode.NONE);
+                localUser = usersRepo.saveAndFlush(localUser);
+            }
+
+            if (sort != null) {
+                localUser.setSortMode(SortMode.valueOf(sort));
+                localUser = usersRepo.saveAndFlush(localUser);
+            }
+
+            if (localUser.getSortMode() == null) {
+                localUser.setSortMode(SortMode.ALL);
+                localUser = usersRepo.saveAndFlush(localUser);
+            }
+
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
                 DTO dto = new DTO();
                 String result = "";
+                wishList = mainService.getAllWishesByUserId(localUser).stream()
+                        .filter(localUser.getFilterMode().getFilterPredicate())
+                        .sorted(localUser.getSortMode().getCompareInstrument())
+                        .collect(Collectors.toList());
 
-                if ("all".equalsIgnoreCase(type)) {
-                    wishList = mainService.getAllWishesByUserId(localUser);
-                    // Предотвращение вываливания на пустых датах
-                    wishList.forEach(w -> {
-                        if (w.getCreationDate() == null) w.setCreationDate(new Date());
-                        if (w.getRealized() == null) w.setRealized(false);
-                    });
+                // Предотвращение вываливания на пустых датах
+                wishList.forEach(w -> {
+                    if (w.getCreationDate() == null) w.setCreationDate(new Date());
+                    if (w.getRealized() == null) w.setRealized(false);
+                });
 
-                    dto.list.addAll(wishList);
-                    result = createNullableGsonBuilder().toJson(dto);
-                } else {
-                    wishList = mainService.getAllWishesWithPriority1(localUser);
-                    dto.list.addAll(wishList);
-                    result = createNullableGsonBuilder().toJson(dto);
-                }
+                dto.list.addAll(wishList);
+                result = createNullableGsonBuilder().toJson(dto);
+
 
                 return $prepareResponse(result);
             } else {
@@ -253,7 +270,7 @@ public class MainRestController extends ControllerBase {
             log.info("PRINCIPAL: " + principal.getName());
             log.info("=========================================================== ");
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            ArNoteUser localUser = getUserFromPrincipal(principal);
             Wish wish = parseJsonToWish(ParseType.EDIT, requestParam, localUser);
             mainService.updateWish(mainService.updateMonthGroup(wish));
 
@@ -275,7 +292,7 @@ public class MainRestController extends ControllerBase {
             log.info("PRINCIPAL: " + principal.getName());
             log.info("======================================================== ");
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            ArNoteUser localUser = getUserFromPrincipal(principal);
 
             Wish newWish;
             newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, localUser));
@@ -300,7 +317,7 @@ public class MainRestController extends ControllerBase {
             int implementedSumAllTime = 0;
             int implementedSumMonth = 0;
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            ArNoteUser localUser = getUserFromPrincipal(principal);
 
             if (mainService.getAllRealizedWishes(localUser).isPresent()) {
 
@@ -308,7 +325,7 @@ public class MainRestController extends ControllerBase {
                         .filter(wf -> wf.getRealizationDate() != null && wf.getCreationDate() != null)
                         .map(w -> (w.getRealizationDate().getTime() - w.getCreationDate().getTime())).collect(Collectors.toList());
 
-                days = (realizedWishes.size()==0) ? 0 : (30 / realizedWishes.size());
+                days = (realizedWishes.size() == 0) ? 0 : (30 / realizedWishes.size());
                 implementedSumAllTime = mainService.getImplementedSum(localUser, 1).orElseGet(() -> 0);
                 implementedSumMonth = mainService.getImplementedSum(localUser, 2).orElseGet(() -> 0);
             }
@@ -362,7 +379,7 @@ public class MainRestController extends ControllerBase {
 
         return $do(s -> {
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            ArNoteUser localUser = getUserFromPrincipal(principal);
             String result = createGsonBuilder().toJson(mainService.getLastSalary(localUser).getResidualSalary());
             log.info("==================== GET LAST SALARY ======================== ");
             log.info("PAYLOAD: " + result);
@@ -383,7 +400,7 @@ public class MainRestController extends ControllerBase {
             log.info("PAYLOAD: " + requestParam);
             log.info("PRINCIPAL: " + principal.getName());
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            ArNoteUser localUser = getUserFromPrincipal(principal);
             Salary newSalary;
             newSalary = mainService.saveSalary(parseJsonToSalary(requestParam, localUser));
             String result = createGsonBuilder().toJson(newSalary);
@@ -403,11 +420,7 @@ public class MainRestController extends ControllerBase {
                                            HttpServletResponse resp) {
 
         return $do(s -> {
-
-//			LOGGER.info("FILE: " + csvFile.getOriginalFilename());
-            LocalUser localUser = getUserFromPrincipal(principal);
-//			LOGGER.info("PRINCIPAL: " + localUser.toString());
-
+            ArNoteUser localUser = getUserFromPrincipal(principal);
             String result = createGsonBuilder().toJson(mainService.parseCsv(csvFile, localUser));
             return $prepareResponse(result);
 
@@ -462,7 +475,7 @@ public class MainRestController extends ControllerBase {
     public ResponseEntity<String> changeMonth(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
 
         return $do(s -> {
-            LocalUser localUser = getUserFromPrincipal(principal);
+            ArNoteUser localUser = getUserFromPrincipal(principal);
             log.info("==================== MOVE WISH (CHANGE MONTH) ======================== ");
             log.info("ID: " + id);
             log.info("MOVE: " + move);
@@ -525,10 +538,7 @@ public class MainRestController extends ControllerBase {
 
         return $do(s -> {
 
-		/*	LOGGER.info("========= ADD USER  ============== ");
-			LOGGER.info("PAYLOAD: " + user);*/
-
-            LocalUser newUser = parseJsonToUserAndValidate(user);
+            ArNoteUser newUser = parseJsonToUserAndValidate(user);
             newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
             newUser.setViewMode("TABLE");
 
@@ -544,19 +554,11 @@ public class MainRestController extends ControllerBase {
     @CrossOrigin(origins = "*")
     @DeleteMapping("/users/{id}")
     public ResponseEntity<String> deleteUser(Principal principal, @PathVariable String id, HttpServletResponse resp) {
-
-
         return $do(s -> {
-
-			/*LOGGER.info("========= DELETE USER  ============== ");
-			LOGGER.info("PAYLOAD: " + id);*/
-
             if (!usersRepo.findById(Long.valueOf(id)).isPresent()) {
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST);
             }
-
             usersRepo.deleteById(Long.valueOf(id));
-
             return $prepareResponse(createGsonBuilder().toJson(id));
 
         }, id, null, null, resp);
@@ -567,13 +569,8 @@ public class MainRestController extends ControllerBase {
     public ResponseEntity<String> editUser(Principal principal, @RequestBody String user, @PathVariable String id, HttpServletResponse resp) {
 
         return $do(s -> {
-
-		/*	LOGGER.info("========= EDIT USER  ============== ");
-			LOGGER.info("PAYLOAD: " + user);
-			LOGGER.info("id: " + id);*/
-
-            LocalUser newUser = parseJsonToUserAndValidate(user);
-            LocalUser localuser = getUserFromPrincipal(principal);
+            ArNoteUser newUser = parseJsonToUserAndValidate(user);
+            ArNoteUser localuser = getUserFromPrincipal(principal);
             newUser.setCreationDate(localuser.getCreationDate());
 
             if ((usersRepo.findByLogin(newUser.getLogin()).isPresent()) && (!localuser.getLogin().equals(newUser.getLogin()))) {
@@ -593,7 +590,7 @@ public class MainRestController extends ControllerBase {
         }, user, null, OperationType.UPDATE_USER, resp);
     }
 
-//todo: АААААА! Это полная пизда вообще!!!!!! Должен быть отдельный контроллер для юзерских действий и там два метода отдельных! Один для получения, другой для добавления!
+    //todo: АААААА! Это полная пизда вообще!!!!!! Должен быть отдельный контроллер для юзерских действий и там два метода отдельных! Один для получения, другой для добавления!
     @CrossOrigin(origins = "*")
     @GetMapping("/users/toggle/{mode}")
     public ResponseEntity<String> toggleUserMode(Principal principal, @PathVariable String mode, HttpServletResponse resp) {
@@ -603,13 +600,13 @@ public class MainRestController extends ControllerBase {
             log.info("========= TOGGLE / GET USER MODE ============== ");
             log.info("MODE: " + mode);
 
-            LocalUser localuser = getUserFromPrincipal(principal);
+            ArNoteUser localuser = getUserFromPrincipal(principal);
 
             if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
                 localuser.setViewMode(mode);
                 return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
             } else if ("GET".equals(mode)) { //todo: вот эту жесть конечно же надо убрать будет и исправить на фронте
-              //  localuser.setViewMode("TABLE");
+                //  localuser.setViewMode("TABLE");
                 return $prepareResponse(createGsonBuilder().toJson(localuser));
             } else {
                 return $prepareBadResponse(createGsonBuilder().toJson("Bad mode parameter!"));
@@ -625,7 +622,7 @@ public class MainRestController extends ControllerBase {
         return $do(s -> {
             log.info("========= GET ALL USERS  ============== ");
 
-            List<LocalUser> userList = usersRepo.findAll().stream().map(u -> {
+            List<ArNoteUser> userList = usersRepo.findAll().stream().map(u -> {
                 if (u.getCreationDate() == null) u.setCreationDate(new Date());
                 return u;
             }).collect(Collectors.toList());
@@ -634,9 +631,9 @@ public class MainRestController extends ControllerBase {
         }, null, null, null, resp);
     }
 
-    private void fixNullUserFields(LocalUser localUser) {
+    private void fixNullUserFields(ArNoteUser localUser) {
         // Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
-        if (localUser.getUserRole() == null) localUser.setUserRole(LocalUser.Role.USER);
+        if (localUser.getUserRole() == null) localUser.setUserRole(ArNoteUser.Role.USER);
         if (localUser.getUserCryptoMode() == null) localUser.setUserCryptoMode(false);
         if (localUser.getCreationDate() == null) localUser.setCreationDate(new Date());
         if (localUser.getEmail() == null) localUser.setEmail("antonr0manov@yndex.ru");
@@ -650,7 +647,7 @@ public class MainRestController extends ControllerBase {
 
         return $do(s -> {
 
-            LocalUser localUser = getUserFromPrincipal(principal);
+            ArNoteUser localUser = getUserFromPrincipal(principal);
             // Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
             fixNullUserFields(localUser);
             return $prepareResponse(createGsonBuilder().toJson(localUser));
@@ -673,7 +670,7 @@ public class MainRestController extends ControllerBase {
             log.info("========= FORGET PWD METHOD =============== ");
             log.info("USER EMAIL - " + email);
             try {
-                LocalUser localUser = usersRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
+                ArNoteUser localUser = usersRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
                 return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, email).getStatus()));
             } catch (UserNotFoundException e) {
                 return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
@@ -693,10 +690,8 @@ public class MainRestController extends ControllerBase {
     public ResponseEntity<String> resetUserPasswordByAdmin(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 
         return $do(s -> {
-		/*	LOGGER.info("========= RESET USER PWD =============== ");
-			LOGGER.info("USER ID - " + id);*/
             try {
-                LocalUser localUser = usersRepo.findById(Long.parseLong(id)).orElseThrow(UserNotFoundException::new);
+                ArNoteUser localUser = usersRepo.findById(Long.parseLong(id)).orElseThrow(UserNotFoundException::new);
                 return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, localUser.getEmail()).getStatus()));
             } catch (UserNotFoundException e) {
                 return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
@@ -712,18 +707,13 @@ public class MainRestController extends ControllerBase {
      * @param email
      * @return
      */
-    private EmailStatus changePwd(LocalUser user, String email) {
-
-//		LOGGER.info("USER FOUND - " + user.toString());
+    private EmailStatus changePwd(ArNoteUser user, String email) {
 
         String pwd = generateRandomPassword();
-//		LOGGER.info("NEW PWD - " + pwd);
         user.setPwd(passwordEncoder.encode(pwd));
-        LocalUser updatedUser = usersRepo.saveAndFlush(user);
-//		LOGGER.info("UPDATED USER - " + updatedUser.toString());
-
-        return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd + " [email - " + email + " ]");
-
+        ArNoteUser updatedUser = usersRepo.saveAndFlush(user);
+        return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd +
+                " [email - " + email + " ]");
     }
 
     /**
@@ -732,7 +722,7 @@ public class MainRestController extends ControllerBase {
      * @param principal
      * @return
      */
-    private LocalUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
+    private ArNoteUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
         return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
     }
 }

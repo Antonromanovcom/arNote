@@ -22,11 +22,8 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-		prePostEnabled = true
-)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-//public class WebSecurityConfig {
 
 	@Autowired
 	UserDetailsServiceImpl userDetailsService;
@@ -39,7 +36,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 				.antMatchers("/").permitAll()
 				.antMatchers("/*.js").permitAll()
-				//.antMatchers("/index").permitAll() //
 				.antMatchers(HttpMethod.POST, "/login", "/rest/wishes/users").permitAll()
 				.antMatchers(HttpMethod.GET, "/login", "/favicon.ico").permitAll()
 				// Need authentication.
@@ -69,8 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
-		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-		return bCryptPasswordEncoder;
+		return new BCryptPasswordEncoder();
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.security;
 
-
 import java.io.IOException;
 import java.util.Collections;
 import javax.servlet.FilterChain;
@@ -14,10 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-
-
 public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
-//public class JWTLoginFilter {
 
 	public JWTLoginFilter(String url, AuthenticationManager authManager) {
 		super(new AntPathRequestMatcher(url));
@@ -31,9 +27,6 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 
-		System.out.printf("JWTLoginFilter.attemptAuthentication: username/password= %s,%s", username, password);
-		System.out.println();
-
 		return getAuthenticationManager()
 				.authenticate(new UsernamePasswordAuthenticationToken(username, password, Collections.emptyList()));
 	}
@@ -42,14 +35,9 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 	                                        Authentication authResult) throws IOException, ServletException {
 
-		System.out.println("JWTLoginFilter.successfulAuthentication:");
-
 		// Write Authorization to Headers of Response.
 		TokenAuthenticationService.addAuthentication(response, authResult.getName());
-
 		String authorizationString = response.getHeader("Authorization");
-
-		System.out.println("Authorization String=" + authorizationString);
 	}
 
 }

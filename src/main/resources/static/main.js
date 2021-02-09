@@ -1,5 +1,308 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([["main"],{
 
+/***/ "./node_modules/moment/locale sync recursive ^\\.\\/.*$":
+/*!**************************************************!*\
+  !*** ./node_modules/moment/locale sync ^\.\/.*$ ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"./af": "./node_modules/moment/locale/af.js",
+	"./af.js": "./node_modules/moment/locale/af.js",
+	"./ar": "./node_modules/moment/locale/ar.js",
+	"./ar-dz": "./node_modules/moment/locale/ar-dz.js",
+	"./ar-dz.js": "./node_modules/moment/locale/ar-dz.js",
+	"./ar-kw": "./node_modules/moment/locale/ar-kw.js",
+	"./ar-kw.js": "./node_modules/moment/locale/ar-kw.js",
+	"./ar-ly": "./node_modules/moment/locale/ar-ly.js",
+	"./ar-ly.js": "./node_modules/moment/locale/ar-ly.js",
+	"./ar-ma": "./node_modules/moment/locale/ar-ma.js",
+	"./ar-ma.js": "./node_modules/moment/locale/ar-ma.js",
+	"./ar-sa": "./node_modules/moment/locale/ar-sa.js",
+	"./ar-sa.js": "./node_modules/moment/locale/ar-sa.js",
+	"./ar-tn": "./node_modules/moment/locale/ar-tn.js",
+	"./ar-tn.js": "./node_modules/moment/locale/ar-tn.js",
+	"./ar.js": "./node_modules/moment/locale/ar.js",
+	"./az": "./node_modules/moment/locale/az.js",
+	"./az.js": "./node_modules/moment/locale/az.js",
+	"./be": "./node_modules/moment/locale/be.js",
+	"./be.js": "./node_modules/moment/locale/be.js",
+	"./bg": "./node_modules/moment/locale/bg.js",
+	"./bg.js": "./node_modules/moment/locale/bg.js",
+	"./bm": "./node_modules/moment/locale/bm.js",
+	"./bm.js": "./node_modules/moment/locale/bm.js",
+	"./bn": "./node_modules/moment/locale/bn.js",
+	"./bn-bd": "./node_modules/moment/locale/bn-bd.js",
+	"./bn-bd.js": "./node_modules/moment/locale/bn-bd.js",
+	"./bn.js": "./node_modules/moment/locale/bn.js",
+	"./bo": "./node_modules/moment/locale/bo.js",
+	"./bo.js": "./node_modules/moment/locale/bo.js",
+	"./br": "./node_modules/moment/locale/br.js",
+	"./br.js": "./node_modules/moment/locale/br.js",
+	"./bs": "./node_modules/moment/locale/bs.js",
+	"./bs.js": "./node_modules/moment/locale/bs.js",
+	"./ca": "./node_modules/moment/locale/ca.js",
+	"./ca.js": "./node_modules/moment/locale/ca.js",
+	"./cs": "./node_modules/moment/locale/cs.js",
+	"./cs.js": "./node_modules/moment/locale/cs.js",
+	"./cv": "./node_modules/moment/locale/cv.js",
+	"./cv.js": "./node_modules/moment/locale/cv.js",
+	"./cy": "./node_modules/moment/locale/cy.js",
+	"./cy.js": "./node_modules/moment/locale/cy.js",
+	"./da": "./node_modules/moment/locale/da.js",
+	"./da.js": "./node_modules/moment/locale/da.js",
+	"./de": "./node_modules/moment/locale/de.js",
+	"./de-at": "./node_modules/moment/locale/de-at.js",
+	"./de-at.js": "./node_modules/moment/locale/de-at.js",
+	"./de-ch": "./node_modules/moment/locale/de-ch.js",
+	"./de-ch.js": "./node_modules/moment/locale/de-ch.js",
+	"./de.js": "./node_modules/moment/locale/de.js",
+	"./dv": "./node_modules/moment/locale/dv.js",
+	"./dv.js": "./node_modules/moment/locale/dv.js",
+	"./el": "./node_modules/moment/locale/el.js",
+	"./el.js": "./node_modules/moment/locale/el.js",
+	"./en-au": "./node_modules/moment/locale/en-au.js",
+	"./en-au.js": "./node_modules/moment/locale/en-au.js",
+	"./en-ca": "./node_modules/moment/locale/en-ca.js",
+	"./en-ca.js": "./node_modules/moment/locale/en-ca.js",
+	"./en-gb": "./node_modules/moment/locale/en-gb.js",
+	"./en-gb.js": "./node_modules/moment/locale/en-gb.js",
+	"./en-ie": "./node_modules/moment/locale/en-ie.js",
+	"./en-ie.js": "./node_modules/moment/locale/en-ie.js",
+	"./en-il": "./node_modules/moment/locale/en-il.js",
+	"./en-il.js": "./node_modules/moment/locale/en-il.js",
+	"./en-in": "./node_modules/moment/locale/en-in.js",
+	"./en-in.js": "./node_modules/moment/locale/en-in.js",
+	"./en-nz": "./node_modules/moment/locale/en-nz.js",
+	"./en-nz.js": "./node_modules/moment/locale/en-nz.js",
+	"./en-sg": "./node_modules/moment/locale/en-sg.js",
+	"./en-sg.js": "./node_modules/moment/locale/en-sg.js",
+	"./eo": "./node_modules/moment/locale/eo.js",
+	"./eo.js": "./node_modules/moment/locale/eo.js",
+	"./es": "./node_modules/moment/locale/es.js",
+	"./es-do": "./node_modules/moment/locale/es-do.js",
+	"./es-do.js": "./node_modules/moment/locale/es-do.js",
+	"./es-mx": "./node_modules/moment/locale/es-mx.js",
+	"./es-mx.js": "./node_modules/moment/locale/es-mx.js",
+	"./es-us": "./node_modules/moment/locale/es-us.js",
+	"./es-us.js": "./node_modules/moment/locale/es-us.js",
+	"./es.js": "./node_modules/moment/locale/es.js",
+	"./et": "./node_modules/moment/locale/et.js",
+	"./et.js": "./node_modules/moment/locale/et.js",
+	"./eu": "./node_modules/moment/locale/eu.js",
+	"./eu.js": "./node_modules/moment/locale/eu.js",
+	"./fa": "./node_modules/moment/locale/fa.js",
+	"./fa.js": "./node_modules/moment/locale/fa.js",
+	"./fi": "./node_modules/moment/locale/fi.js",
+	"./fi.js": "./node_modules/moment/locale/fi.js",
+	"./fil": "./node_modules/moment/locale/fil.js",
+	"./fil.js": "./node_modules/moment/locale/fil.js",
+	"./fo": "./node_modules/moment/locale/fo.js",
+	"./fo.js": "./node_modules/moment/locale/fo.js",
+	"./fr": "./node_modules/moment/locale/fr.js",
+	"./fr-ca": "./node_modules/moment/locale/fr-ca.js",
+	"./fr-ca.js": "./node_modules/moment/locale/fr-ca.js",
+	"./fr-ch": "./node_modules/moment/locale/fr-ch.js",
+	"./fr-ch.js": "./node_modules/moment/locale/fr-ch.js",
+	"./fr.js": "./node_modules/moment/locale/fr.js",
+	"./fy": "./node_modules/moment/locale/fy.js",
+	"./fy.js": "./node_modules/moment/locale/fy.js",
+	"./ga": "./node_modules/moment/locale/ga.js",
+	"./ga.js": "./node_modules/moment/locale/ga.js",
+	"./gd": "./node_modules/moment/locale/gd.js",
+	"./gd.js": "./node_modules/moment/locale/gd.js",
+	"./gl": "./node_modules/moment/locale/gl.js",
+	"./gl.js": "./node_modules/moment/locale/gl.js",
+	"./gom-deva": "./node_modules/moment/locale/gom-deva.js",
+	"./gom-deva.js": "./node_modules/moment/locale/gom-deva.js",
+	"./gom-latn": "./node_modules/moment/locale/gom-latn.js",
+	"./gom-latn.js": "./node_modules/moment/locale/gom-latn.js",
+	"./gu": "./node_modules/moment/locale/gu.js",
+	"./gu.js": "./node_modules/moment/locale/gu.js",
+	"./he": "./node_modules/moment/locale/he.js",
+	"./he.js": "./node_modules/moment/locale/he.js",
+	"./hi": "./node_modules/moment/locale/hi.js",
+	"./hi.js": "./node_modules/moment/locale/hi.js",
+	"./hr": "./node_modules/moment/locale/hr.js",
+	"./hr.js": "./node_modules/moment/locale/hr.js",
+	"./hu": "./node_modules/moment/locale/hu.js",
+	"./hu.js": "./node_modules/moment/locale/hu.js",
+	"./hy-am": "./node_modules/moment/locale/hy-am.js",
+	"./hy-am.js": "./node_modules/moment/locale/hy-am.js",
+	"./id": "./node_modules/moment/locale/id.js",
+	"./id.js": "./node_modules/moment/locale/id.js",
+	"./is": "./node_modules/moment/locale/is.js",
+	"./is.js": "./node_modules/moment/locale/is.js",
+	"./it": "./node_modules/moment/locale/it.js",
+	"./it-ch": "./node_modules/moment/locale/it-ch.js",
+	"./it-ch.js": "./node_modules/moment/locale/it-ch.js",
+	"./it.js": "./node_modules/moment/locale/it.js",
+	"./ja": "./node_modules/moment/locale/ja.js",
+	"./ja.js": "./node_modules/moment/locale/ja.js",
+	"./jv": "./node_modules/moment/locale/jv.js",
+	"./jv.js": "./node_modules/moment/locale/jv.js",
+	"./ka": "./node_modules/moment/locale/ka.js",
+	"./ka.js": "./node_modules/moment/locale/ka.js",
+	"./kk": "./node_modules/moment/locale/kk.js",
+	"./kk.js": "./node_modules/moment/locale/kk.js",
+	"./km": "./node_modules/moment/locale/km.js",
+	"./km.js": "./node_modules/moment/locale/km.js",
+	"./kn": "./node_modules/moment/locale/kn.js",
+	"./kn.js": "./node_modules/moment/locale/kn.js",
+	"./ko": "./node_modules/moment/locale/ko.js",
+	"./ko.js": "./node_modules/moment/locale/ko.js",
+	"./ku": "./node_modules/moment/locale/ku.js",
+	"./ku.js": "./node_modules/moment/locale/ku.js",
+	"./ky": "./node_modules/moment/locale/ky.js",
+	"./ky.js": "./node_modules/moment/locale/ky.js",
+	"./lb": "./node_modules/moment/locale/lb.js",
+	"./lb.js": "./node_modules/moment/locale/lb.js",
+	"./lo": "./node_modules/moment/locale/lo.js",
+	"./lo.js": "./node_modules/moment/locale/lo.js",
+	"./lt": "./node_modules/moment/locale/lt.js",
+	"./lt.js": "./node_modules/moment/locale/lt.js",
+	"./lv": "./node_modules/moment/locale/lv.js",
+	"./lv.js": "./node_modules/moment/locale/lv.js",
+	"./me": "./node_modules/moment/locale/me.js",
+	"./me.js": "./node_modules/moment/locale/me.js",
+	"./mi": "./node_modules/moment/locale/mi.js",
+	"./mi.js": "./node_modules/moment/locale/mi.js",
+	"./mk": "./node_modules/moment/locale/mk.js",
+	"./mk.js": "./node_modules/moment/locale/mk.js",
+	"./ml": "./node_modules/moment/locale/ml.js",
+	"./ml.js": "./node_modules/moment/locale/ml.js",
+	"./mn": "./node_modules/moment/locale/mn.js",
+	"./mn.js": "./node_modules/moment/locale/mn.js",
+	"./mr": "./node_modules/moment/locale/mr.js",
+	"./mr.js": "./node_modules/moment/locale/mr.js",
+	"./ms": "./node_modules/moment/locale/ms.js",
+	"./ms-my": "./node_modules/moment/locale/ms-my.js",
+	"./ms-my.js": "./node_modules/moment/locale/ms-my.js",
+	"./ms.js": "./node_modules/moment/locale/ms.js",
+	"./mt": "./node_modules/moment/locale/mt.js",
+	"./mt.js": "./node_modules/moment/locale/mt.js",
+	"./my": "./node_modules/moment/locale/my.js",
+	"./my.js": "./node_modules/moment/locale/my.js",
+	"./nb": "./node_modules/moment/locale/nb.js",
+	"./nb.js": "./node_modules/moment/locale/nb.js",
+	"./ne": "./node_modules/moment/locale/ne.js",
+	"./ne.js": "./node_modules/moment/locale/ne.js",
+	"./nl": "./node_modules/moment/locale/nl.js",
+	"./nl-be": "./node_modules/moment/locale/nl-be.js",
+	"./nl-be.js": "./node_modules/moment/locale/nl-be.js",
+	"./nl.js": "./node_modules/moment/locale/nl.js",
+	"./nn": "./node_modules/moment/locale/nn.js",
+	"./nn.js": "./node_modules/moment/locale/nn.js",
+	"./oc-lnc": "./node_modules/moment/locale/oc-lnc.js",
+	"./oc-lnc.js": "./node_modules/moment/locale/oc-lnc.js",
+	"./pa-in": "./node_modules/moment/locale/pa-in.js",
+	"./pa-in.js": "./node_modules/moment/locale/pa-in.js",
+	"./pl": "./node_modules/moment/locale/pl.js",
+	"./pl.js": "./node_modules/moment/locale/pl.js",
+	"./pt": "./node_modules/moment/locale/pt.js",
+	"./pt-br": "./node_modules/moment/locale/pt-br.js",
+	"./pt-br.js": "./node_modules/moment/locale/pt-br.js",
+	"./pt.js": "./node_modules/moment/locale/pt.js",
+	"./ro": "./node_modules/moment/locale/ro.js",
+	"./ro.js": "./node_modules/moment/locale/ro.js",
+	"./ru": "./node_modules/moment/locale/ru.js",
+	"./ru.js": "./node_modules/moment/locale/ru.js",
+	"./sd": "./node_modules/moment/locale/sd.js",
+	"./sd.js": "./node_modules/moment/locale/sd.js",
+	"./se": "./node_modules/moment/locale/se.js",
+	"./se.js": "./node_modules/moment/locale/se.js",
+	"./si": "./node_modules/moment/locale/si.js",
+	"./si.js": "./node_modules/moment/locale/si.js",
+	"./sk": "./node_modules/moment/locale/sk.js",
+	"./sk.js": "./node_modules/moment/locale/sk.js",
+	"./sl": "./node_modules/moment/locale/sl.js",
+	"./sl.js": "./node_modules/moment/locale/sl.js",
+	"./sq": "./node_modules/moment/locale/sq.js",
+	"./sq.js": "./node_modules/moment/locale/sq.js",
+	"./sr": "./node_modules/moment/locale/sr.js",
+	"./sr-cyrl": "./node_modules/moment/locale/sr-cyrl.js",
+	"./sr-cyrl.js": "./node_modules/moment/locale/sr-cyrl.js",
+	"./sr.js": "./node_modules/moment/locale/sr.js",
+	"./ss": "./node_modules/moment/locale/ss.js",
+	"./ss.js": "./node_modules/moment/locale/ss.js",
+	"./sv": "./node_modules/moment/locale/sv.js",
+	"./sv.js": "./node_modules/moment/locale/sv.js",
+	"./sw": "./node_modules/moment/locale/sw.js",
+	"./sw.js": "./node_modules/moment/locale/sw.js",
+	"./ta": "./node_modules/moment/locale/ta.js",
+	"./ta.js": "./node_modules/moment/locale/ta.js",
+	"./te": "./node_modules/moment/locale/te.js",
+	"./te.js": "./node_modules/moment/locale/te.js",
+	"./tet": "./node_modules/moment/locale/tet.js",
+	"./tet.js": "./node_modules/moment/locale/tet.js",
+	"./tg": "./node_modules/moment/locale/tg.js",
+	"./tg.js": "./node_modules/moment/locale/tg.js",
+	"./th": "./node_modules/moment/locale/th.js",
+	"./th.js": "./node_modules/moment/locale/th.js",
+	"./tk": "./node_modules/moment/locale/tk.js",
+	"./tk.js": "./node_modules/moment/locale/tk.js",
+	"./tl-ph": "./node_modules/moment/locale/tl-ph.js",
+	"./tl-ph.js": "./node_modules/moment/locale/tl-ph.js",
+	"./tlh": "./node_modules/moment/locale/tlh.js",
+	"./tlh.js": "./node_modules/moment/locale/tlh.js",
+	"./tr": "./node_modules/moment/locale/tr.js",
+	"./tr.js": "./node_modules/moment/locale/tr.js",
+	"./tzl": "./node_modules/moment/locale/tzl.js",
+	"./tzl.js": "./node_modules/moment/locale/tzl.js",
+	"./tzm": "./node_modules/moment/locale/tzm.js",
+	"./tzm-latn": "./node_modules/moment/locale/tzm-latn.js",
+	"./tzm-latn.js": "./node_modules/moment/locale/tzm-latn.js",
+	"./tzm.js": "./node_modules/moment/locale/tzm.js",
+	"./ug-cn": "./node_modules/moment/locale/ug-cn.js",
+	"./ug-cn.js": "./node_modules/moment/locale/ug-cn.js",
+	"./uk": "./node_modules/moment/locale/uk.js",
+	"./uk.js": "./node_modules/moment/locale/uk.js",
+	"./ur": "./node_modules/moment/locale/ur.js",
+	"./ur.js": "./node_modules/moment/locale/ur.js",
+	"./uz": "./node_modules/moment/locale/uz.js",
+	"./uz-latn": "./node_modules/moment/locale/uz-latn.js",
+	"./uz-latn.js": "./node_modules/moment/locale/uz-latn.js",
+	"./uz.js": "./node_modules/moment/locale/uz.js",
+	"./vi": "./node_modules/moment/locale/vi.js",
+	"./vi.js": "./node_modules/moment/locale/vi.js",
+	"./x-pseudo": "./node_modules/moment/locale/x-pseudo.js",
+	"./x-pseudo.js": "./node_modules/moment/locale/x-pseudo.js",
+	"./yo": "./node_modules/moment/locale/yo.js",
+	"./yo.js": "./node_modules/moment/locale/yo.js",
+	"./zh-cn": "./node_modules/moment/locale/zh-cn.js",
+	"./zh-cn.js": "./node_modules/moment/locale/zh-cn.js",
+	"./zh-hk": "./node_modules/moment/locale/zh-hk.js",
+	"./zh-hk.js": "./node_modules/moment/locale/zh-hk.js",
+	"./zh-mo": "./node_modules/moment/locale/zh-mo.js",
+	"./zh-mo.js": "./node_modules/moment/locale/zh-mo.js",
+	"./zh-tw": "./node_modules/moment/locale/zh-tw.js",
+	"./zh-tw.js": "./node_modules/moment/locale/zh-tw.js"
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	var id = map[req];
+	if(!(id + 1)) { // check for number or string
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return id;
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = "./node_modules/moment/locale sync recursive ^\\.\\/.*$";
+
+/***/ }),
+
 /***/ "./src/$$_lazy_route_resource lazy recursive":
 /*!**********************************************************!*\
   !*** ./src/$$_lazy_route_resource lazy namespace object ***!
@@ -40,7 +343,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_layout_main_main_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../ui/layout/main/main.component */ "./src/app/ui/layout/main/main.component.ts");
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
 /* harmony import */ var _ui_layout_unauthorize_unauthorize_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../ui/layout/unauthorize/unauthorize.component */ "./src/app/ui/layout/unauthorize/unauthorize.component.ts");
-/* harmony import */ var _service_auth_guard_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../service/auth-guard.service */ "./src/app/service/auth-guard.service.ts");
+/* harmony import */ var _ui_layout_investing_investing_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../ui/layout/investing/investing.component */ "./src/app/ui/layout/investing/investing.component.ts");
+/* harmony import */ var _service_auth_guard_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../service/auth-guard.service */ "./src/app/service/auth-guard.service.ts");
+
 
 
 
@@ -53,12 +358,17 @@ var routes = [
     {
         path: '',
         component: _ui_layout_main_main_component__WEBPACK_IMPORTED_MODULE_4__["MainComponent"],
-        canActivate: [_service_auth_guard_service__WEBPACK_IMPORTED_MODULE_7__["AuthGuardService"]]
+        canActivate: [_service_auth_guard_service__WEBPACK_IMPORTED_MODULE_8__["AuthGuardService"]]
     },
     {
         path: '401',
         component: _ui_layout_unauthorize_unauthorize_component__WEBPACK_IMPORTED_MODULE_6__["UnauthorizeComponent"]
-    } /*,
+    },
+    {
+        path: 'investing',
+        component: _ui_layout_investing_investing_component__WEBPACK_IMPORTED_MODULE_7__["InvestingComponent"]
+    }
+    /*,
     { path: '**', redirectTo: '401' }*/
 ];
 var AppRoutingModule = /** @class */ (function () {
@@ -102,7 +412,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--<router-outlet></router-outlet>-->\r\n<app-layout>\r\n  <h1>{{title}}</h1>\r\n</app-layout>\r\n"
+module.exports = "<!--<router-outlet></router-outlet>-->\n<app-layout>\n  <h1>{{title}}</h1>\n</app-layout>\n"
 
 /***/ }),
 
@@ -155,7 +465,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
 /* harmony import */ var _ui_ui_module__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ui/ui.module */ "./src/app/ui/ui.module.ts");
 /* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/platform-browser/animations */ "./node_modules/@angular/platform-browser/fesm5/animations.js");
-/* harmony import */ var angular_font_awesome__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! angular-font-awesome */ "./node_modules/angular-font-awesome/dist/angular-font-awesome.es5.js");
+/* harmony import */ var _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @fortawesome/angular-fontawesome */ "./node_modules/@fortawesome/angular-fontawesome/fesm5/angular-fontawesome.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var _service_auth_guard_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./service/auth-guard.service */ "./src/app/service/auth-guard.service.ts");
 /* harmony import */ var _service_auth_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./service/auth.service */ "./src/app/service/auth.service.ts");
@@ -165,6 +475,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
 
 
@@ -180,7 +491,7 @@ var AppModule = /** @class */ (function () {
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"],
                 _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_5__["BrowserAnimationsModule"],
-                angular_font_awesome__WEBPACK_IMPORTED_MODULE_6__["AngularFontAwesomeModule"],
+                _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_6__["FontAwesomeModule"],
                 _angular_common_http__WEBPACK_IMPORTED_MODULE_7__["HttpClientModule"],
                 _ui_ui_module__WEBPACK_IMPORTED_MODULE_4__["UiModule"]
             ],
@@ -189,6 +500,32 @@ var AppModule = /** @class */ (function () {
         })
     ], AppModule);
     return AppModule;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/dto/NewInstrumentRq.ts":
+/*!****************************************!*\
+  !*** ./src/app/dto/NewInstrumentRq.ts ***!
+  \****************************************/
+/*! exports provided: NewInstrumentRq */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NewInstrumentRq", function() { return NewInstrumentRq; });
+var NewInstrumentRq = /** @class */ (function () {
+    function NewInstrumentRq(ticker, isPlan, bondType, price, lot, purchaseDate) {
+        this.ticker = ticker;
+        this.isPlan = isPlan;
+        this.bondType = bondType;
+        this.price = price;
+        this.lot = lot;
+        this.purchaseDate = purchaseDate;
+    }
+    return NewInstrumentRq;
 }());
 
 
@@ -211,6 +548,27 @@ var Salary = /** @class */ (function () {
         this.residualSalary = residualSalary;
     }
     return Salary;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/dto/searchwishes.ts":
+/*!*************************************!*\
+  !*** ./src/app/dto/searchwishes.ts ***!
+  \*************************************/
+/*! exports provided: SearchRq */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SearchRq", function() { return SearchRq; });
+var SearchRq = /** @class */ (function () {
+    function SearchRq(wishName) {
+        this.wishName = wishName;
+    }
+    return SearchRq;
 }());
 
 
@@ -336,7 +694,6 @@ var AuthService = /** @class */ (function () {
         this.http = http;
         this.jwtHelper = jwtHelper;
         this.SERVER_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].serverUrl;
-        this._loginURL = 'http://localhost:8080/login?';
         this.loginURL = this.SERVER_URL + '/login?';
     }
     AuthService.prototype.login = function (loginPayload) {
@@ -511,13 +868,19 @@ var HttpService = /** @class */ (function () {
     function HttpService(http) {
         this.http = http;
         this.SERVER_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_3__["environment"].serverUrl;
-        this._loginURL = 'http://localhost:8080/login?';
         this.loginURL = this.SERVER_URL + '/login?';
-        this._isCryptoUserUrl = 'http://localhost:8080/rest/wishes/users/getcurrent';
         this.isCryptoUserUrl = this.SERVER_URL + '/rest/wishes/users/getcurrent';
     }
     HttpService.prototype.getData = function (url) {
         return this.http.get(url);
+    };
+    HttpService.prototype.searchWishes = function (request, url) {
+        var httpOptions = {
+            headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
+                'Content-Type': 'application/json'
+            })
+        };
+        return this.http.post(url, request, httpOptions);
     };
     HttpService.prototype.sendData = function (wish, url) {
         var httpOptions = {
@@ -526,6 +889,22 @@ var HttpService = /** @class */ (function () {
             })
         };
         return this.http.post(url, wish, httpOptions);
+    };
+    HttpService.prototype.addInstrument = function (instrument, url) {
+        var httpOptions = {
+            headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
+                'Content-Type': 'application/json'
+            })
+        };
+        return this.http.post(url, instrument, httpOptions);
+    };
+    HttpService.prototype.deleteInstrument = function (ticker, url) {
+        var httpOptions = {
+            headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]({
+                'Content-Type': 'application/json'
+            })
+        };
+        return this.http.delete(url + '?ticker=' + ticker, httpOptions);
     };
     HttpService.prototype.sendFile = function (formData, url) {
         return this.http.post(url, formData);
@@ -682,7 +1061,7 @@ var EditComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--<clr-main-container>-->\r\n<header class=\"header-1\">\r\n  <div class=\"branding\">\r\n    <a class=\"nav-link\">\r\n      <clr-icon shape=\"shield\"></clr-icon>\r\n      <span class=\"title\">arNote Project</span>\r\n    </a>\r\n  </div>\r\n  <div class=\"header-nav\">\r\n    <a *ngIf=\"idToken\" class=\"active nav-link nav-icon\" clrVerticalNavLink routerLink=\"../\" routerLinkActive=\"active\">\r\n      <clr-icon shape=\"home\"></clr-icon>\r\n    </a>\r\n  </div>\r\n  <div class=\"header-actions\">\r\n    <clr-dropdown class=\"dropdown bottom-right\">\r\n      <button class=\"nav-icon\" clrDropdownToggle>\r\n        <clr-icon shape=\"user\"></clr-icon>\r\n        <clr-icon shape=\"caret down\"></clr-icon>\r\n      </button>\r\n\r\n      <div class=\"dropdown-menu\">\r\n        <label class=\"dropdown-header\">Меню пользователя</label>\r\n        <a *ngFor=\"let item of loginDropDownMenu\" (click)=\"loginIconHandler(item)\"  clrDropdownItem>{{item}}</a>\r\n      </div>\r\n    </clr-dropdown>\r\n\r\n  </div>\r\n</header>\r\n\r\n\r\n<clr-modal [(clrModalOpen)]=\"isLogin\">\r\n  <h3 class=\"modal-title\">Войти</h3>\r\n  <div class=\"modal-body\">\r\n    <form clrForm [formGroup]=\"loginForm\">\r\n\r\n      <!--ПОЛЕ ЛОГИН-->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"login\" class=\"input-label clr-col-12\">Логин</label>\r\n        <input type=\"text\" clrInput formControlName=\"login\" id=\"login\" name=\"login\" autocomplete=\"off\" required\r\n               size=\"100\">\r\n      </clr-input-container>\r\n\r\n      <!--ПОЛЕ ПАРОЛЬ-->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"password\" class=\"input-label clr-col-12\">Пароль</label>\r\n        <input type=\"password\" clrInput formControlName=\"password\" id=\"password\" name=\"password\" autocomplete=\"off\" required\r\n               size=\"100\">\r\n      </clr-input-container>\r\n\r\n\r\n    </form>\r\n\r\n    <div class=\"row\">\r\n      <button type=\"button\" (click)=\"sendLogin()\" class=\"btn btn-primary mt-1\">Войти</button>\r\n    </div>\r\n\r\n  </div>\r\n</clr-modal>\r\n\r\n  <!-- ФОРМА РЕГИСТРАЦИИ ЮЗЕРА -->\r\n\r\n  <clr-modal [(clrModalOpen)]=\"isRegister\">\r\n    <h3 class=\"modal-title\">Новой юзер</h3>\r\n    <div class=\"modal-body\">\r\n      <form clrForm [formGroup]=\"registerForm\">\r\n\r\n        <!--ПОЛЕ ЛОГИН-->\r\n\r\n        <clr-input-container>\r\n\r\n          <label #label for=\"reglogin\" class=\"input-label clr-col-12\">Логин</label>\r\n          <input type=\"text\" clrInput formControlName=\"login\" id=\"reglogin\" name=\"login\" autocomplete=\"off\" required\r\n                 size=\"100\">\r\n        </clr-input-container>\r\n\r\n        <!--ПОЛЕ ПАРОЛЬ-->\r\n\r\n        <clr-input-container>\r\n\r\n          <label #label for=\"regpassword\" class=\"input-label clr-col-12\">Пароль</label>\r\n          <input type=\"password\" clrInput formControlName=\"password\" id=\"regpassword\" name=\"password\" autocomplete=\"off\" required\r\n                 size=\"100\">\r\n        </clr-input-container>\r\n\r\n        <!--ПОЛЕ EMAIL-->\r\n\r\n        <clr-input-container>\r\n\r\n          <label #label for=\"regemail\" class=\"input-label clr-col-12\">E-mail</label>\r\n          <input type=\"email\" clrInput formControlName=\"email\" id=\"regemail\" name=\"email\" autocomplete=\"off\" required\r\n                 size=\"100\">\r\n        </clr-input-container>\r\n        <br/>\r\n        <!--<span class=\"label label-danger\">Не используйте почтовые ящики сервиса mail.ru!</span>-->\r\n\r\n        <!--ПОЛЕ ПОЛНОЕ ИМЯ-->\r\n\r\n        <clr-input-container>\r\n\r\n          <label #label for=\"registerfullname\" class=\"input-label clr-col-12\">Полное имя</label>\r\n          <input type=\"text\" clrInput formControlName=\"fullname\" id=\"registerfullname\" name=\"fullname\" autocomplete=\"off\" size=\"100\">\r\n        </clr-input-container>\r\n\r\n      </form>\r\n\r\n      <div class=\"row\">\r\n        <button type=\"button\" (click)=\"register()\" class=\"btn btn-primary mt-1\">Зарегистрироваться</button>\r\n      </div>\r\n\r\n    </div>\r\n  </clr-modal>\r\n\r\n\r\n<!--ФОРМА РЕДАКТИРОВАНИЯ ПОЛЬЗОВАТЕЛЬСКИХ ДАННЫХ-->\r\n\r\n<clr-modal [(clrModalOpen)]=\"isUserDataEdit\">\r\n  <h3 class=\"modal-title\">Редактирование пользовательских данных</h3>\r\n  <div class=\"modal-body\">\r\n    <form clrForm [formGroup]=\"userInfoForm\">\r\n\r\n      <!--ПОЛЕ ЛОГИН-->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"editlogin\" class=\"input-label clr-col-12\">Логин</label>\r\n        <input type=\"text\" clrInput formControlName=\"editlogin\" id=\"editlogin\" name=\"editlogin\" autocomplete=\"off\" required\r\n               size=\"100\">\r\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\r\n      </clr-input-container>\r\n\r\n      <!--ПОЛЕ ПАРОЛЬ-->\r\n\r\n      <clr-password-container>\r\n\r\n        <label #label for=\"editpassword\" class=\"input-label clr-col-12\">Пароль</label>\r\n        <input type=\"password\" clrPassword formControlName=\"editpassword\" id=\"editpassword\" name=\"editpassword\" autocomplete=\"off\"\r\n               size=\"100\">\r\n        </clr-password-container>\r\n\r\n      <br/>\r\n\r\n      <!-- ENCRYPTED MODE -->\r\n\r\n      <clr-checkbox-wrapper>\r\n\r\n        <label #label for=\"isencrypted\" class=\"input-label clr-col-12\">Шифрование данных на фронте</label>\r\n        <input type=\"checkbox\" clrCheckbox  formControlName=\"isencrypted\" id=\"isencrypted\" name=\"isencrypted\">\r\n        </clr-checkbox-wrapper>\r\n\r\n      <!--ПОЛЕ EMAIL-->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"email\" class=\"input-label clr-col-12\">Email</label>\r\n        <input type=\"email\" clrInput formControlName=\"email\" id=\"email\" name=\"email\" autocomplete=\"off\" required\r\n               size=\"100\">\r\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\r\n      </clr-input-container>\r\n\r\n      <!-- ПОЛЕ ПОЛНОЕ ИМЯ -->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"fullname\" class=\"input-label clr-col-12\">Полное имя</label>\r\n        <input type=\"text\" clrInput formControlName=\"fullname\" id=\"fullname\" name=\"fullname\" autocomplete=\"off\"\r\n               size=\"100\">\r\n      </clr-input-container>\r\n\r\n      <!-- ПОЛЕ КЛЮЧ ШИФРОВАНИЯ -->\r\n\r\n      <clr-password-container *ngIf=\"user.userCryptoMode\">\r\n\r\n        <label #label for=\"cryptkey\" class=\"input-label clr-col-12\">Персональный ключ шифрования</label>\r\n        <input type=\"password\" clrPassword formControlName=\"cryptkey\" id=\"cryptkey\" name=\"cryptkey\" autocomplete=\"off\" required\r\n               size=\"100\">\r\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\r\n      </clr-password-container>\r\n      <br/>\r\n\r\n      <span *ngIf=\"user.userCryptoMode\" class=\"label label-warning\">Ключ хранится только у Вас. Запомните его и не теряйте.</span>\r\n\r\n\r\n\r\n    </form>\r\n\r\n    <div class=\"row\">\r\n      <button type=\"button\" (click)=\"changeUserData()\" class=\"btn btn-primary mt-1\"  [disabled]=\"!userInfoForm.valid\">ИЗМЕНИТЬ</button>\r\n      <button type=\"button\" *ngIf=\"user.userCryptoMode\" (click)=\"clearCryptoKey()\" class=\"btn btn-danger mt-1\"  [disabled]=\"!userInfoForm.valid\">СТЕРЕТЬ КЛЮЧ ШИФРОВАНИЯ</button>\r\n    </div>\r\n\r\n  </div>\r\n</clr-modal>\r\n\r\n<!--</clr-main-container>-->\r\n"
+module.exports = "<!--<clr-main-container>-->\n<header class=\"header-1\">\n  <div class=\"branding\">\n    <a class=\"nav-link\">\n      <clr-icon shape=\"shield\"></clr-icon>\n      <span class=\"title\">arNote Project</span>\n    </a>\n  </div>\n  <div class=\"header-nav\">\n    <a *ngIf=\"idToken\" class=\"active nav-link nav-icon\" clrVerticalNavLink routerLink=\"../\" routerLinkActive=\"active\">\n      <clr-icon shape=\"home\"></clr-icon>\n    </a>\n  </div>\n  <div class=\"header-actions\">\n    <clr-dropdown class=\"dropdown bottom-right\">\n      <button class=\"nav-icon\" clrDropdownToggle>\n        <clr-icon shape=\"user\"></clr-icon>\n        <clr-icon shape=\"caret down\"></clr-icon>\n      </button>\n\n      <div class=\"dropdown-menu\">\n        <label class=\"dropdown-header\">Меню пользователя</label>\n        <a *ngFor=\"let item of loginDropDownMenu\" (click)=\"loginIconHandler(item)\"  clrDropdownItem>{{item}}</a>\n      </div>\n    </clr-dropdown>\n\n  </div>\n</header>\n\n\n<clr-modal [(clrModalOpen)]=\"isLogin\">\n  <h3 class=\"modal-title\">Войти</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"loginForm\">\n\n      <!--ПОЛЕ ЛОГИН-->\n\n      <clr-input-container>\n\n        <label #label for=\"login\" class=\"input-label clr-col-12\">Логин</label>\n        <input type=\"text\" clrInput formControlName=\"login\" id=\"login\" name=\"login\" autocomplete=\"off\" required\n               size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ ПАРОЛЬ-->\n\n      <clr-input-container>\n\n        <label #label for=\"password\" class=\"input-label clr-col-12\">Пароль</label>\n        <input type=\"password\" clrInput formControlName=\"password\" id=\"password\" name=\"password\" autocomplete=\"off\" required\n               size=\"100\">\n      </clr-input-container>\n\n\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"sendLogin()\" class=\"btn btn-primary mt-1\">Войти</button>\n    </div>\n\n  </div>\n</clr-modal>\n\n  <!-- ФОРМА РЕГИСТРАЦИИ ЮЗЕРА -->\n\n  <clr-modal [(clrModalOpen)]=\"isRegister\">\n    <h3 class=\"modal-title\">Новой юзер</h3>\n    <div class=\"modal-body\">\n      <form clrForm [formGroup]=\"registerForm\">\n\n        <!--ПОЛЕ ЛОГИН-->\n\n        <clr-input-container>\n\n          <label #label for=\"reglogin\" class=\"input-label clr-col-12\">Логин</label>\n          <input type=\"text\" clrInput formControlName=\"login\" id=\"reglogin\" name=\"login\" autocomplete=\"off\" required\n                 size=\"100\">\n        </clr-input-container>\n\n        <!--ПОЛЕ ПАРОЛЬ-->\n\n        <clr-input-container>\n\n          <label #label for=\"regpassword\" class=\"input-label clr-col-12\">Пароль</label>\n          <input type=\"password\" clrInput formControlName=\"password\" id=\"regpassword\" name=\"password\" autocomplete=\"off\" required\n                 size=\"100\">\n        </clr-input-container>\n\n        <!--ПОЛЕ EMAIL-->\n\n        <clr-input-container>\n\n          <label #label for=\"regemail\" class=\"input-label clr-col-12\">E-mail</label>\n          <input type=\"email\" clrInput formControlName=\"email\" id=\"regemail\" name=\"email\" autocomplete=\"off\" required\n                 size=\"100\">\n        </clr-input-container>\n        <br/>\n        <!--<span class=\"label label-danger\">Не используйте почтовые ящики сервиса mail.ru!</span>-->\n\n        <!--ПОЛЕ ПОЛНОЕ ИМЯ-->\n\n        <clr-input-container>\n\n          <label #label for=\"registerfullname\" class=\"input-label clr-col-12\">Полное имя</label>\n          <input type=\"text\" clrInput formControlName=\"fullname\" id=\"registerfullname\" name=\"fullname\" autocomplete=\"off\" size=\"100\">\n        </clr-input-container>\n\n      </form>\n\n      <div class=\"row\">\n        <button type=\"button\" (click)=\"register()\" class=\"btn btn-primary mt-1\">Зарегистрироваться</button>\n      </div>\n\n    </div>\n  </clr-modal>\n\n\n<!--ФОРМА РЕДАКТИРОВАНИЯ ПОЛЬЗОВАТЕЛЬСКИХ ДАННЫХ-->\n\n<clr-modal [(clrModalOpen)]=\"isUserDataEdit\">\n  <h3 class=\"modal-title\">Редактирование пользовательских данных</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"userInfoForm\">\n\n      <!--ПОЛЕ ЛОГИН-->\n\n      <clr-input-container>\n\n        <label #label for=\"editlogin\" class=\"input-label clr-col-12\">Логин</label>\n        <input type=\"text\" clrInput formControlName=\"editlogin\" id=\"editlogin\" name=\"editlogin\" autocomplete=\"off\" required\n               size=\"100\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!--ПОЛЕ ПАРОЛЬ-->\n\n      <clr-password-container>\n\n        <label #label for=\"editpassword\" class=\"input-label clr-col-12\">Пароль</label>\n        <input type=\"password\" clrPassword formControlName=\"editpassword\" id=\"editpassword\" name=\"editpassword\" autocomplete=\"off\"\n               size=\"100\">\n        </clr-password-container>\n\n      <br/>\n\n      <!-- ENCRYPTED MODE -->\n\n      <clr-checkbox-wrapper>\n\n        <label #label for=\"isencrypted\" class=\"input-label clr-col-12\">Шифрование данных на фронте</label>\n        <input type=\"checkbox\" clrCheckbox  formControlName=\"isencrypted\" id=\"isencrypted\" name=\"isencrypted\">\n        </clr-checkbox-wrapper>\n\n      <!--ПОЛЕ EMAIL-->\n\n      <clr-input-container>\n\n        <label #label for=\"email\" class=\"input-label clr-col-12\">Email</label>\n        <input type=\"email\" clrInput formControlName=\"email\" id=\"email\" name=\"email\" autocomplete=\"off\" required\n               size=\"100\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!-- ПОЛЕ ПОЛНОЕ ИМЯ -->\n\n      <clr-input-container>\n\n        <label #label for=\"fullname\" class=\"input-label clr-col-12\">Полное имя</label>\n        <input type=\"text\" clrInput formControlName=\"fullname\" id=\"fullname\" name=\"fullname\" autocomplete=\"off\"\n               size=\"100\">\n      </clr-input-container>\n\n      <!-- ПОЛЕ КЛЮЧ ШИФРОВАНИЯ -->\n\n      <clr-password-container *ngIf=\"user.userCryptoMode\">\n\n        <label #label for=\"cryptkey\" class=\"input-label clr-col-12\">Персональный ключ шифрования</label>\n        <input type=\"password\" clrPassword formControlName=\"cryptkey\" id=\"cryptkey\" name=\"cryptkey\" autocomplete=\"off\" required\n               size=\"100\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-password-container>\n      <br/>\n\n      <span *ngIf=\"user.userCryptoMode\" class=\"label label-warning\">Ключ хранится только у Вас. Запомните его и не теряйте.</span>\n\n\n\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"changeUserData()\" class=\"btn btn-primary mt-1\"  [disabled]=\"!userInfoForm.valid\">ИЗМЕНИТЬ</button>\n      <button type=\"button\" *ngIf=\"user.userCryptoMode\" (click)=\"clearCryptoKey()\" class=\"btn btn-danger mt-1\"  [disabled]=\"!userInfoForm.valid\">СТЕРЕТЬ КЛЮЧ ШИФРОВАНИЯ</button>\n    </div>\n\n  </div>\n</clr-modal>\n\n<!--</clr-main-container>-->\n"
 
 /***/ }),
 
@@ -779,7 +1158,6 @@ var HeaderComponent = /** @class */ (function () {
         var _this = this;
         var idToken = localStorage.getItem('token');
         this.cryptokey = localStorage.getItem('cryptokey');
-        console.log('cryptokey is - ' + this.cryptokey);
         this.user = new _dto_user__WEBPACK_IMPORTED_MODULE_11__["User"]();
         if (idToken) {
             if (this.authService.isAuthenticated()) {
@@ -967,6 +1345,504 @@ var HeaderComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/ui/layout/investing/investing.component.html":
+/*!**************************************************************!*\
+  !*** ./src/app/ui/layout/investing/investing.component.html ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"content-container\">\n  <div class=\"content-area\">\n\n    <clr-alert [clrAlertType]=\"'success'\" *ngIf=\"result\">\n      <clr-alert-item>\n        <span class=\"alert-text\">\n            {{result}}\n        </span>\n      </clr-alert-item>\n    </clr-alert>\n\n    <clr-alert [clrAlertType]=\"'danger'\" *ngIf=\"error\">\n      <clr-alert-item>\n        <span class=\"alert-text\">\n            {{error}}\n        </span>\n      </clr-alert-item>\n    </clr-alert>\n\n    <clr-datagrid [(clrDgSingleSelected)]=\"selectedPaper\">\n      <clr-dg-action-bar>\n        <div class=\"actions-container\">\n          <div class=\"row\">\n            <button class=\"btn btn-primary\" (click)=\"openAddInstrument($event)\">Добавить</button>\n            <button class=\"btn btn-secondary\" (click)=\"getBonds(this.GET_BONDS_URL)\">Обновить</button>\n            <button class=\"btn btn-danger\" [disabled]=\"!selectedPaper\" (click)=\"deleteBond()\">Удалить</button>\n            <button class=\"btn btn-success\" [disabled]=\"!isDivsExist()\" (click)=\"isDivAndCouponModalShown = true\">{{getDivButtonName()}}</button>\n            <button class=\"btn btn-secondary\" [disabled]=\"!bonds\" (click)=\"isReturnsInfoShown = true\">Доходы</button>\n            <button class=\"btn btn-secondary\" [disabled]=\"!bonds\" (click)=\"openCalendarAndLoadData()\">Календарь</button>\n\n            <!--  Список фильтрации -->\n            <clr-dropdown>\n              <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownToggle>Фильтр\n                <clr-icon shape=\"caret down\"></clr-icon>\n              </button>\n              <clr-dropdown-menu *clrIfOpen>\n              <clr-dropdown>\n                <button type=\"button\" clrDropdownTrigger>Тип бумаги</button>\n                <clr-dropdown-menu>\n                  <a *ngFor=\"let item of filtersForInstrumentType\" (click)=\"changeTypeFilter(item)\" clrDropdownItem>{{item}}</a>\n                </clr-dropdown-menu>\n              </clr-dropdown>\n                <clr-dropdown>\n                  <button type=\"button\" clrDropdownTrigger>План / Факт</button>\n                  <clr-dropdown-menu>\n                    <a *ngFor=\"let item of filtersForStatus\" clrDropdownItem>{{item}}</a>\n                  </clr-dropdown-menu>\n                </clr-dropdown>\n                <div class=\"dropdown-divider\"></div>\n                <button type=\"button\" class=\"dropdown-item\" (click)=\"clearFilters()\">Сбросить фильтры</button>\n              </clr-dropdown-menu>\n            </clr-dropdown>\n\n            <!--  Сортировка -->\n            <clr-dropdown>\n              <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownToggle>Сортировка\n                <clr-icon shape=\"caret down\"></clr-icon>\n              </button>\n              <clr-dropdown-menu *clrIfOpen>\n                <clr-dropdown>\n                  <button type=\"button\" clrDropdownTrigger>Тикер</button>\n                  <clr-dropdown-menu>\n                    <a *ngFor=\"let item of sortModes\" (click)=\"changeSort(item, 'TICKER')\" clrDropdownItem>{{item}}</a>\n                  </clr-dropdown-menu>\n                </clr-dropdown>\n                <clr-dropdown>\n                  <button type=\"button\" clrDropdownTrigger>Дивиденд</button>\n                        <clr-dropdown-menu>\n                          <clr-dropdown>\n                            <button type=\"button\" clrDropdownTrigger>В рублях</button>\n                            <clr-dropdown-menu clrPosition=\"left-top\">\n                              <a *ngFor=\"let item of sortModes\" (click)=\"changeSort(item, 'DIV-RUB')\" clrDropdownItem>{{item}}</a>\n                            </clr-dropdown-menu>\n                          </clr-dropdown>\n                          <clr-dropdown>\n                            <button type=\"button\" clrDropdownTrigger>В %</button>\n                            <clr-dropdown-menu clrPosition=\"left-top\">\n                              <a *ngFor=\"let item of sortModes\" (click)=\"changeSort(item, 'DIV-PRCNT')\" clrDropdownItem>{{item}}</a>\n                            </clr-dropdown-menu>\n                          </clr-dropdown>\n                        </clr-dropdown-menu>\n                </clr-dropdown>\n                <clr-dropdown>\n                  <button type=\"button\" clrDropdownTrigger>Цена</button>\n                  <clr-dropdown-menu>\n                    <clr-dropdown>\n                      <button type=\"button\" clrDropdownTrigger>Текущая</button>\n                      <clr-dropdown-menu clrPosition=\"left-top\">\n                        <a *ngFor=\"let item of sortModes\" (click)=\"changeSort(item, 'CUR-PRICE')\" clrDropdownItem>{{item}}</a>\n                      </clr-dropdown-menu>\n                    </clr-dropdown>\n                    <clr-dropdown>\n                      <button type=\"button\" clrDropdownTrigger>Итоговая</button>\n                      <clr-dropdown-menu clrPosition=\"left-top\">\n                        <a *ngFor=\"let item of sortModes\" (click)=\"changeSort(item, 'FINAL-PRICE')\" clrDropdownItem>{{item}}</a>\n                      </clr-dropdown-menu>\n                    </clr-dropdown>\n                  </clr-dropdown-menu>\n                </clr-dropdown>\n                <clr-dropdown>\n                  <button type=\"button\" clrDropdownTrigger>Рост всего</button>\n                  <clr-dropdown-menu>\n                    <a *ngFor=\"let item of sortModes\" (click)=\"changeSort(item, 'TOTAL-GROW')\" clrDropdownItem>{{item}}</a>\n                  </clr-dropdown-menu>\n                </clr-dropdown>\n                <clr-dropdown>\n                  <button type=\"button\" clrDropdownTrigger>Рост сегодня</button>\n                  <clr-dropdown-menu>\n                    <a *ngFor=\"let item of sortModes\" (click)=\"changeSort(item, 'TODAY-GROW')\" clrDropdownItem>{{item}}</a>\n                  </clr-dropdown-menu>\n                </clr-dropdown>\n                <div class=\"dropdown-divider\"></div>\n                <button type=\"button\" class=\"dropdown-item\"  (click)=\"clearSorting()\">Сбросить сортировку</button>\n              </clr-dropdown-menu>\n            </clr-dropdown>\n          </div>\n        </div>\n      </clr-dg-action-bar>\n      <clr-dg-column>Тикер</clr-dg-column>\n      <clr-dg-column><ng-container *clrDgHideableColumn=\"{hidden: false}\">Тип</ng-container></clr-dg-column>\n      <clr-dg-column><ng-container *clrDgHideableColumn=\"{hidden: false}\">Описание</ng-container></clr-dg-column>\n      <clr-dg-column>Дивиденд</clr-dg-column>\n      <clr-dg-column>%</clr-dg-column>\n      <clr-dg-column><ng-container *clrDgHideableColumn=\"{hidden: false}\">Биржа</ng-container></clr-dg-column>\n      <clr-dg-column><ng-container *clrDgHideableColumn=\"{hidden: false}\">Цена</ng-container></clr-dg-column>\n      <clr-dg-column class=\"hidden-md-down\"><ng-container *clrDgHideableColumn=\"{hidden: false}\">Лот / Куплено</ng-container></clr-dg-column>\n      <clr-dg-column>Итого</clr-dg-column>\n      <clr-dg-column><ng-container *clrDgHideableColumn=\"{hidden: false}\">Рост</ng-container></clr-dg-column>\n      <clr-dg-column class=\"hidden-md-down\"><ng-container *clrDgHideableColumn=\"{hidden: false}\">Факт/План</ng-container></clr-dg-column>\n      <clr-dg-column class=\"hidden-md-down\">Рост сегодня</clr-dg-column>\n\n      <clr-dg-row *clrDgItems=\"let item of bonds\" [clrDgItem]=\"item\">\n        <clr-dg-cell>{{item.ticker}}</clr-dg-cell>\n        <clr-dg-cell><span *ngIf=\"item.type=='SHARE'\" class=\"badge badge-success\">{{item.type}}</span>\n          <span *ngIf=\"item.type=='BOND'\" class=\"badge badge-gray\">{{item.type}}</span></clr-dg-cell>\n        <clr-dg-cell>{{item.description}}</clr-dg-cell>\n        <clr-dg-cell>{{item.dividends.divSum}}</clr-dg-cell>\n        <clr-dg-cell>{{item.dividends.percent}}</clr-dg-cell>\n        <clr-dg-cell>{{item.stockExchange}}</clr-dg-cell>\n        <clr-dg-cell>{{item.currentPrice}}</clr-dg-cell>\n        <clr-dg-cell>{{item.minLot}}</clr-dg-cell>\n        <clr-dg-cell>{{item.finalPrice}}</clr-dg-cell>\n        <clr-dg-cell\n          [ngStyle]=\"{'color': item.delta.deltaInRubles > 0 ? '#2ecc71' : item.delta.deltaInRubles < 0 ? '#e70c25' : '#faf9f9'}\">\n          <span *ngIf=\"item.type=='SHARE'\">\n            <svg *ngIf=\"item.delta.deltaInRubles<0\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"\n                 fill=\"currentColor\" class=\"bi bi-arrow-down\" viewBox=\"0 0 16 16\">\n              <path fill-rule=\"evenodd\"\n                    d=\"M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z\"/>\n            </svg>\n            <svg *ngIf=\"item.delta.deltaInRubles>0\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"\n                 fill=\"currentColor\" class=\"bi bi-arrow-up\" viewBox=\"0 0 16 16\">\n              <path fill-rule=\"evenodd\"\n                    d=\"M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z\"/>\n            </svg>\n            {{item.delta.deltaInRubles}} ({{item.delta.totalPercent}})%\n          </span>\n          <span *ngIf=\"item.type=='BOND'\">-</span>\n        </clr-dg-cell>\n        <clr-dg-cell><span *ngIf=\"!item.isBought\" class=\"badge badge-info\">PLAN</span><span *ngIf=\"item.isBought\"\n                                                                                            class=\"badge badge-orange\">FACT</span>\n        </clr-dg-cell>\n        <clr-dg-cell\n          [ngStyle]=\"{'color': item.delta.tinkoffDelta > 0 ? '#2ecc71' : item.delta.tinkoffDelta < 0 ? '#e70c25' : '#faf9f9'}\">\n          <div *ngIf=\"item.type=='SHARE'\">\n            <svg *ngIf=\"item.delta.tinkoffDelta<0\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"\n                 fill=\"currentColor\" class=\"bi bi-arrow-down\" viewBox=\"0 0 16 16\">\n              <path fill-rule=\"evenodd\"\n                    d=\"M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z\"/>\n            </svg>\n            <svg *ngIf=\"item.delta.tinkoffDelta>0\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"\n                 fill=\"currentColor\" class=\"bi bi-arrow-up\" viewBox=\"0 0 16 16\">\n              <path fill-rule=\"evenodd\"\n                    d=\"M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z\"/>\n            </svg>\n            {{item.delta.tinkoffDelta}} ({{item.delta.percent}}%)\n          </div>\n          <div *ngIf=\"item.type=='BOND'\">-</div>\n        </clr-dg-cell>\n      </clr-dg-row>\n      <clr-dg-footer>\n        <clr-dg-column-toggle>\n          <clr-dg-column-toggle-title>Отобразить столбцы</clr-dg-column-toggle-title>\n        </clr-dg-column-toggle>\n      </clr-dg-footer>\n    </clr-datagrid>\n\n    <!--    МОДАЛ С ДОБАВЛЕНИЕМ НОВОГО ИНСТРУМЕНТА-->\n\n    <clr-modal [(clrModalOpen)]=\"isAddDialogShown\">\n      <h3 class=\"modal-title\">Добавить инструмент</h3>\n      <div class=\"modal-body\">\n        <form clrForm [formGroup]=\"addInstrumentForm\">\n\n          <!--ПОЛЕ ТИКЕР-->\n\n          <clr-input-container>\n            <label #label for=\"ticker\" class=\"input-label clr-col-12\">Тикер или название</label>\n            <input type=\"text\"\n                   clrInput\n                   formControlName=\"ticker\"\n                   id=\"ticker\"\n                   name=\"ticker\"\n                   autocomplete=\"off\" required size=\"100\"\n                   (input)=\"onTickerFieldChangeForNewInstrumentDlg($event.target.value)\">\n            <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n          </clr-input-container>\n\n          <clr-datagrid *ngIf=\"isFoundInstrumentsBlockShown\" [(clrDgSingleSelected)]=\"selectedInstrument\"\n                        (clrDgSingleSelectedChange)=\"selectionChanged($event)\">\n            <clr-dg-column>Тикер</clr-dg-column>\n            <clr-dg-column>Название</clr-dg-column>\n            <clr-dg-column>Тип</clr-dg-column>\n            <clr-dg-column>Биржа</clr-dg-column>\n\n            <clr-dg-row *ngFor=\"let element of instruments\" [clrDgItem]=\"element\">\n              <clr-dg-cell>{{element.ticker}}</clr-dg-cell>\n              <clr-dg-cell>{{element.description}}</clr-dg-cell>\n              <clr-dg-cell>{{element.type}}</clr-dg-cell>\n              <clr-dg-cell>{{element.stockExchange}}</clr-dg-cell>\n            </clr-dg-row>\n          </clr-datagrid>\n\n          <!-- Цена покупки -->\n          <clr-input-container *ngIf=\"selectedInstrument && !addInstrumentForm.value.isPlan\">\n            <label #label for=\"price\" class=\"input-label clr-col-12\">Цена</label>\n            <input type=\"text\"\n                   clrInput\n                   formControlName=\"price\"\n                   id=\"price\"\n                   name=\"price\"\n                   autocomplete=\"off\" required size=\"100\">\n            <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n          </clr-input-container>\n\n          <!-- Лот -->\n          <clr-input-container *ngIf=\"selectedInstrument && !addInstrumentForm.value.isPlan\">\n            <label #label for=\"lot\" class=\"input-label clr-col-12\">Лот / Кол-во</label>\n            <input type=\"text\"\n                   clrInput\n                   formControlName=\"lot\"\n                   id=\"lot\"\n                   name=\"lot\"\n                   autocomplete=\"off\" required size=\"100\">\n            <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n          </clr-input-container>\n\n          <!-- Дата покупки -->\n          <clr-date-container *ngIf=\"selectedInstrument && !addInstrumentForm.value.isPlan\">\n            <label>Дата покупки</label>\n            <input type=\"date\" clrDate name=\"purchaseDate\"\n                   formControlName=\"purchaseDate\"\n                   id=\"purchaseDate\"\n                   min=\"2019-01-01\" (clrDateChange)=\"getPriceForCurrentDate($event)\"/>\n          </clr-date-container>\n\n          <!-- Переключатель isPlan -->\n          <clr-toggle-container *ngIf=\"selectedInstrument && isPlanAvailable()\">\n            <clr-toggle-wrapper>\n              <input type=\"checkbox\" clrToggle formControlName=\"isPlan\"\n                     id=\"isPlan\"\n                     name=\"isPlan\"/>\n              <label>План?</label>\n            </clr-toggle-wrapper>\n          </clr-toggle-container>\n\n\n        </form>\n\n        <div class=\"row\" *ngIf=\"selectedInstrument\">\n          <button type=\"button\" [disabled]=\"addInstrumentForm.invalid\" (click)=\"addInstrument()\"\n                  class=\"btn btn-primary mt-1\">Добавить\n          </button>\n        </div>\n\n      </div>\n    </clr-modal>\n\n    <!--    МОДАЛ С ИНФОЙ ПО КУПОНАМ / ДИВАМ -->\n\n    <clr-modal [(clrModalOpen)]=\"isDivAndCouponModalShown\">\n      <h3 class=\"modal-title\">{{getModalFormName()}}</h3>\n      <div class=\"modal-body\">\n          <clr-datagrid *ngIf=\"selectedPaper && selectedPaper.dividends && selectedPaper.dividends.dividendList.length > 0\">\n            <clr-dg-column>Дата</clr-dg-column>\n            <clr-dg-column>Сумма</clr-dg-column>\n            <clr-dg-column>Валюта</clr-dg-column>\n\n            <clr-dg-row *ngFor=\"let element of selectedPaper.dividends.dividendList\">\n              <clr-dg-cell>{{element.registryCloseDate}}</clr-dg-cell>\n              <clr-dg-cell>{{element.value}}</clr-dg-cell>\n              <clr-dg-cell>{{element.currencyId}}</clr-dg-cell>\n            </clr-dg-row>\n          </clr-datagrid>\n      </div>\n    </clr-modal>\n\n    <!--    МОДАЛ С ИНФОЙ ПО ДОХОДАМ -->\n\n    <clr-modal [(clrModalOpen)]=\"isReturnsInfoShown\">\n      <h3 class=\"modal-title\">Доходы</h3>\n      <div class=\"modal-body\">\n\n        <clr-tabs>\n          <clr-tab>\n            <button clrTabLink id=\"link1\">Доходы</button>\n            <clr-tab-content id=\"content1\" *clrIfActive>\n              <clr-datagrid *ngIf=\"returns\">\n                <clr-dg-column>Инвестировано</clr-dg-column>\n                <clr-dg-column>Купоны</clr-dg-column>\n                <clr-dg-column>Дивы</clr-dg-column>\n                <clr-dg-column>Рост акций</clr-dg-column>\n                <clr-dg-column>Итого</clr-dg-column>\n\n                <clr-dg-row>\n                  <clr-dg-cell>{{returns.invested}}</clr-dg-cell>\n                  <clr-dg-cell>{{returns.bondsReturns}}</clr-dg-cell>\n                  <clr-dg-cell>{{returns.sharesReturns}}</clr-dg-cell>\n                  <clr-dg-cell>{{returns.sharesDelta}}</clr-dg-cell>\n                  <clr-dg-cell>{{returns.sum}}</clr-dg-cell>\n                </clr-dg-row>\n              </clr-datagrid>\n\n            </clr-tab-content>\n          </clr-tab>\n          <clr-tab>\n            <button clrTabLink>Нужно вложить</button>\n            <clr-tab-content *clrIfActive=\"true\">\n              <clr-datagrid *ngIf=\"returns\">\n                <clr-dg-column>1000 руб.</clr-dg-column>\n                <clr-dg-column>5000 руб.</clr-dg-column>\n                <clr-dg-column>10 000 руб.</clr-dg-column>\n                <clr-dg-column>30 000 руб.</clr-dg-column>\n                <clr-dg-column>60 000 руб.</clr-dg-column>\n\n                <clr-dg-row>\n                  <clr-dg-cell>{{returns.targets.ONE_THOUSAND_ROUBLES}}</clr-dg-cell>\n                  <clr-dg-cell>{{returns.targets.FIVE_THOUSANDS_ROUBLES}}</clr-dg-cell>\n                  <clr-dg-cell>{{returns.targets.TEN_THOUSANDS_ROUBLES}}</clr-dg-cell>\n                  <clr-dg-cell>{{returns.targets.THIRTY_THOUSANDS_ROUBLES}}</clr-dg-cell>\n                  <clr-dg-cell>{{returns.targets.SIXTY_THOUSANDS_ROUBLES}}</clr-dg-cell>\n                </clr-dg-row>\n              </clr-datagrid>\n            </clr-tab-content>\n          </clr-tab>\n        </clr-tabs>\n      </div>\n    </clr-modal>\n\n    <!--    МОДАЛ С КАЛЕНДАРЕМ -->\n\n\n    <clr-modal [(clrModalOpen)]=\"isCalendarShown\">\n      <h3 class=\"modal-title\">Календарь</h3>\n      <div class=\"modal-body\">\n\n        <clr-stack-view>\n\n          <clr-stack-block *ngFor=\"let block of calc\">\n            <clr-stack-label>{{block.monthRussianName}}</clr-stack-label>\n            <clr-stack-block *ngFor=\"let child of block.data\">\n              <clr-stack-label>{{child.registryCloseDate}}</clr-stack-label>\n              <clr-stack-content>\n                <span class=\"label label-info\">{{child.ticker}}</span>\n                <span class=\"label label-success\">{{child.value | number:'2.'}}<span class=\"badge badge-orange\">{{child.currencyId}}\n                </span></span>\n                <span *ngIf=\"child.type === 'SHARE'\" class=\"badge badge-gray\">{{child.type}}</span>\n                <span *ngIf=\"child.type === 'BOND'\" class=\"badge badge-purple\">{{child.type}}</span>\n              </clr-stack-content>\n            </clr-stack-block>\n          </clr-stack-block>\n        </clr-stack-view>\n      </div>\n    </clr-modal>\n\n  </div>\n</div>\n"
+
+/***/ }),
+
+/***/ "./src/app/ui/layout/investing/investing.component.ts":
+/*!************************************************************!*\
+  !*** ./src/app/ui/layout/investing/investing.component.ts ***!
+  \************************************************************/
+/*! exports provided: InvestingComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "InvestingComponent", function() { return InvestingComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _service_message_code__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../service/message.code */ "./src/app/service/message.code.ts");
+/* harmony import */ var _service_common_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../service/common.service */ "./src/app/service/common.service.ts");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var _service_http_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../service/http.service */ "./src/app/service/http.service.ts");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../../environments/environment */ "./src/environments/environment.ts");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var _dto_NewInstrumentRq__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../dto/NewInstrumentRq */ "./src/app/dto/NewInstrumentRq.ts");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_11__);
+
+
+
+
+
+
+
+
+
+
+
+
+var InvestingComponent = /** @class */ (function () {
+    function InvestingComponent(commonService, route, httpService, fb) {
+        this.commonService = commonService;
+        this.route = route;
+        this.httpService = httpService;
+        this.fb = fb;
+        // --------------------------------- URL'ы ----------------------------------------
+        this.SERVER_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_8__["environment"].serverUrl;
+        this.BASE_URL = this.SERVER_URL + '/investing';
+        this.GET_BONDS_URL = this.BASE_URL + '/consolidated'; // все бумаги
+        this.GET_BONDS_URL_WITH_FILTERING = this.BASE_URL + '/consolidated?filter='; // все бумаги
+        this.GET_BONDS_URL_WITH_SORT = this.BASE_URL + '/consolidated?sort='; // все бумаги
+        this.FIND_INSTRUMENTS_URL = this.BASE_URL + '/search'; // найти инструменты
+        this.GET_CURRENT_PRICE_BY_TICKER_URL = this.BASE_URL + '/price'; // текущая цена по тикеру
+        this.GET_PRICE_BY_TICKER_AND_DATE_URL = this.BASE_URL + '/price-by-date'; // текущая цена по тикеру
+        this.GET_RETURNS = this.BASE_URL + '/returns'; // доходы
+        this.CALENDAR = this.BASE_URL + '/calendar'; // календарь
+        // --------------------------------- ХРАНИЛИЩА ------------------------------------
+        this.bonds = []; // контейнер бумаг
+        this.calc = []; // календарь
+        this.instruments = [];
+        // ---------------------------------- ФОРМЫ ----------------------------------------
+        this.addInstrumentForm = this.fb.group({
+            ticker: ['', [
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_9__["Validators"].required,
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_9__["Validators"].maxLength(100)
+                ]],
+            price: ['', [
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_9__["Validators"].required,
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_9__["Validators"].maxLength(20)
+                ]],
+            lot: ['', [
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_9__["Validators"].required,
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_9__["Validators"].maxLength(5)
+                ]],
+            purchaseDate: ['', []],
+            isPlan: [false, []]
+        });
+        // ---------------------------------- ФИЛЬТРЫ ----------------------------------------
+        this.filtersForInstrumentType = ['Акция', 'Облигация'];
+        this.filtersForStatus = ['План', 'Факт']; // фильтры
+        this.sortModes = ['По возрастанию [A-z / 1-10]', 'По убыванию [Z-a / 10-1]'];
+    }
+    InvestingComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.getBonds(this.GET_BONDS_URL);
+        this.route.queryParams.subscribe(function (params) {
+            var date = params.startdate;
+        });
+        this.subscription = this.commonService.error$.subscribe(function (error) {
+            if (error == null) {
+                _this.globalError = new _service_message_code__WEBPACK_IMPORTED_MODULE_2__["MessageCode"]();
+                _this.globalError.messageType = 'NO ERRORS';
+            }
+            else {
+                _this.globalError = error;
+                if (_this.globalError.messageType === _this.globalError.AUTH_LOGIN_OK) {
+                    console.log('LOGIN OK');
+                }
+                else if (_this.globalError.messageType === _this.globalError.REGISTER_OK) {
+                    _this.result = _this.globalError.REGISTER_OK;
+                    Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["timer"])(4000).subscribe(function () {
+                        _this.result = null;
+                    });
+                }
+                else {
+                    if (_this.globalError.messageType !== _this.globalError.SESSION_EXPIRED) {
+                        _this.error = error.messageType;
+                        Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["timer"])(4000).subscribe(function () {
+                            _this.error = null;
+                        });
+                    }
+                }
+            }
+        });
+    };
+    /**
+     * Открыть диалоговое окно добавления бумаги.
+     *
+     * event
+     */
+    InvestingComponent.prototype.openAddInstrument = function (event) {
+        this.isAddDialogShown = true;
+        this.addInstrumentForm.patchValue({
+            ticker: '',
+            price: ''
+        });
+    };
+    InvestingComponent.prototype.selectionChanged = function (event) {
+        this.getCurrentPriceAndLot(this.selectedInstrument.ticker);
+    };
+    /**
+     * Запросить цену по конкретной дате.
+     *
+     * event - выбранная дата
+     */
+    InvestingComponent.prototype.getPriceForCurrentDate = function (event) {
+        var _this = this;
+        var currentDate;
+        if (event == null) {
+            currentDate = moment__WEBPACK_IMPORTED_MODULE_11__(new Date(), 'DD/MM/YYYY');
+        }
+        else {
+            currentDate = moment__WEBPACK_IMPORTED_MODULE_11__(Date.parse(event));
+            if (currentDate == null) {
+                currentDate = moment__WEBPACK_IMPORTED_MODULE_11__(new Date(), 'DD/MM/YYYY');
+            }
+            console.log('Converted date after format: ', currentDate.format('YYYY-MM-DD'));
+            this.httpService.getData(this.GET_PRICE_BY_TICKER_AND_DATE_URL
+                + '?ticker='
+                + this.selectedInstrument.ticker
+                + '&purchaseDate='
+                + currentDate.format('YYYY-MM-DD')).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+                return _this.errorHandler(err, 'Невозможно запросить текущую цену бумаги!');
+            })).subscribe(function (data) {
+                _this.currentPrice = data;
+                console.log('Получили текущую цену на конкретную дату: ', _this.currentPrice.currentPrice);
+                _this.addInstrumentForm.patchValue({
+                    price: _this.currentPrice.currentPrice
+                });
+            });
+        }
+    };
+    /**
+     * Изменение поля тикер при добавлении нового инструмента.
+     * @param searchValue - значение введенное в поле.
+     */
+    InvestingComponent.prototype.onTickerFieldChangeForNewInstrumentDlg = function (searchValue) {
+        if (searchValue.length > 0) {
+            this.isFoundInstrumentsBlockShown = true;
+            this.findInstruments(searchValue);
+            this.selectedInstrument = null;
+        }
+        else {
+            this.selectedInstrument = null;
+            this.isFoundInstrumentsBlockShown = false;
+        }
+    };
+    /**
+     * Отобразить алерт!
+     *
+     *  text
+     *  mode
+     *  result
+     */
+    InvestingComponent.prototype.showAlert = function (text, mode, result) {
+        var _this = this;
+        this.result = text;
+        this.selectedInstrument = null;
+        this.isAddDialogShown = false;
+        this.isDivAndCouponModalShown = false;
+        this.isReturnsInfoShown = false;
+        this.isCalendarShown = false;
+        this.isFoundInstrumentsBlockShown = false;
+        this.addInstrumentForm.value.isPlan = false;
+        Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["timer"])(4000).subscribe(function () {
+            _this.result = null;
+        });
+    };
+    /**
+     * Добавить инструмент. Вызывается из модала.
+     *
+     * payload
+     */
+    InvestingComponent.prototype.addInstrument = function () {
+        var _this = this;
+        var payload;
+        var DATE_TIME_FORMAT = 'DD/MM/YYYY';
+        var currentDate;
+        if (!this.addInstrumentForm.value.purchaseDate) {
+            currentDate = moment__WEBPACK_IMPORTED_MODULE_11__(new Date(), DATE_TIME_FORMAT);
+        }
+        else {
+            currentDate = moment__WEBPACK_IMPORTED_MODULE_11__(this.addInstrumentForm.value.purchaseDate, DATE_TIME_FORMAT);
+        }
+        console.log('Selected date after format: ', currentDate.format('YYYY-MM-DD'));
+        if (this.addInstrumentForm.value.isPlan) {
+            payload = new _dto_NewInstrumentRq__WEBPACK_IMPORTED_MODULE_10__["NewInstrumentRq"](this.addInstrumentForm.value.ticker, this.addInstrumentForm.value.isPlan, this.selectedInstrument.type, null, null, null);
+        }
+        else {
+            payload = new _dto_NewInstrumentRq__WEBPACK_IMPORTED_MODULE_10__["NewInstrumentRq"](this.addInstrumentForm.value.ticker, this.addInstrumentForm.value.isPlan, this.selectedInstrument.type, this.addInstrumentForm.value.price, this.addInstrumentForm.value.lot, currentDate.format('YYYY-MM-DD'));
+        }
+        this.httpService.addInstrument(payload, this.BASE_URL).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно добавить бумагу!');
+        })).subscribe(function (hero) {
+            _this.showAlert('Инструмент успешно добавлен!', 'ADD MODE', hero);
+            _this.getBonds(_this.GET_BONDS_URL);
+        });
+    };
+    /**
+     * Запросить текущую цену бумаги и лот.
+     *
+     * @param keyword - искомое слово.
+     */
+    InvestingComponent.prototype.getCurrentPriceAndLot = function (keyword) {
+        var _this = this;
+        this.httpService.getData(this.GET_CURRENT_PRICE_BY_TICKER_URL + '?ticker=' + keyword).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно запросить текущую цену бумаги!');
+        })).subscribe(function (data) {
+            _this.currentPrice = data;
+            console.log('Получили текущую цену: ', _this.currentPrice.currentPrice);
+            _this.addInstrumentForm.patchValue({
+                ticker: _this.currentPrice.ticker,
+                price: _this.currentPrice.currentPrice,
+                lot: _this.currentPrice.minLot
+            });
+        });
+    };
+    /**
+     * Поиск бумаги.
+     *
+     * @param keyword - искомое слово.
+     */
+    InvestingComponent.prototype.findInstruments = function (keyword) {
+        var _this = this;
+        this.httpService.getData(this.FIND_INSTRUMENTS_URL + '?keyword=' + keyword).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно найти бумаги!');
+        })).subscribe(function (data) {
+            _this.instruments = data.instruments;
+            console.log(_this.instruments.length);
+        });
+    };
+    // Загрузить все бумаги
+    InvestingComponent.prototype.getBonds = function (url) {
+        var _this = this;
+        this.httpService.getData(url).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно получить бумаги!');
+        })).subscribe(function (data) {
+            _this.bonds = data.bonds;
+            _this.getReturns(_this.GET_RETURNS);
+        });
+    };
+    /**
+     * Открыть модал с календарем и подгрузить данные.
+     *
+     */
+    InvestingComponent.prototype.openCalendarAndLoadData = function () {
+        this.isCalendarShown = true;
+        this.getCalendar(this.CALENDAR);
+    };
+    /**
+     * Календарь.
+     *
+     * url
+     */
+    InvestingComponent.prototype.getCalendar = function (url) {
+        var _this = this;
+        this.httpService.getData(url).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно получить календарь!');
+        })).subscribe(function (data) {
+            _this.calc = data.calendar;
+        });
+    };
+    /**
+     * Выгрузить доходы по бумагам.
+     *
+     * url
+     */
+    InvestingComponent.prototype.getReturns = function (url) {
+        var _this = this;
+        this.httpService.getData(url).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно получить доходы!');
+        })).subscribe(function (data) {
+            _this.returns = data;
+        });
+    };
+    /**
+     * Реакция на изменение типа фильтрации.
+     *
+     * item
+     */
+    InvestingComponent.prototype.changeTypeFilter = function (item) {
+        switch (item) {
+            case 'Акция': {
+                this.getBonds(this.GET_BONDS_URL_WITH_FILTERING + 'TYPE_SHARE');
+                break;
+            }
+            case 'Облигация': {
+                this.getBonds(this.GET_BONDS_URL_WITH_FILTERING + 'TYPE_BOND');
+                break;
+            }
+            case 'План': {
+                this.getBonds(this.GET_BONDS_URL_WITH_FILTERING + 'STATUS_PLAN');
+                break;
+            }
+            case 'Факт': {
+                this.getBonds(this.GET_BONDS_URL_WITH_FILTERING + 'STATUS_FACT');
+                break;
+            }
+            default: {
+                this.getBonds(this.GET_BONDS_URL_WITH_FILTERING + 'NONE');
+                break;
+            }
+        }
+    };
+    /**
+     * Очистить все фильтры.
+     *
+     * item
+     */
+    InvestingComponent.prototype.clearFilters = function () {
+        this.getBonds(this.GET_BONDS_URL_WITH_FILTERING + 'NONE');
+    };
+    /**
+     * Удалить бумагу.
+     *
+     *
+     */
+    InvestingComponent.prototype.deleteBond = function () {
+        var _this = this;
+        this.httpService.deleteInstrument(this.selectedPaper.ticker, this.BASE_URL).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно удалить бумагу!');
+        })).subscribe(function (data) {
+            _this.getBonds(_this.GET_BONDS_URL);
+        });
+    };
+    InvestingComponent.prototype.errorHandler = function (err, message) {
+        var _this = this;
+        console.log('error - ' + err.error);
+        this.error = message;
+        console.log(err);
+        Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["timer"])(4000).subscribe(function () {
+            _this.error = null;
+        });
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["throwError"])(err);
+    };
+    /**
+     * Переключение режимов сортировки.
+     *
+     * item
+     * type
+     */
+    InvestingComponent.prototype.changeSort = function (item, type) {
+        switch (type) {
+            case 'TICKER': {
+                var s = item === 'По возрастанию [A-z / 1-10]' ? 'TICKER_ASC' : 'TICKER_DESC';
+                this.getBonds(this.GET_BONDS_URL_WITH_SORT + s);
+                break;
+            }
+            case 'DIV-RUB': {
+                var s = item === 'По возрастанию [A-z / 1-10]' ? 'DIV_RUB_ASC' : 'DIV_RUB_DESC';
+                this.getBonds(this.GET_BONDS_URL_WITH_SORT + s);
+                break;
+            }
+            case 'DIV-PRCNT': {
+                var s = item === 'По возрастанию [A-z / 1-10]' ? 'DIV_PRCNT_ASC' : 'DIV_PRCNT_DESC';
+                this.getBonds(this.GET_BONDS_URL_WITH_SORT + s);
+                break;
+            }
+            case 'CUR-PRICE': {
+                var s = item === 'По возрастанию [A-z / 1-10]' ? 'CUR_PRICE_ASC' : 'CUR_PRICE_DESC';
+                this.getBonds(this.GET_BONDS_URL_WITH_SORT + s);
+                break;
+            }
+            case 'FINAL-PRICE': {
+                var s = item === 'По возрастанию [A-z / 1-10]' ? 'FINAL_PRICE_ASC' : 'FINAL_PRICE_DESC';
+                this.getBonds(this.GET_BONDS_URL_WITH_SORT + s);
+                break;
+            }
+            case 'TOTAL-GROW': {
+                var s = item === 'По возрастанию [A-z / 1-10]' ? 'TOTAL_GROW_ASC' : 'TOTAL_GROW_DESC';
+                this.getBonds(this.GET_BONDS_URL_WITH_SORT + s);
+                break;
+            }
+            case 'TODAY-GROW': {
+                var s = item === 'По возрастанию [A-z / 1-10]' ? 'TODAY_GROW_ASC' : 'TODAY_GROW_DESC';
+                this.getBonds(this.GET_BONDS_URL_WITH_SORT + s);
+                break;
+            }
+            default: {
+                this.getBonds(this.GET_BONDS_URL_WITH_SORT + 'NONE');
+                break;
+            }
+        }
+    };
+    /**
+     * Очистка сортировки.
+     *
+     */
+    InvestingComponent.prototype.clearSorting = function () {
+        this.getBonds(this.GET_BONDS_URL_WITH_SORT + 'NONE');
+    };
+    /**
+     * Метод для фронта: проверяем доступность кнопки для вывода дивидендов / купонов
+     */
+    InvestingComponent.prototype.isDivsExist = function () {
+        return this.selectedPaper
+            && this.selectedPaper.dividends
+            && this.selectedPaper.dividends.dividendList != null
+            && this.selectedPaper.dividends.dividendList.length > 0;
+    };
+    /**
+     * Метод для фронта: меняем название кнопки в зависимости от различных данных выбранной бумаги.
+     */
+    InvestingComponent.prototype.getDivButtonName = function () {
+        if (this.selectedPaper) {
+            if (this.selectedPaper
+                && this.selectedPaper.dividends
+                && this.selectedPaper.dividends.dividendList != null
+                && this.selectedPaper.dividends.dividendList.length > 0) {
+                return this.selectedPaper.type === 'SHARE' ? 'Дивиденды' : 'Купоны';
+            }
+            else {
+                return this.selectedPaper.type === 'SHARE' ? 'Нет дивидендов' : 'Нет купонов';
+            }
+        }
+        else {
+            return 'Купоны / Дивы: выберете бумагу!';
+        }
+    };
+    /**
+     * Нельзя создать дубль бумаги в качестве запланированной, если по этой бумаге уже есть покупки.
+     */
+    InvestingComponent.prototype.isPlanAvailable = function () {
+        var _this = this;
+        if (this.selectedInstrument) {
+            return (this.bonds.find(function (b) { return b.ticker === _this.selectedInstrument.ticker; }) == null);
+        }
+        else {
+            return false;
+        }
+        return this.bonds.find(function (b) { return b.ticker === 'TBER'; }) == null;
+    };
+    /**
+     * Формируем заголовок модальной формы.
+     */
+    InvestingComponent.prototype.getModalFormName = function () {
+        if (this.selectedPaper) {
+            return this.selectedPaper.type === 'SHARE' ? 'Дивиденды по акции с тикером: ' + this.selectedPaper.ticker :
+                'Купоны по облигации с тикером: ' + this.selectedPaper.ticker;
+        }
+        else {
+            return 'Данные по купонам / дивидендам';
+        }
+    };
+    InvestingComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            selector: 'app-invest',
+            template: __webpack_require__(/*! ./investing.component.html */ "./src/app/ui/layout/investing/investing.component.html"),
+            providers: [_service_http_service__WEBPACK_IMPORTED_MODULE_7__["HttpService"]],
+            styles: [__webpack_require__(/*! ./../main/main.component.css */ "./src/app/ui/layout/main/main.component.css")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_service_common_service__WEBPACK_IMPORTED_MODULE_3__["CommonService"], _angular_router__WEBPACK_IMPORTED_MODULE_4__["ActivatedRoute"], _service_http_service__WEBPACK_IMPORTED_MODULE_7__["HttpService"],
+            _angular_forms__WEBPACK_IMPORTED_MODULE_9__["FormBuilder"]])
+    ], InvestingComponent);
+    return InvestingComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/ui/layout/layout.component.html":
 /*!*************************************************!*\
   !*** ./src/app/ui/layout/layout.component.html ***!
@@ -974,7 +1850,7 @@ var HeaderComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<clr-main-container>\r\n  <clr-header class=\"header\">\r\n    <app-header></app-header>\r\n  </clr-header>\r\n  <div class=\"content-container\">\r\n    <clr-vertical-nav [clr-nav-level]=\"1\">\r\n      <a clrVerticalNavLink routerLink=\"../401\" routerLinkActive=\"active\">О проекте</a>\r\n      <a *ngIf=\"idToken\" clrVerticalNavLink routerLink=\"../\" routerLinkActive=\"active\">Главная</a>\r\n    </clr-vertical-nav>\r\n    <div class=\"content-area\">\r\n      <router-outlet></router-outlet>\r\n    </div>\r\n  </div>\r\n  <app-session-timeout-modal></app-session-timeout-modal>\r\n</clr-main-container>\r\n"
+module.exports = "<clr-main-container>\n  <clr-header class=\"header\">\n    <app-header></app-header>\n  </clr-header>\n  <div class=\"content-container\">\n    <clr-vertical-nav [clr-nav-level]=\"1\">\n      <a clrVerticalNavLink routerLink=\"../401\">О проекте</a>\n      <a *ngIf=\"idToken && !isExpired\" clrVerticalNavLink routerLink=\"../\" >Главная</a>\n      <a *ngIf=\"idToken && !isExpired\" clrVerticalNavLink routerLink=\"../investing\">Инвестиции</a>\n    </clr-vertical-nav>\n    <div class=\"content-area\">\n      <router-outlet></router-outlet>\n    </div>\n  </div>\n  <app-session-timeout-modal></app-session-timeout-modal>\n</clr-main-container>\n"
 
 /***/ }),
 
@@ -998,8 +1874,25 @@ __webpack_require__.r(__webpack_exports__);
 
 var LayoutComponent = /** @class */ (function () {
     function LayoutComponent() {
+        this.timeLeft = 2;
+        this.jwtHelper = new _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_3__["JwtHelperService"]();
     }
     LayoutComponent.prototype.ngOnInit = function () {
+        this.idToken = localStorage.getItem('token');
+        this.isExpired = this.jwtHelper.isTokenExpired(this.idToken);
+        this.startTimer();
+    };
+    LayoutComponent.prototype.startTimer = function () {
+        var _this = this;
+        this.interval = setInterval(function () {
+            if (_this.timeLeft > 0) {
+                _this.timeLeft--;
+            }
+            else {
+                _this.idToken = localStorage.getItem('token');
+                _this.timeLeft = 2;
+            }
+        }, 1000);
     };
     LayoutComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -1024,7 +1917,7 @@ var LayoutComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n::ng-deep clr-icon:hover {\r\n  -webkit-transform: scale(1.2);\r\n  transform: scale(1.2);\r\n\r\n}\r\n\r\n.dropdown .dropdown-toggle {\r\n  margin: 5px;\r\n}\r\n\r\n.sumallrow {\r\n  background-color: #790909;\r\n  color: #ffffff;\r\n}\r\n\r\n::ng-deep  .main-container {\r\n}\r\n\r\n.sumpriorrow {\r\n  background-color: #299834;\r\n  color: #ffdb51;\r\n\r\n}\r\n\r\n@media screen and (min-width: 1447px) {\r\n  .ar-900-show {\r\n    display:none!important;\r\n  }\r\n}\r\n\r\n@media screen and (max-width: 1447px) {\r\n  .ar-900-hide {\r\n    display:none!important;\r\n  }\r\n  .ar-900-show {\r\n    display:initial!important;\r\n  }\r\n}\r\n\r\n@media screen and (max-width: 475px) {\r\n  .ar-475-hide {\r\n    display:none!important;\r\n  }\r\n\r\n  .string-truncate {\r\n    width: 120px;\r\n    white-space: nowrap;\r\n    overflow: hidden;\r\n    text-overflow: ellipsis;\r\n  }\r\n\r\n}\r\n\r\n@media screen and (min-width: 475px) {\r\n  .ar-475-show {\r\n    display:none!important;\r\n  }\r\n}\r\n\r\n@media screen and (max-width: 360px) {\r\n  .ar-360-hide {\r\n    display:none!important;\r\n  }\r\n}\r\n\r\n@media screen and (max-width: 500px){\r\n\r\n    /*.sidenav {*/\r\n      /*min-width: 1%;*/\r\n      /*visibility: hidden;*/\r\n    /*}*/\r\n\r\n\r\n    .table tr td:nth-child(3),\r\n    .table tr th:nth-child(3) {\r\n      display: none;\r\n    }\r\n    .table tr td:nth-child(4),\r\n    .table tr th:nth-child(4) {\r\n      display: none;\r\n    }\r\n\r\n    .table tr td:nth-child(5),\r\n    .table tr th:nth-child(5) {\r\n      display: none;\r\n    }\r\n\r\n    .table tr td:nth-child(6),\r\n    .table tr th:nth-child(6) {\r\n      display: none;\r\n    }\r\n\r\n    }\r\n\r\n.fas .fa-arrow-up{\r\n  background: #0c5460;\r\n}\r\n\r\n.fa, .fas:hover {\r\n  background: aqua;\r\n}\r\n\r\n:host{\r\n\r\n}\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvdWkvbGF5b3V0L21haW4vbWFpbi5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFDQTtFQUNFLDZCQUE2QjtFQUU3QixxQkFBcUI7O0FBRXZCOztBQUVBO0VBQ0UsV0FBVztBQUNiOztBQUVBO0VBQ0UseUJBQXlCO0VBQ3pCLGNBQWM7QUFDaEI7O0FBRUE7QUFDQTs7QUFFQTtFQUNFLHlCQUF5QjtFQUN6QixjQUFjOztBQUVoQjs7QUFFQTtFQUNFO0lBQ0Usc0JBQXNCO0VBQ3hCO0FBQ0Y7O0FBRUE7RUFDRTtJQUNFLHNCQUFzQjtFQUN4QjtFQUNBO0lBQ0UseUJBQXlCO0VBQzNCO0FBQ0Y7O0FBRUE7RUFDRTtJQUNFLHNCQUFzQjtFQUN4Qjs7RUFFQTtJQUNFLFlBQVk7SUFDWixtQkFBbUI7SUFDbkIsZ0JBQWdCO0lBQ2hCLHVCQUF1QjtFQUN6Qjs7QUFFRjs7QUFFQTtFQUNFO0lBQ0Usc0JBQXNCO0VBQ3hCO0FBQ0Y7O0FBSUE7RUFDRTtJQUNFLHNCQUFzQjtFQUN4QjtBQUNGOztBQUVBOztJQUVJLGFBQWE7TUFDWCxpQkFBaUI7TUFDakIsc0JBQXNCO0lBQ3hCLElBQUk7OztJQUdKOztNQUVFLGFBQWE7SUFDZjtJQUNBOztNQUVFLGFBQWE7SUFDZjs7SUFFQTs7TUFFRSxhQUFhO0lBQ2Y7O0lBRUE7O01BRUUsYUFBYTtJQUNmOztJQUVBOztBQUdKO0VBQ0UsbUJBQW1CO0FBQ3JCOztBQUlBO0VBQ0UsZ0JBQWdCO0FBQ2xCOztBQUNBOztBQUVBIiwiZmlsZSI6InNyYy9hcHAvdWkvbGF5b3V0L21haW4vbWFpbi5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiXHJcbjo6bmctZGVlcCBjbHItaWNvbjpob3ZlciB7XHJcbiAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlKDEuMik7XHJcbiAgLW1zLXRyYW5zZm9ybTogc2NhbGUoMS4yKTtcclxuICB0cmFuc2Zvcm06IHNjYWxlKDEuMik7XHJcblxyXG59XHJcblxyXG4uZHJvcGRvd24gLmRyb3Bkb3duLXRvZ2dsZSB7XHJcbiAgbWFyZ2luOiA1cHg7XHJcbn1cclxuXHJcbi5zdW1hbGxyb3cge1xyXG4gIGJhY2tncm91bmQtY29sb3I6ICM3OTA5MDk7XHJcbiAgY29sb3I6ICNmZmZmZmY7XHJcbn1cclxuXHJcbjo6bmctZGVlcCAgLm1haW4tY29udGFpbmVyIHtcclxufVxyXG5cclxuLnN1bXByaW9ycm93IHtcclxuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMjk5ODM0O1xyXG4gIGNvbG9yOiAjZmZkYjUxO1xyXG5cclxufVxyXG5cclxuQG1lZGlhIHNjcmVlbiBhbmQgKG1pbi13aWR0aDogMTQ0N3B4KSB7XHJcbiAgLmFyLTkwMC1zaG93IHtcclxuICAgIGRpc3BsYXk6bm9uZSFpbXBvcnRhbnQ7XHJcbiAgfVxyXG59XHJcblxyXG5AbWVkaWEgc2NyZWVuIGFuZCAobWF4LXdpZHRoOiAxNDQ3cHgpIHtcclxuICAuYXItOTAwLWhpZGUge1xyXG4gICAgZGlzcGxheTpub25lIWltcG9ydGFudDtcclxuICB9XHJcbiAgLmFyLTkwMC1zaG93IHtcclxuICAgIGRpc3BsYXk6aW5pdGlhbCFpbXBvcnRhbnQ7XHJcbiAgfVxyXG59XHJcblxyXG5AbWVkaWEgc2NyZWVuIGFuZCAobWF4LXdpZHRoOiA0NzVweCkge1xyXG4gIC5hci00NzUtaGlkZSB7XHJcbiAgICBkaXNwbGF5Om5vbmUhaW1wb3J0YW50O1xyXG4gIH1cclxuXHJcbiAgLnN0cmluZy10cnVuY2F0ZSB7XHJcbiAgICB3aWR0aDogMTIwcHg7XHJcbiAgICB3aGl0ZS1zcGFjZTogbm93cmFwO1xyXG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcclxuICAgIHRleHQtb3ZlcmZsb3c6IGVsbGlwc2lzO1xyXG4gIH1cclxuXHJcbn1cclxuXHJcbkBtZWRpYSBzY3JlZW4gYW5kIChtaW4td2lkdGg6IDQ3NXB4KSB7XHJcbiAgLmFyLTQ3NS1zaG93IHtcclxuICAgIGRpc3BsYXk6bm9uZSFpbXBvcnRhbnQ7XHJcbiAgfVxyXG59XHJcblxyXG5cclxuXHJcbkBtZWRpYSBzY3JlZW4gYW5kIChtYXgtd2lkdGg6IDM2MHB4KSB7XHJcbiAgLmFyLTM2MC1oaWRlIHtcclxuICAgIGRpc3BsYXk6bm9uZSFpbXBvcnRhbnQ7XHJcbiAgfVxyXG59XHJcblxyXG5AbWVkaWEgc2NyZWVuIGFuZCAobWF4LXdpZHRoOiA1MDBweCl7XHJcblxyXG4gICAgLyouc2lkZW5hdiB7Ki9cclxuICAgICAgLyptaW4td2lkdGg6IDElOyovXHJcbiAgICAgIC8qdmlzaWJpbGl0eTogaGlkZGVuOyovXHJcbiAgICAvKn0qL1xyXG5cclxuXHJcbiAgICAudGFibGUgdHIgdGQ6bnRoLWNoaWxkKDMpLFxyXG4gICAgLnRhYmxlIHRyIHRoOm50aC1jaGlsZCgzKSB7XHJcbiAgICAgIGRpc3BsYXk6IG5vbmU7XHJcbiAgICB9XHJcbiAgICAudGFibGUgdHIgdGQ6bnRoLWNoaWxkKDQpLFxyXG4gICAgLnRhYmxlIHRyIHRoOm50aC1jaGlsZCg0KSB7XHJcbiAgICAgIGRpc3BsYXk6IG5vbmU7XHJcbiAgICB9XHJcblxyXG4gICAgLnRhYmxlIHRyIHRkOm50aC1jaGlsZCg1KSxcclxuICAgIC50YWJsZSB0ciB0aDpudGgtY2hpbGQoNSkge1xyXG4gICAgICBkaXNwbGF5OiBub25lO1xyXG4gICAgfVxyXG5cclxuICAgIC50YWJsZSB0ciB0ZDpudGgtY2hpbGQoNiksXHJcbiAgICAudGFibGUgdHIgdGg6bnRoLWNoaWxkKDYpIHtcclxuICAgICAgZGlzcGxheTogbm9uZTtcclxuICAgIH1cclxuXHJcbiAgICB9XHJcblxyXG5cclxuLmZhcyAuZmEtYXJyb3ctdXB7XHJcbiAgYmFja2dyb3VuZDogIzBjNTQ2MDtcclxufVxyXG5cclxuXHJcblxyXG4uZmEsIC5mYXM6aG92ZXIge1xyXG4gIGJhY2tncm91bmQ6IGFxdWE7XHJcbn1cclxuOmhvc3R7XHJcblxyXG59XHJcbiJdfQ== */"
+module.exports = "\n::ng-deep clr-icon:hover {\n  transform: scale(1.2);\n\n}\n\n.dropdown .dropdown-toggle {\n  margin: 5px;\n}\n\n.sumallrow {\n  background-color: #790909;\n  color: #ffffff;\n}\n\n::ng-deep  .main-container {\n}\n\n.sumpriorrow {\n  background-color: #299834;\n  color: #ffdb51;\n\n}\n\n@media screen and (min-width: 1447px) {\n  .ar-900-show {\n    display:none!important;\n  }\n}\n\n@media screen and (max-width: 1447px) {\n  .ar-900-hide {\n    display:none!important;\n  }\n  .ar-900-show {\n    display:initial!important;\n  }\n}\n\n@media screen and (max-width: 475px) {\n  .ar-475-hide {\n    display:none!important;\n  }\n\n  .string-truncate {\n    width: 120px;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n  }\n\n}\n\n@media screen and (min-width: 475px) {\n  .ar-475-show {\n    display:none!important;\n  }\n}\n\n@media screen and (max-width: 360px) {\n  .ar-360-hide {\n    display:none!important;\n  }\n}\n\n@media screen and (max-width: 500px){\n\n    .table tr td:nth-child(3),\n    .table tr th:nth-child(3) {\n      display: none;\n    }\n    .table tr td:nth-child(4),\n    .table tr th:nth-child(4) {\n      display: none;\n    }\n\n    .table tr td:nth-child(5),\n    .table tr th:nth-child(5) {\n      display: none;\n    }\n\n    .table tr td:nth-child(6),\n    .table tr th:nth-child(6) {\n      display: none;\n    }\n\n    }\n\n.fas .fa-arrow-up{\n  background: #0c5460;\n}\n\n.fa, .fas:hover {\n  background: aqua;\n}\n\n:host{\n\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvdWkvbGF5b3V0L21haW4vbWFpbi5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFDQTtFQUdFLHFCQUFxQjs7QUFFdkI7O0FBRUE7RUFDRSxXQUFXO0FBQ2I7O0FBRUE7RUFDRSx5QkFBeUI7RUFDekIsY0FBYztBQUNoQjs7QUFFQTtBQUNBOztBQUVBO0VBQ0UseUJBQXlCO0VBQ3pCLGNBQWM7O0FBRWhCOztBQUVBO0VBQ0U7SUFDRSxzQkFBc0I7RUFDeEI7QUFDRjs7QUFFQTtFQUNFO0lBQ0Usc0JBQXNCO0VBQ3hCO0VBQ0E7SUFDRSx5QkFBeUI7RUFDM0I7QUFDRjs7QUFFQTtFQUNFO0lBQ0Usc0JBQXNCO0VBQ3hCOztFQUVBO0lBQ0UsWUFBWTtJQUNaLG1CQUFtQjtJQUNuQixnQkFBZ0I7SUFDaEIsdUJBQXVCO0VBQ3pCOztBQUVGOztBQUVBO0VBQ0U7SUFDRSxzQkFBc0I7RUFDeEI7QUFDRjs7QUFJQTtFQUNFO0lBQ0Usc0JBQXNCO0VBQ3hCO0FBQ0Y7O0FBRUE7O0lBRUk7O01BRUUsYUFBYTtJQUNmO0lBQ0E7O01BRUUsYUFBYTtJQUNmOztJQUVBOztNQUVFLGFBQWE7SUFDZjs7SUFFQTs7TUFFRSxhQUFhO0lBQ2Y7O0lBRUE7O0FBR0o7RUFDRSxtQkFBbUI7QUFDckI7O0FBSUE7RUFDRSxnQkFBZ0I7QUFDbEI7O0FBQ0E7O0FBRUEiLCJmaWxlIjoic3JjL2FwcC91aS9sYXlvdXQvbWFpbi9tYWluLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJcbjo6bmctZGVlcCBjbHItaWNvbjpob3ZlciB7XG4gIC13ZWJraXQtdHJhbnNmb3JtOiBzY2FsZSgxLjIpO1xuICAtbXMtdHJhbnNmb3JtOiBzY2FsZSgxLjIpO1xuICB0cmFuc2Zvcm06IHNjYWxlKDEuMik7XG5cbn1cblxuLmRyb3Bkb3duIC5kcm9wZG93bi10b2dnbGUge1xuICBtYXJnaW46IDVweDtcbn1cblxuLnN1bWFsbHJvdyB7XG4gIGJhY2tncm91bmQtY29sb3I6ICM3OTA5MDk7XG4gIGNvbG9yOiAjZmZmZmZmO1xufVxuXG46Om5nLWRlZXAgIC5tYWluLWNvbnRhaW5lciB7XG59XG5cbi5zdW1wcmlvcnJvdyB7XG4gIGJhY2tncm91bmQtY29sb3I6ICMyOTk4MzQ7XG4gIGNvbG9yOiAjZmZkYjUxO1xuXG59XG5cbkBtZWRpYSBzY3JlZW4gYW5kIChtaW4td2lkdGg6IDE0NDdweCkge1xuICAuYXItOTAwLXNob3cge1xuICAgIGRpc3BsYXk6bm9uZSFpbXBvcnRhbnQ7XG4gIH1cbn1cblxuQG1lZGlhIHNjcmVlbiBhbmQgKG1heC13aWR0aDogMTQ0N3B4KSB7XG4gIC5hci05MDAtaGlkZSB7XG4gICAgZGlzcGxheTpub25lIWltcG9ydGFudDtcbiAgfVxuICAuYXItOTAwLXNob3cge1xuICAgIGRpc3BsYXk6aW5pdGlhbCFpbXBvcnRhbnQ7XG4gIH1cbn1cblxuQG1lZGlhIHNjcmVlbiBhbmQgKG1heC13aWR0aDogNDc1cHgpIHtcbiAgLmFyLTQ3NS1oaWRlIHtcbiAgICBkaXNwbGF5Om5vbmUhaW1wb3J0YW50O1xuICB9XG5cbiAgLnN0cmluZy10cnVuY2F0ZSB7XG4gICAgd2lkdGg6IDEyMHB4O1xuICAgIHdoaXRlLXNwYWNlOiBub3dyYXA7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICB0ZXh0LW92ZXJmbG93OiBlbGxpcHNpcztcbiAgfVxuXG59XG5cbkBtZWRpYSBzY3JlZW4gYW5kIChtaW4td2lkdGg6IDQ3NXB4KSB7XG4gIC5hci00NzUtc2hvdyB7XG4gICAgZGlzcGxheTpub25lIWltcG9ydGFudDtcbiAgfVxufVxuXG5cblxuQG1lZGlhIHNjcmVlbiBhbmQgKG1heC13aWR0aDogMzYwcHgpIHtcbiAgLmFyLTM2MC1oaWRlIHtcbiAgICBkaXNwbGF5Om5vbmUhaW1wb3J0YW50O1xuICB9XG59XG5cbkBtZWRpYSBzY3JlZW4gYW5kIChtYXgtd2lkdGg6IDUwMHB4KXtcblxuICAgIC50YWJsZSB0ciB0ZDpudGgtY2hpbGQoMyksXG4gICAgLnRhYmxlIHRyIHRoOm50aC1jaGlsZCgzKSB7XG4gICAgICBkaXNwbGF5OiBub25lO1xuICAgIH1cbiAgICAudGFibGUgdHIgdGQ6bnRoLWNoaWxkKDQpLFxuICAgIC50YWJsZSB0ciB0aDpudGgtY2hpbGQoNCkge1xuICAgICAgZGlzcGxheTogbm9uZTtcbiAgICB9XG5cbiAgICAudGFibGUgdHIgdGQ6bnRoLWNoaWxkKDUpLFxuICAgIC50YWJsZSB0ciB0aDpudGgtY2hpbGQoNSkge1xuICAgICAgZGlzcGxheTogbm9uZTtcbiAgICB9XG5cbiAgICAudGFibGUgdHIgdGQ6bnRoLWNoaWxkKDYpLFxuICAgIC50YWJsZSB0ciB0aDpudGgtY2hpbGQoNikge1xuICAgICAgZGlzcGxheTogbm9uZTtcbiAgICB9XG5cbiAgICB9XG5cblxuLmZhcyAuZmEtYXJyb3ctdXB7XG4gIGJhY2tncm91bmQ6ICMwYzU0NjA7XG59XG5cblxuXG4uZmEsIC5mYXM6aG92ZXIge1xuICBiYWNrZ3JvdW5kOiBhcXVhO1xufVxuOmhvc3R7XG5cbn1cbiJdfQ== */"
 
 /***/ }),
 
@@ -1035,7 +1928,7 @@ module.exports = "\r\n::ng-deep clr-icon:hover {\r\n  -webkit-transform: scale(1
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<clr-alert [clrAlertType]=\"'success'\" *ngIf=\"result\">\r\n  <clr-alert-item>\r\n        <span class=\"alert-text\">\r\n            {{result}}\r\n        </span>\r\n  </clr-alert-item>\r\n</clr-alert>\r\n\r\n<clr-alert [clrAlertType]=\"'danger'\" *ngIf=\"error\">\r\n  <clr-alert-item>\r\n        <span class=\"alert-text\">\r\n            {{error}}\r\n        </span>\r\n  </clr-alert-item>\r\n</clr-alert>\r\n\r\n<clr-datagrid *ngIf=\"!monthOrdermode\">\r\n  <clr-dg-action-bar>\r\n    <div class=\"actions-container\">\r\n      <div class=\"ar-900-hide\">\r\n        <button class=\"btn btn-primary\" (click)=\"openEditWish($event, item, 2)\"> Добавить</button>\r\n        <button class=\"btn btn-secondary\" (click)=\"getWishes(apiUrl)\"> Обновить</button>\r\n        <button class=\"btn btn-secondary; hidden-md-down\" (click)=\"openAddSalaryModal($event)\"> Задать зарплату\r\n        </button>\r\n        <button class=\"btn btn-secondary; hidden-md-down\" (click)=\"openParseCsv($event)\" *ngIf=\"userRole==='ADMIN'\">\r\n          Парсинг csv\r\n        </button>\r\n        <button class=\"{{filterMode ? 'btn btn-danger; hidden-md-down' : 'btn btn-secondary; hidden-md-down'}}\"\r\n                (click)=\"filterWishes()\"> {{filterButtonText}}\r\n        </button>\r\n\r\n        <clr-dropdown class=\"hidden-md-down\">\r\n          <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\r\n            РЕЖИМ ОТОБРАЖЕНИЯ\r\n            <clr-icon shape=\"caret down\"></clr-icon>\r\n          </button>\r\n          <clr-dropdown-menu *clrIfOpen>\r\n            <label class=\"dropdown-header\">Режим отображения</label>\r\n            <a *ngFor=\"let item of filters\" (click)=\"changeFilter(item)\" clrDropdownItem>{{item}}</a>\r\n          </clr-dropdown-menu>\r\n        </clr-dropdown>\r\n\r\n        <clr-dropdown class=\"hidden-md-down\">\r\n          <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\r\n            СОРТИРОВКА\r\n            <clr-icon shape=\"caret down\"></clr-icon>\r\n          </button>\r\n          <clr-dropdown-menu *clrIfOpen>\r\n            <label class=\"dropdown-header\">Сортировка</label>\r\n            <a *ngFor=\"let item of mainSort\" (click)=\"sortMainList(item)\" clrDropdownItem>{{item}}</a>\r\n          </clr-dropdown-menu>\r\n        </clr-dropdown>\r\n      </div>\r\n\r\n      <!--МИНИ-КНОПКИ ДЛЯ МОБИЛКИ-->\r\n\r\n      <div class=\"ar-900-show\">\r\n        <div class=\"clr-row\" style=\"margin-left: 1%\">\r\n          <button type=\"button\" class=\"btn btn-icon\" (click)=\"openEditWish($event, item, 2)\"\r\n                  aria-label=\"Добавить желание\">\r\n            <clr-icon shape=\"plus\"></clr-icon>\r\n          </button>\r\n          <button type=\"button\" class=\"btn btn-icon\" (click)=\"getWishes(apiUrl)\" aria-label=\"Обновить\">\r\n            <clr-icon shape=\"refresh\"></clr-icon>\r\n          </button>\r\n          <div class=\"ar-360-hide\">\r\n            <button type=\"button\" (click)=\"openAddSalaryModal($event)\" class=\"btn btn-icon\"\r\n                    aria-label=\"Задать зарплату\">\r\n              <clr-icon shape=\"ruble\"></clr-icon>\r\n            </button>\r\n          </div>\r\n          <button type=\"button\" class=\"{{filterMode ? 'btn btn-icon btn-danger' : 'btn btn-icon'}}\"\r\n                  (click)=\"filterWishes()\" aria-label=\"Поиск\">\r\n            <clr-icon shape=\"search\"></clr-icon>\r\n          </button>\r\n          <button type=\"button\" class=\"{{filterMode ? 'btn btn-icon btn-danger' : 'btn btn-icon'}}\"\r\n                  (click)=\"summInfo()\" aria-label=\"Итоги\">\r\n            <clr-icon shape=\"help\"></clr-icon>\r\n          </button>\r\n\r\n          <clr-dropdown>\r\n            <button type=\"button\" class=\"btn btn-icon\" aria-label=\"Режимы\" clrDropdownTrigger>\r\n              <clr-icon shape=\"eye\"></clr-icon>\r\n              <clr-icon shape=\"caret down\"></clr-icon>\r\n            </button>\r\n            <clr-dropdown-menu clrPosition=\"bottom-right\" *clrIfOpen>\r\n              <label class=\"dropdown-header\">Режим отображения</label>\r\n              <a *ngFor=\"let item of filters\" (click)=\"changeFilter(item)\" clrDropdownItem>{{item}}</a>\r\n            </clr-dropdown-menu>\r\n          </clr-dropdown>\r\n\r\n          <div class=\"ar-475-hide\">\r\n\r\n            <clr-dropdown>\r\n              <button type=\"button\" class=\"btn btn-icon\" aria-label=\"Сортировка\" clrDropdownTrigger>\r\n                <clr-icon shape=\"sort-by\"></clr-icon>\r\n                <clr-icon shape=\"caret down\"></clr-icon>\r\n              </button>\r\n              <clr-dropdown-menu *clrIfOpen>\r\n                <label class=\"dropdown-header\">Сортировка</label>\r\n                <a *ngFor=\"let item of mainSort\" (click)=\"sortMainList(item)\" clrDropdownItem>{{item}}</a>\r\n              </clr-dropdown-menu>\r\n            </clr-dropdown>\r\n          </div>\r\n        </div>\r\n      </div>\r\n    </div>\r\n  </clr-dg-action-bar>\r\n  <clr-dg-column>Желание</clr-dg-column>\r\n  <clr-dg-column>Цена</clr-dg-column>\r\n  <clr-dg-column [style.width.px]=\"20\" class=\"hidden-md-down\">Приоритет</clr-dg-column>\r\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">.</clr-dg-column>\r\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">.</clr-dg-column>\r\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">Ред.</clr-dg-column>\r\n\r\n  <clr-dg-row *clrDgItems=\"let item of wishes\" [clrDgItem]=\"item\">\r\n    <clr-dg-cell><a (click)=\"openEditWish($event, item, 1)\">{{item.wish}}</a></clr-dg-cell>\r\n    <clr-dg-cell style=\"text-align: center\">{{item.price | number:'2.'}}</clr-dg-cell>\r\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">{{item.priority}}</clr-dg-cell>\r\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\r\n      <clr-icon shape=\"upload\" (click)=\"changePriority(item, 'down')\"></clr-icon>\r\n    </clr-dg-cell>\r\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\r\n      <clr-icon shape=\"download\" (click)=\"changePriority(item, 'up')\"></clr-icon>\r\n    </clr-dg-cell>\r\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\r\n      <clr-icon shape=\"edit\" (click)=\"openEditWish($event, item, 1)\"></clr-icon>\r\n    </clr-dg-cell>\r\n  </clr-dg-row>\r\n\r\n  <clr-dg-footer>\r\n    <div class=\"clr-row\">\r\n      <div class=\"ar-900-hide\">\r\n      <span class=\"label label-danger\" style=\"margin-left: 1%\">ИТОГО<span\r\n        class=\"badge badge-orange\">{{summAll | number:'2.'}} руб.</span></span>\r\n        <span class=\"label label-danger\">Реализация<span class=\"badge badge-danger\">{{periodAll}} мес.</span></span>\r\n        <span class=\"label label-success\">ИТОГО (PRIOR)<span class=\"badge badge-orange\">{{summPriority | number:'2.'}} руб.</span></span>\r\n        <span class=\"label label-success\">Реализация<span\r\n          class=\"badge badge-success\">{{periodPriority}} мес.</span></span>\r\n        <span class=\"label label-gray\">Среднее время<span\r\n          class=\"badge badge-blue\">{{implementationPeriod}}</span></span>\r\n      </div>\r\n\r\n      <div>\r\n        <clr-dg-pagination #pagination [clrDgPageSize]=\"15\">\r\n          <clr-dg-page-size [clrPageSizeOptions]=\"[3,5,10,15, 100]\" class=\"ar-475-hide\" style=\"margin-left: 4%\"> жел/стр.\r\n          </clr-dg-page-size>\r\n          <span class=\"ar-360-hide\"> {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} из {{pagination.totalItems}} жел.</span>\r\n        </clr-dg-pagination>\r\n      </div>\r\n    </div>\r\n\r\n  </clr-dg-footer>\r\n</clr-datagrid>\r\n\r\n<div *ngIf=\"monthOrdermode\">\r\n\r\n  <div class=\"ar-900-hide\">\r\n  <button class=\"btn btn-primary\" (click)=\"toMainTableMode()\"> Вернуться в табличный режим</button>\r\n  <button class=\"btn btn-secondary\" (click)=\"getWishesWithMonthGroupping('?sortType=all')\"> Обновить</button>\r\n  <clr-dropdown>\r\n    <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\r\n      СОРТИРОВКА\r\n      <clr-icon shape=\"caret down\"></clr-icon>\r\n    </button>\r\n    <clr-dropdown-menu *clrIfOpen>\r\n      <label class=\"dropdown-header\">Сортировка</label>\r\n      <a *ngFor=\"let item of groupMonthSort\" (click)=\"sortGroupList(item)\" clrDropdownItem>{{item}}</a>\r\n    </clr-dropdown-menu>\r\n  </clr-dropdown>\r\n  </div>\r\n\r\n<!--КНОПКИ ДЛЯ МОБИЛКИ-->\r\n  <div class=\"ar-900-show\">\r\n    <button type=\"button\" class=\"btn btn-icon\" (click)=\"toMainTableMode()\" aria-label=\"Вернуться в табличный режим\"><clr-icon shape=\"undo\"></clr-icon></button>\r\n    <button type=\"button\" class=\"btn btn-icon\" (click)=\"getWishesWithMonthGroupping('?sortType=all')\" aria-label=\"Обновить\"><clr-icon shape=\"refresh\"></clr-icon></button>\r\n  </div>\r\n\r\n\r\n  <clr-tree-node *ngFor=\"let month of wishGroups\" [(clrExpanded)]=\"month.expanded\">\r\n\r\n    <span class=\"{{month.colorClass}}\">{{month.monthName}} <span class=\"badge\">{{month.sum}}</span></span>\r\n    <span *ngIf=\"month.overflow\" class=\"badge badge-danger\">Перебор!</span>\r\n\r\n\r\n    <clr-tree-node *ngFor=\"let items of month.wishList\">\r\n      <a [routerLink]=\"\" (click)=\"editMonthGroupItem(items)\"> <div class=\"string-truncate\">{{items.wish}}</div></a>{{'&nbsp;| ' + items.price + ' |'}}\r\n      <clr-icon shape=\"upload\" (click)=\"changePriorityMonth(items, 'up')\"></clr-icon>      |      <clr-icon shape=\"download\" (click)=\"changePriorityMonth(items, 'down')\"></clr-icon>\r\n    </clr-tree-node>\r\n\r\n\r\n  </clr-tree-node>\r\n\r\n\r\n</div>\r\n\r\n<clr-modal [(clrModalOpen)]=\"isEdit\">\r\n  <h3 class=\"modal-title\">{{isEditMode ? 'Редактировать желание' : 'Добавить желание'}}</h3>\r\n  <div class=\"modal-body\">\r\n    <form clrForm [formGroup]=\"form\">\r\n\r\n      <!--ПОЛЕ ДАТА СОЗДАНИЯ-->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"creationDate\" class=\"input-label clr-col-12\">Дата создания</label>\r\n        <input type=\"text\" clrInput formControlName=\"creationDate\" id=\"creationDate\" name=\"creationDate\"\r\n               autocomplete=\"off\" readonly\r\n               size=\"50\">\r\n      </clr-input-container>\r\n\r\n      <!--ПОЛЕ ID-->\r\n\r\n      <clr-input-container hidden>\r\n\r\n        <label #label for=\"id\" class=\"input-label clr-col-12\">id</label>\r\n        <input type=\"text\" clrInput formControlName=\"id\" id=\"id\" name=\"id\" autocomplete=\"off\" readonly required\r\n               size=\"50\">\r\n      </clr-input-container>\r\n\r\n      <!--ПОЛЕ ИМЯ-->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"name\" class=\"input-label clr-col-12\">Название</label>\r\n        <input type=\"text\"\r\n               clrInput\r\n               formControlName=\"name\"\r\n               id=\"name\"\r\n               name=\"name\"\r\n               autocomplete=\"off\" required size=\"100\">\r\n\r\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\r\n      </clr-input-container>\r\n\r\n      <!--ПОЛЕ ОПИСАНИЕ-->\r\n\r\n      <clr-input-container>\r\n        <label #label for=\"description\" class=\"input-label clr-col-12\">Описание</label>\r\n        <input type=\"text\"\r\n               clrInput\r\n               formControlName=\"description\"\r\n               id=\"description\"\r\n               name=\"description\"\r\n               autocomplete=\"off\" required size=\"100\">\r\n      </clr-input-container>\r\n\r\n      <!--ПОЛЕ URL-->\r\n\r\n      <clr-input-container>\r\n        <label #label for=\"url\" class=\"input-label clr-col-12\">URL</label>\r\n        <input type=\"url\"\r\n               clrInput\r\n               formControlName=\"url\"\r\n               id=\"url\"\r\n               name=\"url\"\r\n               autocomplete=\"off\" required size=\"100\">\r\n      </clr-input-container>\r\n\r\n      <!--ПОЛЕ PRIORITY-->\r\n\r\n      <clr-input-container>\r\n        <label #label for=\"priority\" class=\"input-label clr-col-12\">Приоритет</label>\r\n        <input type=\"text\"\r\n               clrInput\r\n               formControlName=\"priority\"\r\n               id=\"priority\"\r\n               name=\"priority\"\r\n               autocomplete=\"off\">\r\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\r\n      </clr-input-container>\r\n\r\n      <!--ПОЛЕ PRICE-->\r\n\r\n      <clr-input-container>\r\n        <label #label for=\"price\" class=\"input-label clr-col-12\">Цена</label>\r\n        <input type=\"text\"\r\n               clrInput\r\n               formControlName=\"price\"\r\n               id=\"price\"\r\n               name=\"price\"\r\n               autocomplete=\"off\">\r\n      </clr-input-container>\r\n    </form>\r\n\r\n    <div class=\"row\">\r\n      <button type=\"button\" (click)=\"addEditWish()\" class=\"btn btn-primary mt-1\">Сохранить</button>\r\n      <button type=\"button\" (click)=\"deleteWish()\" *ngIf=\"isEditMode\" class=\"btn btn-danger mt-1\">Удалить</button>\r\n      <button type=\"button\" (click)=\"realizeWish()\" *ngIf=\"isEditMode\" class=\"btn btn-success mt-1\">Реализовано\r\n      </button>\r\n    </div>\r\n\r\n  </div>\r\n</clr-modal>\r\n\r\n<clr-modal [(clrModalOpen)]=\"isSalaryAdd\">\r\n  <h3 class=\"modal-title\">Добавить зарплату</h3>\r\n  <div class=\"modal-body\">\r\n    <form clrForm [formGroup]=\"salaryForm\">\r\n\r\n      <!--ПОЛЕ SALARY-->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"salary\" class=\"input-label clr-col-12\">Зарплата</label>\r\n        <input type=\"text\" clrInput formControlName=\"salary\" id=\"salary\" name=\"salary\" autocomplete=\"off\" required\r\n               size=\"100\">\r\n      </clr-input-container>\r\n\r\n      <!--ПОЛЕ RESIDUAL SALARY-->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"residualSalary\" class=\"input-label clr-col-12\">Остаточная зарплата</label>\r\n        <input type=\"text\" clrInput formControlName=\"residualSalary\" id=\"residualSalary\" name=\"residualSalary\"\r\n               autocomplete=\"off\" required\r\n               size=\"100\">\r\n      </clr-input-container>\r\n      <br/>\r\n\r\n      <span\r\n        class=\"label label-warning\">Зарплата, которая остается у вас после всех трат. Расчет идет именно по ней.</span>\r\n\r\n\r\n    </form>\r\n\r\n    <div class=\"row\">\r\n      <button type=\"button\" (click)=\"addSalary()\" class=\"btn btn-primary mt-1\">Добавить</button>\r\n    </div>\r\n\r\n  </div>\r\n</clr-modal>\r\n\r\n<clr-modal [(clrModalOpen)]=\"isCsvParse\">\r\n  <h3 class=\"modal-title\">Парсинг csv-файла</h3>\r\n  <div class=\"modal-body\">\r\n    <form clrForm [formGroup]=\"csvForm\">\r\n\r\n\r\n      <!--ПОЛЕ FILE-->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"csvfile\" class=\"input-label clr-col-12\">Укажите csv-файл</label>\r\n        <input type=\"file\" clrInput formControlName=\"csvfile\" id=\"csvfile\" name=\"csvfile\" autocomplete=\"off\"\r\n               required\r\n               size=\"100\">\r\n      </clr-input-container>\r\n\r\n      <form [formGroup]=\"uploadForm\" (ngSubmit)=\"onSubmit()\">\r\n\r\n        <input type=\"file\" name=\"profile\" (change)=\"onFileSelect($event)\"/>\r\n        <div>\r\n          <button type=\"submit\">Upload</button>\r\n        </div>\r\n      </form>\r\n\r\n    </form>\r\n\r\n    <div class=\"row\">\r\n      <button type=\"button\" (click)=\"sendCsvFile()\" class=\"btn btn-primary mt-1\">Парсить</button>\r\n    </div>\r\n\r\n  </div>\r\n</clr-modal>\r\n\r\n<!--ФОРМА ФИЛЬТРАЦИИ -->\r\n\r\n<clr-modal [(clrModalOpen)]=\"isFilterModal\">\r\n  <h3 class=\"modal-title\">Фильтры и поиск</h3>\r\n  <div class=\"modal-body\">\r\n    <form clrForm [formGroup]=\"filterForm\">\r\n\r\n\r\n      <!-- ПОЛЕ ПОИСКА / ФИЛЬТРАЦИИ ПО ЖЕЛАНИЮ -->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"wish\" class=\"input-label clr-col-12\">Желание</label>\r\n        <input type=\"text\" clrInput formControlName=\"wish\" id=\"wish\" name=\"wish\" autocomplete=\"off\" required\r\n               size=\"100\">\r\n      </clr-input-container>\r\n\r\n    </form>\r\n\r\n    <div class=\"row\">\r\n      <button type=\"button\" (click)=\"applyFilter()\" class=\"btn btn-primary mt-1\">Фильтровать</button>\r\n    </div>\r\n\r\n  </div>\r\n</clr-modal>\r\n\r\n<!--ФОРМА РЕДАКТИРОВАНИЯ ЖЕЛАНИЯ ПРИ ПОМЕСЯЧНОЙ ГРУППИРОВКЕ -->\r\n\r\n<clr-modal [(clrModalOpen)]=\"isMonthGroupModeWishEdit\">\r\n  <h3 class=\"modal-title\">Изменить порядок желания</h3>\r\n  <div class=\"modal-body\">\r\n    <form clrForm [formGroup]=\"MonthGroupModeWishEdit\">\r\n\r\n      <!-- ПОЛЕ ЖЕЛАНИЕ -->\r\n\r\n      <clr-input-container>\r\n\r\n        <label #label for=\"selected_wish\" class=\"input-label clr-col-12\">Желание</label>\r\n        <input type=\"text\" clrInput formControlName=\"wish\" id=\"selected_wish\" name=\"wish\" autocomplete=\"off\"\r\n               required readonly\r\n               size=\"100%\">\r\n      </clr-input-container>\r\n\r\n      <div>\r\n        <clr-select-container>\r\n          <label #label for=\"month_field\" class=\"input-label clr-col-12\">Месяц</label>\r\n          <select id=\"month_field\" [ngModel]=\"month\" formControlName=\"month\" clrSelect>\r\n            <option *ngFor=\"let currentMonth of monthList\" [value]=\"currentMonth\">{{currentMonth}}</option>\r\n          </select>\r\n        </clr-select-container>\r\n      </div>\r\n\r\n    </form>\r\n\r\n    <div class=\"row\">\r\n      <button type=\"button\" (click)=\"applyMonthChange4Wish()\" class=\"btn btn-primary mt-1\">Принять</button>\r\n    </div>\r\n\r\n  </div>\r\n</clr-modal>\r\n\r\n\r\n<!--ФОРМА ВЫВОДА / ДУБЛИРОВАНИЯ ИТОГОВЫХ ДАННЫХ -->\r\n\r\n<clr-modal [(clrModalOpen)]=\"isSummInfoForm\">\r\n  <h3 class=\"modal-title\">ИТОГО</h3>\r\n  <div class=\"modal-body\">\r\n\r\n    <div>\r\n      <span class=\"label label-danger\">ВСЕ ЖЕЛАНИЯ <span\r\n        class=\"badge badge-orange\">{{summAll | number:'2.'}} руб.</span></span>\r\n    </div>\r\n    <div>\r\n      <span class=\"label label-danger\">Реализация<span class=\"badge badge-danger\">{{periodAll}} мес.</span></span>\r\n    </div>\r\n    <div>\r\n      <span class=\"label label-success\">ИТОГО (PRIOR)<span class=\"badge badge-orange\">{{summPriority | number:'2.'}} руб.</span></span>\r\n    </div>\r\n    <div>\r\n      <span class=\"label label-success\">Реализация<span\r\n        class=\"badge badge-success\">{{periodPriority}} мес.</span></span>\r\n    </div>\r\n    <div>\r\n      <span class=\"label label-gray\">Среднее время<span class=\"badge badge-blue\">{{implementationPeriod}} дней.</span></span>\r\n    </div>\r\n\r\n    <div>\r\n      <span class=\"label label-purple\">Реализовано за все время<span class=\"badge badge-blue\">{{implemetedSummAllTime}} руб.</span></span>\r\n    </div>\r\n\r\n    <div>\r\n      <span class=\"label label-light-blue\">Реализовано за тек.месяц<span class=\"badge badge-blue\">{{implemetedSummMonth}} руб.</span></span>\r\n    </div>\r\n\r\n\r\n    <div class=\"row\">\r\n      <button type=\"button\" (click)=\"isSummInfoForm=false\" class=\"btn btn-primary mt-1\">Закрыть</button>\r\n    </div>\r\n\r\n\r\n  </div>\r\n</clr-modal>\r\n"
+module.exports = "<clr-alert [clrAlertType]=\"'success'\" *ngIf=\"result\">\n  <clr-alert-item>\n        <span class=\"alert-text\">\n            {{result}}\n        </span>\n  </clr-alert-item>\n</clr-alert>\n\n<clr-alert [clrAlertType]=\"'danger'\" *ngIf=\"error\">\n  <clr-alert-item>\n        <span class=\"alert-text\">\n            {{error}}\n        </span>\n  </clr-alert-item>\n</clr-alert>\n\n<clr-datagrid *ngIf=\"!monthOrdermode\">\n  <clr-dg-action-bar>\n    <div class=\"actions-container\">\n      <div class=\"ar-900-hide\">\n        <button class=\"btn btn-primary\" (click)=\"openEditWish($event, null, 2)\"> Добавить</button>\n        <button class=\"btn btn-secondary\" (click)=\"getWishes(apiUrl)\"> Обновить</button>\n        <button class=\"btn btn-secondary; hidden-md-down\" (click)=\"openAddSalaryModal($event)\"> Задать зарплату\n        </button>\n        <button class=\"btn btn-secondary; hidden-md-down\" (click)=\"openParseCsv($event)\" *ngIf=\"userRole==='ADMIN'\">\n          Парсинг csv\n        </button>\n        <button class=\"{{filterMode ? 'btn btn-danger; hidden-md-down' : 'btn btn-secondary; hidden-md-down'}}\"\n                (click)=\"filterWishes()\"> {{filterButtonText}}\n        </button>\n\n        <clr-dropdown class=\"hidden-md-down\">\n          <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\n            РЕЖИМ ОТОБРАЖЕНИЯ\n            <clr-icon shape=\"caret down\"></clr-icon>\n          </button>\n          <clr-dropdown-menu *clrIfOpen>\n            <label class=\"dropdown-header\">Режим отображения</label>\n            <a *ngFor=\"let item of filterTypes\" (click)=\"changeFilter(item)\" clrDropdownItem>{{item}}</a>\n          </clr-dropdown-menu>\n        </clr-dropdown>\n\n        <clr-dropdown class=\"hidden-md-down\">\n          <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\n            СОРТИРОВКА\n            <clr-icon shape=\"caret down\"></clr-icon>\n          </button>\n          <clr-dropdown-menu *clrIfOpen>\n            <label class=\"dropdown-header\">Сортировка</label>\n            <a *ngFor=\"let item of mainSort\" (click)=\"sortMainList(item)\" clrDropdownItem>{{item}}</a>\n          </clr-dropdown-menu>\n        </clr-dropdown>\n      </div>\n\n      <!--МИНИ-КНОПКИ ДЛЯ МОБИЛКИ-->\n\n      <div class=\"ar-900-show\">\n        <div class=\"clr-row\" style=\"margin-left: 1%\">\n          <button type=\"button\" class=\"btn btn-icon\" (click)=\"openEditWish($event, null, 2)\"\n                  aria-label=\"Добавить желание\">\n            <clr-icon shape=\"plus\"></clr-icon>\n          </button>\n          <button type=\"button\" class=\"btn btn-icon\" (click)=\"getWishes(apiUrl)\" aria-label=\"Обновить\">\n            <clr-icon shape=\"refresh\"></clr-icon>\n          </button>\n          <div class=\"ar-360-hide\">\n            <button type=\"button\" (click)=\"openAddSalaryModal($event)\" class=\"btn btn-icon\"\n                    aria-label=\"Задать зарплату\">\n              <clr-icon shape=\"ruble\"></clr-icon>\n            </button>\n          </div>\n          <button type=\"button\" class=\"{{filterMode ? 'btn btn-icon btn-danger' : 'btn btn-icon'}}\"\n                  (click)=\"filterWishes()\" aria-label=\"Поиск\">\n            <clr-icon shape=\"search\"></clr-icon>\n          </button>\n          <button type=\"button\" class=\"{{filterMode ? 'btn btn-icon btn-danger' : 'btn btn-icon'}}\"\n                  (click)=\"summInfo()\" aria-label=\"Итоги\">\n            <clr-icon shape=\"help\"></clr-icon>\n          </button>\n\n          <clr-dropdown>\n            <button type=\"button\" class=\"btn btn-icon\" aria-label=\"Режимы\" clrDropdownTrigger>\n              <clr-icon shape=\"eye\"></clr-icon>\n              <clr-icon shape=\"caret down\"></clr-icon>\n            </button>\n            <clr-dropdown-menu clrPosition=\"bottom-right\" *clrIfOpen>\n              <label class=\"dropdown-header\">Режим отображения</label>\n              <a *ngFor=\"let item of filterTypes\" (click)=\"changeFilter(item)\" clrDropdownItem>{{item}}</a>\n            </clr-dropdown-menu>\n          </clr-dropdown>\n\n          <div class=\"ar-475-hide\">\n\n            <clr-dropdown>\n              <button type=\"button\" class=\"btn btn-icon\" aria-label=\"Сортировка\" clrDropdownTrigger>\n                <clr-icon shape=\"sort-by\"></clr-icon>\n                <clr-icon shape=\"caret down\"></clr-icon>\n              </button>\n              <clr-dropdown-menu *clrIfOpen>\n                <label class=\"dropdown-header\">Сортировка</label>\n                <a *ngFor=\"let item of mainSort\" (click)=\"sortMainList(item)\" clrDropdownItem>{{item}}</a>\n              </clr-dropdown-menu>\n            </clr-dropdown>\n          </div>\n        </div>\n      </div>\n    </div>\n  </clr-dg-action-bar>\n  <clr-dg-column>Желание</clr-dg-column>\n  <clr-dg-column>Цена</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"20\" class=\"hidden-md-down\">Приоритет</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">.</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">.</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">Ред.</clr-dg-column>\n\n  <clr-dg-row *clrDgItems=\"let item of wishes\" [clrDgItem]=\"item\">\n    <clr-dg-cell><a (click)=\"openEditWish($event, item, 1)\">{{item.wish}}</a></clr-dg-cell>\n    <clr-dg-cell style=\"text-align: center\">{{item.price | number:'2.'}}</clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">{{item.priority}}</clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\n      <clr-icon shape=\"upload\" (click)=\"changePriority(item, 'down')\"></clr-icon>\n    </clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\n      <clr-icon shape=\"download\" (click)=\"changePriority(item, 'up')\"></clr-icon>\n    </clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\n      <clr-icon shape=\"edit\" (click)=\"openEditWish($event, item, 1)\"></clr-icon>\n    </clr-dg-cell>\n  </clr-dg-row>\n\n  <clr-dg-footer>\n    <div class=\"clr-row\">\n      <div class=\"ar-900-hide\">\n      <span class=\"label label-danger\" style=\"margin-left: 1%\">ИТОГО<span\n        class=\"badge badge-orange\">{{summAll | number:'2.'}} руб.</span></span>\n        <span class=\"label label-danger\">Реализация<span class=\"badge badge-danger\">{{periodAll}} мес.</span></span>\n        <span class=\"label label-success\">ИТОГО (PRIOR)<span class=\"badge badge-orange\">{{summPriority | number:'2.'}}\n          руб.</span></span>\n        <span class=\"label label-success\">Реализация<span\n          class=\"badge badge-success\">{{periodPriority}} мес.</span></span>\n        <span class=\"label label-gray\">Среднее время<span\n          class=\"badge badge-blue\">{{implementationPeriod}}</span></span>\n      </div>\n\n      <div>\n        <clr-dg-pagination #pagination [clrDgPageSize]=\"15\">\n          <clr-dg-page-size [clrPageSizeOptions]=\"[3,5,10,15,30,50,100]\" class=\"ar-475-hide\" style=\"margin-left: 4%\">\n            жел/стр.\n          </clr-dg-page-size>\n          <span class=\"ar-360-hide\"> {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}\n            из {{pagination.totalItems}} жел.</span>\n        </clr-dg-pagination>\n      </div>\n    </div>\n\n  </clr-dg-footer>\n</clr-datagrid>\n\n<div *ngIf=\"monthOrdermode\">\n\n  <div class=\"ar-900-hide\">\n    <button class=\"btn btn-primary\" (click)=\"toMainTableMode()\"> Вернуться в табличный режим</button>\n    <button class=\"btn btn-secondary\" (click)=\"getWishesWithMonthGroupping('?sortType=all')\"> Обновить</button>\n    <clr-dropdown>\n      <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\n        СОРТИРОВКА\n        <clr-icon shape=\"caret down\"></clr-icon>\n      </button>\n      <clr-dropdown-menu *clrIfOpen>\n        <label class=\"dropdown-header\">Сортировка</label>\n        <a *ngFor=\"let item of groupMonthSort\" (click)=\"sortGroupList(item)\" clrDropdownItem>{{item}}</a>\n      </clr-dropdown-menu>\n    </clr-dropdown>\n  </div>\n\n  <!--КНОПКИ ДЛЯ МОБИЛКИ-->\n  <div class=\"ar-900-show\">\n    <button type=\"button\" class=\"btn btn-icon\" (click)=\"toMainTableMode()\" aria-label=\"Вернуться в табличный режим\">\n      <clr-icon shape=\"undo\"></clr-icon>\n    </button>\n    <button type=\"button\" class=\"btn btn-icon\" (click)=\"getWishesWithMonthGroupping('?sortType=all')\"\n            aria-label=\"Обновить\">\n      <clr-icon shape=\"refresh\"></clr-icon>\n    </button>\n  </div>\n\n  <clr-tree-node *ngFor=\"let month of wishGroups\" [(clrExpanded)]=\"month.expanded\">\n    <span class=\"{{month.colorClass}}\">{{month.monthName}} <span class=\"badge\">{{month.sum}}</span></span>\n    <span [ngClass]=\"(month.balance>0)?'badge badge-success':'badge badge-danger'\">{{month.balance}}</span>\n    <span *ngIf=\"month.overflow\" class=\"badge badge-danger\">Перебор!</span>\n\n    <clr-tree-node *ngFor=\"let items of month.wishList\">\n      <a [routerLink]=\"\" (click)=\"editMonthGroupItem(items)\">\n        <div class=\"string-truncate\">{{items.wish}}</div>\n      </a>{{'&nbsp;| ' + items.price + ' |'}}\n      <clr-icon shape=\"upload\" (click)=\"changePriorityMonth(items, 'up')\"></clr-icon>\n      |\n      <clr-icon shape=\"download\" (click)=\"changePriorityMonth(items, 'down')\"></clr-icon>\n    </clr-tree-node>\n\n  </clr-tree-node>\n\n</div>\n\n<clr-modal [(clrModalOpen)]=\"isEdit\">\n  <h3 class=\"modal-title\">{{isEditMode ? 'Редактировать желание' : 'Добавить желание'}}</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"form\">\n\n      <!--ПОЛЕ ДАТА СОЗДАНИЯ-->\n\n      <clr-input-container>\n\n        <label #label for=\"creationDate\" class=\"input-label clr-col-12\">Дата создания</label>\n        <input type=\"text\" clrInput formControlName=\"creationDate\" id=\"creationDate\" name=\"creationDate\"\n               autocomplete=\"off\" readonly\n               size=\"50\">\n      </clr-input-container>\n\n      <!--ПОЛЕ ID-->\n\n      <clr-input-container hidden>\n\n        <label #label for=\"id\" class=\"input-label clr-col-12\">id</label>\n        <input type=\"text\" clrInput formControlName=\"id\" id=\"id\" name=\"id\" autocomplete=\"off\" readonly required\n               size=\"50\">\n      </clr-input-container>\n\n      <!--ПОЛЕ ИМЯ-->\n\n      <clr-input-container>\n\n        <label #label for=\"name\" class=\"input-label clr-col-12\">Название</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"name\"\n               id=\"name\"\n               name=\"name\"\n               autocomplete=\"off\" required size=\"100\">\n\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!--ПОЛЕ ОПИСАНИЕ-->\n\n      <clr-input-container>\n        <label #label for=\"description\" class=\"input-label clr-col-12\">Описание</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"description\"\n               id=\"description\"\n               name=\"description\"\n               autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ URL-->\n\n      <clr-input-container>\n        <label #label for=\"url\" class=\"input-label clr-col-12\">URL</label>\n        <input type=\"url\"\n               clrInput\n               formControlName=\"url\"\n               id=\"url\"\n               name=\"url\"\n               autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ PRIORITY-->\n\n      <clr-input-container>\n        <label #label for=\"priority\" class=\"input-label clr-col-12\">Приоритет</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"priority\"\n               id=\"priority\"\n               name=\"priority\"\n               autocomplete=\"off\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!--ПОЛЕ PRICE-->\n\n      <clr-input-container>\n        <label #label for=\"price\" class=\"input-label clr-col-12\">Цена</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"price\"\n               id=\"price\"\n               name=\"price\"\n               autocomplete=\"off\">\n      </clr-input-container>\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"addEditWish()\" class=\"btn btn-primary mt-1\">Сохранить</button>\n      <button type=\"button\" (click)=\"deleteWish()\" *ngIf=\"isEditMode\" class=\"btn btn-danger mt-1\">Удалить</button>\n      <button type=\"button\" (click)=\"realizeWish()\" *ngIf=\"isEditMode\" class=\"btn btn-success mt-1\">Реализовано\n      </button>\n    </div>\n\n  </div>\n</clr-modal>\n\n<clr-modal [(clrModalOpen)]=\"isSalaryAdd\">\n  <h3 class=\"modal-title\">Добавить зарплату</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"salaryForm\">\n\n      <!--ПОЛЕ SALARY-->\n\n      <clr-input-container>\n        <label #label for=\"salary\" class=\"input-label clr-col-12\">Зарплата</label>\n        <input type=\"text\" clrInput formControlName=\"salary\" id=\"salary\" name=\"salary\" autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ RESIDUAL SALARY-->\n      <clr-input-container>\n        <label #label for=\"residualSalary\" class=\"input-label clr-col-12\">Остаточная зарплата</label>\n        <input type=\"text\" clrInput formControlName=\"residualSalary\" id=\"residualSalary\" name=\"residualSalary\"\n               autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n      <br/>\n      <span\n        class=\"label label-warning\">Зарплата, которая остается у вас после всех трат. Расчет идет именно по ней.</span>\n    </form>\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"addSalary()\" class=\"btn btn-primary mt-1\">Добавить</button>\n    </div>\n  </div>\n</clr-modal>\n\n<clr-modal [(clrModalOpen)]=\"isCsvParse\">\n  <h3 class=\"modal-title\">Парсинг csv-файла</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"csvForm\">\n\n\n      <!--ПОЛЕ FILE-->\n\n      <clr-input-container>\n\n        <label #label for=\"csvfile\" class=\"input-label clr-col-12\">Укажите csv-файл</label>\n        <input type=\"file\" clrInput formControlName=\"csvfile\" id=\"csvfile\" name=\"csvfile\" autocomplete=\"off\"\n               required\n               size=\"100\">\n      </clr-input-container>\n\n      <form [formGroup]=\"uploadForm\" (ngSubmit)=\"onSubmit()\">\n\n        <input type=\"file\" name=\"profile\" (change)=\"onFileSelect($event)\"/>\n        <div>\n          <button type=\"submit\">Upload</button>\n        </div>\n      </form>\n\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"sendCsvFile()\" class=\"btn btn-primary mt-1\">Парсить</button>\n    </div>\n\n  </div>\n</clr-modal>\n\n<!--ФОРМА ФИЛЬТРАЦИИ -->\n\n<clr-modal [(clrModalOpen)]=\"isFilterModal\">\n  <h3 class=\"modal-title\">Фильтры и поиск</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"filterForm\">\n\n\n      <!-- ПОЛЕ ПОИСКА / ФИЛЬТРАЦИИ ПО ЖЕЛАНИЮ -->\n\n      <clr-input-container>\n\n        <label #label for=\"wish\" class=\"input-label clr-col-12\">Желание</label>\n        <input type=\"text\" clrInput formControlName=\"wish\" id=\"wish\" name=\"wish\" autocomplete=\"off\" required\n               size=\"100\">\n      </clr-input-container>\n\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"applyFilter()\" class=\"btn btn-primary mt-1\">Фильтровать</button>\n    </div>\n\n  </div>\n</clr-modal>\n\n<!--ФОРМА РЕДАКТИРОВАНИЯ ЖЕЛАНИЯ ПРИ ПОМЕСЯЧНОЙ ГРУППИРОВКЕ -->\n\n<clr-modal [(clrModalOpen)]=\"isMonthGroupModeWishEdit\">\n  <h3 class=\"modal-title\">Изменить порядок желания</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"MonthGroupModeWishEdit\">\n\n      <!-- ПОЛЕ ЖЕЛАНИЕ -->\n\n      <clr-input-container>\n\n        <label #label for=\"selected_wish\" class=\"input-label clr-col-12\">Желание</label>\n        <input type=\"text\" clrInput formControlName=\"wish\" id=\"selected_wish\" name=\"wish\" autocomplete=\"off\"\n               required readonly\n               size=\"100%\">\n      </clr-input-container>\n\n      <div>\n        <clr-select-container>\n          <label #label for=\"month_field\" class=\"input-label clr-col-12\">Месяц</label>\n          <select id=\"month_field\" formControlName=\"month\" clrSelect>\n            <option *ngFor=\"let currentMonth of monthList\" [value]=\"currentMonth\">{{currentMonth}}</option>\n          </select>\n        </clr-select-container>\n      </div>\n\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"applyMonthChange4Wish()\" class=\"btn btn-primary mt-1\">Принять</button>\n    </div>\n\n  </div>\n</clr-modal>\n\n\n<!--ФОРМА ВЫВОДА ИТОГОВЫХ ДАННЫХ -->\n\n<clr-modal [(clrModalOpen)]=\"isSummInfoForm\">\n  <h3 class=\"modal-title\">ИТОГО</h3>\n  <div class=\"modal-body\">\n\n    <div>\n      <span class=\"label label-danger\">ВСЕ ЖЕЛАНИЯ <span\n        class=\"badge badge-orange\">{{summAll | number:'2.'}} руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-danger\">Реализация<span class=\"badge badge-danger\">{{periodAll}} мес.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-success\">ИТОГО (PRIOR)<span class=\"badge badge-orange\">{{summPriority | number:'2.'}}\n        руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-success\">Реализация<span\n        class=\"badge badge-success\">{{periodPriority}} мес.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-gray\">Среднее время<span class=\"badge badge-blue\">{{implementationPeriod}}\n        дней.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-purple\">Реализовано за все время<span class=\"badge badge-blue\">{{implemetedSummAllTime}}\n        руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-purple\">Зарплата<span class=\"badge badge-blue\">{{lastSalary}}\n        руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-light-blue\">Реализовано за тек.месяц<span\n        class=\"badge badge-blue\">{{implemetedSummMonth}} руб.</span></span>\n    </div>\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"isSummInfoForm=false\" class=\"btn btn-primary mt-1\">Закрыть</button>\n    </div>\n\n\n  </div>\n</clr-modal>\n"
 
 /***/ }),
 
@@ -1062,6 +1955,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _service_message_code__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../service/message.code */ "./src/app/service/message.code.ts");
 /* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../../environments/environment */ "./src/environments/environment.ts");
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
+/* harmony import */ var _dto_searchwishes__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../dto/searchwishes */ "./src/app/dto/searchwishes.ts");
+
 
 
 
@@ -1084,18 +1979,24 @@ var MainComponent = /** @class */ (function () {
         // --------------------------------- URL'ы -------------------------------------
         this.SERVER_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_11__["environment"].serverUrl;
         this.myBaseUrl = this.SERVER_URL + '/rest/wishes';
-        this._myBaseUrl = 'http://localhost:8080/rest/wishes';
-        this.apiUrl = this.myBaseUrl + '/all'; // все желания // основная ссылка на api
-        this.priorityWishesUrl = this.myBaseUrl + '/priority'; // приоритетные желания
+        this.apiUrl = this.myBaseUrl; // все желания // основная ссылка на api
+        this.priorityWishesFilterUrl = this.myBaseUrl + '?filter=PRIOR'; // приоритетные желания
+        this.allWishesFilterUrl = this.myBaseUrl + '?filter=ALL'; // все желания
+        this.clearWishesFilterUrl = this.myBaseUrl + '?filter=NONE'; // очистить фильтр желаний
+        this.sortWishesByNameUrl = this.myBaseUrl + '?sort=NAME'; // очистить фильтр желаний
+        this.sortWishesByPriceAscUrl = this.myBaseUrl + '?sort=PRICE_ASC'; // очистить фильтр желаний
+        this.sortWishesByPriceDescUrl = this.myBaseUrl + '?sort=PRICE_DESC'; // очистить фильтр желаний
+        this.sortWishesByPriorityUrl = this.myBaseUrl + '?sort=PRIOR'; // очистить фильтр желаний
+        this.wishesWithoutSortUrl = this.myBaseUrl + '?sort=ALL'; // очистить фильтр желаний
         this.groupWishesUrl = this.myBaseUrl + '/groups';
         this.userViewModeUrl = this.myBaseUrl + '/users/toggle';
-        this.allWishesUrl = this.myBaseUrl + '/all'; // все желания
         this.apiGetSumm = this.myBaseUrl + '/summ'; // ссылка для получения сумм
         this.apiSalary = this.myBaseUrl + '/salary'; // ссылка для получения сумм
         this.parseUrl = this.myBaseUrl + '/parsecsv'; // url для парсинга csv
         this.changePriorityUrl = this.myBaseUrl + '/changepriority'; // url для быстрого изменения приоритета
         this.changePriorityMonthUrl = this.myBaseUrl + '/changemonth'; // url для быстрого изменения приоритета
         this.changePriorityMonthManualyUrl = this.myBaseUrl + '/transferwish'; // url для быстрого изменения приоритета
+        this.searchWishesUrl = this.myBaseUrl + '/filter'; // поиск желаний
         // --------------------------------- ПЕРЕМЕННЫЕ -------------------------------------
         this.cryptokey = ''; // пользовательский ключ шифрования
         this.summAll = 0; // отображение сум по всем желаниям
@@ -1109,7 +2010,9 @@ var MainComponent = /** @class */ (function () {
         this.filterButtonText = 'ПОИСК/ФИЛЬТР'; // период реализации для приоритетного
         this.monthOrdermode = false; // режим отображение дерева группировки по месяцам
         this.isSalaryExists = false;
+        this.lastSalary = 0;
         this.curDateFormated = '';
+        this.sortMode = 'По имени'; // глобальный переключатель типов сортировки
         // --------------------------------- ВКЛЮЧЕНИЕ МОДАЛОВ -------------------------------------
         this.isEdit = false; // режим редактирования для отображения / или чтобы спрятать модальное окно
         this.isSalaryAdd = false; // режим добавления зп
@@ -1121,10 +2024,10 @@ var MainComponent = /** @class */ (function () {
         // --------------------------------- ХРАНИЛИЩА -------------------------------------
         this.wishes = []; // контейнер желаний
         this.wishGroups = []; // контейнер желаний
-        this.monthList = []; // контейнер месяцов
-        this.filters = ['Все', 'Приоритет', 'Помесячная группировка']; // фильтры
-        this.groupMonthSort = ['По имени', 'По сумме [1..10]', 'По сумме [10..1]']; // сортировка помесячной группировки
-        this.mainSort = ['По имени', 'По сумме [1..10]', 'По сумме [10..1]', 'По приоритету']; // сортировка помесячной группировки
+        this.monthList = []; // контейнер месяцев
+        this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр', 'Помесячная группировка']; // фильтры
+        this.groupMonthSort = ['Без сортировки', 'По имени', 'По сумме [1..10]', 'По сумме [10..1]']; // сортировка помесячной группировки
+        this.mainSort = ['По имени', 'По сумме [1..10]', 'По сумме [10..1]', 'По приоритету', 'Без сортировки']; // сортировка помесячной группировки
         this.form = this.fb.group({
             id: ['', []],
             name: ['', [
@@ -1212,12 +2115,11 @@ var MainComponent = /** @class */ (function () {
             }
         });
         // Закрываем пункт меню группировки по месяцам если нет зарплат
-        console.log('this.isSalaryExists - > ', this.isSalaryExists);
         if (this.isSalaryExists) {
-            this.filters = ['Все', 'Приоритет', 'Помесячная группировка']; // фильтры
+            this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр', 'Помесячная группировка']; // фильтры
         }
         else {
-            this.filters = ['Все', 'Приоритет']; // фильтры
+            this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр']; // фильтры
         }
         // Проверка ключа шифрования
         this.cryptokey = localStorage.getItem('cryptokey');
@@ -1237,7 +2139,7 @@ var MainComponent = /** @class */ (function () {
             console.log('data.viewMode => ' + data.viewMode);
             if (data.viewMode === 'TREE') {
                 _this.monthOrdermode = true;
-                _this.getWishesWithMonthGroupping('?sortType=all');
+                _this.getWishesWithMonthGroupping('?sortType=all'); // todo конечно полный пиздец!!!!!!
             }
             else {
                 _this.monthOrdermode = false;
@@ -1257,7 +2159,7 @@ var MainComponent = /** @class */ (function () {
         this.httpService.getData(this.groupWishesUrl + sorting).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
             return _this.errorHandler(err, 'Невозможно получить желания!');
         })).subscribe(function (data) {
-            _this.wishGroups = data['list'];
+            _this.wishGroups = data.list;
             _this.monthOrdermode = true;
             _this.isCrypto();
             if (_this.isUserCrypto) {
@@ -1278,7 +2180,9 @@ var MainComponent = /** @class */ (function () {
     MainComponent.prototype.applyMonthChange4Wish = function () {
         var _this = this;
         console.log(this.MonthGroupModeWishEdit.value.month);
-        this.httpService.getData(this.changePriorityMonthManualyUrl + '?id=' + this.MonthGroupModeWishEdit.value.id + '&month=' + this.MonthGroupModeWishEdit.value.month).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+        this.httpService.getData(this.changePriorityMonthManualyUrl + '?id=' +
+            this.MonthGroupModeWishEdit.value.id + '&month=' +
+            this.MonthGroupModeWishEdit.value.month).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
             return _this.errorHandler(err, 'Невозможно изменить приоритет!');
         })).subscribe(function (res) {
             console.log(res);
@@ -1300,96 +2204,74 @@ var MainComponent = /** @class */ (function () {
     };
     // Изменить сортировку помесячной группировки
     MainComponent.prototype.sortGroupList = function (item) {
-        //  if (this.isUserCrypto) {
         if (item === 'По имени') {
-            this.wishGroups.forEach(function (element) {
-                element.wishList.sort(function (a, b) {
-                    if (a.wish < b.wish)
-                        return -1;
-                    if (a.wish > b.wish)
-                        return 1;
-                    return 0;
-                });
-            });
+            this.getWishesWithMonthGroupping('?sortType=name');
         }
         else if (item === 'По сумме [1..10]') {
-            this.wishGroups.forEach(function (element) {
-                element.wishList.sort(function (a, b) {
-                    if (a.price < b.price)
-                        return -1;
-                    if (a.price > b.price)
-                        return 1;
-                    return 0;
-                });
-            });
+            this.getWishesWithMonthGroupping('?sortType=price-asc');
+        }
+        else if (item === 'Без сортировки') {
+            this.getWishesWithMonthGroupping('?sortType=all');
         }
         else {
-            this.wishGroups.forEach(function (element) {
-                element.wishList.sort(function (a, b) {
-                    return b.price - a.price;
-                });
-            });
+            this.getWishesWithMonthGroupping('?sortType=price-desc');
         }
     };
-    // Изменить сортировку основной таблицы
+    /**
+     * Изменить сортировку основной таблицы
+     *
+     * item - тип сортировки.
+     */
     MainComponent.prototype.sortMainList = function (item) {
         if (item === 'По имени') {
-            this.wishes.sort(function (a, b) {
-                if (a.wish < b.wish)
-                    return -1;
-                if (a.wish > b.wish)
-                    return 1;
-                return 0;
-            });
+            this.getWishes(this.sortWishesByNameUrl);
         }
         else if (item === 'По сумме [1..10]') {
-            this.wishes.sort(function (a, b) {
-                if (a.price < b.price)
-                    return -1;
-                if (a.price > b.price)
-                    return 1;
-                return 0;
-            });
+            this.getWishes(this.sortWishesByPriceAscUrl);
+        }
+        else if (item === 'По сумме [10..1]') {
+            this.getWishes(this.sortWishesByPriceDescUrl);
         }
         else if (item === 'По приоритету') {
-            this.wishes.sort(function (a, b) {
-                if (a.priority < b.priority)
-                    return -1;
-                if (a.priority > b.priority)
-                    return 1;
-                return 0;
-            });
+            this.getWishes(this.sortWishesByPriorityUrl);
         }
         else {
-            this.wishes.sort(function (a, b) {
-                return b.price - a.price;
-            });
+            this.getWishes(this.wishesWithoutSortUrl);
         }
     };
+    /**
+     * Фильтрация списка желаний: ALL / PRIOR / NONE
+     * item - выбранный тип фильтрации
+     */
     MainComponent.prototype.changeFilter = function (item) {
         if (item === 'Все') {
-            this.apiUrl = this.allWishesUrl;
+            this.getWishes(this.allWishesFilterUrl);
         }
         else if (item === 'Помесячная группировка') {
             this.getWishesWithMonthGroupping('?sortType=all');
             this.setUserViewMode('TREE');
         }
+        else if (item === 'Очистить фильтр') {
+            this.getWishes(this.clearWishesFilterUrl);
+        }
         else {
-            this.apiUrl = this.priorityWishesUrl;
+            this.getWishes(this.priorityWishesFilterUrl);
         }
-        this.getWishes(this.apiUrl);
     };
-    MainComponent.prototype.up = function (event, item) {
-        item.priority = item.priority + 1;
-        this.wishes.sort(function (a, b) { return a.priority - b.priority; });
-    };
-    MainComponent.prototype.down = function (event, item) {
-        item.priority = item.priority - 1;
-        if (item.priority < 1) {
-            item.priority = 1;
-        }
-        this.wishes.sort(function (a, b) { return a.priority - b.priority; });
-    };
+    /*up(event: any, item: Wish) {
+      item.priority = item.priority + 1;
+      this.wishes.sort((a, b) => a.priority - b.priority);
+    }
+  
+  
+    down(event: any, item: Wish) {
+  
+      item.priority = item.priority - 1;
+      if (item.priority < 1) {
+        item.priority = 1;
+      }
+      this.wishes.sort((a, b) => a.priority - b.priority);
+    }*/
     MainComponent.prototype.isCrypto = function () {
         var _this = this;
         this.httpService.isCryptoUser().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
@@ -1397,8 +2279,6 @@ var MainComponent = /** @class */ (function () {
         })).subscribe(function (data) {
             _this.isUserCrypto = data.userCryptoMode;
             _this.userRole = data.userRole;
-            console.log('crypto -> ' + data.userCryptoMode);
-            console.log('userRole -> ' + data.userRole);
         });
     };
     MainComponent.prototype.decryptWishes = function () {
@@ -1419,16 +2299,16 @@ var MainComponent = /** @class */ (function () {
             });
         });
     };
+    // Загрузить все желания в табличном режиме.
     MainComponent.prototype.getWishes = function (url) {
         var _this = this;
         this.isCrypto();
         this.httpService.getData(url).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
             return _this.errorHandler(err, 'Невозможно получить желания!');
         })).subscribe(function (data) {
-            _this.wishes = data['list'];
+            _this.wishes = data.list;
             console.log(_this.wishes);
             if (_this.isUserCrypto) {
-                console.log('decrypt-mode');
                 _this.decryptWishes();
             }
         });
@@ -1443,8 +2323,25 @@ var MainComponent = /** @class */ (function () {
             _this.implemetedSummAllTime = data.implemetedSummAllTime;
             _this.implemetedSummMonth = data.implemetedSummMonth;
             _this.isSalaryExists = true;
-            _this.filters = ['Все', 'Приоритет', 'Помесячная группировка'];
+            _this.lastSalary = data.lastSalary;
+            _this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр', 'Помесячная группировка'];
             console.log('Sal: ' + data.lastSalary);
+        });
+    };
+    /**
+     * Поиск желаний.
+     */
+    MainComponent.prototype.searchWishes = function () {
+        var _this = this;
+        var payload = new _dto_searchwishes__WEBPACK_IMPORTED_MODULE_13__["SearchRq"](this.filterForm.value.wish);
+        this.httpService.searchWishes(payload, this.searchWishesUrl).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно найти желания!');
+        })).subscribe(function (data) {
+            _this.wishes = data.list;
+            console.log(_this.wishes);
+            console.log('SORTING:' + _this.sortMode);
+            console.log('FILTERING:' + _this.apiUrl);
+            _this.sortMainList(_this.sortMode);
         });
     };
     MainComponent.prototype.deleteWish = function () {
@@ -1468,12 +2365,12 @@ var MainComponent = /** @class */ (function () {
         if (err.error === 'ERR-01') {
             this.error = 'У вас нет сохраненных зарплат! Невозможно посчитать сроки реализации! Добавьте хотя бы одну зарплату!';
             this.isSalaryExists = false;
-            this.filters = ['Все', 'Приоритет'];
+            this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр'];
         }
         else if (err.error === 'ERR-02') {
             this.error = 'У вас нет сохраненных желаний! Добавьте хотя бы одно желание!';
             this.isSalaryExists = false;
-            this.filters = ['Все', 'Приоритет'];
+            this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр'];
         }
         else {
             this.error = message;
@@ -1565,8 +2462,6 @@ var MainComponent = /** @class */ (function () {
     };
     MainComponent.prototype.showAlert = function (text, mode, result) {
         var _this = this;
-        console.log(mode);
-        console.log(result);
         this.isEdit = false;
         this.isSalaryAdd = false;
         this.isCsvParse = false;
@@ -1578,7 +2473,6 @@ var MainComponent = /** @class */ (function () {
     MainComponent.prototype.addSalary = function () {
         var _this = this;
         var salary = new _dto_salary__WEBPACK_IMPORTED_MODULE_7__["Salary"](this.salaryForm.value.salary, this.salaryForm.value.residualSalary);
-        console.log(salary);
         this.httpService.sendSalary(salary, this.apiSalary).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
             return _this.errorHandler(err, 'Невозможно добавить зарплату!');
         })).subscribe(function (hero) {
@@ -1662,6 +2556,7 @@ var MainComponent = /** @class */ (function () {
     };
     // Показать окно включения/выключения фильтров
     MainComponent.prototype.filterWishes = function () {
+        console.log('filter mode = ', this.filterMode);
         if (!this.filterMode) {
             this.isFilterModal = true;
         }
@@ -1689,30 +2584,16 @@ var MainComponent = /** @class */ (function () {
         }))
             .subscribe();
     };
+    /**
+     * Поиск желаний. Действие после нажатие кнопки Найти в модальном окне.
+     */
     MainComponent.prototype.applyFilter = function () {
-        var _this = this;
         this.isFilterModal = false;
         this.filterMode = true; // включаем filtermode
-        this.filterButtonText = 'ВЫКЛЮЧИТЬ ФИЛЬТР'; // период реализации для приоритетного
-        this.wishes = this.wishes.filter(function (wish) { return wish.wish.toLowerCase().includes(_this.filterForm.value.wish.toLowerCase()); });
-        /* const wish = new Wish(1, this.filterForm.value.wish, 0, 1, false, '', '');
-    
-         if (this.isUserCrypto) {
-           wish.wish = this.commonService.convertText('encrypt', wish.wish, this.cryptokey);
-           console.log('encrypted wish', wish.wish);
-         }
-    
-    
-         this.httpService.sendData(wish, this.filterUrl).pipe(
-           catchError(err => {
-             return this.errorHandler(err, 'Невозможно осуществить фильтрацию!');
-           })
-         ).subscribe(hero => {
-           console.log('hero', hero);
-           this.wishes = hero['list'];
-    
-           this.showAlert('Фильтр по желаниям активен!', 'ADD MODE', hero);
-         });*/
+        this.filterButtonText = 'ВЫКЛЮЧИТЬ ФИЛЬТР';
+        this.searchWishes();
+        /*this.wishes = this.wishes.filter(
+          wish => wish.wish.toLowerCase().includes(this.filterForm.value.wish.toLowerCase()));*/
     };
     MainComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -1748,7 +2629,7 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<clr-modal [clrModalOpen]=\"userInactive | async\" [clrModalClosable]=\"false\" class=\"session-timeout-modal\">\r\n  <h3 class=\"modal-title\">\r\n    Сессия истекла\r\n  </h3>\r\n  <div class=\"modal-body\">\r\n    <p>\r\n      Ваша сессия истекла! Необходимо войти еще раз!\r\n    </p>\r\n  </div>\r\n  <div class=\"modal-footer\">\r\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"logout()\">\r\n      Продолжить\r\n    </button>\r\n  </div>\r\n\r\n</clr-modal>\r\n"
+module.exports = "<clr-modal [clrModalOpen]=\"userInactive | async\" [clrModalClosable]=\"false\" class=\"session-timeout-modal\">\n  <h3 class=\"modal-title\">\n    Сессия истекла\n  </h3>\n  <div class=\"modal-body\">\n    <p>\n      Ваша сессия истекла! Необходимо войти еще раз!\n    </p>\n  </div>\n  <div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"logout()\">\n      Продолжить\n    </button>\n  </div>\n\n</clr-modal>\n"
 
 /***/ }),
 
@@ -1862,12 +2743,12 @@ var SidebarComponent = /** @class */ (function () {
     function SidebarComponent() {
     }
     SidebarComponent.prototype.ngOnInit = function () {
-        var idToken = localStorage.getItem('token');
+        this.idToken = localStorage.getItem('token');
     };
     SidebarComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             selector: 'app-sidebar',
-            template: "\n    <!--<div class=\"content-container\">-->\n      <!--<div class=\"content-area\">-->\n      <!--</div>-->\n      <clr-vertical-nav [clr-nav-level]=\"1\">\n        <a clrVerticalNavLink routerLink=\"../401\" routerLinkActive=\"active\">\u041E \u043F\u0440\u043E\u0435\u043A\u0442\u0435</a>\n        <a *ngIf=\"idToken\" clrVerticalNavLink routerLink=\"../\" routerLinkActive=\"active\">\u0413\u043B\u0430\u0432\u043D\u0430\u044F</a>\n      </clr-vertical-nav>\n  "
+            template: "\n      <clr-vertical-nav [clr-nav-level]=\"1\">\n        <a clrVerticalNavLink routerLink=\"../401\" routerLinkActive=\"active\">\u041E \u043F\u0440\u043E\u0435\u043A\u0442\u0435-\u0445\u0443\u0435\u043A\u0442\u0435</a>\n        <a clrVerticalNavLink routerLink=\"../\" routerLinkActive=\"active\">\u0413\u043B\u0430\u0432\u043D\u0430\u044F</a>\n      </clr-vertical-nav>\n  "
         }),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
     ], SidebarComponent);
@@ -1885,7 +2766,7 @@ var SidebarComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "@media screen and (max-width: 500px){\r\n\r\n  .sidenav {\r\n    min-width: 1%;\r\n    visibility: hidden;\r\n    /*background: #ea1e2c;*/\r\n  }\r\n}\r\n\r\n:host{\r\n}\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvdWkvbGF5b3V0L3VuYXV0aG9yaXplL3VuYXV0aG9yaXplLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0VBRUU7SUFDRSxhQUFhO0lBQ2Isa0JBQWtCO0lBQ2xCLHVCQUF1QjtFQUN6QjtBQUNGOztBQUVBO0FBQ0EiLCJmaWxlIjoic3JjL2FwcC91aS9sYXlvdXQvdW5hdXRob3JpemUvdW5hdXRob3JpemUuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIkBtZWRpYSBzY3JlZW4gYW5kIChtYXgtd2lkdGg6IDUwMHB4KXtcclxuXHJcbiAgLnNpZGVuYXYge1xyXG4gICAgbWluLXdpZHRoOiAxJTtcclxuICAgIHZpc2liaWxpdHk6IGhpZGRlbjtcclxuICAgIC8qYmFja2dyb3VuZDogI2VhMWUyYzsqL1xyXG4gIH1cclxufVxyXG5cclxuOmhvc3R7XHJcbn1cclxuIl19 */"
+module.exports = "@media screen and (max-width: 500px){\n\n  .sidenav {\n    min-width: 1%;\n    visibility: hidden;\n    /*background: #ea1e2c;*/\n  }\n}\n\n:host{\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvdWkvbGF5b3V0L3VuYXV0aG9yaXplL3VuYXV0aG9yaXplLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0VBRUU7SUFDRSxhQUFhO0lBQ2Isa0JBQWtCO0lBQ2xCLHVCQUF1QjtFQUN6QjtBQUNGOztBQUVBO0FBQ0EiLCJmaWxlIjoic3JjL2FwcC91aS9sYXlvdXQvdW5hdXRob3JpemUvdW5hdXRob3JpemUuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIkBtZWRpYSBzY3JlZW4gYW5kIChtYXgtd2lkdGg6IDUwMHB4KXtcblxuICAuc2lkZW5hdiB7XG4gICAgbWluLXdpZHRoOiAxJTtcbiAgICB2aXNpYmlsaXR5OiBoaWRkZW47XG4gICAgLypiYWNrZ3JvdW5kOiAjZWExZTJjOyovXG4gIH1cbn1cblxuOmhvc3R7XG59XG4iXX0= */"
 
 /***/ }),
 
@@ -1896,7 +2777,7 @@ module.exports = "@media screen and (max-width: 500px){\r\n\r\n  .sidenav {\r\n 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"content-container\">\r\n  <div class=\"content-area\">\r\n\r\n    <clr-alert [clrAlertType]=\"'success'\" *ngIf=\"result\">\r\n      <clr-alert-item>\r\n        <span class=\"alert-text\">\r\n            {{result}}\r\n        </span>\r\n      </clr-alert-item>\r\n    </clr-alert>\r\n\r\n    <clr-alert [clrAlertType]=\"'danger'\" *ngIf=\"error\">\r\n      <clr-alert-item>\r\n        <span class=\"alert-text\">\r\n            {{error}}\r\n        </span>\r\n      </clr-alert-item>\r\n    </clr-alert>\r\n\r\n\r\n    <h1>Дорогой друг!</h1>\r\n    <p>\r\n      Сейчас ты находишься на страничке проекта arNote. Это сервис хранения желаний, позволяющий считать сроки реализации, различным образом категорировать и управлять вашими желаниями. Для работы с сервисом необходимо получить логин и пароль от автора сервиса, в будущем будет организована свободная регистрация.\r\n    </p>\r\n    <p>\r\n      Одни из Важных преимуществ сервиса планируется сделать шифрование данных на стороне клиента, что обеспечит полную конфиденциальность. То есть администратор / автор сервиса не сможет прочитать Ваши данные ни при каких обстоятельствах, так как все Ваши записи будет шифрованы по уникальному ключу, который знаете только Вы.\r\n    </p>\r\n    <p>\r\n      По всем вопросам просьба писать автору на <i>antonromanov@list.ru.</i>\r\n    </p>\r\n\r\n  </div>\r\n  <!--<app-sidebar class=\"sidenav\"></app-sidebar>-->\r\n</div>\r\n"
+module.exports = "<div class=\"content-container\">\n  <div class=\"content-area\">\n\n    <clr-alert [clrAlertType]=\"'success'\" *ngIf=\"result\">\n      <clr-alert-item>\n        <span class=\"alert-text\">\n            {{result}}\n        </span>\n      </clr-alert-item>\n    </clr-alert>\n\n    <clr-alert [clrAlertType]=\"'danger'\" *ngIf=\"error\">\n      <clr-alert-item>\n        <span class=\"alert-text\">\n            {{error}}\n        </span>\n      </clr-alert-item>\n    </clr-alert>\n\n\n    <h1>Дорогой друг!</h1>\n    <p>\n      Сейчас ты находишься на страничке проекта arNote. Это сервис хранения желаний, позволяющий считать сроки реализации, различным образом категорировать и управлять вашими желаниями. Для работы с сервисом необходимо получить логин и пароль от автора сервиса, в будущем будет организована свободная регистрация.\n    </p>\n    <p>\n      Одни из Важных преимуществ сервиса планируется сделать шифрование данных на стороне клиента, что обеспечит полную конфиденциальность. То есть администратор / автор сервиса не сможет прочитать Ваши данные ни при каких обстоятельствах, так как все Ваши записи будет шифрованы по уникальному ключу, который знаете только Вы.\n    </p>\n    <p>\n      По всем вопросам просьба писать автору на <i>antonromanov@list.ru.</i>\n    </p>\n\n  </div>\n  <!--<app-sidebar class=\"sidenav\"></app-sidebar>-->\n</div>\n"
 
 /***/ }),
 
@@ -1929,10 +2810,6 @@ var UnauthorizeComponent = /** @class */ (function () {
     }
     UnauthorizeComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.route.queryParams.subscribe(function (params) {
-            var date = params['startdate'];
-            console.log(date);
-        });
         this.subscription = this.commonService.error$.subscribe(function (error) {
             if (error == null) {
                 _this.globalError = new _service_message_code__WEBPACK_IMPORTED_MODULE_3__["MessageCode"]();
@@ -1992,16 +2869,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layout_layout_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./layout/layout.component */ "./src/app/ui/layout/layout.component.ts");
 /* harmony import */ var _layout_header_header_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./layout/header/header.component */ "./src/app/ui/layout/header/header.component.ts");
 /* harmony import */ var _layout_sidebar_sidebar_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./layout/sidebar/sidebar.component */ "./src/app/ui/layout/sidebar/sidebar.component.ts");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _clr_angular__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @clr/angular */ "./node_modules/@clr/angular/fesm5/clr-angular.js");
-/* harmony import */ var _layout_main_main_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./layout/main/main.component */ "./src/app/ui/layout/main/main.component.ts");
-/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
-/* harmony import */ var _layout_edit_edit_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./layout/edit/edit.component */ "./src/app/ui/layout/edit/edit.component.ts");
-/* harmony import */ var _service_basicauthhtppInterceptorservice__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../service/basicauthhtppInterceptorservice */ "./src/app/service/basicauthhtppInterceptorservice.ts");
-/* harmony import */ var _app_routing_app_routing_module__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../app-routing/app-routing.module */ "./src/app/app-routing/app-routing.module.ts");
-/* harmony import */ var _layout_unauthorize_unauthorize_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./layout/unauthorize/unauthorize.component */ "./src/app/ui/layout/unauthorize/unauthorize.component.ts");
-/* harmony import */ var _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @auth0/angular-jwt */ "./node_modules/@auth0/angular-jwt/index.js");
-/* harmony import */ var _layout_session_timeout_modal_session_timeout_modal_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./layout/session-timeout-modal/session-timeout-modal.component */ "./src/app/ui/layout/session-timeout-modal/session-timeout-modal.component.ts");
+/* harmony import */ var _layout_investing_investing_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./layout/investing/investing.component */ "./src/app/ui/layout/investing/investing.component.ts");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+/* harmony import */ var _clr_angular__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @clr/angular */ "./node_modules/@clr/angular/fesm5/clr-angular.js");
+/* harmony import */ var _layout_main_main_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./layout/main/main.component */ "./src/app/ui/layout/main/main.component.ts");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var _layout_edit_edit_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./layout/edit/edit.component */ "./src/app/ui/layout/edit/edit.component.ts");
+/* harmony import */ var _service_basicauthhtppInterceptorservice__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../service/basicauthhtppInterceptorservice */ "./src/app/service/basicauthhtppInterceptorservice.ts");
+/* harmony import */ var _app_routing_app_routing_module__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../app-routing/app-routing.module */ "./src/app/app-routing/app-routing.module.ts");
+/* harmony import */ var _layout_unauthorize_unauthorize_component__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./layout/unauthorize/unauthorize.component */ "./src/app/ui/layout/unauthorize/unauthorize.component.ts");
+/* harmony import */ var _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @auth0/angular-jwt */ "./node_modules/@auth0/angular-jwt/index.js");
+/* harmony import */ var _layout_session_timeout_modal_session_timeout_modal_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./layout/session-timeout-modal/session-timeout-modal.component */ "./src/app/ui/layout/session-timeout-modal/session-timeout-modal.component.ts");
+
 
 
 
@@ -2025,21 +2904,28 @@ var UiModule = /** @class */ (function () {
     }
     UiModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
-            declarations: [_layout_layout_component__WEBPACK_IMPORTED_MODULE_5__["LayoutComponent"], _layout_header_header_component__WEBPACK_IMPORTED_MODULE_6__["HeaderComponent"], _layout_sidebar_sidebar_component__WEBPACK_IMPORTED_MODULE_7__["SidebarComponent"], _layout_main_main_component__WEBPACK_IMPORTED_MODULE_10__["MainComponent"], _layout_edit_edit_component__WEBPACK_IMPORTED_MODULE_12__["EditComponent"], _layout_unauthorize_unauthorize_component__WEBPACK_IMPORTED_MODULE_15__["UnauthorizeComponent"], _layout_session_timeout_modal_session_timeout_modal_component__WEBPACK_IMPORTED_MODULE_17__["SessionTimeoutModalComponent"]],
+            declarations: [_layout_layout_component__WEBPACK_IMPORTED_MODULE_5__["LayoutComponent"],
+                _layout_header_header_component__WEBPACK_IMPORTED_MODULE_6__["HeaderComponent"],
+                _layout_sidebar_sidebar_component__WEBPACK_IMPORTED_MODULE_7__["SidebarComponent"],
+                _layout_main_main_component__WEBPACK_IMPORTED_MODULE_11__["MainComponent"],
+                _layout_edit_edit_component__WEBPACK_IMPORTED_MODULE_13__["EditComponent"],
+                _layout_unauthorize_unauthorize_component__WEBPACK_IMPORTED_MODULE_16__["UnauthorizeComponent"],
+                _layout_investing_investing_component__WEBPACK_IMPORTED_MODULE_8__["InvestingComponent"],
+                _layout_session_timeout_modal_session_timeout_modal_component__WEBPACK_IMPORTED_MODULE_18__["SessionTimeoutModalComponent"]],
             imports: [
                 _angular_common__WEBPACK_IMPORTED_MODULE_2__["CommonModule"],
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_3__["BrowserModule"],
                 _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_4__["BrowserAnimationsModule"],
-                _angular_common_http__WEBPACK_IMPORTED_MODULE_8__["HttpClientModule"],
-                _angular_forms__WEBPACK_IMPORTED_MODULE_11__["FormsModule"],
-                _app_routing_app_routing_module__WEBPACK_IMPORTED_MODULE_14__["AppRoutingModule"],
-                _angular_forms__WEBPACK_IMPORTED_MODULE_11__["ReactiveFormsModule"],
-                _clr_angular__WEBPACK_IMPORTED_MODULE_9__["ClarityModule"]
+                _angular_common_http__WEBPACK_IMPORTED_MODULE_9__["HttpClientModule"],
+                _angular_forms__WEBPACK_IMPORTED_MODULE_12__["FormsModule"],
+                _app_routing_app_routing_module__WEBPACK_IMPORTED_MODULE_15__["AppRoutingModule"],
+                _angular_forms__WEBPACK_IMPORTED_MODULE_12__["ReactiveFormsModule"],
+                _clr_angular__WEBPACK_IMPORTED_MODULE_10__["ClarityModule"]
             ],
             providers: [
-                { provide: _angular_common_http__WEBPACK_IMPORTED_MODULE_8__["HTTP_INTERCEPTORS"], useClass: _service_basicauthhtppInterceptorservice__WEBPACK_IMPORTED_MODULE_13__["BasicAuthHtppInterceptorService"], multi: true },
-                { provide: _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_16__["JWT_OPTIONS"], useValue: _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_16__["JWT_OPTIONS"] },
-                _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_16__["JwtHelperService"]
+                { provide: _angular_common_http__WEBPACK_IMPORTED_MODULE_9__["HTTP_INTERCEPTORS"], useClass: _service_basicauthhtppInterceptorservice__WEBPACK_IMPORTED_MODULE_14__["BasicAuthHtppInterceptorService"], multi: true },
+                { provide: _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_17__["JWT_OPTIONS"], useValue: _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_17__["JWT_OPTIONS"] },
+                _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_17__["JwtHelperService"]
             ],
             exports: [_layout_layout_component__WEBPACK_IMPORTED_MODULE_5__["LayoutComponent"]]
         })
@@ -2061,10 +2947,21 @@ var UiModule = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "environment", function() { return environment; });
+// This file can be replaced during build by using the `fileReplacements` array.
+// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
+// The list of file replacements can be found in `angular.json`.
 var environment = {
-    production: true,
-    serverUrl: ''
+    production: false,
+    serverUrl: 'http://localhost:8080'
 };
+/*
+ * For easier debugging in development mode, you can import the following file
+ * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
+ *
+ * This import should be commented out in production mode because it will have a negative impact
+ * on performance if an error is thrown.
+ */
+// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 
 
 /***/ }),
@@ -2102,7 +2999,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\CODING\GIT\arNoteUI\src\main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /Users/a18502648/IdeaProjects/arNoteUI/src/main.ts */"./src/main.ts");
 
 
 /***/ })
