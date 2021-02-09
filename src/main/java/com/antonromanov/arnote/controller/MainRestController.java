@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -217,48 +215,41 @@ public class MainRestController extends ControllerBase {
              *
              */
             if (filter != null) {
-                if (FilterMode.valueOf(filter) == FilterMode.NONE) {
-                    localUser.setFilterMode(FilterMode.NONE);
-                    localUser = usersRepo.saveAndFlush(localUser);
-                } else {
                     localUser.setFilterMode(FilterMode.valueOf(filter));
                     localUser = usersRepo.saveAndFlush(localUser);
-                }
             }
-            if (localUser.getFilterMode()==null){
+            if (localUser.getFilterMode() == null) {
                 localUser.setFilterMode(FilterMode.NONE);
                 localUser = usersRepo.saveAndFlush(localUser);
             }
 
-           /* if (sort != null) {
-                if (InvestingSortMode.valueOf(sort) == InvestingSortMode.NONE) {
-                    localUser.setInvestingSortMode(null);
-                    localUser = usersRepo.saveAndFlush(localUser);
-                } else {
-                    localUser.setInvestingSortMode(InvestingSortMode.valueOf(sort));
-                    localUser = usersRepo.saveAndFlush(localUser);
-                }
-            }*/
+            if (sort != null) {
+                localUser.setSortMode(SortMode.valueOf(sort));
+                localUser = usersRepo.saveAndFlush(localUser);
+            }
 
+            if (localUser.getSortMode() == null) {
+                localUser.setSortMode(SortMode.ALL);
+                localUser = usersRepo.saveAndFlush(localUser);
+            }
 
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
                 DTO dto = new DTO();
                 String result = "";
+                wishList = mainService.getAllWishesByUserId(localUser).stream()
+                        .filter(localUser.getFilterMode().getFilterPredicate())
+                        .sorted(localUser.getSortMode().getCompareInstrument())
+                        .collect(Collectors.toList());
 
+                // Предотвращение вываливания на пустых датах
+                wishList.forEach(w -> {
+                    if (w.getCreationDate() == null) w.setCreationDate(new Date());
+                    if (w.getRealized() == null) w.setRealized(false);
+                });
 
-                    wishList = mainService.getAllWishesByUserId(localUser).stream()
-                            .filter(localUser.getFilterMode().getFilterPredicate())
-                            .collect(Collectors.toList());
-
-                    // Предотвращение вываливания на пустых датах
-                    wishList.forEach(w -> {
-                        if (w.getCreationDate() == null) w.setCreationDate(new Date());
-                        if (w.getRealized() == null) w.setRealized(false);
-                    });
-
-                    dto.list.addAll(wishList);
-                    result = createNullableGsonBuilder().toJson(dto);
+                dto.list.addAll(wishList);
+                result = createNullableGsonBuilder().toJson(dto);
 
 
                 return $prepareResponse(result);

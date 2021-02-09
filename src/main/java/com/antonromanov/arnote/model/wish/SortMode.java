@@ -2,6 +2,7 @@ package com.antonromanov.arnote.model.wish;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import java.util.Comparator;
 
 /**
  * Режим сортировки.
@@ -9,11 +10,13 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum SortMode {
-    NAME("Сортировка по имени", "name"),
-    PRICE_ASC("Сортировка по возрастанию стоимости", "price-asc"),
-    PRICE_DESC("Сортировка по убыванию стоимости", "price-desc"),
-    ALL("Без сортировки", "all");
+    NAME("Сортировка по имени", "name", Comparator.comparing(Wish::getWish)),
+    PRICE_ASC("Сортировка по возрастанию стоимости", "price-asc", Comparator.comparing(Wish::getPrice)),
+    PRICE_DESC("Сортировка по убыванию стоимости", "price-desc", Comparator.comparing(Wish::getPrice).reversed()),
+    PRIOR("Сортировка приоритету", "prior-asc", Comparator.comparing(Wish::getPriority)),
+    ALL("Без сортировки", "all", Comparator.comparing(Wish::getId));
 
-    private String description;
-    private String uiValue;
+    private final String description;
+    private final String uiValue;
+    private final Comparator<Wish> compareInstrument;
 }

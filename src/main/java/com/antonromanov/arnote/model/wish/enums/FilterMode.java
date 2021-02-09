@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 public enum FilterMode {
     ALL("Все желания", wish -> wish.getWish()!=null),
     PRIOR("Только приоритетные", w->w.getPriority()==1),
-    NONE("Без фильтрации", wish -> true);
+    NONE("Без фильтрации", wish -> wish.getWish()!=null); //todo: удалить потом
 
     private final String description;
     private final Predicate<Wish> filterPredicate;
