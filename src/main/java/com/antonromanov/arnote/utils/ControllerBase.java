@@ -3,6 +3,7 @@ package com.antonromanov.arnote.utils;
 import com.antonromanov.arnote.exceptions.JsonNullException;
 import com.antonromanov.arnote.exceptions.JsonParseException;
 import com.antonromanov.arnote.exceptions.SaveNewWishException;
+import com.antonromanov.arnote.exceptions.enums.ErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.http.server.ServletServerHttpResponse;
@@ -44,20 +45,11 @@ public class ControllerBase {
 		return responseEntity;
 	}
 
-	protected ResponseEntity<String> $prepareNoDataYetErrorResponse(Boolean switcher){
+	protected ResponseEntity<String> $prepareNoDataYetErrorResponse(ErrorCodes errorCode){ //todo: данную лютую хуету конечно же надо переделать!
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setCacheControl("no-cache");
-
-		ResponseEntity<String> responseEntity;
-
-		if (switcher) {
-			responseEntity = new ResponseEntity<String>("ERR-01", headers, HttpStatus.BAD_REQUEST);
-		} else {
-			responseEntity = new ResponseEntity<String>("ERR-02", headers, HttpStatus.BAD_REQUEST);
-		}
-	//	LOGGER.info("RESPONSE: " + responseEntity.toString());
-		return responseEntity;
+		return new ResponseEntity<>(errorCode.getUiCode(), headers, HttpStatus.BAD_REQUEST);
 	}
 
 

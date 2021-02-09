@@ -4,6 +4,7 @@ import com.antonromanov.arnote.email.EmailSender;
 import com.antonromanov.arnote.email.EmailStatus;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.exceptions.enums.ErrorCodes;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.ResponseStatusDTO;
 import com.antonromanov.arnote.model.wish.*;
@@ -153,7 +154,7 @@ public class MainRestController extends ControllerBase {
 
                 return $prepareResponse(result);
             } else {
-                return $prepareNoDataYetErrorResponse(false);
+                return $prepareNoDataYetErrorResponse(ErrorCodes.ERR_O1);
             }
         }, null, null, null, resp);
     }
@@ -254,7 +255,7 @@ public class MainRestController extends ControllerBase {
 
                 return $prepareResponse(result);
             } else {
-                return $prepareNoDataYetErrorResponse(false);
+                return $prepareNoDataYetErrorResponse(ErrorCodes.ERR_O1);
             }
         }, null, null, OperationType.GET_ALL_WISHES, resp);
     }
@@ -348,7 +349,7 @@ public class MainRestController extends ControllerBase {
 
                 return $prepareResponse(result);
             } else {
-                return $prepareNoDataYetErrorResponse(true);
+                return $prepareNoDataYetErrorResponse(ErrorCodes.ERR_O2);
             }
         }, null, principal, OperationType.GET_SUMS, resp);
     }

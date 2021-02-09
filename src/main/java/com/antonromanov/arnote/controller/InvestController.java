@@ -109,6 +109,7 @@ public class InvestController {
         ArNoteUser finalUser = user;
         log.info("USER FILTER MAP: " + user.getInvestingFilterMode());
         log.info("USER SORT MODE: " + user.getInvestingSortMode());
+
         return ConsolidatedInvestmentDataRs.builder()
                 .bonds(bondsRepo.findAllByUser(user)
                         .stream()
