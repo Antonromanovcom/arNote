@@ -1,10 +1,11 @@
 package com.antonromanov.arnote.model.investing;
 
-import com.antonromanov.arnote.model.investing.response.DividendRs;
+
+import com.antonromanov.arnote.model.investing.response.MonthDetailRs;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 /**
  * Календарь выплат
@@ -13,5 +14,5 @@ import java.util.LinkedHashMap;
 @Builder
 @AllArgsConstructor
 public class CalendarRs {
-    private LinkedHashMap<String, DividendRs> calendar;
+    private LinkedList<MonthDetailRs> calendar;
 }

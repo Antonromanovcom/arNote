@@ -404,7 +404,7 @@ public class Utils {
         }
     }
 
-    private static int monthNameToNumber(String value) {
+    public static int monthNameToNumber(String value) {
         int result = 0;
         switch (value) {
             case "Январь":
@@ -444,7 +444,6 @@ public class Utils {
                 result = 12;
                 break;
         }
-        log.info("Выcчитали месяц: {}", result);
         return result;
     }
 

@@ -3,10 +3,7 @@ package com.antonromanov.arnote.service;
 import au.com.bytecode.opencsv.CSVReader;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.model.*;
-import com.antonromanov.arnote.model.wish.Salary;
-import com.antonromanov.arnote.model.wish.Wish;
-import com.antonromanov.arnote.model.wish.WishDTO;
-import com.antonromanov.arnote.model.wish.WishDTOList;
+import com.antonromanov.arnote.model.wish.*;
 import com.antonromanov.arnote.repositoty.SalaryRepository;
 import com.antonromanov.arnote.repositoty.WishRepository;
 import org.apache.commons.math3.util.ArithmeticUtils;
@@ -141,9 +138,18 @@ public class MainServiceImpl implements MainService {
         return wishRepository.findAllByIdSorted(user);
     }
 
+    /**
+     * Поиск желаний по имени.
+     *
+     * @param request
+     * @param user
+     * @return
+     */
     @Override
-    public Optional<List<Wish>> findAllWishesByWish(String wish, LocalUser user) {
-        return wishRepository.findAllByWishAndUser(wish, user.getId());
+    public List<Wish> findAllWishesByWishName(SearchRq request, LocalUser user) {
+        return wishRepository.findAllByUser(user).stream()
+                .filter(w->request.getWishName().equalsIgnoreCase(w.getWish()))
+                .collect(Collectors.toList());
     }
 
     @Override

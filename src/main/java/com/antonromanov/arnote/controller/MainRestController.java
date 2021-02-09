@@ -4,12 +4,15 @@ import com.antonromanov.arnote.email.EmailSender;
 import com.antonromanov.arnote.email.EmailStatus;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.model.*;
+import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.ResponseStatusDTO;
+import com.antonromanov.arnote.model.investing.InvestingFilterMode;
+import com.antonromanov.arnote.model.investing.InvestingSortMode;
 import com.antonromanov.arnote.model.wish.*;
+import com.antonromanov.arnote.model.wish.enums.WishsFilters;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
-import com.antonromanov.arnote.utils.Utils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +50,12 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class MainRestController extends ControllerBase {
 
     @Data
-    private class DTO {
+    private static class DTO {
         private List<Wish> list = new ArrayList<>();
     }
 
     @Data
-    private class DtoWithOrder {
+    private static class DtoWithOrder {
         private List<WishDTOList> list = new ArrayList<>();
     }
 
@@ -73,34 +76,18 @@ public class MainRestController extends ControllerBase {
      * Поиск желаний.
      *
      * @param principal
-     * @param requestParam
-     * @param resp
+     *
      * @return
      */
     @CrossOrigin(origins = "*")
     @PostMapping("/filter")
-    public ResponseEntity<String> findAll(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
-
-        return $do(s -> {
+    public DTO findAll(Principal principal, @RequestBody SearchRq request) throws UserNotFoundException {
             log.info("============== FILTER/SEARCH WISHES ============== ");
-            log.info("SEARCH KEYWORD: " + requestParam);
-            log.info("PRINCIPAL: " + principal.getName());
-
-            LocalUser localUser = getUserFromPrincipal(principal);
-
-            List<Wish> wishes = mainService
-                    .findAllWishesByWish(parseJsonToWish(Utils.ParseType.EDIT, requestParam, localUser).getWish(), localUser)
-                    .orElseGet(ArrayList::new);
-
+            log.info("SEARCH KEYWORD: " + request.getWishName());
+            List<Wish> wishes = mainService.findAllWishesByWishName(request,  getUserFromPrincipal(principal));
             DTO dto = new DTO(); //todo: добавить билдеры
             dto.list.addAll(wishes);
-
-            String res = createGsonBuilder().toJson(dto);
-            log.info("PAYLOAD: " + res);
-
-            return $prepareResponse(res);
-
-        }, null, null, null, resp);
+            return dto;
     }
 
     /**
@@ -196,23 +183,64 @@ public class MainRestController extends ControllerBase {
      * Получить все желания.
      *
      * @param principal
-     * @param type
+     * @param filter - тип фильтраци: все или только приоритетные
+     * @param sort - собственно сортировка
      * @param resp
      * @return
      */
     @CrossOrigin(origins = "*")
-    @GetMapping("/{type}")
-    public ResponseEntity<String> getAllWishes(Principal principal, @PathVariable String type, HttpServletResponse resp) {
+    @GetMapping
+    public ResponseEntity<String> getAllWishes(Principal principal,
+                                               @RequestParam(required = false) String filter,
+                                               @RequestParam(required = false) String sort,
+                                               HttpServletResponse resp) {
 
         return $do(s -> {
             List<Wish> wishList;
 
             log.info("==================== GET WISHES ======================== ");
-            log.info("type: " + type);
+            log.info("filter: " + filter);
+            log.info("sort: " + sort);
             log.info("PRINCIPAL: " + principal.getName());
             log.info("======================================================== ");
 
             LocalUser localUser = getUserFromPrincipal(principal);
+
+            /*
+             * Логика такая:
+             *
+             * - если фильтр приходит не пустой - задаем и сохраняем новый фильтр.
+             * - если фильтр приходит не пустой, но он NONE, просто удаляем сохраненный фильтр из записи пользака.
+             * - если filter пришел пустой - выдаем то, что есть с той фильтрацией, что сохранена.
+             *
+             */
+            if (filter != null) {
+                if (WishsFilters.valueOf(filter) == WishsFilters.NONE) {
+                    localUser.setViewMode();
+                    user = usersRepo.saveAndFlush(user);
+                } else {
+                    if (user.getInvestingFilterMode() != null && user.getInvestingFilterMode().size() > 0) {
+                        user.getInvestingFilterMode().put(InvestingFilterMode.valueOf(filter).getKey(), filter);
+                    } else {
+                        Map<String, String> filterMap = new HashMap<>();
+                        filterMap.put(InvestingFilterMode.valueOf(filter).getKey(), filter);
+                        user.setInvestingFilterMode(filterMap);
+                    }
+                    user = usersRepo.saveAndFlush(user);
+                }
+            }
+
+            if (sort != null) {
+                if (InvestingSortMode.valueOf(sort) == InvestingSortMode.NONE) {
+                    user.setInvestingSortMode(null);
+                    user = usersRepo.saveAndFlush(user);
+                } else {
+                    user.setInvestingSortMode(InvestingSortMode.valueOf(sort));
+                    user = usersRepo.saveAndFlush(user);
+                }
+            }
+
+
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
                 DTO dto = new DTO();

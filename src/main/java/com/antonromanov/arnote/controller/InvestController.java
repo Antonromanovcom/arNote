@@ -10,23 +10,19 @@ import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
-import com.antonromanov.arnote.repositoty.PurchasesRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.investment.calc.CalculateService;
 import com.antonromanov.arnote.service.investment.calendar.CalendarService;
 import com.antonromanov.arnote.service.investment.returns.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import static com.antonromanov.arnote.utils.Utils.*;
 
 
@@ -293,7 +289,17 @@ public class InvestController {
     @CrossOrigin(origins = "*")
     @GetMapping("/calendar")
     public CalendarRs getCalendar(Principal principal) throws UserNotFoundException {
-        return calendarService.getCalendar(getLocalUserFromPrincipal(principal));
+        LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        return calendarService.getCalendar(ConsolidatedInvestmentDataRs.builder()
+                .bonds(bondsRepo.findAllByUser(user)
+                        .stream()
+                        .map(bond -> prepareBondRs(bond, user))
+                        .filter(user.getInvestingFilterMode() != null ? complexPredicate(user.getInvestingFilterMode()) :
+                                s -> s.getTicker() != null)
+                        .sorted(user.getInvestingSortMode() == null ? InvestingSortMode.NONE.getComparator() :
+                                user.getInvestingSortMode().getComparator())
+                        .collect(Collectors.toList()))
+                .build());
     }
 
 

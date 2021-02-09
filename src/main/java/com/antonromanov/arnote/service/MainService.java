@@ -3,6 +3,7 @@ package com.antonromanov.arnote.service;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.model.wish.Salary;
+import com.antonromanov.arnote.model.wish.SearchRq;
 import com.antonromanov.arnote.model.wish.Wish;
 import com.antonromanov.arnote.model.wish.WishDTOList;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,7 +47,14 @@ public interface MainService {
 
 	List<Wish> getAllWishesByUserId(LocalUser user);
 
-	Optional<List<Wish>> findAllWishesByWish(String Wish, LocalUser user);
+	/**
+	 * Поиск желаний по имени.
+	 *
+	 * @param request
+	 * @param user
+	 * @return
+	 */
+	List<Wish> findAllWishesByWishName(SearchRq request, LocalUser user);
 
 	Optional<List<Wish>> getAllRealizedWishes(LocalUser user);
 

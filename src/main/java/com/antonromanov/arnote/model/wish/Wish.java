@@ -23,7 +23,7 @@ public class Wish {
     @SequenceGenerator(name = "wishes_seq_gen", sequenceName ="wishes_id_seq", allocationSize = 1)
     private long id;
 
-    @Column(name = "wish", nullable = true, length = 255)
+    @Column(name = "wish")
     private String wish;
 
     @Column(name = "price", nullable = true)

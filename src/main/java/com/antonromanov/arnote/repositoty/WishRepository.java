@@ -23,6 +23,14 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.priority = 1 and  w.user = :user order by w.wish ASC ")
 	List<Wish> getAllWithPriority1(@Param("user") LocalUser user);
 
+	/**
+	 * Найти все желания по пользаку.
+	 *
+	 * @param user
+	 * @return
+	 */
+	List<Wish> findAllByUser(LocalUser user);
+
 
 	/**
 	 * Метод для высчитывания среднего времени реализации.
@@ -40,10 +48,6 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 
 	Optional<Wish> findById(long l);
 
-
-	@Query(value="select * from wishes w where w.wish like " +
-			"(concat('%',:wish,'%')) and (w.realized = false or w.realized is null ) and user_id = :userId order by w.wish", nativeQuery = true)
-	Optional<List<Wish>> findAllByWishAndUser(String wish, long userId);
 
 	/**
 	 * Запросить сумму всех реализованных пользователем желаний за все время.
