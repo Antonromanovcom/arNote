@@ -1952,10 +1952,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var _service_common_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../service/common.service */ "./src/app/service/common.service.ts");
 /* harmony import */ var _service_message_code__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../service/message.code */ "./src/app/service/message.code.ts");
-/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../../environments/environment */ "./src/environments/environment.ts");
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
-/* harmony import */ var _dto_searchwishes__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../dto/searchwishes */ "./src/app/dto/searchwishes.ts");
-
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
+/* harmony import */ var _dto_searchwishes__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../dto/searchwishes */ "./src/app/dto/searchwishes.ts");
 
 
 
@@ -1976,7 +1974,8 @@ var MainComponent = /** @class */ (function () {
         this.fb = fb;
         this.datePipe = datePipe;
         // --------------------------------- URL'ы -------------------------------------
-        this.SERVER_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_11__["environment"].serverUrl;
+        // SERVER_URL: string = environment.serverUrl;
+        this.SERVER_URL = '';
         this.myBaseUrl = this.SERVER_URL + '/rest/wishes';
         this.apiUrl = this.myBaseUrl; // все желания // основная ссылка на api
         this.priorityWishesFilterUrl = this.myBaseUrl + '?filter=PRIOR'; // приоритетные желания
@@ -2078,6 +2077,7 @@ var MainComponent = /** @class */ (function () {
     }
     MainComponent.prototype.ngOnInit = function () {
         var _this = this;
+        console.log('SERVER URL IS =>', this.SERVER_URL);
         this.isUserCrypto = false;
         this.getWishes(this.apiUrl);
         this.uploadForm = this.fb.group({
@@ -2332,7 +2332,7 @@ var MainComponent = /** @class */ (function () {
      */
     MainComponent.prototype.searchWishes = function () {
         var _this = this;
-        var payload = new _dto_searchwishes__WEBPACK_IMPORTED_MODULE_13__["SearchRq"](this.filterForm.value.wish);
+        var payload = new _dto_searchwishes__WEBPACK_IMPORTED_MODULE_12__["SearchRq"](this.filterForm.value.wish);
         this.httpService.searchWishes(payload, this.searchWishesUrl).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
             return _this.errorHandler(err, 'Невозможно найти желания!');
         })).subscribe(function (data) {
@@ -2598,10 +2598,10 @@ var MainComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             selector: 'app-main',
             template: __webpack_require__(/*! ./main.component.html */ "./src/app/ui/layout/main/main.component.html"),
-            providers: [_service_http_service__WEBPACK_IMPORTED_MODULE_2__["HttpService"], _angular_common__WEBPACK_IMPORTED_MODULE_12__["DatePipe"]],
+            providers: [_service_http_service__WEBPACK_IMPORTED_MODULE_2__["HttpService"], _angular_common__WEBPACK_IMPORTED_MODULE_11__["DatePipe"]],
             styles: [__webpack_require__(/*! ./main.component.css */ "./src/app/ui/layout/main/main.component.css")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_service_common_service__WEBPACK_IMPORTED_MODULE_9__["CommonService"], _service_http_service__WEBPACK_IMPORTED_MODULE_2__["HttpService"], _angular_forms__WEBPACK_IMPORTED_MODULE_4__["FormBuilder"], _angular_common__WEBPACK_IMPORTED_MODULE_12__["DatePipe"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_service_common_service__WEBPACK_IMPORTED_MODULE_9__["CommonService"], _service_http_service__WEBPACK_IMPORTED_MODULE_2__["HttpService"], _angular_forms__WEBPACK_IMPORTED_MODULE_4__["FormBuilder"], _angular_common__WEBPACK_IMPORTED_MODULE_11__["DatePipe"]])
     ], MainComponent);
     return MainComponent;
 }());
@@ -2946,21 +2946,10 @@ var UiModule = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "environment", function() { return environment; });
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
 var environment = {
-    production: false,
-    serverUrl: 'http://localhost:8080'
+    production: true,
+    serverUrl: ''
 };
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
 
 
 /***/ }),
