@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.controller;
 
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.*;
 import com.antonromanov.arnote.model.investing.request.AddInstrumentRq;
 import com.antonromanov.arnote.model.investing.response.*;
@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import static com.antonromanov.arnote.utils.Utils.*;
+import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 
 
 /**
@@ -69,7 +69,7 @@ public class InvestController {
         log.info("FILTER: " + filter);
         log.info("SORT: " + sort);
 
-        LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
 
         /*
          * Логика такая:
@@ -106,7 +106,7 @@ public class InvestController {
         }
 
 
-        LocalUser finalUser = user;
+        ArNoteUser finalUser = user;
         log.info("USER FILTER MAP: " + user.getInvestingFilterMode());
         log.info("USER SORT MODE: " + user.getInvestingSortMode());
         return ConsolidatedInvestmentDataRs.builder()
@@ -134,7 +134,7 @@ public class InvestController {
         log.info("============== CONSOLIDATED RETURNS TABLE ============== ");
         log.info("PRINCIPAL: " + principal.getName());
 
-        LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
 
         return ConsolidatedReturnsRs.builder()
                 .invested(returnsService.getTotalInvestment(user).orElse(0L))
@@ -164,7 +164,7 @@ public class InvestController {
     public SearchResultsRs findInstrumentByName(Principal principal, @RequestParam @NotNull String keyword) throws UserNotFoundException {
 
         log.info("============== FIND INSTRUMENT ============== ");
-        LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
         log.info("USER ID: " + user.getId());
         log.info("keyword: " + keyword);
 
@@ -210,7 +210,7 @@ public class InvestController {
     public CurrentPriceRs getCurrentPriceByTicker(Principal principal, @RequestParam @NotNull String ticker) throws UserNotFoundException {
 
         log.info("============== GET CURRENT PRICE BY TICKER ============== ");
-        LocalUser user = getLocalUserFromPrincipal(principal);
+        ArNoteUser user = getLocalUserFromPrincipal(principal);
         log.info("USER ID: " + user.getId());
         log.info("keyword: " + ticker);
 
@@ -234,7 +234,7 @@ public class InvestController {
                                                   @RequestParam @NotNull String purchaseDate) throws UserNotFoundException {
 
         log.info("============== GET CURRENT PRICE BY TICKER AND PURCHASE DATE ============== ");
-        LocalUser user = getLocalUserFromPrincipal(principal);
+        ArNoteUser user = getLocalUserFromPrincipal(principal);
         log.info("USER ID: " + user.getId());
         log.info("ticker: " + ticker);
         log.info("purchase date: " + purchaseDate);
@@ -270,7 +270,7 @@ public class InvestController {
     public ConsolidatedInvestmentDataRs deleteInstrument(Principal principal, @RequestParam @NotNull String ticker) throws UserNotFoundException {
 
         log.info("============== DELETE PAPER ============== ");
-        LocalUser user = getLocalUserFromPrincipal(principal);
+        ArNoteUser user = getLocalUserFromPrincipal(principal);
         log.info("USER ID: " + user.getId());
         log.info("ticker: " + ticker);
 
@@ -289,7 +289,7 @@ public class InvestController {
     @CrossOrigin(origins = "*")
     @GetMapping("/calendar")
     public CalendarRs getCalendar(Principal principal) throws UserNotFoundException {
-        LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
         return calendarService.getCalendar(ConsolidatedInvestmentDataRs.builder()
                 .bonds(bondsRepo.findAllByUser(user)
                         .stream()
@@ -315,7 +315,7 @@ public class InvestController {
     public BondRs addInstrument(Principal principal, @RequestBody AddInstrumentRq request) throws UserNotFoundException {
 
         log.info("============== ADD INSTRUMENT ============== ");
-        LocalUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
         log.info("USER ID: " + user.getId());
         log.info("ticker: " + request.getTicker());
         Bond newOrUpdatedBond;
@@ -365,7 +365,7 @@ public class InvestController {
      * @param bond - данные по бумаге из БД.
      * @return
      */
-    private BondRs prepareBondRs(Bond bond, LocalUser user) {
+    private BondRs prepareBondRs(Bond bond, ArNoteUser user) {
 
         return BondRs.builder()
                 .id(bond.getId())
@@ -424,7 +424,7 @@ public class InvestController {
      *
      * @return LocalUser
      */
-    public LocalUser getLocalUserFromPrincipal(Principal principal) throws UserNotFoundException {
+    public ArNoteUser getLocalUserFromPrincipal(Principal principal) throws UserNotFoundException {
         return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
     }
 }

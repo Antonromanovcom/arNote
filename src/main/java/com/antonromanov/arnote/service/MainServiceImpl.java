@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import static com.antonromanov.arnote.utils.Utils.*;
+import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 
 
 @Service
@@ -32,12 +32,12 @@ public class MainServiceImpl implements MainService {
     Integer addCount = 0; // Количество добавлений
 
     @Override
-    public List<Wish> getAllWishesWithPriority1(LocalUser user) {
+    public List<Wish> getAllWishesWithPriority1(ArNoteUser user) {
         return wishRepository.getAllWithPriority1(user);
     }
 
     @Override
-    public int getMaxPriority(LocalUser user) {
+    public int getMaxPriority(ArNoteUser user) {
         List<Wish> wishDTOList = wishRepository.getAllWithGroupOrder(user);
         Comparator<Wish> comparator = Comparator.comparing(Wish::getPriorityGroup);
 
@@ -51,7 +51,7 @@ public class MainServiceImpl implements MainService {
     private void addItemInWishDTOListForNullPriorityWishes(List<WishDTOList> wishDTOListGlobal,
                                                            List<WishDTO> wishDTOListFiltered,
                                                            int maxPrior,
-                                                           LocalUser user) {
+                                                           ArNoteUser user) {
         wishDTOListGlobal.add(WishDTOList.builder()
                 .wishList(wishDTOListFiltered)
                 .monthNumber(computerMonthNumber(maxPrior + 1 > 12 ? (maxPrior + 1 - 12) : maxPrior + 1))
@@ -72,7 +72,7 @@ public class MainServiceImpl implements MainService {
      *
      */
     @Override
-    public List<WishDTOList> getAllWishesWithGroupPriority(LocalUser user) {
+    public List<WishDTOList> getAllWishesWithGroupPriority(ArNoteUser user) {
 
         int maxPrior = getMaxPriority(user);
         List<WishDTOList> wishDTOListGlobal = new ArrayList<>();
@@ -134,7 +134,7 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public List<Wish> getAllWishesByUserId(LocalUser user) {
+    public List<Wish> getAllWishesByUserId(ArNoteUser user) {
         return wishRepository.findAllByIdSorted(user);
     }
 
@@ -146,14 +146,14 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public List<Wish> findAllWishesByWishName(SearchRq request, LocalUser user) {
+    public List<Wish> findAllWishesByWishName(SearchRq request, ArNoteUser user) {
         return wishRepository.findAllByUser(user).stream()
                 .filter(w->request.getWishName().equalsIgnoreCase(w.getWish()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<List<Wish>> getAllRealizedWishes(LocalUser user) {
+    public Optional<List<Wish>> getAllRealizedWishes(ArNoteUser user) {
         return Optional.of(wishRepository.getAllRealizedWishes(user));
     }
 
@@ -185,17 +185,17 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public Integer getSumm4All(LocalUser user) {
+    public Integer getSumm4All(ArNoteUser user) {
         return wishRepository.findAllByIdSorted(user).stream().map(Wish::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
     @Override
-    public Integer getSumm4Prior(LocalUser user) {
+    public Integer getSumm4Prior(ArNoteUser user) {
         return wishRepository.getAllWithPriority1(user).stream().map(Wish::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
     @Override
-    public Optional<Integer> getImplementedSum(LocalUser user, int period) {
+    public Optional<Integer> getImplementedSum(ArNoteUser user, int period) {
         if (period == 1) {
             return wishRepository.getImplementedSum4AllPeriod(user.getId());
         } else {
@@ -209,20 +209,21 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public Salary getLastSalary(LocalUser localUser) {
-        return (salaryRepository.getLastSalary(localUser)).size() < 1 ? null : (salaryRepository.getLastSalary(localUser)).get(0);
+    public Salary getLastSalary(ArNoteUser user) {
+        return (salaryRepository.getLastSalary(user)).size() < 1 ? null : (salaryRepository.getLastSalary(user)).get(0);
     }
 
     @Override
-    public Integer calculateImplementationPeriod(Integer summ, LocalUser localUser) {
-        return summ / (getLastSalary(localUser).getResidualSalary());
+    public Integer calculateImplementationPeriod(Integer summ, ArNoteUser ArNoteUser) {
+        return summ / (getLastSalary(ArNoteUser).getResidualSalary());
     }
 
 
     @Override
-    public ResponseParseResult parseCsv(MultipartFile file, LocalUser localUser) throws IOException {
+    public ResponseParseResult parseCsv(MultipartFile file, ArNoteUser user) throws IOException {
 
-        CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"), ',', '"', 1);
+        CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), "UTF-8"),
+                ',', '"', 1);
         List<String[]> allRows = reader.readAll();
         Pattern pattern = Pattern.compile("^\\d{1,3}\\,");
 
@@ -251,7 +252,7 @@ public class MainServiceImpl implements MainService {
                     if (wishes.size() < 1) {
                         //нету? добавляем
                         wishRepository.save(new Wish(localWish, localPrice, 1, 1,
-                                false, "from csv", "", localUser, new Date()));
+                                false, "from csv", "", user, new Date()));
                         addCount++;
                     }
                 });

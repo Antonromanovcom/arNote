@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.service.investment.calc;
 
 import com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException;
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.Purchase;
@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.antonromanov.arnote.utils.Utils.isInteger;
+import static com.antonromanov.arnote.utils.ArNoteUtils.isInteger;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
@@ -62,7 +62,7 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     @Cacheable(cacheNames = "divsByTicker", key = "#user.id")
-    public Optional<ConsolidatedDividendsRs> getDivsByTicker(LocalUser user, String ticker) {
+    public Optional<ConsolidatedDividendsRs> getDivsByTicker(ArNoteUser user, String ticker) {
         if (!isBlank(ticker)) {
             Optional<ConsolidatedDividendsRs> res = httpClient.sendAndParse(ticker);
             if (res.isPresent()) {
@@ -199,7 +199,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public Optional<MoexDetailInfoRs> getDetailInfo(LocalUser user, String ticker) {
+    public Optional<MoexDetailInfoRs> getDetailInfo(ArNoteUser user, String ticker) {
         if (!isBlank(ticker)) {
             return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(RestTemplateOperation.
                     GET_INSTRUMENT_DETAIL_INFO, ticker, null)));
@@ -344,7 +344,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public Integer calculateFinalPrice(Bond bond, LocalUser user) {
+    public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
         if (bond.getType() == BondType.SHARE) {
 
             if (bond.getIsBought()) { // если это ФАКТ
@@ -374,7 +374,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public ConsolidatedDividendsRs getDividends(Bond bond, LocalUser user) {
+    public ConsolidatedDividendsRs getDividends(Bond bond, ArNoteUser user) {
         return getDivsByTicker(user, bond.getTicker())
                 .orElse(ConsolidatedDividendsRs.builder()
                         .dividendList(Collections.emptyList())
@@ -390,7 +390,7 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     @Cacheable(cacheNames = "currenciesCache", key = "#user.id")
-    public String getCurrencyOfShareFromDetailInfo(String ticker, LocalUser user) {
+    public String getCurrencyOfShareFromDetailInfo(String ticker, ArNoteUser user) {
         return getDetailInfo(user, ticker)
                 .map(detailInfo -> detailInfo.getDataList().stream()
                         .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
@@ -413,7 +413,7 @@ public class CalculateServiceImpl implements CalculateService {
      */
     @Override
     @Cacheable(cacheNames = "minimalLotsCache", key = "#user.id")
-    public Integer getMinimalLot(String ticker, LocalUser user) {
+    public Integer getMinimalLot(String ticker, ArNoteUser user) {
         return getDetailInfo(user, ticker)
                 .map(detailInfo -> detailInfo.getDataList().stream()
                         .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
@@ -602,7 +602,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @return
      */
     @Override
-    public Integer getBondLot(Bond bond, LocalUser user, List<Purchase> purchaseList) {
+    public Integer getBondLot(Bond bond, ArNoteUser user, List<Purchase> purchaseList) {
 
         if (!bond.getIsBought()) { // если это план по облигации
             return getBondDataByTicker(bond.getTicker())
@@ -619,7 +619,7 @@ public class CalculateServiceImpl implements CalculateService {
     }
 
     @Override
-    public ConsolidatedDividendsRs getCoupons(Bond bond, LocalUser user) {
+    public ConsolidatedDividendsRs getCoupons(Bond bond, ArNoteUser user) {
 
         return ConsolidatedDividendsRs.builder()
                 .dividendList(prepareCouponList(getBondDataByTicker(bond.getTicker()).orElse(null)))

@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.service.investment.calc;
 
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
@@ -24,7 +24,7 @@ public interface CalculateService {
      * @param user - текущий авторизовавшийся пользователь
      * @return
      */
-    Optional<ConsolidatedDividendsRs> getDivsByTicker(LocalUser user, String ticker);
+    Optional<ConsolidatedDividendsRs> getDivsByTicker(ArNoteUser user, String ticker);
 
     /**
      * Запросить текущую цену акции по тикеру.
@@ -62,7 +62,7 @@ public interface CalculateService {
      * @param user - текущий авторизовавшийся пользователь
      * @return
      */
-    Optional<MoexDetailInfoRs> getDetailInfo(LocalUser user, String ticker);
+    Optional<MoexDetailInfoRs> getDetailInfo(ArNoteUser user, String ticker);
 
     /**
      * Запросить board_id.
@@ -98,14 +98,14 @@ public interface CalculateService {
      * @param user
      * @return
      */
-    Integer calculateFinalPrice(Bond bond, LocalUser user);
+    Integer calculateFinalPrice(Bond bond, ArNoteUser user);
 
     /**
      * Подготовить дивиденды.
      *
      * @return
      */
-    ConsolidatedDividendsRs getDividends(Bond bond, LocalUser user);
+    ConsolidatedDividendsRs getDividends(Bond bond, ArNoteUser user);
 
 
     /**
@@ -113,14 +113,14 @@ public interface CalculateService {
      *
      * @return
      */
-    String getCurrencyOfShareFromDetailInfo(String ticker, LocalUser user);
+    String getCurrencyOfShareFromDetailInfo(String ticker, ArNoteUser user);
 
     /**
      * Достать минимальный лот.
      *
      * @return
      */
-    Integer getMinimalLot(String ticker, LocalUser user);
+    Integer getMinimalLot(String ticker, ArNoteUser user);
 
     /**
      * Запросить исторические данные.
@@ -188,14 +188,14 @@ public interface CalculateService {
      *
      * @return
      */
-    Integer getBondLot(Bond bond, LocalUser user, List<Purchase> purchaseList);
+    Integer getBondLot(Bond bond, ArNoteUser user, List<Purchase> purchaseList);
 
     /**
      * Получить купоны по облигации.
      *
      * @return
      */
-    ConsolidatedDividendsRs getCoupons(Bond bond, LocalUser user);
+    ConsolidatedDividendsRs getCoupons(Bond bond, ArNoteUser user);
 
 
     /**

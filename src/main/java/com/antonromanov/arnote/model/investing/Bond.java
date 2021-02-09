@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.model.investing;
 
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,7 +39,7 @@ public class Bond {
     private Boolean isBought; // факт / План
 
     @ManyToOne(cascade = CascadeType.DETACH)
-    private LocalUser user;
+    private ArNoteUser user;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "post_id")

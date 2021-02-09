@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.antonromanov.arnote.utils.Utils.prepareUrl;
-import static com.antonromanov.arnote.utils.Utils.prepareUrlForHistory;
+import static com.antonromanov.arnote.utils.ArNoteUtils.prepareUrl;
+import static com.antonromanov.arnote.utils.ArNoteUtils.prepareUrlForHistory;
 
 @Service
 @Slf4j

@@ -3,6 +3,7 @@ package com.antonromanov.arnote.model;
 
 import com.antonromanov.arnote.model.investing.InvestingSortMode;
 import com.antonromanov.arnote.model.wish.SortMode;
+import com.antonromanov.arnote.model.wish.enums.FilterMode;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,9 +20,9 @@ import java.util.Map;
 @Getter
 @Setter
 @Table(name = "users")
-public class LocalUser {
+public class ArNoteUser {
 
-	public LocalUser(String login, Role userRole, String pwd, boolean usercryptomode, String email, String fullname) {
+	public ArNoteUser(String login, Role userRole, String pwd, boolean usercryptomode, String email, String fullname) {
 		this.login = login;
 		this.pwd = pwd;
 		this.userCryptoMode = usercryptomode;
@@ -93,6 +94,12 @@ public class LocalUser {
 	@Enumerated(EnumType.STRING)
 	private SortMode sortMode;
 
+	/**
+	 * Режим фильтрации.
+	 */
+	@Enumerated(EnumType.STRING)
+	private FilterMode filterMode;
+
 
 	@Column
 	private LocalDateTime lastOperationTime;
@@ -128,12 +135,12 @@ public class LocalUser {
 				'}';
 	}
 
-	public LocalUser(String login, String pw) {
+	public ArNoteUser(String login, String pw) {
 		this.login = login;
 		this.pwd = pw;
 		this.userCryptoMode = false;
 	}
 
-	public LocalUser() {
+	public ArNoteUser() {
 	}
 }

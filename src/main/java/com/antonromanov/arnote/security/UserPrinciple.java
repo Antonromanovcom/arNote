@@ -1,7 +1,6 @@
 package com.antonromanov.arnote.security;
 
-
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.ArNoteUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class UserPrinciple implements UserDetails {
-//public class UserPrinciple  {
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,8 +39,8 @@ public class UserPrinciple implements UserDetails {
 		this.authorities = authorities;
 	}
 
-	public static UserPrinciple build(LocalUser user) {
-		List<GrantedAuthority> authorities = Stream.of(LocalUser.Role.values()).map(role ->
+	public static UserPrinciple build(ArNoteUser user) {
+		List<GrantedAuthority> authorities = Stream.of(ArNoteUser.Role.values()).map(role ->
 				new SimpleGrantedAuthority(role.name())
 		).collect(Collectors.toList());
 

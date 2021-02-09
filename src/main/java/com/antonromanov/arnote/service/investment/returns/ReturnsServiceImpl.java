@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.service.investment.returns;
 
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
@@ -23,7 +23,7 @@ public class ReturnsServiceImpl implements ReturnsService {
     }
 
     @Override
-    public Optional<Long> getTotalInvestment(LocalUser user) {
+    public Optional<Long> getTotalInvestment(ArNoteUser user) {
         return Optional.of(repo.findAllByUser(user).stream()
                 .map(b -> b.getPurchaseList().stream()
                         .map(p -> p.getLot() * p.getPrice())
@@ -39,7 +39,7 @@ public class ReturnsServiceImpl implements ReturnsService {
      * @return
      */
     @Override
-    public Optional<Long> getSharesDelta(LocalUser user) {
+    public Optional<Long> getSharesDelta(ArNoteUser user) {
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond->bond.getType()== BondType.SHARE)
                 .map(b -> {
@@ -60,7 +60,7 @@ public class ReturnsServiceImpl implements ReturnsService {
      * @return
      */
     @Override
-    public Optional<Long> getTotalDivsReturn(LocalUser user) {
+    public Optional<Long> getTotalDivsReturn(ArNoteUser user) {
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond -> bond.getType()==BondType.SHARE)
                 .map(b -> {
@@ -78,7 +78,7 @@ public class ReturnsServiceImpl implements ReturnsService {
      * @return
      */
     @Override
-    public Long calculateRequiredInvestments(LocalUser user, Targets target) {
+    public Long calculateRequiredInvestments(ArNoteUser user, Targets target) {
         return Optional.of((getTotalInvestment(user).orElse(0L) * (target.getValue() * 12)) / calculateTotalReturns(user)).orElse(0L);
     }
 
@@ -89,7 +89,7 @@ public class ReturnsServiceImpl implements ReturnsService {
      * @return
      */
     @Override
-    public Long calculateTotalReturns(LocalUser user) {
+    public Long calculateTotalReturns(ArNoteUser user) {
         return (getSharesDelta(user).orElse(0L)) + 1L + getTotalDivsReturn(user).orElse(0L);
     }
 
@@ -99,7 +99,7 @@ public class ReturnsServiceImpl implements ReturnsService {
      * @return
      */
     @Override
-    public Optional<Long> getTotalBondsReturns(LocalUser user) {
+    public Optional<Long> getTotalBondsReturns(ArNoteUser user) {
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond -> bond.getType()==BondType.BOND)
                 .map(b -> {

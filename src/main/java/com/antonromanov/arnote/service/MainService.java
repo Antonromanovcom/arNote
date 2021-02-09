@@ -13,17 +13,17 @@ import java.util.Optional;
 
 public interface MainService {
 
-	ResponseParseResult parseCsv(MultipartFile file, LocalUser localUser) throws Exception;
+	ResponseParseResult parseCsv(MultipartFile file, ArNoteUser localUser) throws Exception;
 
-	List<Wish> getAllWishesWithPriority1(LocalUser user);
+	List<Wish> getAllWishesWithPriority1(ArNoteUser user);
 
-	int getMaxPriority(LocalUser user);
+	int getMaxPriority(ArNoteUser user);
 
 	/**
 	 * Получить все желания с помесячной группировкой и детализованным наполнением.
 	 *
 	 */
-	List<WishDTOList> getAllWishesWithGroupPriority(LocalUser user);
+	List<WishDTOList> getAllWishesWithGroupPriority(ArNoteUser user);
 
 	void updateWish(Wish log);
 
@@ -33,19 +33,19 @@ public interface MainService {
 
 	Optional<Wish> getWishById(int id);
 
-	Integer getSumm4All(LocalUser user);
+	Integer getSumm4All(ArNoteUser user);
 
-	Integer getSumm4Prior(LocalUser user);
+	Integer getSumm4Prior(ArNoteUser user);
 
-	Optional<Integer> getImplementedSum(LocalUser user, int period);
+	Optional<Integer> getImplementedSum(ArNoteUser user, int period);
 
 	Salary saveSalary(Salary salary);
 
-	Salary getLastSalary(LocalUser localUser);
+	Salary getLastSalary(ArNoteUser localUser);
 
-	Integer calculateImplementationPeriod(Integer summ, LocalUser localUser);
+	Integer calculateImplementationPeriod(Integer summ, ArNoteUser localUser);
 
-	List<Wish> getAllWishesByUserId(LocalUser user);
+	List<Wish> getAllWishesByUserId(ArNoteUser user);
 
 	/**
 	 * Поиск желаний по имени.
@@ -54,9 +54,9 @@ public interface MainService {
 	 * @param user
 	 * @return
 	 */
-	List<Wish> findAllWishesByWishName(SearchRq request, LocalUser user);
+	List<Wish> findAllWishesByWishName(SearchRq request, ArNoteUser user);
 
-	Optional<List<Wish>> getAllRealizedWishes(LocalUser user);
+	Optional<List<Wish>> getAllRealizedWishes(ArNoteUser user);
 
 	Wish updateMonthGroup(Wish wish) throws BadIncomeParameter;
 

@@ -2,7 +2,7 @@ package com.antonromanov.arnote.model.wish;
 
 import javax.persistence.*;
 
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.wish.WishGroup;
 import lombok.*;
 import java.util.Date;
@@ -42,7 +42,7 @@ public class Wish {
     private String url;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private LocalUser user;
+    private ArNoteUser user;
 
     @Column
     private Integer priorityGroup;
@@ -66,7 +66,7 @@ public class Wish {
 
 
     public Wish(String wish, Integer price, Integer priority, Integer priorityGroup, Boolean ac, String description,
-                String url, LocalUser user, Date creationDate) {
+                String url, ArNoteUser user, Date creationDate) {
         this.wish = wish;
         this.price = price;
         this.priority = priority;
@@ -78,7 +78,7 @@ public class Wish {
         this.creationDate = creationDate;
     }
 
-    public Wish(long id, String wish, int price, int priority, boolean ac, String description, String url, LocalUser user) {
+    public Wish(long id, String wish, int price, int priority, boolean ac, String description, String url, ArNoteUser user) {
 
         this.wish = wish;
         this.price = price;
@@ -92,7 +92,7 @@ public class Wish {
     }
 
     //Todo: с таким большим количеством конструкторов явно надо что-то делать. Может быть добавить билдер в класс или добавить метод конвертации
-    public Wish(String wish, int price, int priority, boolean archive, String description, String url, LocalUser user) {
+    public Wish(String wish, int price, int priority, boolean archive, String description, String url, ArNoteUser user) {
         this.wish = wish;
         this.price = price;
         this.priority = priority;

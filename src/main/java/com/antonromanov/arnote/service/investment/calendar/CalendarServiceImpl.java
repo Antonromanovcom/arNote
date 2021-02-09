@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import static com.antonromanov.arnote.utils.Utils.monthNameToNumber;
+import static com.antonromanov.arnote.utils.ArNoteUtils.monthNameToNumber;
 
 @Service
 public class CalendarServiceImpl implements CalendarService {

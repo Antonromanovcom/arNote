@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.repositoty;
 
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.wish.Wish;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,15 +13,15 @@ import java.util.Optional;
 public interface WishRepository extends JpaRepository<Wish, Integer>{
 
 	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.user = :user order by w.priorityGroup, w.priorityGroupOrder ASC ")
-	List<Wish> getAllWithGroupOrder(@Param("user") LocalUser user);
+	List<Wish> getAllWithGroupOrder(@Param("user") ArNoteUser user);
 
 	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.user = :user order by w.priority ASC ")
-	List<Wish> findAllByIdSorted(@Param("user") LocalUser user);
+	List<Wish> findAllByIdSorted(@Param("user") ArNoteUser user);
 
 
 
 	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.priority = 1 and  w.user = :user order by w.wish ASC ")
-	List<Wish> getAllWithPriority1(@Param("user") LocalUser user);
+	List<Wish> getAllWithPriority1(@Param("user") ArNoteUser user);
 
 	/**
 	 * Найти все желания по пользаку.
@@ -29,7 +29,7 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	 * @param user
 	 * @return
 	 */
-	List<Wish> findAllByUser(LocalUser user);
+	List<Wish> findAllByUser(ArNoteUser user);
 
 
 	/**
@@ -39,7 +39,7 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 	 * @return
 	 */
 	@Query(value="select w from Wish w where w.ac = false and w.realized = true and  w.user = :user order by w.wish ASC ")
-	List<Wish> getAllRealizedWishes(@Param("user") LocalUser user);
+	List<Wish> getAllRealizedWishes(@Param("user") ArNoteUser user);
 
 
 

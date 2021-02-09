@@ -1,17 +1,9 @@
 package com.antonromanov.arnote.utils;
 
-import java.security.Principal;
-import java.time.*;
-import java.time.format.TextStyle;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.exceptions.JsonNullException;
+import com.antonromanov.arnote.exceptions.JsonParseException;
+import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.InvestingFilterMode;
 import com.antonromanov.arnote.model.investing.response.BondRs;
@@ -21,7 +13,6 @@ import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperat
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.model.wish.Salary;
-import com.antonromanov.arnote.exceptions.*;
 import com.antonromanov.arnote.model.wish.Wish;
 import com.antonromanov.arnote.model.wish.WishDTO;
 import com.google.gson.Gson;
@@ -35,7 +26,15 @@ import org.passay.PasswordGenerator;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
+import java.time.*;
+import java.time.format.TextStyle;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -43,7 +42,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * Тут собраны основные утилиты.
  */
 @Slf4j
-public class Utils {
+public class ArNoteUtils {
 
     public enum ParseType {ADD, EDIT}
 
@@ -118,13 +117,13 @@ public class Utils {
     /**
      * Конвертим пришедший json в нового пользака и валидируем
      */
-    public static LocalUser parseJsonToUserAndValidate(String json) throws Exception {
+    public static ArNoteUser parseJsonToUserAndValidate(String json) throws Exception {
 
         if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
             throw new JsonNullException("JSON - пустой");
         }
 
-        LocalUser localUser;
+        ArNoteUser localUser;
         Date currentDate = new Date();
 
 
@@ -133,13 +132,13 @@ public class Utils {
 
             if (isBlank(JSONTemplate.fromString(json).get("login").getAsString())) throw new JsonParseException(json);
 
-            LocalUser.Role userRole;
+            ArNoteUser.Role userRole;
 
             if (("USER".equals(JSONTemplate.fromString(json).get("userRole").getAsString())) ||
                     ("ADMIN".equals(JSONTemplate.fromString(json).get("userRole").getAsString()))) {
-                userRole = LocalUser.Role.valueOf(JSONTemplate.fromString(json).get("userRole").getAsString());
+                userRole = ArNoteUser.Role.valueOf(JSONTemplate.fromString(json).get("userRole").getAsString());
             } else {
-                userRole = LocalUser.Role.USER;
+                userRole = ArNoteUser.Role.USER;
             }
 
             if (JSONTemplate.fromString(json).get("userCryptoMode") == null) throw new JsonParseException(json);
@@ -148,7 +147,7 @@ public class Utils {
             if (JSONTemplate.fromString(json).get("fullname") == null) throw new JsonParseException(json);
 
 
-            localUser = new LocalUser(
+            localUser = new ArNoteUser(
                     JSONTemplate.fromString(json).get("login").getAsString(),
                     userRole,
                     JSONTemplate.fromString(json).get("pwd").getAsString(),
@@ -169,7 +168,7 @@ public class Utils {
     /**
      * Конвертим пришедший json в новую Salary
      */
-    public static Salary parseJsonToSalary(String json, LocalUser user) throws Exception {
+    public static Salary parseJsonToSalary(String json, ArNoteUser user) throws Exception {
 
         if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
             throw new JsonNullException("JSON - пустой");
@@ -198,7 +197,7 @@ public class Utils {
     /**
      * Конвертим пришедший json в новый WISH
      */
-    public static Wish parseJsonToWish(ParseType parseType, String json, LocalUser user) throws Exception {
+    public static Wish parseJsonToWish(ParseType parseType, String json, ArNoteUser user) throws Exception {
 
         if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
             throw new JsonNullException("JSON - пустой");

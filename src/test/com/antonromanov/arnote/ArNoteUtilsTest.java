@@ -20,14 +20,14 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.antonromanov.arnote.utils.Utils.complexPredicate;
-import static com.antonromanov.arnote.utils.Utils.prepareUrl;
+import static com.antonromanov.arnote.utils.ArNoteUtils.complexPredicate;
+import static com.antonromanov.arnote.utils.ArNoteUtils.prepareUrl;
 import static org.junit.Assert.assertEquals;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UtilsTest {
+public class ArNoteUtilsTest {
 
     @Autowired
     private ArNoteHttpClient client;
