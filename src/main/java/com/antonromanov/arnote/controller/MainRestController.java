@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -216,8 +218,8 @@ public class MainRestController extends ControllerBase {
              *
              */
             if (filter != null) {
-                    localUser.setFilterMode(FilterMode.valueOf(filter));
-                    localUser = usersRepo.saveAndFlush(localUser);
+                localUser.setFilterMode(FilterMode.valueOf(filter));
+                localUser = usersRepo.saveAndFlush(localUser);
             }
             if (localUser.getFilterMode() == null) {
                 localUser.setFilterMode(FilterMode.NONE);
@@ -283,30 +285,13 @@ public class MainRestController extends ControllerBase {
 
     @CrossOrigin(origins = "*")
     @PostMapping
-    public ResponseEntity<String> addWish(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
+    public Wish addWish(Principal principal, @RequestBody String requestParam) throws Exception {
 
-
-        return $do(s -> {
-
-            log.info("==================== ADD WISHES ======================== ");
-            log.info("PAYLOAD: " + requestParam);
-            log.info("PRINCIPAL: " + principal.getName());
-            log.info("======================================================== ");
-
-            ArNoteUser localUser = getUserFromPrincipal(principal);
-
-            Wish newWish;
-            newWish = mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, localUser));
-
-            // Предотвращение вываливания на пустых датах
-            if (newWish.getCreationDate() == null) newWish.setCreationDate(new Date());
-            if (newWish.getRealized() == null) newWish.setRealized(false);
-            if (newWish.getRealizationDate() == null) newWish.setRealizationDate(new Date());
-
-            String result = createGsonBuilder().toJson(newWish);
-            return $prepareResponse(result);
-
-        }, requestParam, null, OperationType.ADD_WISH, resp);
+        log.info("==================== ADD WISHES ======================== ");
+        log.info("PAYLOAD: {}", requestParam);
+        log.info("PRINCIPAL: {}", principal.getName());
+        log.info("======================================================== ");
+        return mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, getUserFromPrincipal(principal)));
     }
 
     @CrossOrigin(origins = "*")
@@ -392,25 +377,13 @@ public class MainRestController extends ControllerBase {
 
     @CrossOrigin(origins = "*")
     @PostMapping("/salary")
-    public ResponseEntity<String> addSalary(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
+    public Salary addSalary(Principal principal, @RequestBody String requestParam) throws Exception {
 
-
-        return $do(s -> {
-
-            log.info("==================== ADD SALARY ======================== ");
-            log.info("PAYLOAD: " + requestParam);
-            log.info("PRINCIPAL: " + principal.getName());
-
-            ArNoteUser localUser = getUserFromPrincipal(principal);
-            Salary newSalary;
-            newSalary = mainService.saveSalary(parseJsonToSalary(requestParam, localUser));
-            String result = createGsonBuilder().toJson(newSalary);
-            log.info("PAYLOAD: " + result);
-            log.info("======================================================== ");
-
-            return $prepareResponse(result);
-
-        }, requestParam, null, null, resp);
+        log.info("==================== ADD SALARY ======================== ");
+        log.info("PAYLOAD: " + requestParam);
+        log.info("PRINCIPAL: " + principal.getName());
+        ArNoteUser localUser = getUserFromPrincipal(principal);
+        return mainService.saveSalary(parseJsonToSalary(requestParam, localUser));
     }
 
 
@@ -594,9 +567,7 @@ public class MainRestController extends ControllerBase {
     //todo: АААААА! Это полная пизда вообще!!!!!! Должен быть отдельный контроллер для юзерских действий и там два метода отдельных! Один для получения, другой для добавления!
     @CrossOrigin(origins = "*")
     @GetMapping("/users/toggle/{mode}")
-    public ResponseEntity<String> toggleUserMode(Principal principal, @PathVariable String mode, HttpServletResponse resp) {
-
-        return $do(s -> {
+    public ArNoteUser toggleUserMode(Principal principal, @PathVariable String mode) throws UserNotFoundException {
 
             log.info("========= TOGGLE / GET USER MODE ============== ");
             log.info("MODE: " + mode);
@@ -605,15 +576,10 @@ public class MainRestController extends ControllerBase {
 
             if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
                 localuser.setViewMode(mode);
-                return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
-            } else if ("GET".equals(mode)) { //todo: вот эту жесть конечно же надо убрать будет и исправить на фронте
-                //  localuser.setViewMode("TABLE");
-                return $prepareResponse(createGsonBuilder().toJson(localuser));
+                return usersRepo.saveAndFlush(localuser);
             } else {
-                return $prepareBadResponse(createGsonBuilder().toJson("Bad mode parameter!"));
+                return localuser;
             }
-
-        }, null, null, OperationType.TOGGLE_USER_MODE, resp);
     }
 
     @CrossOrigin(origins = "*")

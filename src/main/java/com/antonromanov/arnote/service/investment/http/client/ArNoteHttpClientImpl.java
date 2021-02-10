@@ -78,6 +78,7 @@ public class ArNoteHttpClientImpl implements ArNoteHttpClient {
                 return xmlParser.marshall(rt.getForEntity(prepareUrl(MOEX_URL, type, serializeObjectToMVMap(type), prepareParametersMap(ticker, boardId)), String.class),
                         type.getClassName());
             } catch (Exception e) {
+                log.error("Ошибка взаимодействия с биржей (маршелинга либо отправки): {}", e.getMessage());
                 throw new MoexRequestException();
             }
         } else {

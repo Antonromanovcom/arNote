@@ -5,6 +5,7 @@ import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.DividendRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class XmlHandlerImpl implements XmlHandler {
 
     @Override
@@ -66,6 +68,7 @@ public class XmlHandlerImpl implements XmlHandler {
     @Override
     public CommonMoexDoc marshall(ResponseEntity<String> response, Class<?> moexClass) {
         if (response.getBody() == null) {
+            log.error("Ошибка маршелинга - ответ пришел, но бади пустое!");
             throw new MoexXmlResponseMarshalingException();
         } else {
             try {
@@ -73,6 +76,7 @@ public class XmlHandlerImpl implements XmlHandler {
                 Unmarshaller un = jaxbContext.createUnmarshaller();
                 return (CommonMoexDoc) un.unmarshal(new InputSource(new StringReader(response.getBody())));
             } catch (JAXBException e) {
+                log.error("Ошибка маршелинга: {}", e.getMessage());
                 throw new MoexXmlResponseMarshalingException();
             }
         }
