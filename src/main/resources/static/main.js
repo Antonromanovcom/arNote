@@ -1605,6 +1605,7 @@ var InvestingComponent = /** @class */ (function () {
      * payload
      */
     InvestingComponent.prototype.addInstrument = function (id) {
+        var _this = this;
         var payload;
         var DATE_TIME_FORMAT = 'MM/DD/YYYY';
         var currentDate;
@@ -1625,14 +1626,12 @@ var InvestingComponent = /** @class */ (function () {
         }
         this.modalService.close(id);
         console.log('Message = ', payload);
-        /*this.httpService.addInstrument(payload, this.BASE_URL).pipe(
-          catchError(err => {
-            return this.errorHandler(err, 'Невозможно добавить бумагу!');
-          })
-        ).subscribe(hero => {
-          this.showAlert('Инструмент успешно добавлен!', 'ADD MODE', hero);
-          this.getBonds(this.GET_BONDS_URL);
-        });*/
+        this.httpService.addInstrument(payload, this.BASE_URL).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно добавить бумагу!');
+        })).subscribe(function (hero) {
+            _this.showAlert('Инструмент успешно добавлен!', 'ADD MODE', hero);
+            _this.getBonds(_this.GET_BONDS_URL);
+        });
     };
     /**
      * Запросить текущую цену бумаги и лот.
