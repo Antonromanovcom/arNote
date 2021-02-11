@@ -140,7 +140,7 @@ public class InvestController {
         return ConsolidatedReturnsRs.builder()
                 .invested(returnsService.getTotalInvestment(user).orElse(0L))
                 .bondsReturns(returnsService.getTotalBondsReturns(user).orElse(0L))
-                .sharesDelta(returnsService.getSharesDelta(user).orElse(0L))
+                .sharesDelta(returnsService.getSharesDelta(user).map(Double::longValue).orElse(0L))
                 .sharesReturns(returnsService.getTotalDivsReturn(user).orElse(0L))
                 .sum((returnsService.calculateTotalReturns(user)))
                 .targets(Stream.of(new Object[][]{
@@ -414,7 +414,7 @@ public class InvestController {
                         bond.getPurchaseList())) :
                 DeltaRs.builder()
                         .tinkoffDeltaPercent(0D)
-                        .deltaInRubles(0L)
+                        .deltaInRubles(0D)
                         .deltaPeriod(0L)
                         .tinkoffDelta(0D)
                         .build();

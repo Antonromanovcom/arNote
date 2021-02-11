@@ -17,7 +17,7 @@ public interface ReturnsService {
      * @param user
      * @return
      */
-    Optional<Long> getSharesDelta(ArNoteUser user);
+    Optional<Double> getSharesDelta(ArNoteUser user);
 
     /**
      * Получить общую доходность по дивидендам.

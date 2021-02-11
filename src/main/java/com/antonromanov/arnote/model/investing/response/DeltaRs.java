@@ -19,7 +19,8 @@ public class DeltaRs {
      * Дельта изменения бумаги в рублях. Берутся данные с биржи за максимально доступный диапазон, берется самая
      * ранняя ранняя бумага и ее цена. Потом считаем текущая цена минус самая ранняя
      */
-    private final Long deltaInRubles;
+    @JsonSerialize(using = DoubleSerializer.class)
+    private final Double deltaInRubles;
     /**
      * Дельта изменения бумаги в рублях по формуле как в приложении Тинькофф Инвестиции: (P*Sl)-(S(p*l)), где
      *

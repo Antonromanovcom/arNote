@@ -8,7 +8,6 @@ import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.service.investment.calc.CalculateService;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -39,7 +38,7 @@ public class ReturnsServiceImpl implements ReturnsService {
      * @return
      */
     @Override
-    public Optional<Long> getSharesDelta(ArNoteUser user) {
+    public Optional<Double> getSharesDelta(ArNoteUser user) {
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond->bond.getType()== BondType.SHARE)
                 .map(b -> {
@@ -50,7 +49,7 @@ public class ReturnsServiceImpl implements ReturnsService {
 
                     return deltaRs.getDeltaInRubles();
                 })
-                .reduce((long) 0, Long::sum));
+                .reduce((double) 0, Double::sum));
     }
 
     /**
@@ -90,7 +89,7 @@ public class ReturnsServiceImpl implements ReturnsService {
      */
     @Override
     public Long calculateTotalReturns(ArNoteUser user) {
-        return (getSharesDelta(user).orElse(0L)) + 1L + getTotalDivsReturn(user).orElse(0L);
+        return (getSharesDelta(user).map(Double::longValue).orElse(0L)) + 1L + getTotalDivsReturn(user).orElse(0L);
     }
 
     /**

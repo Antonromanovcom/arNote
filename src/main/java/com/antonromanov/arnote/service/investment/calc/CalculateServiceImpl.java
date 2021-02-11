@@ -288,7 +288,6 @@ public class CalculateServiceImpl implements CalculateService {
 
                 tinkoffDeltaFinal = tinkoffSameLotButNewPrice - tkcAveragePurchasePrice;
                 tinkoffDeltaPercent = (tinkoffDeltaFinal * 100) / tinkoffSameLotButNewPrice;
-
             }
 
             MoexDocumentRs doc = getHistory(ticker, boardId);
@@ -300,6 +299,8 @@ public class CalculateServiceImpl implements CalculateService {
              * deltaPeriod = Миллисекунды от (текущая дата - (самая ранняя дата истории))
              * tinkoffDelta = (сумма покупок * текущую цену рынка) - (Сумма(лот * цену по каждой покупке))
              */
+
+
             return DeltaRs.builder()
                     .tinkoffDelta(tinkoffDeltaFinal)
                     .tinkoffDeltaPercent(tinkoffDeltaPercent)
@@ -309,14 +310,14 @@ public class CalculateServiceImpl implements CalculateService {
                             .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
                             .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
                             .map(Math::round)
-                            .map(n -> Math.round(currentStockPrice) - n)
-                            .orElse(0L))
+                            .map(n -> currentStockPrice - n)
+                            .orElse(0D))
                     .totalPercent(doc.getData()
                             .getRow()
                             .stream()
                             .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
                             .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
-                            .map(n -> ((Math.round(currentStockPrice) - n)/n)*100)
+                            .map(n -> ((currentStockPrice - n)/n)*100)
                             .orElse(0D))
                     .deltaPeriod(doc.getData()
                             .getRow()
