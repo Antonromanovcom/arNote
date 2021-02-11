@@ -37,13 +37,11 @@ public class CalendarServiceImpl implements CalendarService {
         return CalendarRs.builder()
                 .calendar(map.entrySet()
                         .stream()
-                        .map(e->{
-                            return MonthDetailRs.builder()
-                                    .monthRussianName(e.getKey().getRussianName())
-                                    .monthEnglishName(e.getKey().getEnglishName())
-                                    .data(e.getValue())
-                                    .build();
-                        })
+                        .map(e-> MonthDetailRs.builder()
+                                .monthRussianName(e.getKey().getRussianName())
+                                .monthEnglishName(e.getKey().getEnglishName())
+                                .data(e.getValue())
+                                .build())
                         .collect(Collectors.toCollection(LinkedList::new)))
                 .build();
     }
@@ -60,10 +58,12 @@ public class CalendarServiceImpl implements CalendarService {
                 .stream()
                 .flatMap(b -> b.getDividends().getDividendList().stream()
                         .filter(divs -> LocalDate.parse(divs.getRegistryCloseDate()).getMonthValue() == monthNameToNumber(month))
+                        .filter(dd->LocalDate.parse(dd.getRegistryCloseDate()).getYear()==LocalDate.now().getYear()) // берем только текущий год
+                        .filter(divMo->LocalDate.parse(divMo.getRegistryCloseDate()).isAfter(LocalDate.now()))
                         .map(d -> ReturnsPerMonthRs.builder()
                                 .type(BondType.valueOf(b.getType()))
                                 .ticker(b.getTicker())
-                                .value(d.getValue())
+                                .value(d.getValue()* b.getMinLot())
                                 .currencyId(d.getCurrencyId())
                                 .registryCloseDate(d.getRegistryCloseDate())
                                 .build()))

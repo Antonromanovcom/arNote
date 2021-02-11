@@ -295,10 +295,6 @@ public class InvestController {
                 .bonds(bondsRepo.findAllByUser(user)
                         .stream()
                         .map(bond -> prepareBondRs(bond, user))
-                        .filter(user.getInvestingFilterMode() != null ? complexPredicate(user.getInvestingFilterMode()) :
-                                s -> s.getTicker() != null)
-                        .sorted(user.getInvestingSortMode() == null ? InvestingSortMode.NONE.getComparator() :
-                                user.getInvestingSortMode().getComparator())
                         .collect(Collectors.toList()))
                 .build());
     }
