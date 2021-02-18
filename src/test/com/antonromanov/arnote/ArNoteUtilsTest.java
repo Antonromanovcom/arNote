@@ -1,28 +1,32 @@
 package com.antonromanov.arnote;
 
+import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedInvestmentDataRs;
 import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
+import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
-import com.antonromanov.arnote.service.investment.calc.CalculateService;
-import com.antonromanov.arnote.service.investment.http.client.ArNoteHttpClient;
+import com.antonromanov.arnote.service.investment.calc.CommonService;
+import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
+import com.antonromanov.arnote.service.investment.requestservice.RequestService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
 import static com.antonromanov.arnote.utils.ArNoteUtils.complexPredicate;
 import static com.antonromanov.arnote.utils.ArNoteUtils.prepareUrl;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 
 @RunWith(SpringRunner.class)
@@ -30,19 +34,33 @@ import static org.junit.Assert.assertEquals;
 public class ArNoteUtilsTest {
 
     @Autowired
-    private ArNoteHttpClient client;
-
-    @Autowired
-    private CalculateService cacheService;
-
-    @Autowired
-    ArNoteHttpClient httpClient;
+    private RequestService client;
 
     @Autowired
     UsersRepo repo;
 
+    @Autowired
+    BondsRepo bondsRepo;
+
     @Value("${moexUrl}")
     public String MOEX_URL;
+
+    @Autowired
+    private CommonService commonService;
+
+    @Autowired
+    private RequestService httpClient;
+
+    @Autowired
+    @Qualifier("calculateServiceImpl")
+    private SharesCalcService cacheService;
+
+    @Test
+    public void testCalcFactory() {
+        Bond b = new Bond();
+        b.setStockExchange(StockExchange.MOEX);
+        assertNull(commonService.prepareCurrentPrice(b));
+    }
 
     @Test
     public void getUrlTest() {
@@ -100,4 +118,6 @@ public class ArNoteUtilsTest {
         List<BondRs> mockListFilteredWithEmpty = mockObject.getBonds().stream().filter(predicateAfterClear).collect(Collectors.toList());
         assertEquals(3, mockListFilteredWithEmpty.size());
     }
+
+
 }

@@ -6,19 +6,23 @@ import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import com.antonromanov.arnote.repositoty.BondsRepo;
-import com.antonromanov.arnote.service.investment.calc.CalculateService;
+import com.antonromanov.arnote.service.investment.calc.bonds.BondCalcService;
+import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
 public class ReturnsServiceImpl implements ReturnsService {
 
-    private final CalculateService calcService;
+    private final SharesCalcService calcService;
+    private final BondCalcService bondCalcService;
     private final BondsRepo repo;
 
-    public ReturnsServiceImpl(BondsRepo repo, CalculateService calcService) {
+    public ReturnsServiceImpl(BondsRepo repo, @Qualifier("calculateServiceImpl") SharesCalcService calcService, BondCalcService bondCalcService) {
         this.calcService = calcService;
         this.repo = repo;
+        this.bondCalcService = bondCalcService;
     }
 
     @Override
@@ -102,7 +106,7 @@ public class ReturnsServiceImpl implements ReturnsService {
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond -> bond.getType()==BondType.BOND)
                 .map(b -> {
-                    ConsolidatedDividendsRs divs = calcService.getCoupons(b, user);
+                    ConsolidatedDividendsRs divs = bondCalcService.getCoupons(b, user);
                     return divs.getDivSum();
                 })
                 .reduce((double) 0, Double::sum))

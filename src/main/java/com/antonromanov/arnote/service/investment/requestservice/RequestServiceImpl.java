@@ -1,19 +1,22 @@
-package com.antonromanov.arnote.service.investment.http.client;
+package com.antonromanov.arnote.service.investment.requestservice;
 
 import com.antonromanov.arnote.exceptions.MoexRequestException;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchListRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import com.antonromanov.arnote.service.investment.xmlparse.XmlHandler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -23,7 +26,7 @@ import static com.antonromanov.arnote.utils.ArNoteUtils.prepareUrlForHistory;
 
 @Service
 @Slf4j
-public class ArNoteHttpClientImpl implements ArNoteHttpClient {
+public class RequestServiceImpl implements RequestService {
 
     /**
      * url на получение токена
@@ -36,7 +39,7 @@ public class ArNoteHttpClientImpl implements ArNoteHttpClient {
     private final ObjectMapper objectMapper;
     private Integer counter = 0;
 
-    public ArNoteHttpClientImpl(XmlHandler xmlParser, RestTemplate rt, ObjectMapper objectMapper) {
+    public RequestServiceImpl(XmlHandler xmlParser, RestTemplate rt, ObjectMapper objectMapper) {
         this.xmlParser = xmlParser;
         this.rt = rt;
         this.objectMapper = objectMapper;
@@ -127,5 +130,23 @@ public class ArNoteHttpClientImpl implements ArNoteHttpClient {
     @Override
     public int getCounter() {
         return counter;
+    }
+
+    @Override
+    public AlphavantageSearchListRs sendAndMarshallForeignRequest(String keyword) {
+
+        ResponseEntity<String> response = rt.getForEntity("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords="
+                + keyword
+                + "&apikey=3PV5BRWZZZM1T2BA", String.class);
+
+
+        AlphavantageSearchListRs res = null;
+        try {
+            res = objectMapper.readValue(response.getBody(), AlphavantageSearchListRs.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return res;
     }
 }

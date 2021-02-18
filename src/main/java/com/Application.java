@@ -1,9 +1,11 @@
 package com;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.antonromanov.arnote.service.investment.calc.CalculateServiceImpl;
+import com.antonromanov.arnote.service.investment.calc.shares.common.CalculateFactory;
 import com.google.common.cache.CacheBuilder;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.Cache;
@@ -13,6 +15,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +38,25 @@ public class Application {
     RestTemplate SimpleRestTemplate() {
         return new RestTemplate();
     }
+
+    @Bean
+    public FactoryBean serviceLocatorFactoryBean() {
+        ServiceLocatorFactoryBean factoryBean = new ServiceLocatorFactoryBean();
+        factoryBean.setServiceLocatorInterface(CalculateFactory.class);
+        return factoryBean;
+    }
+
+    @Bean(name = "sharesCalculator")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public CalculateServiceImpl sharesCalculator() {
+        return new CalculateServiceImpl();
+    }
+
+    /*@Bean(name = "xmlParser")
+  //  @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public XParser xmlParser() {
+        return new XParser();
+    }*/
 
 
     @Bean("habrCacheManager")

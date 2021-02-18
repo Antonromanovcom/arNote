@@ -8,9 +8,10 @@ import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
-import com.antonromanov.arnote.model.investing.response.DividendRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchListRs;
+import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexRowsForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDataRs;
@@ -19,39 +20,37 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.Moe
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexInstrumentDetailRowsRs;
-import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.service.investment.cache.CacheService;
-import com.antonromanov.arnote.service.investment.http.client.ArNoteHttpClient;
+import com.antonromanov.arnote.service.investment.calc.bonds.BondCalcService;
+import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
+import com.antonromanov.arnote.service.investment.requestservice.RequestService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import static com.antonromanov.arnote.utils.ArNoteUtils.isInteger;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @Slf4j
-public class CalculateServiceImpl implements CalculateService {
+public class CalculateServiceImpl implements SharesCalcService {
 
-    private final ArNoteHttpClient httpClient;
-    private final CacheService cacheService;
-    private final List<String> BOARD_GROUP_LIST = Arrays.asList("58", "193", "7", "67", "207");
+    @Autowired
+    private  RequestService httpClient;
+    @Autowired
+    private  CacheService cacheService;
+    @Autowired
+    private  BondCalcService bondCalcService;
+
     private Long lastQuote = 0L;
     private Long getAllSharesCount = 0L;
 
-    public CalculateServiceImpl(ArNoteHttpClient httpClient, BondsRepo repo, CacheService cacheService) {
-        this.httpClient = httpClient;
-        this.cacheService = cacheService;
-    }
 
 
     /**
@@ -154,28 +153,6 @@ public class CalculateServiceImpl implements CalculateService {
                                 .map(Double::parseDouble).orElse(0D))
                         .build();
             }
-    }
-
-    /**
-     * Запросить дату по текущей цене акции по тикеру.
-     *
-     * @return
-     */
-    @Override
-    public Optional<LocalDate> getCurrentQuoteDateByTicker(String ticker) {
-        if (!isBlank(ticker)) {
-            return (getCurrentQuoteByBoardId(getBoardId(ticker)))
-                    .map(lq -> lq.getData()
-                            .getRow()
-                            .stream()
-                            .filter(r -> ticker.equals(r.getSecid()))
-                            .findFirst()
-                            .map(q -> LocalDate.parse(q.getTradeDate()))
-                            .orElse(LocalDate.now()));
-
-        } else {
-            return Optional.empty();
-        }
     }
 
     @Override
@@ -356,14 +333,14 @@ public class CalculateServiceImpl implements CalculateService {
                 return (int) Math.round(((getCurrentQuoteWith15MinuteUpdate(bond.getTicker()
                 )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user));
             }
-
         } else {
             if (bond.getIsBought()) { // если это ФАКТ
                 return bond.getPurchaseList().stream()
                         .map(p -> p.getLot() * p.getPrice())
                         .reduce((double) 0, Double::sum).intValue();
             } else { // если ПЛАН
-                return (getBondLot(bond, user, bond.getPurchaseList())) * (getCurrentBondPrice(bond.getTicker()).intValue());
+                return (bondCalcService.getBondLot(bond, user, bond.getPurchaseList()))
+                        * (bondCalcService.getCurrentBondPrice(bond.getTicker()).intValue());
             }
 
         }
@@ -496,50 +473,6 @@ public class CalculateServiceImpl implements CalculateService {
                 });
     }
 
-    @Override
-    public MoexDocumentRs getBondsFromMoexForBoardGroup(String boardGroup) {
-        return cacheService.getBondsByBoardGroup(boardGroup)
-                .orElseGet(() -> {
-                    MoexDocumentRs doc = (MoexDocumentRs) httpClient
-                            .sendAndMarshall(RestTemplateOperation.GET_BONDS, boardGroup, null);
-                    cacheService.putBondsByBoardsGroup(boardGroup, doc);
-                    return doc;
-                });
-
-    }
-
-    @Override
-    public MoexDocumentRs getBondsFromMoex() {
-
-        Iterator<String> it = BOARD_GROUP_LIST.iterator();
-        MoexDocumentRs result = new MoexDocumentRs();
-        while (it.hasNext()) {
-            if (result.getData() == null) {
-                result = getBondsFromMoexForBoardGroup(it.next());
-            } else {
-                result.getData().getRow().addAll((getBondsFromMoexForBoardGroup(it.next())).getData().getRow());
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Запросить Облигацию по тикеру.
-     *
-     * @param ticker - тикер
-     * @return
-     */
-    @Override
-    public Optional<MoexRowsRs> getBondDataByTicker(String ticker) {
-
-        return getBondsFromMoex()
-                .getData()
-                .getRow()
-                .stream()
-                .filter(b -> ticker.equals(b.getSecid()))
-                .findFirst();
-    }
-
     /**
      * Определить валюту и курсовой-множитель для рубля.
      *
@@ -567,77 +500,6 @@ public class CalculateServiceImpl implements CalculateService {
                     .orElse(Double.valueOf("1"));
         }
     }
-
-    @Override
-    public Double getCurrentBondPrice(String ticker) {
-        return getBondDataByTicker(ticker)
-                .map(p -> (
-                        (Double.parseDouble(p.getLotValue()) * Double.parseDouble(p.getPrevLegalClosePrice())) / 100)
-                        * getCurrencyMultiplier(p.getCurrencyId())).orElse(0D);
-
-    }
-
-    @Override
-    public Currencies getBondCurrency(String ticker) {
-        return getBondDataByTicker(ticker)
-                .map(MoexRowsRs::getCurrencyId)
-                .map(Currencies::search)
-                .orElse(Currencies.RUB);
-
-    }
-
-    /**
-     * Получить имя облигации.
-     *
-     * @param ticker
-     * @return
-     */
-    @Override
-    public Optional<String> getBondName(String ticker) {
-        return getBondDataByTicker(ticker).map(MoexRowsRs::getSecName);
-    }
-
-    /**
-     * Получить минимальный лот облигации или сколько куплено уже.
-     *
-     * @return
-     */
-    @Override
-    public Integer getBondLot(Bond bond, ArNoteUser user, List<Purchase> purchaseList) {
-
-        if (!bond.getIsBought()) { // если это план по облигации
-            return getBondDataByTicker(bond.getTicker())
-                    .map(MoexRowsRs::getLotSize)
-                    .map(Integer::parseInt).orElse(0);
-        } else { // а если есть реальные покупки по облигации
-            /*
-             * Считаем сумму покупок (сколько всего купили бумаг то)
-             */
-            return purchaseList.stream()
-                    .map(Purchase::getLot)
-                    .reduce(0, Integer::sum);
-        }
-    }
-
-    @Override
-    public ConsolidatedDividendsRs getCoupons(Bond bond, ArNoteUser user) {
-
-        return ConsolidatedDividendsRs.builder()
-                .dividendList(prepareCouponList(getBondDataByTicker(bond.getTicker()).orElse(null)))
-                .divSum((365 / getBondDataByTicker(bond.getTicker())
-                        .map(MoexRowsRs::getCouponPeriod)
-                        .map(Double::parseDouble).orElse(1D)) * ((getBondDataByTicker(bond.getTicker())
-                        .map(MoexRowsRs::getCouponValue)
-                        .map(Double::parseDouble)
-                        .map(v -> (int) Math.round(v))
-                        .orElse(0))))
-                .percent(getBondDataByTicker(bond.getTicker())
-                        .map(MoexRowsRs::getCouponPercent)
-                        .map(Double::parseDouble)
-                        .orElse(0D))
-                .build();
-    }
-
 
     /**
      * Поиск акций по boardId.
@@ -677,35 +539,31 @@ public class CalculateServiceImpl implements CalculateService {
     }
 
     /**
-     * Подготовить список купонов в формате списка дивидендов.
+     * Найти буржуйскую бумагу по ключевому слову. Возвращает только акции.
      *
+     * @param keyword
      * @return
      */
     @Override
-    public List<DividendRs> prepareCouponList(MoexRowsRs bondData) {
+    public MoexDocumentRs getForeignInstrumentsByName(String keyword) {
+        AlphavantageSearchListRs response = httpClient.sendAndMarshallForeignRequest(keyword);
+        List<AlphavantageSearchRs> filteredList = response.getBestMatches().stream()
+                .filter(sec-> "Equity".equalsIgnoreCase(sec.getType()))
+                .collect(Collectors.toList());
+        MoexDocumentRs document = new MoexDocumentRs();
+        MoexDataRs documentData = new MoexDataRs();
+        ArrayList<MoexRowsRs> rows = filteredList.stream()
+                .map(r->{
+                    MoexRowsRs row = new MoexRowsRs();
+                    row.setSecid(r.getSymbol());
+                    row.setCurrencyId(r.getCurrency());
+                    row.setSecName(r.getName());
+                    return row;
+                })
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        List<DividendRs> resultList = new ArrayList<>();
-
-            if (bondData!=null && bondData.getCouponPeriod() != null && isInteger(bondData.getCouponPeriod())){
-                int couponsCountPerYear =  Math.toIntExact(365 / Integer.parseInt(bondData.getCouponPeriod()));
-
-                resultList.add(DividendRs.builder()
-                        .value(Double.valueOf(bondData.getCouponValue()))
-                        .currencyId(Currencies.search(bondData.getCurrencyId()))
-                        .registryCloseDate(bondData.getNextCoupon())
-                        .build());
-
-                for (int i = 1; i < couponsCountPerYear; i++) {
-                    resultList.add(DividendRs.builder()
-                            .value(Double.valueOf(bondData.getCouponValue()))
-                            .currencyId(Currencies.search(bondData.getCurrencyId()))
-                            .registryCloseDate(LocalDate.parse(bondData.getNextCoupon())
-                                    .plusDays(Integer.parseInt(bondData.getCouponPeriod())).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                            .build());
-                }
-                return resultList;
-            } else {
-                return null;
-            }
+        documentData.setRow(rows);
+        document.setData(documentData);
+       return document;
     }
 }

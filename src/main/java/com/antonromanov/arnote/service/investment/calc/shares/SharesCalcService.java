@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.service.investment.calc;
+package com.antonromanov.arnote.service.investment.calc.shares;
 
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
@@ -6,16 +6,12 @@ import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
-import com.antonromanov.arnote.model.investing.response.DividendRs;
-import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface CalculateService {
+public interface SharesCalcService {
 
 
     /**
@@ -39,14 +35,6 @@ public interface CalculateService {
      * @return
      */
     CurrentPriceRs getCurrentQuoteWith15MinuteUpdate(String ticker);
-
-
-    /**
-     * Запросить дату по текущей цене акции по тикеру.
-     *
-     * @return
-     */
-    Optional<LocalDate> getCurrentQuoteDateByTicker(String ticker);
 
     /**
      * Запросить текущую цену бумаги по board_id.
@@ -130,72 +118,12 @@ public interface CalculateService {
     MoexDocumentRs getHistory(String ticker, String boardId);
 
     /**
-     * Запросить Облигации.
-     *
-     * @return
-     */
-    MoexDocumentRs getBondsFromMoexForBoardGroup(String boardGroup);
-
-    /**
-     * Запросить Облигации по всем доскам сразу.
-     *
-     * @return
-     */
-    MoexDocumentRs getBondsFromMoex();
-
-    /**
-     * Запросить Облигацию по тикеру.
-     *
-     * @param ticker - тикер
-     * @return
-     */
-    Optional<MoexRowsRs> getBondDataByTicker(String ticker);
-
-    /**
      * Определить валюту и курсовой-множитель для рубля.
      *
      * @param currency - валютный идентификатор
      * @return
      */
     Double getCurrencyMultiplier(String currency);
-
-    /**
-     * Получить текущую цену облигации
-     *
-     * @param ticker - тикер бумаги.
-     * @return
-     */
-    Double getCurrentBondPrice(String ticker);
-
-    /**
-     * Получить текущую валюту облигации
-     *
-     * @param ticker - тикер бумаги.
-     * @return
-     */
-    Currencies getBondCurrency(String ticker);
-
-    /**
-     * Получить имя облигации.
-     *
-     * @param ticker
-     * @return
-     */
-    Optional<String> getBondName(String ticker);
-
-    /**
-     * Получить минимальный лот облигации или сколько куплено уже.
-     *
-     * @return
-     */
-    Integer getBondLot(Bond bond, ArNoteUser user, List<Purchase> purchaseList);
-
-    /**
-     * Получить купоны по облигации.
-     *
-     * @return
-     */
-    ConsolidatedDividendsRs getCoupons(Bond bond, ArNoteUser user);
 
 
     /**
@@ -212,10 +140,12 @@ public interface CalculateService {
      */
     List<String> getTradeModes();
 
+
     /**
-     * Подготовить список купонов в формате списка дивидендов.
+     * Найти буржуйскую бумагу по ключевому слову. Возвращает только акции.
      *
+     * @param keyword
      * @return
      */
-    List<DividendRs> prepareCouponList(MoexRowsRs bondData);
+    MoexDocumentRs getForeignInstrumentsByName(String keyword);
 }

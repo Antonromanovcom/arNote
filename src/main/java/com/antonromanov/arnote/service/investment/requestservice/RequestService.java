@@ -1,12 +1,16 @@
-package com.antonromanov.arnote.service.investment.http.client;
+package com.antonromanov.arnote.service.investment.requestservice;
 
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchListRs;
+import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import org.springframework.util.MultiValueMap;
+
+import java.io.IOException;
 import java.util.Optional;
 
-public interface ArNoteHttpClient {
+public interface RequestService {
     /**
      * Запросить дивиденды.
      *
@@ -43,4 +47,10 @@ public interface ArNoteHttpClient {
 
     int getCounter();
 
+    /**
+     * Найти буржуйские бумаги по имени.
+     * @param keyword
+     * @return
+     */
+    AlphavantageSearchListRs sendAndMarshallForeignRequest(String keyword);
 }

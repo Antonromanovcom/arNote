@@ -642,13 +642,13 @@ public class ArNoteUtils {
      * Подготовить список инструментов
      * @return
      */
-    public static  List<FoundInstrumentRs> prepareInstruments(List<MoexRowsRs> list, BondType type) {
+    public static  List<FoundInstrumentRs> prepareInstruments(List<MoexRowsRs> list, BondType type, StockExchange stockExchange) {
         return list.stream()
                 .map(r -> FoundInstrumentRs.builder()
                         .ticker(r.getSecid())
                         .currencies(Currencies.search(r.getCurrencyId()))
                         .description(r.getSecName())
-                        .stockExchange(StockExchange.MOEX)
+                        .stockExchange(stockExchange)
                         .type(type)
                         .build())
                 .filter(distinctByKey(FoundInstrumentRs::getTicker))
