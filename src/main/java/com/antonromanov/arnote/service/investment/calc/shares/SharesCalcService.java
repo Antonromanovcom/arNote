@@ -34,7 +34,7 @@ public interface SharesCalcService {
      *
      * @return
      */
-    CurrentPriceRs getCurrentQuoteWith15MinuteUpdate(String ticker);
+    CurrentPriceRs getRealTimeQuote(String ticker);
 
     /**
      * Запросить текущую цену бумаги по board_id.

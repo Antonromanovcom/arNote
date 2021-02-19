@@ -1,9 +1,10 @@
 package com.antonromanov.arnote;
 
 import com.antonromanov.arnote.model.investing.Bond;
+import com.antonromanov.arnote.model.investing.external.requests.ForeignRequests;
+import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedInvestmentDataRs;
-import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
@@ -23,8 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import static com.antonromanov.arnote.utils.ArNoteUtils.complexPredicate;
-import static com.antonromanov.arnote.utils.ArNoteUtils.prepareUrl;
+import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -52,7 +52,7 @@ public class ArNoteUtilsTest {
     private RequestService httpClient;
 
     @Autowired
-    @Qualifier("calculateServiceImpl")
+    @Qualifier("moexCalculateServiceImpl")
     private SharesCalcService cacheService;
 
     @Test
@@ -69,8 +69,8 @@ public class ArNoteUtilsTest {
         m.put("p1", "1");
         m.put("p2", "2");
 
-        String url = prepareUrl(MOEX_URL, RestTemplateOperation.GET_DIVS_MOEX,
-                client.serializeObjectToMVMap(RestTemplateOperation.GET_LAST_QUOTE_MOEX), m);
+        String url = prepareUrl(MOEX_URL, MoexRestTemplateOperation.GET_DIVS_MOEX,
+                client.serializeObjectToMVMapForMoex(MoexRestTemplateOperation.GET_LAST_QUOTE_MOEX), m);
         String urlToCheck = url.substring("http://".length() + MOEX_URL.length());
 
 
@@ -78,6 +78,24 @@ public class ArNoteUtilsTest {
                 "only=securities&securities.columns=SECID,PREVADMITTEDQUOTE", urlToCheck);
 
     }
+
+    /**
+     * Проверяем сборку буржуйского URL.
+     */
+    @Test
+    public void foreignUrlTest() {
+
+        Map<String, String> m = new HashMap<>();
+        m.put("p1", "BOH");
+        m.put("p2", "2");
+
+        ForeignRequests currentRequestType = ForeignRequests.GET_REALTIME_QUOTE;
+        String url = prepareForeignUrl(currentRequestType,
+                client.serializeForeignApiParametersToMVMap(currentRequestType), m);
+        assertEquals("https://query1.finance.yahoo.com/v10/finance/quoteSummary/1", url);
+
+    }
+
 
     @Test
     public void getCache() {
@@ -90,7 +108,6 @@ public class ArNoteUtilsTest {
 
     @Test
     public void getCachedDivsByTicker() {
-
         assertEquals(0, httpClient.getCounter());
         cacheService.getDivsByTicker(repo.findById(1L).get(),"SBER");
         cacheService.getDivsByTicker(repo.findById(1L).get(),"SBER");
@@ -118,6 +135,4 @@ public class ArNoteUtilsTest {
         List<BondRs> mockListFilteredWithEmpty = mockObject.getBonds().stream().filter(predicateAfterClear).collect(Collectors.toList());
         assertEquals(3, mockListFilteredWithEmpty.size());
     }
-
-
 }

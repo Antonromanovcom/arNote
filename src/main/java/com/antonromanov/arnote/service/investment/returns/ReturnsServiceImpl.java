@@ -19,7 +19,7 @@ public class ReturnsServiceImpl implements ReturnsService {
     private final BondCalcService bondCalcService;
     private final BondsRepo repo;
 
-    public ReturnsServiceImpl(BondsRepo repo, @Qualifier("calculateServiceImpl") SharesCalcService calcService, BondCalcService bondCalcService) {
+    public ReturnsServiceImpl(BondsRepo repo, @Qualifier("moexCalculateServiceImpl") SharesCalcService calcService, BondCalcService bondCalcService) {
         this.calcService = calcService;
         this.repo = repo;
         this.bondCalcService = bondCalcService;

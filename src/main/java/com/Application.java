@@ -1,6 +1,7 @@
 package com;
 
-import com.antonromanov.arnote.service.investment.calc.CalculateServiceImpl;
+import com.antonromanov.arnote.service.investment.calc.shares.foreign.ForeignCalcServiceImpl;
+import com.antonromanov.arnote.service.investment.calc.shares.moex.MoexCalculateServiceImpl;
 import com.antonromanov.arnote.service.investment.calc.shares.common.CalculateFactory;
 import com.google.common.cache.CacheBuilder;
 import org.springframework.beans.factory.FactoryBean;
@@ -46,17 +47,18 @@ public class Application {
         return factoryBean;
     }
 
-    @Bean(name = "sharesCalculator")
+    @Bean(name = "moexCalculator")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public CalculateServiceImpl sharesCalculator() {
-        return new CalculateServiceImpl();
+    public MoexCalculateServiceImpl moexCalculator() {
+        return new MoexCalculateServiceImpl();
     }
 
-    /*@Bean(name = "xmlParser")
-  //  @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public XParser xmlParser() {
-        return new XParser();
-    }*/
+    @Bean(name = "foreignCalculator")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ForeignCalcServiceImpl foreignCalculator() {
+        return new ForeignCalcServiceImpl();
+    }
+
 
 
     @Bean("habrCacheManager")

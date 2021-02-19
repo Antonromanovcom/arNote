@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum StockExchange {
-    MOEX("sharesCalculator"), SPB("none");
+    MOEX("moexCalculator"), SPB("foreignCalculator");
 
     private final String value;
 }

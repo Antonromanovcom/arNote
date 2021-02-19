@@ -81,4 +81,13 @@ public interface BondCalcService {
      * @return
      */
     Optional<MoexRowsRs> getBondDataByTicker(String ticker);
+
+    /**
+     * Подготовить финальную цену (цена * лот).
+     *
+     * @param bond
+     * @param user
+     * @return
+     */
+    Integer calculateFinalPrice(Bond bond, ArNoteUser user);
 }

@@ -6,10 +6,12 @@ import com.antonromanov.arnote.exceptions.JsonParseException;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.InvestingFilterMode;
+import com.antonromanov.arnote.model.investing.external.requests.ForeignRequests;
+import com.antonromanov.arnote.model.investing.external.requests.Schemas;
 import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.FoundInstrumentRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
-import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.model.wish.Salary;
@@ -577,7 +579,7 @@ public class ArNoteUtils {
      *
      * @return
      */
-    public static String prepareUrlForHistory(String urlBase, RestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+    public static String prepareUrlForHistory(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
                                               Map<String, String> pathParams, String dateFrom, String dateTill, int start) {
 
 
@@ -656,13 +658,32 @@ public class ArNoteUtils {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Подготовить URL для буржуйских API.
+     *
+     * @return
+     */
+    public static String prepareForeignUrl(ForeignRequests req, MultiValueMap<String, String> queryParameters,
+                                           Map<String, String> pathParams) {
+
+        UriComponents uriComponents = UriComponentsBuilder
+                .newInstance()
+                .scheme(req.getSchema().getSchema())
+                .host(req.getHost().getUrl())
+                .path(req.getConstantPart())
+                .queryParams(queryParameters)
+                .buildAndExpand(pathParams);
+
+        return uriComponents.toString();
+    }
+
 
     /**
      * Подставить ключевик в URL (например, тикер) и отдать готовый URL.
      *
      * @return
      */
-    public static String prepareUrl(String urlBase,  RestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+    public static String prepareUrl(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
                                     Map<String, String> pathParams) {
 
         UriComponents uriComponents = UriComponentsBuilder

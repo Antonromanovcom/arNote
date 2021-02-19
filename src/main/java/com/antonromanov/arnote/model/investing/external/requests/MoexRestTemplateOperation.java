@@ -1,6 +1,5 @@
-package com.antonromanov.arnote.model.investing.response.enums;
+package com.antonromanov.arnote.model.investing.external.requests;
 
-import com.antonromanov.arnote.model.investing.response.UrlRequestParams;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.BoardsColumns;
@@ -15,7 +14,7 @@ import java.util.EnumSet;
 
 @Getter
 @AllArgsConstructor
-public enum RestTemplateOperation {
+public enum MoexRestTemplateOperation {
 
 
     GET_DIVS_MOEX("/securities/{p1:[a-z]{1,5}}/dividends.xml", UrlRequestParams.builder().issMeta(false).build(), null),

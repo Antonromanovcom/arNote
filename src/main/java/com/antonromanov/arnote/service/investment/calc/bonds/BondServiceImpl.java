@@ -6,11 +6,10 @@ import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DividendRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
-import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.service.investment.cache.CacheService;
-import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.service.investment.requestservice.RequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -177,6 +176,27 @@ public class BondServiceImpl implements BondCalcService {
     }
 
     /**
+     * Подготовить финальную цену (цена * лот).
+     *
+     * @param bond
+     * @param user
+     * @return
+     */
+    @Override
+    public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
+            if (bond.getIsBought()) { // если это ФАКТ
+                return bond.getPurchaseList().stream()
+                        .map(p -> p.getLot() * p.getPrice())
+                        .reduce((double) 0, Double::sum).intValue();
+            } else { // если ПЛАН
+                return (getBondLot(bond, user, bond.getPurchaseList()))
+                        * (getCurrentBondPrice(bond.getTicker()).intValue());
+            }
+
+
+    }
+
+    /**
      * Запросить Облигации по всем доскам сразу.
      *
      * @return
@@ -206,7 +226,7 @@ public class BondServiceImpl implements BondCalcService {
         return cacheService.getBondsByBoardGroup(boardGroup)
                 .orElseGet(() -> {
                     MoexDocumentRs doc = (MoexDocumentRs) httpClient
-                            .sendAndMarshall(RestTemplateOperation.GET_BONDS, boardGroup, null);
+                            .sendAndMarshall(MoexRestTemplateOperation.GET_BONDS, boardGroup, null);
                     cacheService.putBondsByBoardsGroup(boardGroup, doc);
                     return doc;
                 });

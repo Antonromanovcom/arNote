@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.model.investing.response;
+package com.antonromanov.arnote.model.investing.external.requests;
 
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.BoardsColumns;
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
 import java.util.EnumSet;
 import java.util.stream.Collectors;
 

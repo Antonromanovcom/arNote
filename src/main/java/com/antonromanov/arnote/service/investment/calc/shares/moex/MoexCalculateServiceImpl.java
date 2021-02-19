@@ -1,15 +1,14 @@
-package com.antonromanov.arnote.service.investment.calc;
+package com.antonromanov.arnote.service.investment.calc.shares.moex;
 
 import com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
-import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
-import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchListRs;
 import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
@@ -21,7 +20,6 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexInstrumentDetailRowsRs;
 import com.antonromanov.arnote.service.investment.cache.CacheService;
-import com.antonromanov.arnote.service.investment.calc.bonds.BondCalcService;
 import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.service.investment.requestservice.RequestService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,18 +33,17 @@ import java.time.format.TextStyle;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @Slf4j
-public class CalculateServiceImpl implements SharesCalcService {
+public class MoexCalculateServiceImpl implements SharesCalcService {
 
     @Autowired
     private  RequestService httpClient;
     @Autowired
     private  CacheService cacheService;
-    @Autowired
-    private  BondCalcService bondCalcService;
 
     private Long lastQuote = 0L;
     private Long getAllSharesCount = 0L;
@@ -100,7 +97,7 @@ public class CalculateServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    public CurrentPriceRs getCurrentQuoteWith15MinuteUpdate(String ticker) {
+    public CurrentPriceRs getRealTimeQuote(String ticker) {
 
             if (LocalTime.now().isBefore(LocalTime.of(10, 30))){
                 return getCurrentQuoteByTicker(ticker)
@@ -124,7 +121,7 @@ public class CalculateServiceImpl implements SharesCalcService {
                                 .build());
             } else {
 
-                MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(RestTemplateOperation.GET_15_MINUTE_PRICE_UPDATE,
+                MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_15_MINUTE_PRICE_UPDATE,
                         ticker, null);
 
                 return CurrentPriceRs.builder()
@@ -161,7 +158,7 @@ public class CalculateServiceImpl implements SharesCalcService {
             lastQuote = lastQuote + 1;
             log.info("Запрос последней ставки по boardId: {}. Запрос №: {}", boardId, lastQuote);
 
-            MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(RestTemplateOperation.GET_LAST_QUOTE_MOEX, null, boardId);
+            MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_LAST_QUOTE_MOEX, null, boardId);
             cacheService.putLastQuotes(boardId, doc);
             return doc;
         });
@@ -178,7 +175,7 @@ public class CalculateServiceImpl implements SharesCalcService {
     @Override
     public Optional<MoexDetailInfoRs> getDetailInfo(ArNoteUser user, String ticker) {
         if (!isBlank(ticker)) {
-            return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(RestTemplateOperation.
+            return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(MoexRestTemplateOperation.
                     GET_INSTRUMENT_DETAIL_INFO, ticker, null)));
         } else {
             return Optional.empty();
@@ -196,7 +193,7 @@ public class CalculateServiceImpl implements SharesCalcService {
         return cacheService.getBoardIdByTicker(ticker).orElseGet(() -> {
 
             String boardId = ((MoexDocumentForBoardIdRs)
-                    (httpClient.sendAndMarshall(RestTemplateOperation.GET_BOARD_ID, ticker, null)))
+                    (httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_BOARD_ID, ticker, null)))
                     .getData()
                     .getRowList()
                     .stream()
@@ -220,7 +217,7 @@ public class CalculateServiceImpl implements SharesCalcService {
     @Cacheable(cacheNames = "instrumentNames", key = "#boardId + #ticker")
     public Optional<String> getInstrumentName(String boardId, String ticker) {
         if (!isBlank(ticker)) {
-            return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_INSTRUMENT_NAME, null, boardId))
+            return Optional.ofNullable(httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_INSTRUMENT_NAME, null, boardId))
                     .map(MoexDocumentRs.class::cast)
                     .map(p -> p.getData()
                             .getRow()
@@ -323,27 +320,14 @@ public class CalculateServiceImpl implements SharesCalcService {
      */
     @Override
     public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
-        if (bond.getType() == BondType.SHARE) {
-
             if (bond.getIsBought()) { // если это ФАКТ
                 return bond.getPurchaseList().stream()
                         .map(p -> p.getLot() * p.getPrice())
                         .reduce((double) 0, Double::sum).intValue();
             } else { // если ПЛАН
-                return (int) Math.round(((getCurrentQuoteWith15MinuteUpdate(bond.getTicker()
+                return (int) Math.round(((getRealTimeQuote(bond.getTicker()
                 )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user));
             }
-        } else {
-            if (bond.getIsBought()) { // если это ФАКТ
-                return bond.getPurchaseList().stream()
-                        .map(p -> p.getLot() * p.getPrice())
-                        .reduce((double) 0, Double::sum).intValue();
-            } else { // если ПЛАН
-                return (bondCalcService.getBondLot(bond, user, bond.getPurchaseList()))
-                        * (bondCalcService.getCurrentBondPrice(bond.getTicker()).intValue());
-            }
-
-        }
     }
 
     /**
@@ -426,7 +410,7 @@ public class CalculateServiceImpl implements SharesCalcService {
                          * Выкачиваем данные постранично и сохраняем в локальную переменную
                          */
                         log.info("Запрашиваем историю. start = {}", start);
-                        MoexDocumentRs localDoc = (MoexDocumentRs) httpClient.getHistory(RestTemplateOperation.GET_DELTA,
+                        MoexDocumentRs localDoc = (MoexDocumentRs) httpClient.getHistory(MoexRestTemplateOperation.GET_DELTA,
                                 ticker, boardId, "2000-01-01", LocalDate.now().toString(), start);
                         log.info("Запросили историю. Получили записей: {}", localDoc.getData().getRow().size());
 
@@ -486,7 +470,7 @@ public class CalculateServiceImpl implements SharesCalcService {
             return (1d);
         } else {
 
-            return Optional.ofNullable(httpClient.sendAndMarshall(RestTemplateOperation.GET_CURRENCY_CHANGE_COURSES,
+            return Optional.ofNullable(httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_CURRENCY_CHANGE_COURSES,
                     null, null))
                     .map(MoexDocumentRs.class::cast)
                     .orElseThrow(() -> new MoexXmlResponseMappingException("курсы валют"))
@@ -511,7 +495,7 @@ public class CalculateServiceImpl implements SharesCalcService {
     public MoexDocumentRs findSharesByBoardId(String boardId) {
         getAllSharesCount = getAllSharesCount + 1;
         log.info("getAllSharesCount по boardId: {}. Запрос №: {}", boardId, getAllSharesCount);
-        MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(RestTemplateOperation.GET_ALL_SHARES, null, boardId);
+        MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_ALL_SHARES, null, boardId);
 
         return doc;
     }
@@ -528,7 +512,7 @@ public class CalculateServiceImpl implements SharesCalcService {
             return cacheService.getTradeModes();
         } else {
             MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(
-                    RestTemplateOperation.GET_TRADE_MODES, null, null);
+                    MoexRestTemplateOperation.GET_TRADE_MODES, null, null);
             List<String> res = doc.getData().getRow().stream()
                     .filter(r -> "1".equals(r.getIsTraded()))
                     .map(MoexRowsRs::getBoardId)

@@ -1,8 +1,9 @@
 package com.antonromanov.arnote.service.investment.requestservice;
 
 import com.antonromanov.arnote.exceptions.MoexRequestException;
+import com.antonromanov.arnote.model.investing.external.requests.ForeignRequests;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
-import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchListRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import com.antonromanov.arnote.service.investment.xmlparse.XmlHandler;
@@ -10,17 +11,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import static com.antonromanov.arnote.utils.ArNoteUtils.prepareUrl;
 import static com.antonromanov.arnote.utils.ArNoteUtils.prepareUrlForHistory;
 
@@ -60,7 +57,6 @@ public class RequestServiceImpl implements RequestService {
                     + ticker
                     + "/dividends.xml?iss.meta=off", String.class));
 
-
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -73,12 +69,12 @@ public class RequestServiceImpl implements RequestService {
      * @return
      */
     @Override
-    public CommonMoexDoc sendAndMarshall(RestTemplateOperation type, String ticker, String boardId) {
-        if (type != RestTemplateOperation.GET_DIVS_MOEX) {
+    public CommonMoexDoc sendAndMarshall(MoexRestTemplateOperation type, String ticker, String boardId) {
+        if (type != MoexRestTemplateOperation.GET_DIVS_MOEX) {
             try {
                 counter += 1;
-                log.info("Sending request to: {}", prepareUrl(MOEX_URL, type, serializeObjectToMVMap(type), prepareParametersMap(ticker, boardId)));
-                return xmlParser.marshall(rt.getForEntity(prepareUrl(MOEX_URL, type, serializeObjectToMVMap(type), prepareParametersMap(ticker, boardId)), String.class),
+                log.info("Sending MOEX request to: {}", prepareUrl(MOEX_URL, type, serializeObjectToMVMapForMoex(type), prepareParametersMap(ticker, boardId)));
+                return xmlParser.marshall(rt.getForEntity(prepareUrl(MOEX_URL, type, serializeObjectToMVMapForMoex(type), prepareParametersMap(ticker, boardId)), String.class),
                         type.getClassName());
             } catch (Exception e) {
                 log.error("Ошибка взаимодействия с биржей (маршелинга либо отправки): {}", e.getMessage());
@@ -90,13 +86,13 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public CommonMoexDoc getHistory(RestTemplateOperation type, String ticker, String boardId, String dateFrom, String dateTill, int start) {
+    public CommonMoexDoc getHistory(MoexRestTemplateOperation type, String ticker, String boardId, String dateFrom, String dateTill, int start) {
         try {
-            log.info("Sending request for history. Url: {}",
-                    prepareUrlForHistory(MOEX_URL, type, serializeObjectToMVMap(type), prepareParametersMap(ticker, boardId), dateFrom, dateTill, start));
+            log.info("Sending MOEX request for history. Url: {}",
+                    prepareUrlForHistory(MOEX_URL, type, serializeObjectToMVMapForMoex(type), prepareParametersMap(ticker, boardId), dateFrom, dateTill, start));
 
             return xmlParser.marshall(
-                    rt.getForEntity(prepareUrlForHistory(MOEX_URL, type, serializeObjectToMVMap(type),
+                    rt.getForEntity(prepareUrlForHistory(MOEX_URL, type, serializeObjectToMVMapForMoex(type),
                             prepareParametersMap(ticker, boardId), dateFrom, dateTill,  start), String.class),
                     type.getClassName());
         } catch (Exception e) {
@@ -118,9 +114,19 @@ public class RequestServiceImpl implements RequestService {
      * @return
      */
     @Override
-    public MultiValueMap<String, String> serializeObjectToMVMap(RestTemplateOperation type) {
+    public MultiValueMap<String, String> serializeObjectToMVMapForMoex(MoexRestTemplateOperation type) { // todo переделать в Object или Дженерики
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
         Map<String, String> maps = objectMapper.convertValue(type.getRequestParams().convertByAdapter(),
+                new TypeReference<Map<String, String>>() {
+                });
+        parameters.setAll(maps);
+        return parameters;
+    }
+
+    @Override
+    public MultiValueMap<String, String> serializeForeignApiParametersToMVMap(ForeignRequests type) { // todo переделать в Object или Дженерики
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        Map<String, String> maps = objectMapper.convertValue(type.getRequestParams(),
                 new TypeReference<Map<String, String>>() {
                 });
         parameters.setAll(maps);
@@ -135,17 +141,22 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public AlphavantageSearchListRs sendAndMarshallForeignRequest(String keyword) {
 
-        ResponseEntity<String> response = rt.getForEntity("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords="
+       /* ResponseEntity<String> response = rt.getForEntity("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords="
                 + keyword
                 + "&apikey=3PV5BRWZZZM1T2BA", String.class);
 
+        log.info("Sending request to: {}", prepareUrl(MOEX_URL, type, serializeObjectToMVMap(type), prepareParametersMap(ticker, boardId)));
+
+        rt.getForEntity(prepareForeignUrl(MOEX_URL, type, serializeObjectToMVMap(type), prepareParametersMap(ticker, boardId)), String.class),
+                type.getClassName();*/
+
 
         AlphavantageSearchListRs res = null;
-        try {
-            res = objectMapper.readValue(response.getBody(), AlphavantageSearchListRs.class);
+      /*  try {
+         //   res = objectMapper.readValue(response.getBody(), AlphavantageSearchListRs.class);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         return res;
     }

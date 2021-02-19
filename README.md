@@ -125,7 +125,45 @@ select sum(p.price) from (select * from
 WHERE NOT p.archive AND (p.realized=true);
 
 
+#Скрипты
 
+Скрипты для сборки проекта в облаке:
+
+**arnote.sh**
+
+#!/bin/sh
+
+# Copy arNote jar script
+
+#string="Hello world"
+echo  "Удаляем директорию..."
+sudo rm -Rfv /home/admin/arnote
+echo "Директория удалена. Создаем заново...."
+sudo mkdir /home/admin/arnote
+echo "Директория создана успешно. Копируем файлы...."
+sudo cp -a /var/lib/jenkins/workspace/arNote/* /home/admin/arnote/
+echo "Подменяем properties-файл для профиля prod"
+sudo cp -f /home/admin/application-prod.properties /home/admin/arnote/src/main/resources/
+echo "Пытаемся вызвать Maven и собрать проект..."
+sudo mvn -f /home/admin/arnote/pom.xml clean package
+echo "Скрипт выполнен!!!"
+
+**arnote-wrapper.sh**
+
+#!/bin/sh
+# Restart arNote script-wrapper
+
+echo  " * * *   REBUILD AND RESTART ARNOTE SCRIPT   * * * "
+echo "Пытаемся остановить unit"
+sudo systemctl restart arnote
+echo "Unit успешно остановлен"
+echo "Пытаемся запустить скрипт удаления старых файлов и пересборки сервиса Maven'ом"
+. /home/admin/arnote.sh
+
+echo "========= !!! Скрипт-wrapper успешно выполнен!!! ==========="
+echo "Пытемся снова запустить Unit"
+sudo systemctl start arnote
+echo "Unit успешно запущен!"
 
 
  

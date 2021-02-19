@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.model.investing.response;
+package com.antonromanov.arnote.model.investing.external.requests;
 
 import com.antonromanov.arnote.model.investing.response.serializers.IssMetaSerializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
