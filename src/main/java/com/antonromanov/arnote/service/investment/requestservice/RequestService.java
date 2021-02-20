@@ -40,22 +40,19 @@ public interface RequestService {
      * @param type
      * @return
      */
-    MultiValueMap<String, String> serializeObjectToMVMapForMoex(MoexRestTemplateOperation type);
+    MultiValueMap<String, String> serializeObjectToMVMap(Object type);
 
-    /**
-     * Сериализовать параметры запроса в MultiValueMap для буржуйских АПИ.
-     *
-     * @param type
-     * @return
-     */
-    MultiValueMap<String, String> serializeForeignApiParametersToMVMap(ForeignRequests type);
 
     int getCounter();
 
     /**
-     * Найти буржуйские бумаги по имени.
-     * @param keyword
+     * Отправить запрос в буржуйское API.
+     *
+     * @param requestType - тип, содержащие разные данные по урлу и прочему.
+     * @param ticker - тикер бумаги.
+     * @param clazz - класс респонса.
+     * @param <T> - респонс.
      * @return
      */
-    AlphavantageSearchListRs sendAndMarshallForeignRequest(String keyword);
+    <T>T sendAndMarshallForeignRequest(ForeignRequests requestType, String ticker, Class<T> clazz);
 }

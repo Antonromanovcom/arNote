@@ -1,12 +1,12 @@
 package com.antonromanov.arnote.model.investing.external.requests;
 
+import com.antonromanov.arnote.model.investing.response.foreignstocks.yahoo.YahooRealTimeQuoteRs;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * Запросы к буржуйским API.
  */
-
 @Getter
 @AllArgsConstructor
 public enum ForeignRequests {
@@ -17,7 +17,6 @@ public enum ForeignRequests {
     YAHOO_FINANCE("query1.finance.yahoo.com", null, null, null, null);
 
 //    https://query1.finance.yahoo.com/v10/finance/quoteSummary/BOH?modules=price
-
 
     private final String description;
     private final Schemas schema;

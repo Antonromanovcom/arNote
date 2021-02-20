@@ -47,13 +47,15 @@ public class Application {
         return factoryBean;
     }
 
-    @Bean(name = "moexCalculator")
+   // MOEX("moexCalculator"), SPB("foreignCalculator");
+
+    @Bean(name = "MOEX")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public MoexCalculateServiceImpl moexCalculator() {
         return new MoexCalculateServiceImpl();
     }
 
-    @Bean(name = "foreignCalculator")
+    @Bean(name = "SPB")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ForeignCalcServiceImpl foreignCalculator() {
         return new ForeignCalcServiceImpl();

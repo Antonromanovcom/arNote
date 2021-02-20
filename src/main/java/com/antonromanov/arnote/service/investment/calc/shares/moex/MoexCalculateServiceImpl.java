@@ -352,7 +352,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      */
     @Override
     @Cacheable(cacheNames = "currenciesCache", key = "#user.id")
-    public String getCurrencyOfShareFromDetailInfo(String ticker, ArNoteUser user) {
+    public String getCurrencyOfShare(String ticker, ArNoteUser user) {
         return getDetailInfo(user, ticker)
                 .map(detailInfo -> detailInfo.getDataList().stream()
                         .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
@@ -530,7 +530,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      */
     @Override
     public MoexDocumentRs getForeignInstrumentsByName(String keyword) {
-        AlphavantageSearchListRs response = httpClient.sendAndMarshallForeignRequest(keyword);
+       /* AlphavantageSearchListRs response = httpClient.sendAndMarshallForeignRequest(keyword);
         List<AlphavantageSearchRs> filteredList = response.getBestMatches().stream()
                 .filter(sec-> "Equity".equalsIgnoreCase(sec.getType()))
                 .collect(Collectors.toList());
@@ -548,6 +548,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
 
         documentData.setRow(rows);
         document.setData(documentData);
-       return document;
+       return document;*/
+       return null;
     }
 }

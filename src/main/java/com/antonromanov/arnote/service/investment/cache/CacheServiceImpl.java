@@ -28,34 +28,30 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
-    public void evictAll() {
-        boardIdMap.clear();
-    }
-
-    @Override
     public Optional<String> getBoardIdByTicker(String ticker) {
         return Optional.ofNullable(boardIdMap.get(ticker));
     }
 
-  @Override
-  public void putLastQuotes(String boardId, MoexDocumentRs doc) {
-    quotesMap.put(boardId, doc);
-  }
+    @Override
+    public void putLastQuotes(String boardId, MoexDocumentRs doc) {
+        quotesMap.put(boardId, doc);
+    }
 
-  @Override
-  public Optional<MoexDocumentRs> getQuotesByBoardId(String boardId) {
-    return Optional.ofNullable(quotesMap.get(boardId));
-  }
+    @Override
+    public Optional<MoexDocumentRs> getQuotesByBoardId(String boardId) {
+        return Optional.ofNullable(quotesMap.get(boardId));
+    }
 
-  @Override
-  public void putBondsByBoardsGroup(String boardGroup, MoexDocumentRs doc) {
-      bondsAndBoards.put(boardGroup, doc);
-  }
+    @Override
+    public void putBondsByBoardsGroup(String boardGroup, MoexDocumentRs doc) {
+        bondsAndBoards.put(boardGroup, doc);
+    }
 
-  @Override
-  public Optional<MoexDocumentRs> getBondsByBoardGroup(String boardId) {
-      return Optional.ofNullable(bondsAndBoards.get(boardId));
-  }
+    @Override
+    public Optional<MoexDocumentRs> getBondsByBoardGroup(String boardId) {
+        return Optional.ofNullable(bondsAndBoards.get(boardId));
+    }
+
     @Override
     public void putTradeModes(List<String> tradeModes) {
         tradeModesStorage = tradeModes;

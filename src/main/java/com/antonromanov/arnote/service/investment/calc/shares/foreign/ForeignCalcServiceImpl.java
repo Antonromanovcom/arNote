@@ -3,26 +3,24 @@ package com.antonromanov.arnote.service.investment.calc.shares.foreign;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.Purchase;
+import com.antonromanov.arnote.model.investing.external.requests.ForeignRequests;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
-import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchListRs;
-import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDataRs;
+import com.antonromanov.arnote.model.investing.response.enums.Currencies;
+import com.antonromanov.arnote.model.investing.response.foreignstocks.yahoo.YahooRealTimeQuoteRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.service.investment.requestservice.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.ArrayList;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Имплементация расчетного сервиса для работы с иностранными бумагами.
- *
  */
 public class ForeignCalcServiceImpl implements SharesCalcService {
 
@@ -46,26 +44,33 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
      */
     @Override
     public CurrentPriceRs getRealTimeQuote(String ticker) {
-        AlphavantageSearchListRs response = httpClient.sendAndMarshallForeignRequest(ticker);
-        List<AlphavantageSearchRs> filteredList = response.getBestMatches().stream()
-                .filter(sec-> "Equity".equalsIgnoreCase(sec.getType()))
-                .collect(Collectors.toList());
-        MoexDocumentRs document = new MoexDocumentRs();
-        MoexDataRs documentData = new MoexDataRs();
-        ArrayList<MoexRowsRs> rows = filteredList.stream()
-                .map(r->{
-                    MoexRowsRs row = new MoexRowsRs();
-                    row.setSecid(r.getSymbol());
-                    row.setCurrencyId(r.getCurrency());
-                    row.setSecName(r.getName());
-                    return row;
-                })
-                .collect(Collectors.toCollection(ArrayList::new));
+        YahooRealTimeQuoteRs response = httpClient.sendAndMarshallForeignRequest(ForeignRequests.GET_REALTIME_QUOTE,
+                ticker, YahooRealTimeQuoteRs.class);
 
+       /* MoexDocumentRs document = new MoexDocumentRs();
+        MoexDataRs documentData = new MoexDataRs();
+        ArrayList<MoexRowsRs> rows = new ArrayList<>();
+        MoexRowsRs row = new MoexRowsRs();
+        row.setSecid(ticker);
+        row.setCurrencyId(response.getQuoteSummary().getResult().get(0).getPrice().getCurrency());
+        row.setSecName(response.getQuoteSummary().getResult().get(0).getPrice().getShortName());
+        row.setPrevAdmittedQuote(String.valueOf(response.getQuoteSummary().getResult().get(0).getPrice().getRegularMarketPrice().getRaw()));
         documentData.setRow(rows);
-        document.setData(documentData);
-       // return document;
-        return null;
+        document.setData(documentData);*/
+
+        return CurrentPriceRs.builder()
+                .currentPrice(response.getQuoteSummary().getResult().get(0).getPrice().getRegularMarketPrice().getRaw())
+                .currency(Currencies.search(response.getQuoteSummary().getResult().get(0).getPrice().getCurrency()))
+                .minLot(1)
+                .ticker(ticker)
+                .date(Instant.ofEpochMilli(response
+                        .getQuoteSummary()
+                        .getResult()
+                        .get(0)
+                        .getPrice()
+                        .getRegularMarketTime()).atZone(ZoneId.systemDefault()).toLocalDate())
+                .build();
+
     }
 
     @Override
@@ -104,7 +109,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
     }
 
     @Override
-    public String getCurrencyOfShareFromDetailInfo(String ticker, ArNoteUser user) {
+    public String getCurrencyOfShare(String ticker, ArNoteUser user) {
         return null;
     }
 

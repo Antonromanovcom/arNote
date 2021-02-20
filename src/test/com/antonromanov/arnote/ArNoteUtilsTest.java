@@ -69,13 +69,15 @@ public class ArNoteUtilsTest {
         m.put("p1", "1");
         m.put("p2", "2");
 
-        String url = prepareUrl(MOEX_URL, MoexRestTemplateOperation.GET_DIVS_MOEX,
-                client.serializeObjectToMVMapForMoex(MoexRestTemplateOperation.GET_LAST_QUOTE_MOEX), m);
+        String url = prepareUrl(MOEX_URL,
+                MoexRestTemplateOperation.GET_DIVS_MOEX,
+                client.serializeObjectToMVMap(MoexRestTemplateOperation.GET_LAST_QUOTE_MOEX.getRequestParams().convertByAdapter()), m);
+
         String urlToCheck = url.substring("http://".length() + MOEX_URL.length());
 
 
-        assertEquals("/securities/1/dividends.xml?iss.meta=on&iss.dp=comma&iss." +
-                "only=securities&securities.columns=SECID,PREVADMITTEDQUOTE", urlToCheck);
+        assertEquals("/securities/1/dividends.xml?iss.meta=off&iss.dp=comma&iss." +
+                "only=securities&securities.columns=SECID,PREVADMITTEDQUOTE,COUPONPERIOD", urlToCheck);
 
     }
 
@@ -91,8 +93,8 @@ public class ArNoteUtilsTest {
 
         ForeignRequests currentRequestType = ForeignRequests.GET_REALTIME_QUOTE;
         String url = prepareForeignUrl(currentRequestType,
-                client.serializeForeignApiParametersToMVMap(currentRequestType), m);
-        assertEquals("https://query1.finance.yahoo.com/v10/finance/quoteSummary/1", url);
+                client.serializeObjectToMVMap(currentRequestType.getRequestParams()), m);
+        assertEquals("https://query1.finance.yahoo.com/v10/finance/quoteSummary/BOH?modules=price", url);
 
     }
 

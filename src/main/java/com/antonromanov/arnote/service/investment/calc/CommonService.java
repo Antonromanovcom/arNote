@@ -14,7 +14,6 @@ import com.antonromanov.arnote.service.investment.calc.bonds.BondCalcService;
 import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.service.investment.calc.shares.common.CalculateFactory;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
@@ -58,7 +57,7 @@ public class CommonService {
      */
     public String getCurrency(Bond bond, ArNoteUser user){
         return bond.getType() == BondType.SHARE ?
-                ((calcFactory.getCalculator(bond.getStockExchange())).getCurrencyOfShareFromDetailInfo(bond.getTicker(), user)) :
+                ((calcFactory.getCalculator(bond.getStockExchange())).getCurrencyOfShare(bond.getTicker(), user)) :
                 bondCalcService.getBondCurrency(bond.getTicker()).name();
     }
 

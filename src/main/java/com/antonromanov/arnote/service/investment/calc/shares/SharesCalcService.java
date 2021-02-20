@@ -101,7 +101,7 @@ public interface SharesCalcService {
      *
      * @return
      */
-    String getCurrencyOfShareFromDetailInfo(String ticker, ArNoteUser user);
+    String getCurrencyOfShare(String ticker, ArNoteUser user);
 
     /**
      * Достать минимальный лот.

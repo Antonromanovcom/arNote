@@ -9,7 +9,6 @@ import java.util.Optional;
  */
 public interface CacheService {
     void putBoardId(String ticker, String boardId);
-    void evictAll();
     Optional<String> getBoardIdByTicker(String ticker);
 
     void putLastQuotes(String boardId, MoexDocumentRs doc);
