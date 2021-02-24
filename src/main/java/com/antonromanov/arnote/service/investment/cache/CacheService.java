@@ -22,4 +22,23 @@ public interface CacheService {
 
     void putHistory(String key, MoexDocumentRs doc);
     Optional<MoexDocumentRs> getHistory(String key);
+
+    /**
+     * Добавить объект в кэш.
+     *
+     * @param dictionaryType - тип словаря. То есть, что именно сохраняем, какой справочник.
+     * @param obj - собственно сам инстанс объекта, который сохраняем.
+     * @param aClass - класс инстанса.
+     * @param key - ключ по которому сохраняем. Например борды по тикеру.
+     */
+    <T> void putToCache(String dictionaryType, String key, T obj, Class<T> aClass);
+
+    /**
+     * Достать справочник из кэша
+     *
+     * @param dictionaryType
+     *
+     *
+     */
+    <T> T getDict(String dictionaryType, String key);
 }

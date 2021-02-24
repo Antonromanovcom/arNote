@@ -4,12 +4,15 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.Moe
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 /**
  * Сервис кеширования.
+ * TYPESAFE HETEROGENEOUS CONTAINERS PATTERN.
  */
 @Service
 @AllArgsConstructor
@@ -21,6 +24,8 @@ public class CacheServiceImpl implements CacheService {
     private Map<String, MoexDocumentRs> bondsAndBoards;
     private Map<String, MoexDocumentRs> history;
     private List<String> tradeModesStorage;
+    private Map<String, HashMap<String, Object>> cache;
+
 
     @Override
     public void putBoardId(String ticker, String boardId) {
@@ -71,5 +76,28 @@ public class CacheServiceImpl implements CacheService {
     @Override
     public Optional<MoexDocumentRs> getHistory(String key) {
         return Optional.ofNullable(history.get(key));
+    }
+
+    /**
+     * Добавить объект в кэш.
+     *
+     * @param dictionaryType
+     * @param obj
+     * @param aClass
+     * @param <T>
+     */
+    @Override
+    public <T> void putToCache(String dictionaryType, String key, T obj, Class<T> aClass) {
+        CacheObject<T> cachedObject = new CacheObject<>(obj, aClass);
+        HashMap<String, Object> cachedElement = new HashMap<>();
+        cachedElement.put(key, cachedObject);
+        cache.put(dictionaryType, cachedElement);
+    }
+
+    @Override
+    public <T> T getDict(String dictionaryType, String key) {
+        CacheObject<T> o = ((CacheObject<T>) cache.get(dictionaryType).get(key));
+        o.getClazz().cast(o.getT());
+        return o.getClazz().cast(o.getT());
     }
 }

@@ -9,12 +9,10 @@ import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.investment.calc.CommonService;
-import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.service.investment.requestservice.RequestService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -48,12 +46,6 @@ public class ArNoteUtilsTest {
     @Autowired
     private CommonService commonService;
 
-    @Autowired
-    private RequestService httpClient;
-
-    @Autowired
-    @Qualifier("moexCalculateServiceImpl")
-    private SharesCalcService cacheService;
 
     @Test
     public void testCalcFactory() {
@@ -96,24 +88,6 @@ public class ArNoteUtilsTest {
                 client.serializeObjectToMVMap(currentRequestType.getRequestParams()), m);
         assertEquals("https://query1.finance.yahoo.com/v10/finance/quoteSummary/BOH?modules=price", url);
 
-    }
-
-
-    @Test
-    public void getCache() {
-        cacheService.getCurrentQuoteByBoardId("TQBR");
-        cacheService.getCurrentQuoteByBoardId("TQBR");
-        assertEquals(1, httpClient.getCounter());
-        cacheService.getCurrentQuoteByBoardId("TQBS");
-        assertEquals(2, httpClient.getCounter());
-    }
-
-    @Test
-    public void getCachedDivsByTicker() {
-        assertEquals(0, httpClient.getCounter());
-        cacheService.getDivsByTicker(repo.findById(1L).get(),"SBER");
-        cacheService.getDivsByTicker(repo.findById(1L).get(),"SBER");
-        assertEquals(1, httpClient.getCounter());
     }
 
     /**

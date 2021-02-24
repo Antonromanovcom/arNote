@@ -244,7 +244,6 @@ public class InvestController {
                 .build();
     }
 
-
     @CrossOrigin(origins = "*")
     @GetMapping("/calendar")
     public CalendarRs getCalendar(Principal principal) throws UserNotFoundException {
@@ -256,7 +255,6 @@ public class InvestController {
                         .collect(Collectors.toList()))
                 .build());
     }
-
 
     /**
      * Добавить бумагу (с покупкой или в качестве плана).
@@ -337,7 +335,6 @@ public class InvestController {
                 .description(commonService.getDescription(bond))
                 .build();
     }
-
 
     /**
      * Достать юзера из Принципала
