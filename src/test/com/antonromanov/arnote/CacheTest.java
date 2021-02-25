@@ -1,5 +1,6 @@
 package com.antonromanov.arnote;
 
+import com.antonromanov.arnote.model.investing.cache.enums.CacheDictType;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -43,7 +46,6 @@ public class CacheTest {
     @Autowired
     private CacheService cacheService;
 
-
     @Test
     public void getCache() {
         calcService.getCurrentQuoteByBoardId("TQBR");
@@ -56,20 +58,18 @@ public class CacheTest {
     @Test
     public void getCachedDivsByTicker() {
         assertEquals(0, httpClient.getCounter());
-        calcService.getDivsByTicker(repo.findById(1L).get(),"SBER");
-        calcService.getDivsByTicker(repo.findById(1L).get(),"SBER");
+        calcService.getDivsByTicker(repo.findById(1L).get(), "SBER");
+        calcService.getDivsByTicker(repo.findById(1L).get(), "SBER");
         assertEquals(1, httpClient.getCounter());
     }
 
+
     /**
-     * Тестируем работоспособность нового кэша.
+     * Тестируем работоспособность нового кэша на случай, если он не заполнен.
      */
     @Test
-    public void newCacheTest() {
-        MoexDocumentRs doc = (MoexDocumentRs) calcService.getCurrentQuoteByBoardId("TQBR").map(e->{
-            cacheService.putToCache("GET_CURRENT_QUOTE_MOEX", "CURRENT_QUOTE", e, MoexDocumentRs.class);
-            return cacheService.getDict("GET_CURRENT_QUOTE_MOEX", "CURRENT_QUOTE");
-        }).orElse(null);
-        assertNotNull(doc);
+    public void emptyCacheTest() {
+        Boolean b = cacheService.checkDict(CacheDictType.BOARD_ID_BY_TICKER, "CURRENT_QUOTE");
+        assertFalse(b);
     }
 }

@@ -42,7 +42,7 @@ public interface SharesCalcService {
      * @param
      * @return
      */
-    Optional<MoexDocumentRs> getCurrentQuoteByBoardId(String boardId);
+    MoexDocumentRs getCurrentQuoteByBoardId(String boardId);
 
     /**
      * Запросить детальную информацию по бумаге (инструменту).

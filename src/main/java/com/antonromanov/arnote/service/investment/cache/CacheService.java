@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.service.investment.cache;
 
+import com.antonromanov.arnote.model.investing.cache.enums.CacheDictType;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import java.util.List;
 import java.util.Optional;
@@ -8,8 +9,6 @@ import java.util.Optional;
  * Сервис кеширования.
  */
 public interface CacheService {
-    void putBoardId(String ticker, String boardId);
-    Optional<String> getBoardIdByTicker(String ticker);
 
     void putLastQuotes(String boardId, MoexDocumentRs doc);
     Optional<MoexDocumentRs> getQuotesByBoardId(String boardId);
@@ -31,7 +30,7 @@ public interface CacheService {
      * @param aClass - класс инстанса.
      * @param key - ключ по которому сохраняем. Например борды по тикеру.
      */
-    <T> void putToCache(String dictionaryType, String key, T obj, Class<T> aClass);
+    <T> void putToCache(CacheDictType dictionaryType, String key, T obj, Class<T> aClass);
 
     /**
      * Достать справочник из кэша
@@ -40,5 +39,13 @@ public interface CacheService {
      *
      *
      */
-    <T> T getDict(String dictionaryType, String key);
+    <T> T getDict(CacheDictType dictionaryType, String key);
+
+    /**
+     * Проверка, что кэш не пустой по ключу и словарю.
+     * @param dictionaryType
+     * @param key
+     * @return
+     */
+    Boolean checkDict(CacheDictType dictionaryType, String key);
 }

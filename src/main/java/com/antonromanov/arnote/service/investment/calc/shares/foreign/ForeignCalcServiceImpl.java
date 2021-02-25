@@ -74,8 +74,8 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
     }
 
     @Override
-    public Optional<MoexDocumentRs> getCurrentQuoteByBoardId(String boardId) {
-        return Optional.empty();
+    public MoexDocumentRs getCurrentQuoteByBoardId(String boardId) {
+        return null;
     }
 
     @Override

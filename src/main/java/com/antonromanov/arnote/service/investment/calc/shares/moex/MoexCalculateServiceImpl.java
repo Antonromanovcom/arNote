@@ -4,13 +4,12 @@ import com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.Purchase;
+import com.antonromanov.arnote.model.investing.cache.enums.CacheDictType;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
-import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchListRs;
-import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexRowsForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDataRs;
@@ -77,7 +76,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     @Override
     public Optional<Double> getCurrentQuoteByTicker(String ticker) {
         if (!isBlank(ticker)) {
-            return (getCurrentQuoteByBoardId(getBoardId(ticker)))
+            return Optional.of(getCurrentQuoteByBoardId(getBoardId(ticker)))
                     .map(lq -> lq.getData()
                             .getRow()
                             .stream()
@@ -152,18 +151,25 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             }
     }
 
+    /**
+     * Запросить текущую цену бумаги по board_id.
+     *
+     * @param
+     * @return
+     */
     @Override
-    public Optional<MoexDocumentRs> getCurrentQuoteByBoardId(String boardId) {
-        MoexDocumentRs resultDoc = cacheService.getQuotesByBoardId(boardId).orElseGet(() -> {
+    public MoexDocumentRs getCurrentQuoteByBoardId(String boardId) {
+
+        if (cacheService.checkDict(CacheDictType.LAST_QUOTES_BY_BOARD_ID, boardId)) {
+            return cacheService.getDict(CacheDictType.LAST_QUOTES_BY_BOARD_ID, boardId);
+        } else {
             lastQuote = lastQuote + 1;
             log.info("Запрос последней ставки по boardId: {}. Запрос №: {}", boardId, lastQuote);
-
             MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_LAST_QUOTE_MOEX, null, boardId);
-            cacheService.putLastQuotes(boardId, doc);
-            return doc;
-        });
 
-        return Optional.of(resultDoc);
+            cacheService.putToCache(CacheDictType.LAST_QUOTES_BY_BOARD_ID, boardId, doc, MoexDocumentRs.class);
+            return doc;
+        }
     }
 
     /**
@@ -190,8 +196,10 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      */
     @Override
     public String getBoardId(String ticker) {
-        return cacheService.getBoardIdByTicker(ticker).orElseGet(() -> {
 
+        if (cacheService.checkDict(CacheDictType.BOARD_ID_BY_TICKER, ticker)) {
+            return cacheService.getDict(CacheDictType.BOARD_ID_BY_TICKER, ticker);
+        } else {
             String boardId = ((MoexDocumentForBoardIdRs)
                     (httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_BOARD_ID, ticker, null)))
                     .getData()
@@ -202,9 +210,9 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                     .map(MoexRowsForBoardIdRs::getBoardId)
                     .orElse(null);
 
-            cacheService.putBoardId(ticker, boardId);
+            cacheService.putToCache(CacheDictType.BOARD_ID_BY_TICKER, ticker, boardId, String.class);
             return boardId;
-        });
+        }
     }
 
     /**
