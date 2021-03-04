@@ -65,14 +65,14 @@ public interface BondCalcService {
      *
      * @return
      */
-    MoexDocumentRs getBondsFromMoexForBoardGroup(String boardGroup);
+    MoexDocumentRs getBondsByBoardGroup(String boardGroup);
 
     /**
      * Запросить Облигации по всем доскам сразу.
      *
      * @return
      */
-    MoexDocumentRs getBondsFromMoex();
+    MoexDocumentRs getBonds();
 
     /**
      * Запросить Облигацию по тикеру.

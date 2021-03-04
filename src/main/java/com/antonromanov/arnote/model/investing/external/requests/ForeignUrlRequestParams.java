@@ -13,19 +13,14 @@ import lombok.Data;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ForeignUrlRequestParams {
-
     private String modules;
-
-    /*public UrlRequestParamsAdapter convertByAdapter(){
-        return UrlRequestParamsAdapter
-                .builder()
-                .issMeta(this.issMeta)
-                .issDp(this.issDp)
-                .from(this.from)
-                .issOnly(convertEnumSet(this.issOnly, (UrlQueryParameters::getCode)))
-                .securitiesColumns(convertEnumSet(this.securitiesColumns, (UrlQueryParameters::getCode)))
-                .boardsColumns(convertEnumSet(this.boardsColumns, (UrlQueryParameters::getCode)))
-                .marketDataColumns(convertEnumSet(this.marketDataColumns, (UrlQueryParameters::getCode)))
-                .build();
-    }*/
+    private String symbol;
+    private String period1;
+    private String period2;
+    private String interval;
+    private String includePrePost;
+    private String events;
+    private String function;
+    private String apikey;
+    private String keywords;
 }

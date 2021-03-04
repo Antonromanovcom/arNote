@@ -54,8 +54,8 @@ public class InvestController {
     /**
      * Консолидированные данные по бумагам.
      *
-     * @param principal
-     * @return
+     * @param principal - пользователь.
+     * @return ConsolidatedInvestmentDataRs.
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/consolidated")
@@ -82,7 +82,6 @@ public class InvestController {
         if (filter != null) {
             if (InvestingFilterMode.valueOf(filter) == InvestingFilterMode.NONE) {
                 user.setInvestingFilterMode(null);
-                user = usersRepo.saveAndFlush(user);
             } else {
                 if (user.getInvestingFilterMode() != null && user.getInvestingFilterMode().size() > 0) {
                     user.getInvestingFilterMode().put(InvestingFilterMode.valueOf(filter).getKey(), filter);
@@ -91,18 +90,17 @@ public class InvestController {
                     filterMap.put(InvestingFilterMode.valueOf(filter).getKey(), filter);
                     user.setInvestingFilterMode(filterMap);
                 }
-                user = usersRepo.saveAndFlush(user);
             }
+            user = usersRepo.saveAndFlush(user);
         }
 
         if (sort != null) {
             if (InvestingSortMode.valueOf(sort) == InvestingSortMode.NONE) {
                 user.setInvestingSortMode(null);
-                user = usersRepo.saveAndFlush(user);
             } else {
                 user.setInvestingSortMode(InvestingSortMode.valueOf(sort));
-                user = usersRepo.saveAndFlush(user);
             }
+            user = usersRepo.saveAndFlush(user);
         }
 
 
@@ -125,8 +123,8 @@ public class InvestController {
     /**
      * Консолидированные данные по доходности.
      *
-     * @param principal
-     * @return
+     * @param principal - пользователь.
+     * @return - ConsolidatedReturnsRs
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/returns")
@@ -179,7 +177,8 @@ public class InvestController {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/price")
-    public CurrentPriceRs getCurrentPriceByTicker(Principal principal, @RequestParam @NotNull String ticker) throws UserNotFoundException, BadIncomeParameter {
+    public CurrentPriceRs getCurrentPriceByTicker(Principal principal, @RequestParam @NotNull String ticker)
+            throws UserNotFoundException, BadIncomeParameter {
 
         log.info("============== GET CURRENT PRICE BY TICKER ============== ");
         ArNoteUser user = getLocalUserFromPrincipal(principal);

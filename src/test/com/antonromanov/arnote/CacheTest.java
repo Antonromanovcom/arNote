@@ -1,7 +1,6 @@
 package com.antonromanov.arnote;
 
 import com.antonromanov.arnote.model.investing.cache.enums.CacheDictType;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.investment.cache.CacheService;
@@ -14,8 +13,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -58,8 +55,8 @@ public class CacheTest {
     @Test
     public void getCachedDivsByTicker() {
         assertEquals(0, httpClient.getCounter());
-        calcService.getDivsByTicker(repo.findById(1L).get(), "SBER");
-        calcService.getDivsByTicker(repo.findById(1L).get(), "SBER");
+        calcService.getDivsByTicker("SBER");
+        calcService.getDivsByTicker("SBER");
         assertEquals(1, httpClient.getCounter());
     }
 

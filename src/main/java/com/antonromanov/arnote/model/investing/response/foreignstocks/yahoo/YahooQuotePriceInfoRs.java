@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class YahooQuotePriceInfoRs {
     private YahooRegularMarketPriceRs regularMarketPrice;
+    private YahooRegularMarketPriceRs regularMarketChangePercent;
+    private YahooRegularMarketPriceRs regularMarketChange;
     private String exchangeName; // биржа
     private String marketState; // статус биржи: открыта / закрыта
     private String quoteType; // тип бумаги, акция или облигация. EQUITY = акция

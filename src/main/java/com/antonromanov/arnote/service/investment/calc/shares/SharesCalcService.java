@@ -17,10 +17,9 @@ public interface SharesCalcService {
     /**
      * Запросить дивиденды через API биржи, подсчитать сумму и проценты относительно текущей цены акции и вернуть все это.
      *
-     * @param user - текущий авторизовавшийся пользователь
      * @return
      */
-    Optional<ConsolidatedDividendsRs> getDivsByTicker(ArNoteUser user, String ticker);
+    ConsolidatedDividendsRs getDivsByTicker(String ticker);
 
     /**
      * Запросить текущую цену акции по тикеру.
@@ -47,10 +46,9 @@ public interface SharesCalcService {
     /**
      * Запросить детальную информацию по бумаге (инструменту).
      *
-     * @param user - текущий авторизовавшийся пользователь
      * @return
      */
-    Optional<MoexDetailInfoRs> getDetailInfo(ArNoteUser user, String ticker);
+    Optional<MoexDetailInfoRs> getDetailInfo(String ticker);
 
     /**
      * Запросить board_id.
@@ -60,14 +58,13 @@ public interface SharesCalcService {
      */
     String getBoardId(String ticker);
 
-
     /**
      * Запросить имя инструмента.
      *
      * @param ticker - тикер.
      * @return
      */
-    Optional<String> getInstrumentName(String boardId, String ticker);
+    String getInstrumentName(String boardId, String ticker);
 
     /**
      * Запросить и посчитать дельту.
@@ -101,7 +98,7 @@ public interface SharesCalcService {
      *
      * @return
      */
-    String getCurrencyOfShare(String ticker, ArNoteUser user);
+    String getCurrencyOfShare(String ticker);
 
     /**
      * Достать минимальный лот.
@@ -147,5 +144,5 @@ public interface SharesCalcService {
      * @param keyword
      * @return
      */
-    MoexDocumentRs getForeignInstrumentsByName(String keyword);
+    MoexDocumentRs findInstrumentsByName(String keyword);
 }

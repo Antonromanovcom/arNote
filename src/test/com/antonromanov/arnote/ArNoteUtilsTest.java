@@ -79,6 +79,7 @@ public class ArNoteUtilsTest {
     @Test
     public void foreignUrlTest() {
 
+
         Map<String, String> m = new HashMap<>();
         m.put("p1", "BOH");
         m.put("p2", "2");
@@ -87,6 +88,11 @@ public class ArNoteUtilsTest {
         String url = prepareForeignUrl(currentRequestType,
                 client.serializeObjectToMVMap(currentRequestType.getRequestParams()), m);
         assertEquals("https://query1.finance.yahoo.com/v10/finance/quoteSummary/BOH?modules=price", url);
+
+        ForeignRequests currentRequestType2 = ForeignRequests.GET_DIVS;
+        String url2 = prepareForeignUrl(currentRequestType2,
+                client.serializeObjectToMVMap(currentRequestType2.getRequestParams()), m);
+        assertEquals("https://query1.finance.yahoo.com/v8/finance/chart/BOH?modules=2", url2);
 
     }
 

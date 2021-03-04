@@ -15,10 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 
 @Service
@@ -72,7 +73,6 @@ public class RequestServiceImpl implements RequestService {
     public CommonMoexDoc sendAndMarshall(MoexRestTemplateOperation type, String ticker, String boardId) {
         if (type != MoexRestTemplateOperation.GET_DIVS_MOEX) {
             try {
-                counter += 1;
                 log.info("Sending MOEX request to: {}",
                         prepareUrl(MOEX_URL, type, serializeObjectToMVMap(type.getRequestParams().convertByAdapter()),
                                 prepareParametersMap(ticker, boardId)));
@@ -109,6 +109,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     /**
+     * Подготовить мапу параметров.
      *
      * @param param1 - для MOEX как правило тикер.
      * @param param2 - для MOEX как правило boardId.
@@ -119,6 +120,19 @@ public class RequestServiceImpl implements RequestService {
         m.put("p1", param1);
         m.put("p2", param2);
         return m;
+    }
+
+    /**
+     * Подготовить  мапу нумерованных параметров для URLа
+     *
+     * @return
+     */
+    private Map<String, String> prepareParametersMapFromList(LinkedList<String> paramList) {
+        List<Integer> indexList = new LinkedList<>();
+        for (int i = 0; i < paramList.size(); i++) {
+            indexList.add(i);
+        }
+        return indexList.stream().collect(Collectors.toMap(i -> "p"+(i+1), paramList::get));
     }
 
     /**
@@ -149,25 +163,47 @@ public class RequestServiceImpl implements RequestService {
     /**
      * Отправить запрос в буржуйское API.
      *
+     * @param <T>         - респонс.
      * @param requestType - тип, содержащие разные данные по урлу и прочему.
-     * @param ticker - тикер бумаги.
-     * @param clazz - класс респонса.
-     * @param <T> - респонс.
+     * @param ticker      - тикер бумаги.
+     * @param clazz       - класс респонса.
      * @return
      */
     @Override
-    public <T>T sendAndMarshallForeignRequest(ForeignRequests requestType, String ticker, Class<T> clazz) {
+    public <T> T sendAndMarshallForeignRequest(ForeignRequests requestType, LinkedList<String> ticker, Class<T> clazz) {
 
         String url = prepareForeignUrl(requestType,
-                serializeObjectToMVMap(requestType.getRequestParams()), prepareParametersMap(ticker, null));
-        ResponseEntity<String> response = rt.getForEntity(url, String.class);
+                serializeObjectToMVMap(requestType.getRequestParams()), prepareParametersMapFromList(ticker));
         log.info("Sending foreign request to: {}", url);
+        ResponseEntity<String> response = rt.getForEntity(url, String.class);
 
         try {
             return objectMapper.readValue(response.getBody(), clazz);
         } catch (IOException e) {
             log.error("Произошла ошибка парсинга результата по запросу: {}. Ошибка: {}", requestType, e.getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Отправить запрос в буржуйское API без сериализации (вернуть сразу респонс назад).
+     *
+     *
+     * @param requestType - тип, содержащие разные данные по урлу и прочему.
+     * @param ticker - тикер бумаги.
+     *
+     * @return
+     */
+    @Override
+    public Optional<String> sendForeignRequest(ForeignRequests requestType, LinkedList<String> ticker) {
+        String url = prepareForeignUrl(requestType,
+                serializeObjectToMVMap(requestType.getRequestParams()), prepareParametersMapFromList(ticker));
+        log.info("Sending foreign request to: {}", url);
+        try {
+            ResponseEntity<String> response = rt.getForEntity(url, String.class);
+            return Optional.ofNullable(response.getBody());
+        } catch (Exception e){
+            return Optional.empty();
         }
     }
 }

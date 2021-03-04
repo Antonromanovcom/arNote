@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.service.investment.calc.shares.moex;
 
-import com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.Purchase;
@@ -10,8 +9,10 @@ import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.enums.TinkoffDeltaFinalValuesType;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexRowsForBoardIdRs;
+import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDataRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
@@ -33,6 +34,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.antonromanov.arnote.utils.ArNoteUtils.calculateCurrencyMultiplier;
+import static com.antonromanov.arnote.utils.ArNoteUtils.getTcsDeltaValues;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
@@ -52,20 +55,23 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     /**
      * Запросить дивиденды через API биржи, подсчитать сумму проценты относительно текущей цены акции и вернуть все это.
      *
-     * @param user - текущий авторизовавшийся пользователь
      * @return
      */
     @Override
-    @Cacheable(cacheNames = "divsByTicker", key = "#user.id")
-    public Optional<ConsolidatedDividendsRs> getDivsByTicker(ArNoteUser user, String ticker) {
-        if (!isBlank(ticker)) {
+    public ConsolidatedDividendsRs getDivsByTicker(String ticker) {
+
+        if (cacheService.checkDict(CacheDictType.DIVS_BY_TICKER, ticker)) {
+            return cacheService.getDict(CacheDictType.DIVS_BY_TICKER, ticker);
+        } else {
             Optional<ConsolidatedDividendsRs> res = httpClient.sendAndParse(ticker);
             if (res.isPresent()) {
                 res.get().calculatePercent(getHistory(ticker, getBoardId(ticker)));
-                return res;
+                cacheService.putToCache(CacheDictType.DIVS_BY_TICKER, ticker, res.get(), ConsolidatedDividendsRs.class);
+                return res.get();
+            } else {
+                return null;
             }
         }
-        return Optional.empty();
     }
 
     /**
@@ -175,11 +181,10 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     /**
      * Запросить детальную информацию по бумаге (инструменту).
      *
-     * @param user - текущий авторизовавшийся пользователь
      * @return
      */
     @Override
-    public Optional<MoexDetailInfoRs> getDetailInfo(ArNoteUser user, String ticker) {
+    public Optional<MoexDetailInfoRs> getDetailInfo(String ticker) {
         if (!isBlank(ticker)) {
             return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(MoexRestTemplateOperation.
                     GET_INSTRUMENT_DETAIL_INFO, ticker, null)));
@@ -222,20 +227,22 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    @Cacheable(cacheNames = "instrumentNames", key = "#boardId + #ticker")
-    public Optional<String> getInstrumentName(String boardId, String ticker) {
-        if (!isBlank(ticker)) {
-            return Optional.ofNullable(httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_INSTRUMENT_NAME, null, boardId))
-                    .map(MoexDocumentRs.class::cast)
-                    .map(p -> p.getData()
+    public String getInstrumentName(String boardId, String ticker) {
+
+        if (cacheService.checkDict(CacheDictType.INSTRUMENT_NAME, ticker)) {
+            return cacheService.getDict(CacheDictType.INSTRUMENT_NAME, ticker);
+        } else {
+            String instrumentName =
+                    ((MoexDocumentRs)(httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_INSTRUMENT_NAME, null, boardId)))
+                            .getData()
                             .getRow()
                             .stream()
                             .filter(r -> ticker.equals(r.getSecid()))
                             .findFirst()
-                            .map(MoexRowsRs::getSecName))
-                    .orElse(null);
-        } else {
-            return Optional.empty();
+                            .map(MoexRowsRs::getSecName).orElse("-");
+
+            cacheService.putToCache(CacheDictType.INSTRUMENT_NAME, ticker, instrumentName, String.class);
+            return instrumentName;
         }
     }
 
@@ -252,26 +259,6 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
 
         if (!isBlank(ticker) && !isBlank(boardId) && (currentStockPrice != null && currentStockPrice > 0)) {
 
-            double tinkoffDeltaFinal = 0;
-            double tinkoffDeltaPercent = 0;
-
-            if (purchaseList != null && purchaseList.size() > 0) {
-
-                /*
-                 * Считаем среднюю цену покупки (сумма цена * лот)
-                 */
-                Double tkcAveragePurchasePrice = purchaseList.stream()
-                        .map(p -> p.getPrice() * p.getLot())
-                        .reduce((double) 0, Double::sum);
-
-                double tinkoffSameLotButNewPrice = (purchaseList.stream()
-                        .map(Purchase::getLot)
-                        .reduce(0, Integer::sum)) * currentStockPrice;
-
-                tinkoffDeltaFinal = tinkoffSameLotButNewPrice - tkcAveragePurchasePrice;
-                tinkoffDeltaPercent = (tinkoffDeltaFinal * 100) / tinkoffSameLotButNewPrice;
-            }
-
             MoexDocumentRs doc = getHistory(ticker, boardId);
 
             /*
@@ -281,11 +268,9 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
              * deltaPeriod = Миллисекунды от (текущая дата - (самая ранняя дата истории))
              * tinkoffDelta = (сумма покупок * текущую цену рынка) - (Сумма(лот * цену по каждой покупке))
              */
-
-
             return DeltaRs.builder()
-                    .tinkoffDelta(tinkoffDeltaFinal)
-                    .tinkoffDeltaPercent(tinkoffDeltaPercent)
+                    .tinkoffDelta(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL))
+                    .tinkoffDeltaPercent(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT))
                     .deltaInRubles(doc.getData()
                             .getRow()
                             .stream()
@@ -345,7 +330,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      */
     @Override
     public ConsolidatedDividendsRs getDividends(Bond bond, ArNoteUser user) {
-        return getDivsByTicker(user, bond.getTicker())
+        return Optional.of(getDivsByTicker(bond.getTicker()))
                 .orElse(ConsolidatedDividendsRs.builder()
                         .dividendList(Collections.emptyList())
                         .percent(0D)
@@ -359,21 +344,27 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    @Cacheable(cacheNames = "currenciesCache", key = "#user.id")
-    public String getCurrencyOfShare(String ticker, ArNoteUser user) {
-        return getDetailInfo(user, ticker)
-                .map(detailInfo -> detailInfo.getDataList().stream()
-                        .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
-                        .findFirst()
-                        .map(sc -> sc.getRowsList().stream()
-                                .filter(row -> getBoardId(ticker).equals(row.getBoardId()))
-                                .findFirst()
-                                .map(MoexInstrumentDetailRowsRs::getCurrencyId)
-                                .map(Currencies::search)
-                                .map(Enum::name)
-                                .orElse("RUB"))
-                        .orElse("RUB"))
-                .orElse("RUB");
+    public String getCurrencyOfShare(String ticker) {
+        if (cacheService.checkDict(CacheDictType.CURRENCY, ticker)) {
+            return cacheService.getDict(CacheDictType.CURRENCY, ticker);
+        } else {
+            String cur = getDetailInfo(ticker)
+                    .map(detailInfo -> detailInfo.getDataList().stream()
+                            .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
+                            .findFirst()
+                            .map(sc -> sc.getRowsList().stream()
+                                    .filter(row -> getBoardId(ticker).equals(row.getBoardId()))
+                                    .findFirst()
+                                    .map(MoexInstrumentDetailRowsRs::getCurrencyId)
+                                    .map(Currencies::search)
+                                    .map(Enum::name)
+                                    .orElse("RUB"))
+                            .orElse("RUB"))
+                    .orElse("RUB");
+
+            cacheService.putToCache(CacheDictType.CURRENCY, ticker, cur, String.class);
+            return cur;
+        }
     }
 
     /**
@@ -384,7 +375,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     @Override
     @Cacheable(cacheNames = "minimalLotsCache", key = "#user.id")
     public Integer getMinimalLot(String ticker, ArNoteUser user) {
-        return getDetailInfo(user, ticker)
+        return getDetailInfo(ticker)
                 .map(detailInfo -> detailInfo.getDataList().stream()
                         .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
                         .findFirst()
@@ -406,63 +397,65 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      */
     @Override
     public MoexDocumentRs getHistory(String ticker, String boardId) {
-        return cacheService.getHistory(ticker + boardId)
-                .orElseGet(() -> {
-                    int start = 0; // начальная страница
-                    int step = 100; // шаг перемещения
-                    boolean isFinalPage = false; // проверочная переменная, определяющая, что дальше циклить не надо и мы достигли конца истории.
-                    MoexDocumentRs resultDoc = new MoexDocumentRs(); // финальный документ с историей, заполненный всеми страницами
 
-                    while (!isFinalPage) {
-                        /*
-                         * Выкачиваем данные постранично и сохраняем в локальную переменную
-                         */
-                        log.info("Запрашиваем историю. start = {}", start);
-                        MoexDocumentRs localDoc = (MoexDocumentRs) httpClient.getHistory(MoexRestTemplateOperation.GET_DELTA,
-                                ticker, boardId, "2000-01-01", LocalDate.now().toString(), start);
-                        log.info("Запросили историю. Получили записей: {}", localDoc.getData().getRow().size());
+        if (cacheService.checkDict(CacheDictType.HISTORY, ticker + boardId)) {
+            return cacheService.getDict(CacheDictType.HISTORY, ticker + boardId);
+        } else {
+            int start = 0; // начальная страница
+            int step = 100; // шаг перемещения
+            boolean isFinalPage = false; // проверочная переменная, определяющая, что дальше циклить не надо и мы достигли конца истории.
+            MoexDocumentRs resultDoc = new MoexDocumentRs(); // финальный документ с историей, заполненный всеми страницами
 
-                        if (localDoc.getData() == null ||
-                                localDoc.getData().getRow().size() == 0 ||
-                                localDoc.getData().getRow().stream().anyMatch(r ->
-                                        LocalDate.parse(r.getTradeDate()).getYear() == LocalDate.now().getYear() &&
-                                                LocalDate.parse(r.getTradeDate()).getMonthValue() == LocalDate.now().getMonthValue())) {
-                            isFinalPage = true;
-                            log.warn("Закончили запрос на start = : {}", start);
-                        } else {
-                            /*
-                             * Подливаем строки из локального документа в итоговый.
-                             */
-                            if (resultDoc.getData() == null) {
-                                MoexDataRs dataRs = new MoexDataRs();
-                                resultDoc.setData(dataRs);
-                            }
-                            resultDoc.getData().getRow().addAll(localDoc.getData().getRow());
-                            log.info("Получили данные с {} {}", resultDoc.getData().getRow().stream()
-                                            .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                                            .map(d -> (LocalDate.parse(d.getTradeDate())).getMonth()
-                                                    .getDisplayName(TextStyle.FULL, new Locale("ru")))
-                                            .orElse("-"),
-                                    resultDoc.getData().getRow().stream()
-                                            .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                                            .map(d -> (LocalDate.parse(d.getTradeDate())).getYear()).orElse(0));
+            while (!isFinalPage) {
+                /*
+                 * Выкачиваем данные постранично и сохраняем в локальную переменную
+                 */
+                log.info("Запрашиваем историю. start = {}", start);
+                MoexDocumentRs localDoc = (MoexDocumentRs) httpClient.getHistory(MoexRestTemplateOperation.GET_DELTA,
+                        ticker, boardId, "2000-01-01", LocalDate.now().toString(), start);
+                log.info("Запросили историю. Получили записей: {}", localDoc.getData().getRow().size());
 
-                            log.info("Получили данные по {} {}", resultDoc.getData().getRow().stream()
-                                            .max(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                                            .map(d -> (LocalDate.parse(d.getTradeDate())).getMonth()
-                                                    .getDisplayName(TextStyle.FULL, new Locale("ru")))
-                                            .orElse("-"),
-                                    resultDoc.getData().getRow().stream()
-                                            .max(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                                            .map(d -> (LocalDate.parse(d.getTradeDate())).getYear()).orElse(0));
-
-                            log.info("Получили записей: {}", resultDoc.getData().getRow().size());
-                        }
-                        start = start + step;
+                if (localDoc.getData() == null ||
+                        localDoc.getData().getRow().size() == 0 ||
+                        localDoc.getData().getRow().stream().anyMatch(r ->
+                                LocalDate.parse(r.getTradeDate()).getYear() == LocalDate.now().getYear() &&
+                                        LocalDate.parse(r.getTradeDate()).getMonthValue() == LocalDate.now().getMonthValue())) {
+                    isFinalPage = true;
+                    log.warn("Закончили запрос на start = : {}", start);
+                } else {
+                    /*
+                     * Подливаем строки из локального документа в итоговый.
+                     */
+                    if (resultDoc.getData() == null) {
+                        MoexDataRs dataRs = new MoexDataRs();
+                        resultDoc.setData(dataRs);
                     }
-                    cacheService.putHistory(ticker + boardId, resultDoc);
-                    return resultDoc;
-                });
+                    resultDoc.getData().getRow().addAll(localDoc.getData().getRow());
+                    log.info("Получили данные с {} {}", resultDoc.getData().getRow().stream()
+                                    .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                                    .map(d -> (LocalDate.parse(d.getTradeDate())).getMonth()
+                                            .getDisplayName(TextStyle.FULL, new Locale("ru")))
+                                    .orElse("-"),
+                            resultDoc.getData().getRow().stream()
+                                    .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                                    .map(d -> (LocalDate.parse(d.getTradeDate())).getYear()).orElse(0));
+
+                    log.info("Получили данные по {} {}", resultDoc.getData().getRow().stream()
+                                    .max(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                                    .map(d -> (LocalDate.parse(d.getTradeDate())).getMonth()
+                                            .getDisplayName(TextStyle.FULL, new Locale("ru")))
+                                    .orElse("-"),
+                            resultDoc.getData().getRow().stream()
+                                    .max(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                                    .map(d -> (LocalDate.parse(d.getTradeDate())).getYear()).orElse(0));
+
+                    log.info("Получили записей: {}", resultDoc.getData().getRow().size());
+                }
+                start = start + step;
+            }
+            cacheService.putToCache(CacheDictType.HISTORY, ticker + boardId, resultDoc, MoexDocumentRs.class);
+            return resultDoc;
+        }
     }
 
     /**
@@ -474,23 +467,10 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     @Override
     public Double getCurrencyMultiplier(String currency) {
 
-        if (Currencies.getTransferByCodes(currency) == null) {
-            return (1d);
-        } else {
+        CommonMoexDoc doc = httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_CURRENCY_CHANGE_COURSES,
+                null, null);
 
-            return Optional.ofNullable(httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_CURRENCY_CHANGE_COURSES,
-                    null, null))
-                    .map(MoexDocumentRs.class::cast)
-                    .orElseThrow(() -> new MoexXmlResponseMappingException("курсы валют"))
-                    .getData()
-                    .getRow()
-                    .stream()
-                    .filter(curr -> curr.getCurrencyExchangeType().equals(Currencies.getTransferByCodes(currency)))
-                    .findFirst()
-                    .map(MoexRowsRs::getRate)
-                    .map(Double::valueOf)
-                    .orElse(Double.valueOf("1"));
-        }
+        return calculateCurrencyMultiplier(doc, currency);
     }
 
     /**
@@ -499,13 +479,18 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    @Cacheable(cacheNames = "allshares", key = "#boardId")
     public MoexDocumentRs findSharesByBoardId(String boardId) {
-        getAllSharesCount = getAllSharesCount + 1;
-        log.info("getAllSharesCount по boardId: {}. Запрос №: {}", boardId, getAllSharesCount);
-        MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_ALL_SHARES, null, boardId);
 
-        return doc;
+        if (cacheService.checkDict(CacheDictType.FIND_SHARES_BY_BOARD_ID, boardId)) {
+            return cacheService.getDict(CacheDictType.FIND_SHARES_BY_BOARD_ID, boardId);
+        } else {
+            getAllSharesCount = getAllSharesCount + 1;
+            log.info("getAllSharesCount по boardId: {}. Запрос №: {}", boardId, getAllSharesCount);
+            MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_ALL_SHARES, null, boardId);
+            cacheService.putToCache(CacheDictType.FIND_SHARES_BY_BOARD_ID, boardId, doc, MoexDocumentRs.class);
+            return doc;
+        }
+
     }
 
     /**
@@ -515,7 +500,6 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      */
     @Override
     public List<String> getTradeModes() {
-
         if (cacheService.getTradeModes() != null && cacheService.getTradeModes().size() > 0) {
             return cacheService.getTradeModes();
         } else {
@@ -531,32 +515,13 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     }
 
     /**
-     * Найти буржуйскую бумагу по ключевому слову. Возвращает только акции.
+     * Найти бумагу по ключевому слову. Возвращает только акции.
      *
      * @param keyword
      * @return
      */
     @Override
-    public MoexDocumentRs getForeignInstrumentsByName(String keyword) {
-       /* AlphavantageSearchListRs response = httpClient.sendAndMarshallForeignRequest(keyword);
-        List<AlphavantageSearchRs> filteredList = response.getBestMatches().stream()
-                .filter(sec-> "Equity".equalsIgnoreCase(sec.getType()))
-                .collect(Collectors.toList());
-        MoexDocumentRs document = new MoexDocumentRs();
-        MoexDataRs documentData = new MoexDataRs();
-        ArrayList<MoexRowsRs> rows = filteredList.stream()
-                .map(r->{
-                    MoexRowsRs row = new MoexRowsRs();
-                    row.setSecid(r.getSymbol());
-                    row.setCurrencyId(r.getCurrency());
-                    row.setSecName(r.getName());
-                    return row;
-                })
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        documentData.setRow(rows);
-        document.setData(documentData);
-       return document;*/
-       return null;
+    public MoexDocumentRs findInstrumentsByName(String keyword) {
+       return null; // не используется для MOEX.
     }
 }

@@ -1,6 +1,8 @@
 package com.antonromanov.arnote.model.investing.response;
 
+import com.antonromanov.arnote.model.investing.response.serializers.DoubleSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +17,7 @@ public class BondRs {
     @JsonIgnore
     private final Long id;
     private final String ticker;
+    @JsonSerialize(using = DoubleSerializer.class)
     private final Double currentPrice;
     private final String currency;
     private final String type;

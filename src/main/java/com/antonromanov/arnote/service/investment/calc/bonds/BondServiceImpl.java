@@ -3,6 +3,7 @@ package com.antonromanov.arnote.service.investment.calc.bonds;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.Purchase;
+import com.antonromanov.arnote.model.investing.cache.enums.CacheDictType;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DividendRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
@@ -167,7 +168,7 @@ public class BondServiceImpl implements BondCalcService {
     @Override
     public Optional<MoexRowsRs> getBondDataByTicker(String ticker) {
 
-        return getBondsFromMoex()
+        return getBonds()
                 .getData()
                 .getRow()
                 .stream()
@@ -202,15 +203,15 @@ public class BondServiceImpl implements BondCalcService {
      * @return
      */
     @Override
-    public MoexDocumentRs getBondsFromMoex() {
+    public MoexDocumentRs getBonds() {
 
         Iterator<String> it = BOARD_GROUP_LIST.iterator();
         MoexDocumentRs result = new MoexDocumentRs();
         while (it.hasNext()) {
             if (result.getData() == null) {
-                result = getBondsFromMoexForBoardGroup(it.next());
+                result = getBondsByBoardGroup(it.next());
             } else {
-                result.getData().getRow().addAll((getBondsFromMoexForBoardGroup(it.next())).getData().getRow());
+                result.getData().getRow().addAll((getBondsByBoardGroup(it.next())).getData().getRow());
             }
         }
         return result;
@@ -222,15 +223,14 @@ public class BondServiceImpl implements BondCalcService {
      * @return
      */
     @Override
-    public MoexDocumentRs getBondsFromMoexForBoardGroup(String boardGroup) {
-        return cacheService.getBondsByBoardGroup(boardGroup)
-                .orElseGet(() -> {
-                    MoexDocumentRs doc = (MoexDocumentRs) httpClient
-                            .sendAndMarshall(MoexRestTemplateOperation.GET_BONDS, boardGroup, null);
-                    cacheService.putBondsByBoardsGroup(boardGroup, doc);
-                    return doc;
-                });
-
+    public MoexDocumentRs getBondsByBoardGroup(String boardGroup) {
+        if (cacheService.checkDict(CacheDictType.BONDS_BY_BOARD_ID, boardGroup)) { //todo: посмотреть можно ли все-таки написать аннотацию под это дело самому
+            return cacheService.getDict(CacheDictType.BONDS_BY_BOARD_ID, boardGroup);
+        } else {
+            MoexDocumentRs doc = (MoexDocumentRs) httpClient
+                    .sendAndMarshall(MoexRestTemplateOperation.GET_BONDS, boardGroup, null);
+            cacheService.putToCache(CacheDictType.BONDS_BY_BOARD_ID, boardGroup, doc, MoexDocumentRs.class);
+            return doc;
+        }
     }
-
 }

@@ -3,10 +3,10 @@ package com.antonromanov.arnote.service.investment.requestservice;
 import com.antonromanov.arnote.model.investing.external.requests.ForeignRequests;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
-import com.antonromanov.arnote.model.investing.response.foreignstocks.AlphavantageSearchListRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import org.springframework.util.MultiValueMap;
 
+import java.util.LinkedList;
 import java.util.Optional;
 
 public interface RequestService {
@@ -48,11 +48,22 @@ public interface RequestService {
     /**
      * Отправить запрос в буржуйское API.
      *
-     * @param requestType - тип, содержащие разные данные по урлу и прочему.
-     * @param ticker - тикер бумаги.
-     * @param clazz - класс респонса.
      * @param <T> - респонс.
+     * @param requestType - тип, содержащие разные данные по урлу и прочему.
+     * @param params - параметры запроса.
+     * @param clazz - класс респонса.
      * @return
      */
-    <T>T sendAndMarshallForeignRequest(ForeignRequests requestType, String ticker, Class<T> clazz);
+    <T>T sendAndMarshallForeignRequest(ForeignRequests requestType, LinkedList<String> params, Class<T> clazz);
+
+    /**
+     * Отправить запрос в буржуйское API без сериализации (вернуть сразу респонс назад).
+     *
+     *
+     * @param requestType - тип, содержащие разные данные по урлу и прочему.
+     * @param params - параметры запроса.
+     *
+     * @return
+     */
+    Optional<String> sendForeignRequest(ForeignRequests requestType, LinkedList<String> params);
 }
