@@ -1,29 +1,37 @@
 package com.antonromanov.arnote.service.investment.returns;
 
 import com.antonromanov.arnote.model.ArNoteUser;
+import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
+import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import com.antonromanov.arnote.repositoty.BondsRepo;
-import com.antonromanov.arnote.service.investment.calc.CalculateService;
+import com.antonromanov.arnote.service.investment.calc.CommonService;
+import com.antonromanov.arnote.service.investment.calc.bonds.BondCalcService;
+import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
 public class ReturnsServiceImpl implements ReturnsService {
 
-    private final CalculateService calcService;
+    private final BondCalcService bondCalcService;
     private final BondsRepo repo;
+    private final CommonService commonService;
 
-    public ReturnsServiceImpl(BondsRepo repo, CalculateService calcService) {
-        this.calcService = calcService;
+    public ReturnsServiceImpl(BondsRepo repo, BondCalcService bondCalcService, CommonService commonService) {
         this.repo = repo;
+        this.bondCalcService = bondCalcService;
+        this.commonService = commonService;
     }
 
     @Override
     public Optional<Long> getTotalInvestment(ArNoteUser user) {
         return Optional.of(repo.findAllByUser(user).stream()
+                .filter(Bond::getIsBought)
                 .map(b -> b.getPurchaseList().stream()
                         .map(p -> p.getLot() * p.getPrice())
                         .reduce((double) 0, Double::sum))
@@ -42,14 +50,9 @@ public class ReturnsServiceImpl implements ReturnsService {
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond->bond.getType()== BondType.SHARE)
                 .map(b -> {
-                    DeltaRs deltaRs = calcService
-                            .calculateDelta(calcService.getBoardId(b.getTicker()), b.getTicker(),
-                                    calcService.getCurrentQuoteByTicker(b.getTicker()).orElse((double) 0),
-                                    b.getPurchaseList());
-
+                    DeltaRs deltaRs = commonService.prepareDelta(b);
                     return deltaRs.getDeltaInRubles();
-                })
-                .reduce((double) 0, Double::sum));
+                }).reduce((double) 0, Double::sum));
     }
 
     /**
@@ -63,7 +66,7 @@ public class ReturnsServiceImpl implements ReturnsService {
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond -> bond.getType()==BondType.SHARE)
                 .map(b -> {
-                    ConsolidatedDividendsRs divs = calcService.getDividends(b, user);
+                    ConsolidatedDividendsRs divs = commonService.getDivsOrCoupons(b, user);
                     return divs.getDivSum();
                 })
                 .reduce((double) 0, Double::sum))
@@ -102,7 +105,7 @@ public class ReturnsServiceImpl implements ReturnsService {
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond -> bond.getType()==BondType.BOND)
                 .map(b -> {
-                    ConsolidatedDividendsRs divs = calcService.getCoupons(b, user);
+                    ConsolidatedDividendsRs divs = bondCalcService.getCoupons(b, user);
                     return divs.getDivSum();
                 })
                 .reduce((double) 0, Double::sum))

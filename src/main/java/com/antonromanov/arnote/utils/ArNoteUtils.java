@@ -3,14 +3,20 @@ package com.antonromanov.arnote.utils;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.JsonNullException;
 import com.antonromanov.arnote.exceptions.JsonParseException;
+import com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.InvestingFilterMode;
+import com.antonromanov.arnote.model.investing.Purchase;
+import com.antonromanov.arnote.model.investing.external.requests.ForeignRequests;
 import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.FoundInstrumentRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
-import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
+import com.antonromanov.arnote.model.investing.response.enums.TinkoffDeltaFinalValuesType;
+import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.model.wish.Salary;
 import com.antonromanov.arnote.model.wish.Wish;
@@ -26,6 +32,7 @@ import org.passay.PasswordGenerator;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import java.time.*;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -35,6 +42,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -42,7 +50,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * Тут собраны основные утилиты.
  */
 @Slf4j
-public class ArNoteUtils {
+public class ArNoteUtils { //todo: надо будет разнести отдельно wish-утилиты и инвест-утилиты
 
     public enum ParseType {ADD, EDIT}
 
@@ -577,7 +585,7 @@ public class ArNoteUtils {
      *
      * @return
      */
-    public static String prepareUrlForHistory(String urlBase, RestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+    public static String prepareUrlForHistory(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
                                               Map<String, String> pathParams, String dateFrom, String dateTill, int start) {
 
 
@@ -630,7 +638,7 @@ public class ArNoteUtils {
                 .map(s -> InvestingFilterMode.valueOf(s).getFilter())
                 .collect(Collectors.toList());
 
-        if (arr.size()==1){
+        if (arr.size() == 1) {
             return arr.get(0);
         } else {
             return arr.stream().reduce(t -> true, Predicate::and);
@@ -640,20 +648,40 @@ public class ArNoteUtils {
 
     /**
      * Подготовить список инструментов
+     *
      * @return
      */
-    public static  List<FoundInstrumentRs> prepareInstruments(List<MoexRowsRs> list, BondType type) {
+    public static List<FoundInstrumentRs> prepareInstruments(List<MoexRowsRs> list, BondType type, StockExchange stockExchange) {
         return list.stream()
                 .map(r -> FoundInstrumentRs.builder()
                         .ticker(r.getSecid())
                         .currencies(Currencies.search(r.getCurrencyId()))
                         .description(r.getSecName())
-                        .stockExchange(StockExchange.MOEX)
+                        .stockExchange(stockExchange)
                         .type(type)
                         .build())
                 .filter(distinctByKey(FoundInstrumentRs::getTicker))
                 .limit(5)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Подготовить URL для буржуйских API.
+     *
+     * @return
+     */
+    public static String prepareForeignUrl(ForeignRequests req, MultiValueMap<String, String> queryParameters,
+                                           Map<String, String> pathParams) {
+
+        UriComponents uriComponents = UriComponentsBuilder
+                .newInstance()
+                .scheme(req.getSchema().getSchema())
+                .host(req.getHost().getUrl())
+                .path(req.getConstantPart())
+                .queryParams(queryParameters)
+                .buildAndExpand(pathParams);
+
+        return uriComponents.toString();
     }
 
 
@@ -662,7 +690,7 @@ public class ArNoteUtils {
      *
      * @return
      */
-    public static String prepareUrl(String urlBase,  RestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+    public static String prepareUrl(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
                                     Map<String, String> pathParams) {
 
         UriComponents uriComponents = UriComponentsBuilder
@@ -673,7 +701,79 @@ public class ArNoteUtils {
                 .queryParams(queryParameters)
                 .buildAndExpand(pathParams);
 
-
         return uriComponents.toString();
+    }
+
+    /**
+     * Преобразовать строковой epoch-mil в LocalDate.
+     *
+     * @return
+     */
+    public static LocalDate parseStringEpochMilDate(String epochMil) {
+        long milInLong = Long.parseLong(epochMil);
+        return LocalDate.from(LocalDateTime.ofInstant(Instant.ofEpochSecond(milInLong), ZoneId.systemDefault()));
+    }
+
+    /**
+     * Преобразовать epoch-mil и получить время.
+     *
+     * @return
+     */
+    public static LocalTime parseEpochMilToTime(Long epochMil) {
+        return LocalTime.from(LocalDateTime.ofInstant(Instant.ofEpochSecond(epochMil), ZoneId.systemDefault()));
+    }
+
+    /**
+     * Рассчитываем Тиньковские дельты.
+     *
+     * @return
+     */
+    public static Map<TinkoffDeltaFinalValuesType, Double> getTcsDeltaValues(List<Purchase> purchaseList,
+                                                                             Double currentStockPrice) {
+        Map<TinkoffDeltaFinalValuesType, Double> resultMap = new HashMap<>();
+        if (purchaseList != null && purchaseList.size() > 0) {
+            /*
+             * Считаем среднюю цену покупки (сумма цена * лот)
+             */
+            Double tkcAveragePurchasePrice = purchaseList.stream()
+                    .map(p -> p.getPrice() * p.getLot())
+                    .reduce((double) 0, Double::sum);
+
+            double tinkoffSameLotButNewPrice = (purchaseList.stream()
+                    .map(Purchase::getLot)
+                    .reduce(0, Integer::sum)) * currentStockPrice;
+
+            double tcsDeltaFinal = tinkoffSameLotButNewPrice - tkcAveragePurchasePrice;
+            resultMap.put(TinkoffDeltaFinalValuesType.DELTA_FINAL, tcsDeltaFinal);
+            resultMap.put(TinkoffDeltaFinalValuesType.DELTA_PERCENT, ((tcsDeltaFinal * 100) / tinkoffSameLotButNewPrice));
+        } else{
+            resultMap.put(TinkoffDeltaFinalValuesType.DELTA_FINAL, 0.0D);
+            resultMap.put(TinkoffDeltaFinalValuesType.DELTA_PERCENT, 0.0D);
+        }
+        return resultMap;
+    }
+
+    /**
+     * Достаем курсы перевода валют.
+     *
+     * @return
+     */
+    public static double calculateCurrencyMultiplier(CommonMoexDoc doc, String currency) {
+
+        if (Currencies.getTransferByCodes(currency) == null) {
+            return (1d);
+        } else {
+            return Optional.ofNullable(doc)
+                    .map(MoexDocumentRs.class::cast)
+                    .orElseThrow(() -> new MoexXmlResponseMappingException("курсы валют"))
+                    .getData()
+                    .getRow()
+                    .stream()
+                    .filter(curr -> curr.getCurrencyExchangeType().equals(Currencies.getTransferByCodes(currency)))
+                    .findFirst()
+                    .map(MoexRowsRs::getRate)
+                    .map(Double::valueOf)
+                    .orElse(Double.valueOf("1"));
+        }
     }
 }

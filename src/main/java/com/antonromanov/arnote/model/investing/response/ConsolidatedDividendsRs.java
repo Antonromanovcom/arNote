@@ -43,7 +43,9 @@ public class ConsolidatedDividendsRs {
     }
 
     /**
-     * Подсчитать проценты.
+     * Подсчитать проценты. То есть процент у нас это:
+     *
+     * Самый маленький див за прошлый год по отношению к цене акции по состоянию на эту дату.
      *
      * @param history - выборка по ставкам
      */
@@ -52,7 +54,7 @@ public class ConsolidatedDividendsRs {
 
             Double v1 = dividendList.stream()
                     .filter(div -> (LocalDate.parse(div.getRegistryCloseDate())).getYear() == LocalDate.now().getYear() - 1)
-                    .min(Comparator.comparing(DividendRs::getRegistryCloseDate))
+                    .min(Comparator.comparing(DividendRs::getValue))
                     .map(DividendRs::getValue).orElse(0D);
 
             Double v2 = calculatePrice(history);

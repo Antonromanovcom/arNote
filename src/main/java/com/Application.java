@@ -1,9 +1,12 @@
 package com;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.antonromanov.arnote.service.investment.calc.shares.foreign.ForeignCalcServiceImpl;
+import com.antonromanov.arnote.service.investment.calc.shares.moex.MoexCalculateServiceImpl;
+import com.antonromanov.arnote.service.investment.calc.shares.common.CalculateFactory;
 import com.google.common.cache.CacheBuilder;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.Cache;
@@ -13,6 +16,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +39,28 @@ public class Application {
     RestTemplate SimpleRestTemplate() {
         return new RestTemplate();
     }
+
+    @Bean
+    public FactoryBean serviceLocatorFactoryBean() {
+        ServiceLocatorFactoryBean factoryBean = new ServiceLocatorFactoryBean();
+        factoryBean.setServiceLocatorInterface(CalculateFactory.class);
+        return factoryBean;
+    }
+
+   // MOEX("moexCalculator"), SPB("foreignCalculator");
+
+    @Bean(name = "MOEX")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public MoexCalculateServiceImpl moexCalculator() {
+        return new MoexCalculateServiceImpl();
+    }
+
+    @Bean(name = "SPB")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ForeignCalcServiceImpl foreignCalculator() {
+        return new ForeignCalcServiceImpl();
+    }
+
 
 
     @Bean("habrCacheManager")

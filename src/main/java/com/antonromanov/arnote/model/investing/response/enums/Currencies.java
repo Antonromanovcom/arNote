@@ -9,6 +9,7 @@ import java.util.Arrays;
 public enum Currencies {
     RUB("SUR", "RUB", null),
     USD("USD", null,"USD/RUB"),
+    GBP("GBP", null,null),
     EUR("EUR", null,"EUR/RUB");
 
     private final String code;
@@ -16,11 +17,7 @@ public enum Currencies {
     private final String transfer; // перевод из валюты в валюты
 
     public static String getTransferByCodes(String name){
-        return Arrays.stream(Currencies.values())
-                .filter(e->e.code.equals(name) || (e.secondName!=null && e.secondName.equals(name)))
-                .findFirst()
-                .map(z->z.transfer)
-                .orElse(null);
+        return search(name).transfer;
     }
 
     public static Currencies search(String name){

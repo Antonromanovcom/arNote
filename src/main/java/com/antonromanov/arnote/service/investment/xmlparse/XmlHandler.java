@@ -8,6 +8,4 @@ import java.util.Optional;
 public interface XmlHandler {
     Optional<ConsolidatedDividendsRs> parse (ResponseEntity<String> response);
     CommonMoexDoc marshall(ResponseEntity<String> response, Class<?> moexClass);
-
-
 }

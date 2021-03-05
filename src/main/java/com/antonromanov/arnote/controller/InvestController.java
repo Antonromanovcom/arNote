@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.controller;
 
+import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.*;
@@ -7,23 +8,22 @@ import com.antonromanov.arnote.model.investing.request.AddInstrumentRq;
 import com.antonromanov.arnote.model.investing.response.*;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
-import com.antonromanov.arnote.service.investment.calc.CalculateService;
+import com.antonromanov.arnote.service.investment.calc.CommonService;
 import com.antonromanov.arnote.service.investment.calendar.CalendarService;
 import com.antonromanov.arnote.service.investment.returns.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import static com.antonromanov.arnote.utils.ArNoteUtils.*;
+import static com.antonromanov.arnote.utils.ArNoteUtils.complexPredicate;
 
 
 /**
@@ -38,24 +38,24 @@ public class InvestController {
     private final UsersRepo usersRepo;
     private final BondsRepo bondsRepo;
     private final CalendarService calendarService;
-    private final CalculateService calculateService;
     private final ReturnsService returnsService;
+    private final CommonService commonService;
 
 
-    public InvestController(UsersRepo usersRepo, CalculateService calculateService, BondsRepo bondsRepo,
-                            ReturnsService returnsService, CalendarService calendarService) {
+    public InvestController(UsersRepo usersRepo, BondsRepo bondsRepo, ReturnsService returnsService,
+                            CalendarService calendarService, CommonService commonService) {
         this.usersRepo = usersRepo;
-        this.calculateService = calculateService;
         this.bondsRepo = bondsRepo;
         this.returnsService = returnsService;
         this.calendarService = calendarService;
+        this.commonService = commonService;
     }
 
     /**
      * Консолидированные данные по бумагам.
      *
-     * @param principal
-     * @return
+     * @param principal - пользователь.
+     * @return ConsolidatedInvestmentDataRs.
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/consolidated")
@@ -82,7 +82,6 @@ public class InvestController {
         if (filter != null) {
             if (InvestingFilterMode.valueOf(filter) == InvestingFilterMode.NONE) {
                 user.setInvestingFilterMode(null);
-                user = usersRepo.saveAndFlush(user);
             } else {
                 if (user.getInvestingFilterMode() != null && user.getInvestingFilterMode().size() > 0) {
                     user.getInvestingFilterMode().put(InvestingFilterMode.valueOf(filter).getKey(), filter);
@@ -91,18 +90,17 @@ public class InvestController {
                     filterMap.put(InvestingFilterMode.valueOf(filter).getKey(), filter);
                     user.setInvestingFilterMode(filterMap);
                 }
-                user = usersRepo.saveAndFlush(user);
             }
+            user = usersRepo.saveAndFlush(user);
         }
 
         if (sort != null) {
             if (InvestingSortMode.valueOf(sort) == InvestingSortMode.NONE) {
                 user.setInvestingSortMode(null);
-                user = usersRepo.saveAndFlush(user);
             } else {
                 user.setInvestingSortMode(InvestingSortMode.valueOf(sort));
-                user = usersRepo.saveAndFlush(user);
             }
+            user = usersRepo.saveAndFlush(user);
         }
 
 
@@ -125,8 +123,8 @@ public class InvestController {
     /**
      * Консолидированные данные по доходности.
      *
-     * @param principal
-     * @return
+     * @param principal - пользователь.
+     * @return - ConsolidatedReturnsRs
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/returns")
@@ -163,40 +161,11 @@ public class InvestController {
     @CrossOrigin(origins = "*")
     @GetMapping("/search")
     public SearchResultsRs findInstrumentByName(Principal principal, @RequestParam @NotNull String keyword) throws UserNotFoundException {
-
         log.info("============== FIND INSTRUMENT ============== ");
         ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
         log.info("USER ID: " + user.getId());
         log.info("keyword: " + keyword);
-
-        Iterator<String> it = calculateService.getTradeModes().iterator();
-        MoexDocumentRs allShares = new MoexDocumentRs();
-
-        while (it.hasNext()) {
-            String bid = it.next();
-            MoexDocumentRs halfWayResult = calculateService.findSharesByBoardId(bid);
-            halfWayResult.getData().getRow().forEach(q -> q.setBoardId(bid));
-            if (allShares.getData() == null) {
-                allShares = halfWayResult;
-            } else {
-                allShares.getData().getRow().addAll((halfWayResult).getData().getRow());
-            }
-        }
-
-        List<MoexRowsRs> foundShares = allShares.getData().getRow().stream()
-                .filter(filterByKeyword(keyword))
-                .collect(Collectors.toList());
-
-
-        List<MoexRowsRs> foundBonds = calculateService.getBondsFromMoex().getData().getRow().stream()
-                .filter(filterByKeyword(keyword))
-                .collect(Collectors.toList());
-
-        SearchResultsRs searchResults = new SearchResultsRs();
-        searchResults.setInstruments(prepareInstruments(foundShares, BondType.SHARE));
-        searchResults.getInstruments().addAll(prepareInstruments(foundBonds, BondType.BOND));
-
-        return searchResults;
+        return commonService.findInstrument(keyword);
     }
 
     /**
@@ -208,17 +177,16 @@ public class InvestController {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/price")
-    public CurrentPriceRs getCurrentPriceByTicker(Principal principal, @RequestParam @NotNull String ticker) throws UserNotFoundException {
+    public CurrentPriceRs getCurrentPriceByTicker(Principal principal, @RequestParam @NotNull String ticker)
+            throws UserNotFoundException, BadIncomeParameter {
 
         log.info("============== GET CURRENT PRICE BY TICKER ============== ");
         ArNoteUser user = getLocalUserFromPrincipal(principal);
         log.info("USER ID: " + user.getId());
-        log.info("keyword: " + ticker);
+        log.info("ticker: " + ticker);
 
-        CurrentPriceRs resp = calculateService.getCurrentQuoteWith15MinuteUpdate(ticker);
-        resp.setMinLot(calculateService.getMinimalLot(ticker, user));
-
-        return resp;
+        return commonService.getCurrentPriceByTicker(bondsRepo.findBondByUserAndTicker(user, ticker)
+                .orElseThrow(() -> new BadIncomeParameter(null)), user);
     }
 
     /**
@@ -231,8 +199,10 @@ public class InvestController {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/price-by-date")
-    public CurrentPriceRs getCurrentPriceByTicker(Principal principal, @RequestParam @NotNull String ticker,
-                                                  @RequestParam @NotNull String purchaseDate) throws UserNotFoundException {
+    public CurrentPriceRs getCurrentPriceByTicker(Principal principal,
+                                                  @RequestParam @NotNull String ticker,
+                                                  @RequestParam @NotNull String purchaseDate)
+            throws UserNotFoundException, BadIncomeParameter {
 
         log.info("============== GET CURRENT PRICE BY TICKER AND PURCHASE DATE ============== ");
         ArNoteUser user = getLocalUserFromPrincipal(principal);
@@ -240,22 +210,9 @@ public class InvestController {
         log.info("ticker: " + ticker);
         log.info("purchase date: " + purchaseDate);
 
-        if (LocalDate.parse(purchaseDate).isAfter(LocalDate.now())) {
-            purchaseDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        }
 
-        final String finalPurchaseDate = purchaseDate;
-        return calculateService.getHistory(ticker, calculateService.getBoardId(ticker))
-                .getData()
-                .getRow()
-                .stream()
-                .filter(row -> LocalDate.parse(row.getTradeDate()).isEqual(LocalDate.parse(finalPurchaseDate)))
-                .findFirst()
-                .map(data -> CurrentPriceRs.builder()
-                        .currentPrice(Double.valueOf(data.getLegalClosePrice()))
-                        .date(LocalDate.parse(finalPurchaseDate))
-                        .build())
-                .orElse(calculateService.getCurrentQuoteWith15MinuteUpdate(ticker));
+        return commonService.getCurrentPriceByTickerAndDate(bondsRepo.findBondByUserAndTicker(user, ticker)
+                .orElseThrow(() -> new BadIncomeParameter(null)), purchaseDate);
 
     }
 
@@ -286,7 +243,6 @@ public class InvestController {
                 .build();
     }
 
-
     @CrossOrigin(origins = "*")
     @GetMapping("/calendar")
     public CalendarRs getCalendar(Principal principal) throws UserNotFoundException {
@@ -298,7 +254,6 @@ public class InvestController {
                         .collect(Collectors.toList()))
                 .build());
     }
-
 
     /**
      * Добавить бумагу (с покупкой или в качестве плана).
@@ -370,50 +325,14 @@ public class InvestController {
                 .type(bond.getType().name())
                 .isBought(bond.getIsBought())
                 .stockExchange(bond.getStockExchange().name())
-                .currentPrice(prepareCurrentPrice(bond))
-                .currency(bond.getType() == BondType.SHARE ? calculateService.getCurrencyOfShareFromDetailInfo(bond.getTicker(), user) :
-                        calculateService.getBondCurrency(bond.getTicker()).name()) //todo: сделать фабрику по бирже / типу бумаги
-                .dividends(bond.getType() == BondType.SHARE ? calculateService.getDividends(bond, user) :
-                        calculateService.getCoupons(bond, user))
-                .minLot(bond.getType() == BondType.SHARE ? calculateService.getMinimalLot(bond.getTicker(), user) :
-                        calculateService.getBondLot(bond, user, bond.getPurchaseList()))
-                .finalPrice(calculateService.calculateFinalPrice(bond, user))
-                .delta(prepareDelta(bond)) // todo: а если список продаж в рублях, а определенная текущая цена в другой валюте????
-                .description(bond.getType() == BondType.SHARE ? (calculateService.getInstrumentName(calculateService.getBoardId(bond.getTicker()),
-                        bond.getTicker()).orElse("-")) :
-                        (calculateService.getBondName(bond.getTicker()).orElse("-")))
+                .currentPrice(commonService.prepareCurrentPrice(bond))
+                .currency(commonService.getCurrency(bond, user))
+                .dividends(commonService.getDivsOrCoupons(bond, user))
+                .minLot(commonService.getLot(bond, user))
+                .finalPrice(commonService.getFinalPrice(bond, user))
+                .delta(commonService.prepareDelta(bond))
+                .description(commonService.getDescription(bond))
                 .build();
-    }
-
-    /**
-     * Посчитать текущую цены бумаги.
-     *
-     * @param bond
-     * @return
-     */
-    private Double prepareCurrentPrice(Bond bond) {
-        return bond.getType() == BondType.SHARE ?
-                (calculateService.getCurrentQuoteWith15MinuteUpdate(bond.getTicker()).getCurrentPrice()) :
-                calculateService.getCurrentBondPrice(bond.getTicker());
-    }
-
-    /**
-     * Посчитать дельту.
-     *
-     * @param bond
-     * @return
-     */
-    private DeltaRs prepareDelta(Bond bond) {
-        return bond.getType() == BondType.SHARE ?
-                (calculateService.calculateDelta(calculateService.getBoardId(bond.getTicker()), bond.getTicker(),
-                        calculateService.getCurrentQuoteWith15MinuteUpdate(bond.getTicker()).getCurrentPrice(),
-                        bond.getPurchaseList())) :
-                DeltaRs.builder()
-                        .tinkoffDeltaPercent(0D)
-                        .deltaInRubles(0D)
-                        .deltaPeriod(0L)
-                        .tinkoffDelta(0D)
-                        .build();
     }
 
     /**

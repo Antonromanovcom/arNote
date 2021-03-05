@@ -1,28 +1,30 @@
 package com.antonromanov.arnote;
 
+import com.antonromanov.arnote.model.investing.Bond;
+import com.antonromanov.arnote.model.investing.external.requests.ForeignRequests;
+import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedInvestmentDataRs;
-import com.antonromanov.arnote.model.investing.response.enums.RestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
+import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
-import com.antonromanov.arnote.service.investment.calc.CalculateService;
-import com.antonromanov.arnote.service.investment.http.client.ArNoteHttpClient;
+import com.antonromanov.arnote.service.investment.calc.CommonService;
+import com.antonromanov.arnote.service.investment.requestservice.RequestService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static com.antonromanov.arnote.utils.ArNoteUtils.complexPredicate;
-import static com.antonromanov.arnote.utils.ArNoteUtils.prepareUrl;
+import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 
 @RunWith(SpringRunner.class)
@@ -30,19 +32,27 @@ import static org.junit.Assert.assertEquals;
 public class ArNoteUtilsTest {
 
     @Autowired
-    private ArNoteHttpClient client;
-
-    @Autowired
-    private CalculateService cacheService;
-
-    @Autowired
-    ArNoteHttpClient httpClient;
+    private RequestService client;
 
     @Autowired
     UsersRepo repo;
 
+    @Autowired
+    BondsRepo bondsRepo;
+
     @Value("${moexUrl}")
     public String MOEX_URL;
+
+    @Autowired
+    private CommonService commonService;
+
+
+    @Test
+    public void testCalcFactory() {
+        Bond b = new Bond();
+        b.setStockExchange(StockExchange.MOEX);
+        assertNull(commonService.prepareCurrentPrice(b));
+    }
 
     @Test
     public void getUrlTest() {
@@ -51,32 +61,39 @@ public class ArNoteUtilsTest {
         m.put("p1", "1");
         m.put("p2", "2");
 
-        String url = prepareUrl(MOEX_URL, RestTemplateOperation.GET_DIVS_MOEX,
-                client.serializeObjectToMVMap(RestTemplateOperation.GET_LAST_QUOTE_MOEX), m);
+        String url = prepareUrl(MOEX_URL,
+                MoexRestTemplateOperation.GET_DIVS_MOEX,
+                client.serializeObjectToMVMap(MoexRestTemplateOperation.GET_LAST_QUOTE_MOEX.getRequestParams().convertByAdapter()), m);
+
         String urlToCheck = url.substring("http://".length() + MOEX_URL.length());
 
 
-        assertEquals("/securities/1/dividends.xml?iss.meta=on&iss.dp=comma&iss." +
-                "only=securities&securities.columns=SECID,PREVADMITTEDQUOTE", urlToCheck);
+        assertEquals("/securities/1/dividends.xml?iss.meta=off&iss.dp=comma&iss." +
+                "only=securities&securities.columns=SECID,PREVADMITTEDQUOTE,COUPONPERIOD", urlToCheck);
 
     }
 
+    /**
+     * Проверяем сборку буржуйского URL.
+     */
     @Test
-    public void getCache() {
-        cacheService.getCurrentQuoteByBoardId("TQBR");
-        cacheService.getCurrentQuoteByBoardId("TQBR");
-        assertEquals(1, httpClient.getCounter());
-        cacheService.getCurrentQuoteByBoardId("TQBS");
-        assertEquals(2, httpClient.getCounter());
-    }
+    public void foreignUrlTest() {
 
-    @Test
-    public void getCachedDivsByTicker() {
 
-        assertEquals(0, httpClient.getCounter());
-        cacheService.getDivsByTicker(repo.findById(1L).get(),"SBER");
-        cacheService.getDivsByTicker(repo.findById(1L).get(),"SBER");
-        assertEquals(1, httpClient.getCounter());
+        Map<String, String> m = new HashMap<>();
+        m.put("p1", "BOH");
+        m.put("p2", "2");
+
+        ForeignRequests currentRequestType = ForeignRequests.GET_REALTIME_QUOTE;
+        String url = prepareForeignUrl(currentRequestType,
+                client.serializeObjectToMVMap(currentRequestType.getRequestParams()), m);
+        assertEquals("https://query1.finance.yahoo.com/v10/finance/quoteSummary/BOH?modules=price", url);
+
+        ForeignRequests currentRequestType2 = ForeignRequests.GET_DIVS;
+        String url2 = prepareForeignUrl(currentRequestType2,
+                client.serializeObjectToMVMap(currentRequestType2.getRequestParams()), m);
+        assertEquals("https://query1.finance.yahoo.com/v8/finance/chart/BOH?modules=2", url2);
+
     }
 
     /**
