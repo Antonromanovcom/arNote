@@ -31,7 +31,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -168,7 +167,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
     public DeltaRs calculateDelta(String boardId, String ticker, Double currentStockPrice, List<Purchase> purchaseList) {
         if (!isBlank(ticker) && (currentStockPrice != null && currentStockPrice > 0)) {
 
-            MoexDocumentRs doc = getHistory(ticker, null);
+            MoexDocumentRs doc = getHistory(ticker, null, null);
 
             /*
              * Как считаем:
@@ -287,7 +286,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
                     .build();
 
             resultDivs.calculateSum();
-            resultDivs.calculatePercent(getHistory(bond.getTicker(), null));
+            resultDivs.calculatePercent(getHistory(bond.getTicker(), null, null));
             cacheService.putToCache(CacheDictType.DIVS_BY_TICKER, bond.getTicker(), resultDivs, ConsolidatedDividendsRs.class);
             return resultDivs;
         }
@@ -322,7 +321,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    public MoexDocumentRs getHistory(String ticker, String boardId) {
+    public MoexDocumentRs getHistory(String ticker, String boardId, LocalDate forDate) {
 
         if (cacheService.checkDict(CacheDictType.HISTORY, ticker + FOREIGN_KEY_FOR_CACHE)) {
             return cacheService.getDict(CacheDictType.HISTORY, ticker + FOREIGN_KEY_FOR_CACHE);

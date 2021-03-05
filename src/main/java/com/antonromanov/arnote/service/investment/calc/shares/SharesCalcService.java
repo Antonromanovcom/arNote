@@ -8,6 +8,8 @@ import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,11 +110,14 @@ public interface SharesCalcService {
     Integer getMinimalLot(String ticker, ArNoteUser user);
 
     /**
-     * Запросить исторические данные.
+     * Запросить исторические данные по котировкам с биржи.
      *
-     * @return
+     * @param ticker - тикер бумаги.
+     * @param boardId - boardId (только для MOEX)
+     * @param forDate -на какую  дату запрашиваем.
+     * @return - MoexDocumentRs
      */
-    MoexDocumentRs getHistory(String ticker, String boardId);
+    MoexDocumentRs getHistory(String ticker, String boardId, LocalDate forDate);
 
     /**
      * Определить валюту и курсовой-множитель для рубля.

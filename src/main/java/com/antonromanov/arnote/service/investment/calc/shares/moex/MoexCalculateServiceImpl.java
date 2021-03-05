@@ -1,15 +1,19 @@
 package com.antonromanov.arnote.service.investment.calc.shares.moex;
 
+import com.antonromanov.arnote.exceptions.MoexRequestException;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.cache.enums.CacheDictType;
+import com.antonromanov.arnote.model.investing.external.requests.ForeignRequests;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
+import com.antonromanov.arnote.model.investing.response.DividendRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.enums.TinkoffDeltaFinalValuesType;
+import com.antonromanov.arnote.model.investing.response.foreignstocks.yahoo.YahooDivRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.boardid.MoexRowsForBoardIdRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
@@ -22,20 +26,26 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.M
 import com.antonromanov.arnote.service.investment.cache.CacheService;
 import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.service.investment.requestservice.RequestService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static com.antonromanov.arnote.utils.ArNoteUtils.calculateCurrencyMultiplier;
-import static com.antonromanov.arnote.utils.ArNoteUtils.getTcsDeltaValues;
+import static com.antonromanov.arnote.utils.ArNoteUtils.*;
+import static com.antonromanov.arnote.utils.ArNoteUtils.parseStringEpochMilDate;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
@@ -43,17 +53,16 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class MoexCalculateServiceImpl implements SharesCalcService {
 
     @Autowired
-    private  RequestService httpClient;
+    private RequestService httpClient;
     @Autowired
-    private  CacheService cacheService;
+    private CacheService cacheService;
 
     private Long lastQuote = 0L;
     private Long getAllSharesCount = 0L;
 
 
-
     /**
-     * Запросить дивиденды через API биржи, подсчитать сумму проценты относительно текущей цены акции и вернуть все это.
+     * Запросить дивиденды через API биржи, подсчитать сумму и проценты относительно текущей цены акции и вернуть все это.
      *
      * @return
      */
@@ -65,7 +74,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
         } else {
             Optional<ConsolidatedDividendsRs> res = httpClient.sendAndParse(ticker);
             if (res.isPresent()) {
-                res.get().calculatePercent(getHistory(ticker, getBoardId(ticker)));
+                res.get().calculatePercent(getHistory(ticker, getBoardId(ticker), null));
                 cacheService.putToCache(CacheDictType.DIVS_BY_TICKER, ticker, res.get(), ConsolidatedDividendsRs.class);
                 return res.get();
             } else {
@@ -104,57 +113,57 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     @Override
     public CurrentPriceRs getRealTimeQuote(String ticker) {
 
-            if (LocalTime.now().isBefore(LocalTime.of(10, 30))){
-                return getCurrentQuoteByTicker(ticker)
-                        .map(cp-> CurrentPriceRs.builder()
-                                .ticker(ticker)
-                                .currency(Currencies.RUB)
-                                .currentPrice(cp)
-                                .date(LocalDate.now())
-                                .time(LocalTime.now())
-                                .lastChange(null)
-                                .lastChangePrcnt(null)
-                                .build())
-                        .orElse(CurrentPriceRs.builder()
-                                .ticker(ticker)
-                                .currency(Currencies.RUB)
-                                .currentPrice(null)
-                                .date(LocalDate.now())
-                                .time(LocalTime.now())
-                                .lastChange(null)
-                                .lastChangePrcnt(null)
-                                .build());
-            } else {
+        if (LocalTime.now().isBefore(LocalTime.of(10, 30))) {
+            return getCurrentQuoteByTicker(ticker)
+                    .map(cp -> CurrentPriceRs.builder()
+                            .ticker(ticker)
+                            .currency(Currencies.RUB)
+                            .currentPrice(cp)
+                            .date(LocalDate.now())
+                            .time(LocalTime.now())
+                            .lastChange(null)
+                            .lastChangePrcnt(null)
+                            .build())
+                    .orElse(CurrentPriceRs.builder()
+                            .ticker(ticker)
+                            .currency(Currencies.RUB)
+                            .currentPrice(null)
+                            .date(LocalDate.now())
+                            .time(LocalTime.now())
+                            .lastChange(null)
+                            .lastChangePrcnt(null)
+                            .build());
+        } else {
 
-                MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_15_MINUTE_PRICE_UPDATE,
-                        ticker, null);
+            MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_15_MINUTE_PRICE_UPDATE,
+                    ticker, null);
 
-                return CurrentPriceRs.builder()
-                        .ticker(ticker)
-                        .currency(Currencies.RUB)
-                        .currentPrice(doc.getData().getRow().stream()
-                                .filter(r->getBoardId(ticker).equals(r.getTradeMode()))
-                                .findFirst()
-                                .map(MoexRowsRs::getLast15MinuteQuote)
-                                .map(Double::parseDouble).orElse(0D))
-                        .date(LocalDate.now())
-                        .time(doc.getData().getRow().stream()
-                                .filter(r->getBoardId(ticker).equals(r.getTradeMode()))
-                                .findFirst()
-                                .map(MoexRowsRs::getUpdateTime)
-                                .map(LocalTime::parse).orElse(LocalTime.now()))
-                        .lastChange(doc.getData().getRow().stream()
-                                .filter(r->getBoardId(ticker).equals(r.getTradeMode()))
-                                .findFirst()
-                                .map(MoexRowsRs::getLastChange)
-                                .map(Double::parseDouble).orElse(0D))
-                        .lastChangePrcnt(doc.getData().getRow().stream()
-                                .filter(r->getBoardId(ticker).equals(r.getTradeMode()))
-                                .findFirst()
-                                .map(MoexRowsRs::getLastChangePrcnt)
-                                .map(Double::parseDouble).orElse(0D))
-                        .build();
-            }
+            return CurrentPriceRs.builder()
+                    .ticker(ticker)
+                    .currency(Currencies.RUB)
+                    .currentPrice(doc.getData().getRow().stream()
+                            .filter(r -> getBoardId(ticker).equals(r.getTradeMode()))
+                            .findFirst()
+                            .map(MoexRowsRs::getLast15MinuteQuote)
+                            .map(Double::parseDouble).orElse(0D))
+                    .date(LocalDate.now())
+                    .time(doc.getData().getRow().stream()
+                            .filter(r -> getBoardId(ticker).equals(r.getTradeMode()))
+                            .findFirst()
+                            .map(MoexRowsRs::getUpdateTime)
+                            .map(LocalTime::parse).orElse(LocalTime.now()))
+                    .lastChange(doc.getData().getRow().stream()
+                            .filter(r -> getBoardId(ticker).equals(r.getTradeMode()))
+                            .findFirst()
+                            .map(MoexRowsRs::getLastChange)
+                            .map(Double::parseDouble).orElse(0D))
+                    .lastChangePrcnt(doc.getData().getRow().stream()
+                            .filter(r -> getBoardId(ticker).equals(r.getTradeMode()))
+                            .findFirst()
+                            .map(MoexRowsRs::getLastChangePrcnt)
+                            .map(Double::parseDouble).orElse(0D))
+                    .build();
+        }
     }
 
     /**
@@ -233,7 +242,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             return cacheService.getDict(CacheDictType.INSTRUMENT_NAME, ticker);
         } else {
             String instrumentName =
-                    ((MoexDocumentRs)(httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_INSTRUMENT_NAME, null, boardId)))
+                    ((MoexDocumentRs) (httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_INSTRUMENT_NAME, null, boardId)))
                             .getData()
                             .getRow()
                             .stream()
@@ -259,7 +268,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
 
         if (!isBlank(ticker) && !isBlank(boardId) && (currentStockPrice != null && currentStockPrice > 0)) {
 
-            MoexDocumentRs doc = getHistory(ticker, boardId);
+            MoexDocumentRs doc = getHistory(ticker, boardId, null);
 
             /*
              * Как считаем:
@@ -284,7 +293,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                             .stream()
                             .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
                             .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
-                            .map(n -> ((currentStockPrice - n)/n)*100)
+                            .map(n -> ((currentStockPrice - n) / n) * 100)
                             .orElse(0D))
                     .deltaPeriod(doc.getData()
                             .getRow()
@@ -313,14 +322,14 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      */
     @Override
     public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
-            if (bond.getIsBought()) { // если это ФАКТ
-                return bond.getPurchaseList().stream()
-                        .map(p -> p.getLot() * p.getPrice())
-                        .reduce((double) 0, Double::sum).intValue();
-            } else { // если ПЛАН
-                return (int) Math.round(((getRealTimeQuote(bond.getTicker()
-                )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user));
-            }
+        if (bond.getIsBought()) { // если это ФАКТ
+            return bond.getPurchaseList().stream()
+                    .map(p -> p.getLot() * p.getPrice())
+                    .reduce((double) 0, Double::sum).intValue();
+        } else { // если ПЛАН
+            return (int) Math.round(((getRealTimeQuote(bond.getTicker()
+            )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user));
+        }
     }
 
     /**
@@ -391,12 +400,13 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     /**
      * Запросить исторические данные по котировкам с биржи.
      *
-     * @param ticker
-     * @param boardId
-     * @return
+     * @param ticker  - тикер бумаги.
+     * @param boardId - boardId (только для MOEX)
+     * @param forDate -на какую  дату запрашиваем.
+     * @return - MoexDocumentRs
      */
     @Override
-    public MoexDocumentRs getHistory(String ticker, String boardId) {
+    public MoexDocumentRs getHistory(String ticker, String boardId, LocalDate forDate) {
 
         if (cacheService.checkDict(CacheDictType.HISTORY, ticker + boardId)) {
             return cacheService.getDict(CacheDictType.HISTORY, ticker + boardId);
@@ -407,51 +417,56 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             MoexDocumentRs resultDoc = new MoexDocumentRs(); // финальный документ с историей, заполненный всеми страницами
 
             while (!isFinalPage) {
-                /*
-                 * Выкачиваем данные постранично и сохраняем в локальную переменную
-                 */
+
+                LocalDate requestDate;
+
+                if (forDate == null) {
+                    requestDate = LocalDate.now().minusYears(10).withMonth(1).withDayOfMonth(1);
+                } else{
+                    requestDate = forDate;
+                }
+
+                String reqDateAsString = requestDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                log.info("Запрашиваем историю на дату: {}", reqDateAsString);
                 log.info("Запрашиваем историю. start = {}", start);
                 MoexDocumentRs localDoc = (MoexDocumentRs) httpClient.getHistory(MoexRestTemplateOperation.GET_DELTA,
-                        ticker, boardId, "2000-01-01", LocalDate.now().toString(), start);
+                        ticker, boardId, reqDateAsString, LocalDate.now().toString(), start);
                 log.info("Запросили историю. Получили записей: {}", localDoc.getData().getRow().size());
 
-                if (localDoc.getData() == null ||
-                        localDoc.getData().getRow().size() == 0 ||
-                        localDoc.getData().getRow().stream().anyMatch(r ->
-                                LocalDate.parse(r.getTradeDate()).getYear() == LocalDate.now().getYear() &&
-                                        LocalDate.parse(r.getTradeDate()).getMonthValue() == LocalDate.now().getMonthValue())) {
-                    isFinalPage = true;
-                    log.warn("Закончили запрос на start = : {}", start);
-                } else {
-                    /*
-                     * Подливаем строки из локального документа в итоговый.
-                     */
-                    if (resultDoc.getData() == null) {
-                        MoexDataRs dataRs = new MoexDataRs();
-                        resultDoc.setData(dataRs);
-                    }
-                    resultDoc.getData().getRow().addAll(localDoc.getData().getRow());
-                    log.info("Получили данные с {} {}", resultDoc.getData().getRow().stream()
-                                    .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                                    .map(d -> (LocalDate.parse(d.getTradeDate())).getMonth()
-                                            .getDisplayName(TextStyle.FULL, new Locale("ru")))
-                                    .orElse("-"),
-                            resultDoc.getData().getRow().stream()
-                                    .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                                    .map(d -> (LocalDate.parse(d.getTradeDate())).getYear()).orElse(0));
+                  if (localDoc.getData() == null || localDoc.getData().getRow().size() == 0 ){
+                      log.warn("Для даты {} страница пустая, идем на следующую!", reqDateAsString);
+                      start = start + step;
+                  } else {
+                      isFinalPage = true;
+                      /*
+                       * Подливаем строки из локального документа в итоговый.
+                       */
+                      if (resultDoc.getData() == null) {
+                          MoexDataRs dataRs = new MoexDataRs();
+                          resultDoc.setData(dataRs);
+                      }
+                      resultDoc.getData().getRow().addAll(localDoc.getData().getRow());
 
-                    log.info("Получили данные по {} {}", resultDoc.getData().getRow().stream()
-                                    .max(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                                    .map(d -> (LocalDate.parse(d.getTradeDate())).getMonth()
-                                            .getDisplayName(TextStyle.FULL, new Locale("ru")))
-                                    .orElse("-"),
-                            resultDoc.getData().getRow().stream()
-                                    .max(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                                    .map(d -> (LocalDate.parse(d.getTradeDate())).getYear()).orElse(0));
+                      log.info("Получили данные с {} {}", resultDoc.getData().getRow().stream()
+                                      .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                                      .map(d -> (LocalDate.parse(d.getTradeDate())).getMonth()
+                                              .getDisplayName(TextStyle.FULL, new Locale("ru")))
+                                      .orElse("-"),
+                              resultDoc.getData().getRow().stream()
+                                      .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                                      .map(d -> (LocalDate.parse(d.getTradeDate())).getYear()).orElse(0));
 
-                    log.info("Получили записей: {}", resultDoc.getData().getRow().size());
-                }
-                start = start + step;
+                      log.info("Получили данные по {} {}", resultDoc.getData().getRow().stream()
+                                      .max(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                                      .map(d -> (LocalDate.parse(d.getTradeDate())).getMonth()
+                                              .getDisplayName(TextStyle.FULL, new Locale("ru")))
+                                      .orElse("-"),
+                              resultDoc.getData().getRow().stream()
+                                      .max(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                                      .map(d -> (LocalDate.parse(d.getTradeDate())).getYear()).orElse(0));
+
+                      log.info("Получили записей: {}", resultDoc.getData().getRow().size());
+                  }
             }
             cacheService.putToCache(CacheDictType.HISTORY, ticker + boardId, resultDoc, MoexDocumentRs.class);
             return resultDoc;
@@ -522,6 +537,6 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      */
     @Override
     public MoexDocumentRs findInstrumentsByName(String keyword) {
-       return null; // не используется для MOEX.
+        return null; // не используется для MOEX.
     }
 }

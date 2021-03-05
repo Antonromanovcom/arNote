@@ -45,7 +45,13 @@ public class CacheServiceImpl implements CacheService {
         CacheObject<T> cachedObject = new CacheObject<>(obj, aClass);
         HashMap<String, Object> cachedElement = new HashMap<>();
         cachedElement.put(key, cachedObject);
-        cache.put(dictionaryType, cachedElement);
+        if (cache.get(dictionaryType)!=null){
+            HashMap<String, Object> mapSavedEarlier = cache.get(dictionaryType);
+            mapSavedEarlier.put(key, cachedObject);
+            cache.put(dictionaryType, mapSavedEarlier);
+        } else {
+            cache.put(dictionaryType, cachedElement);
+        }
     }
 
     @Override

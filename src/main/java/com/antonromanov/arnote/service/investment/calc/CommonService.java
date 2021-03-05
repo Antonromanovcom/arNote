@@ -219,7 +219,7 @@ public class CommonService {
         }
 
         final String finalPurchaseDate = purchaseDate;
-        return calculator.getHistory(bond.getTicker(), calculator.getBoardId(bond.getTicker()))
+        return calculator.getHistory(bond.getTicker(), calculator.getBoardId(bond.getTicker()), LocalDate.parse(purchaseDate))
                 .getData()
                 .getRow()
                 .stream()
