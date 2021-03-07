@@ -303,7 +303,7 @@ public class InvestController {
             b.setIsBought(false);
             b.setType(BondType.valueOf(request.getBondType()));
             b.setUser(user);
-            b.setStockExchange(StockExchange.MOEX);
+            b.setStockExchange(commonService.getInstrumentStockExchange(request.getTicker()));
             newOrUpdatedBond = bondsRepo.saveAndFlush(b);
         }
 
