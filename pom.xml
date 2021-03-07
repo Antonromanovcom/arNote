@@ -338,27 +338,32 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
     </dependencies>
+    <profiles>
+    <profile>
+        <id>local</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.6.0</version>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <executions>
+                        <execution>
+                            <id>Renaming build artifacts</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <configuration>
+                                <executable>bash</executable>
+                                <commandlineArgs>copy-front-end.sh</commandlineArgs>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    </profiles>
 
-<build>
-<plugins>
-    <plugin>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <groupId>org.codehaus.mojo</groupId>
-        <executions>
-            <execution>
-                <id>Renaming build artifacts</id>
-                <phase>package</phase>
-                <goals>
-                    <goal>exec</goal>
-                </goals>
-                <configuration>
-                    <executable>bash</executable>
-                    <commandlineArgs>copy-front-end.sh</commandlineArgs>
-                </configuration>
-            </execution>
-        </executions>
-    </plugin>
-</plugins>
-</build>
 </project>
