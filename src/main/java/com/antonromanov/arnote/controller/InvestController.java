@@ -15,6 +15,7 @@ import com.antonromanov.arnote.service.investment.calendar.CalendarService;
 import com.antonromanov.arnote.service.investment.returns.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import static com.antonromanov.arnote.utils.ArNoteUtils.complexPredicate;
 
 
@@ -177,16 +179,18 @@ public class InvestController {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/price")
-    public CurrentPriceRs getCurrentPriceByTicker(Principal principal, @RequestParam @NotNull String ticker)
-            throws UserNotFoundException, BadIncomeParameter {
+    public CurrentPriceRs getCurrentPriceByTickerAndStockExchange(Principal principal,
+                                                                  @RequestParam @NotNull String ticker,
+                                                                  @RequestParam @NotNull String stockExchange)
+            throws UserNotFoundException {
 
         log.info("============== GET CURRENT PRICE BY TICKER ============== ");
         ArNoteUser user = getLocalUserFromPrincipal(principal);
         log.info("USER ID: " + user.getId());
         log.info("ticker: " + ticker);
 
-        return commonService.getCurrentPriceByTicker(bondsRepo.findBondByUserAndTicker(user, ticker)
-                .orElseThrow(() -> new BadIncomeParameter(null)), user);
+
+        return commonService.getCurrentPriceByTicker(ticker, StockExchange.valueOf(stockExchange), user);
     }
 
     /**

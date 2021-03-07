@@ -192,14 +192,14 @@ public class CommonService {
     /**
      * Получить текущую цену бумаги.
      *
-     * @param bond
-     * @param user
-     * @return
+     * @param ticker - тикер бумаги.
+     * @param user - текущий пользак.
+     * @return - CurrentPriceRs.
      */
-    public CurrentPriceRs getCurrentPriceByTicker(Bond bond, ArNoteUser user) {
-        SharesCalcService calculator = calcFactory.getCalculator(bond.getStockExchange());
-        CurrentPriceRs resp = calculator.getRealTimeQuote(bond.getTicker());
-        resp.setMinLot(calculator.getMinimalLot(bond.getTicker(), user));
+    public CurrentPriceRs getCurrentPriceByTicker(String ticker, StockExchange se, ArNoteUser user) {
+        SharesCalcService calculator = calcFactory.getCalculator(se);
+        CurrentPriceRs resp = calculator.getRealTimeQuote(ticker);
+        resp.setMinLot(calculator.getMinimalLot(ticker, user));
         return resp;
     }
 
