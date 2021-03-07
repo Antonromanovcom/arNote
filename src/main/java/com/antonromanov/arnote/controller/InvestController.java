@@ -294,7 +294,7 @@ public class InvestController {
                 b.setPurchaseList(Collections.singletonList(purchase));
                 b.setType(BondType.valueOf(request.getBondType()));
                 b.setUser(user);
-                b.setStockExchange(StockExchange.MOEX);
+                b.setStockExchange(commonService.getInstrumentStockExchange(request.getTicker()));
                 newOrUpdatedBond = bondsRepo.saveAndFlush(b);
             }
         } else {

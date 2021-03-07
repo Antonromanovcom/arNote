@@ -3,10 +3,7 @@ package com.antonromanov.arnote.service.investment.calc;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.BondType;
-import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
-import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
-import com.antonromanov.arnote.model.investing.response.DeltaRs;
-import com.antonromanov.arnote.model.investing.response.SearchResultsRs;
+import com.antonromanov.arnote.model.investing.response.*;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
@@ -230,5 +227,19 @@ public class CommonService {
                         .date(LocalDate.parse(finalPurchaseDate))
                         .build())
                 .orElse(calculator.getRealTimeQuote(bond.getTicker()));
+    }
+
+    /**
+     * Достаем Биржу по тикеру.
+     *
+     * @param ticker
+     * @return
+     */
+    public StockExchange getInstrumentStockExchange(String ticker) {
+        return findInstrument(ticker).getInstruments().stream()
+                .filter(i->ticker.equals(i.getTicker()))
+                .findFirst()
+                .map(FoundInstrumentRs::getStockExchange)
+                .orElse(StockExchange.MOEX);
     }
 }

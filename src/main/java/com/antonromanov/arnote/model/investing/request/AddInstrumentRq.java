@@ -18,5 +18,5 @@ public class AddInstrumentRq {
     private LocalDate purchaseDate; // дата покупки
     private int lot; // количество акций
     @NotNull
-    private String bondType; // количество акций
+    private String bondType;
 }
