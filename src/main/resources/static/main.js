@@ -344,8 +344,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
 /* harmony import */ var _ui_layout_unauthorize_unauthorize_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../ui/layout/unauthorize/unauthorize.component */ "./src/app/ui/layout/unauthorize/unauthorize.component.ts");
 /* harmony import */ var _ui_layout_investing_investing_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../ui/layout/investing/investing.component */ "./src/app/ui/layout/investing/investing.component.ts");
-/* harmony import */ var _service_auth_guard_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../service/auth-guard.service */ "./src/app/service/auth-guard.service.ts");
-
 
 
 
@@ -357,8 +355,8 @@ __webpack_require__.r(__webpack_exports__);
 var routes = [
     {
         path: '',
-        component: _ui_layout_main_main_component__WEBPACK_IMPORTED_MODULE_4__["MainComponent"],
-        canActivate: [_service_auth_guard_service__WEBPACK_IMPORTED_MODULE_8__["AuthGuardService"]]
+        component: _ui_layout_main_main_component__WEBPACK_IMPORTED_MODULE_4__["MainComponent"]
+        //  canActivate: [AuthGuard]
     },
     {
         path: '401',
@@ -646,8 +644,8 @@ var AuthGuardService = /** @class */ (function () {
         this.router = router;
     }
     AuthGuardService.prototype.canActivate = function () {
+        console.log('is auth - ' + this.auth.isAuthenticated());
         if (!this.auth.isAuthenticated()) {
-            console.log('is auth - ' + !this.auth.isAuthenticated());
             this.router.navigate(['401']);
             return false;
         }

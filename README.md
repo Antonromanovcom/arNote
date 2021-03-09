@@ -22,7 +22,6 @@ http://84.201.163.22:8080/
 # Сборка на локале
  ~/Maven/bin/mvn package -P local
 
-
 # Что сделали:
 * Добавили буржуйские бумаги, поправили поиск
 
@@ -30,6 +29,10 @@ http://84.201.163.22:8080/
 
 * При фильтрации по План / Факт, если бумаг не найдено так и надо отображать пустоту, пустую таблицу - а этого не происходит.
 * Не работает запрос цены буржуйской бумаги по тикеру (при добавлении)
+* Можно добавить TRC вместо TRCN (видимо нужна еще и валидация при добавлении)
+* Ну и пагинация конечно!
+* Надо сделать чтобы все же запрос цен был кеширован, но по времени, например, на час-два.
+* По TRCN вернулось <row SECID="TRCN" BOARDID="TQBR" LAST="" UPDATETIME="23:50:52" LASTCHANGE="0" LASTCHANGEPRCNT="0" /> и все упало на хрен
 * В календаре отображаются дивы однотипные по 4 раза. Одно и то же. Почему?
 * Менять версии в помнике, чтобы скрипт как-то умел их подхватывать и чтобы они в ГИТе отображались
 * Надо ходить в историю и смотреть какую самую раннюю дату можем запросить. И как-то блочить возможность запрашивать даты раньше на фронте.
@@ -147,35 +150,38 @@ WHERE NOT p.archive AND (p.realized=true);
 
 # Copy arNote jar script
 
-#string="Hello world"
-echo  "Удаляем директорию..."
-sudo rm -Rfv /home/admin/arnote
-echo "Директория удалена. Создаем заново...."
-sudo mkdir /home/admin/arnote
-echo "Директория создана успешно. Копируем файлы...."
-sudo cp -a /var/lib/jenkins/workspace/arNote/* /home/admin/arnote/
-echo "Подменяем properties-файл для профиля prod"
-sudo cp -f /home/admin/application-prod.properties /home/admin/arnote/src/main/resources/
-echo "Пытаемся вызвать Maven и собрать проект..."
-sudo mvn -f /home/admin/arnote/pom.xml clean package
-echo "Скрипт выполнен!!!"
+<pre><code>
+echo  "Удаляем директорию..."  
+sudo rm -Rfv /home/admin/arnote  
+echo "Директория удалена. Создаем заново...."  
+sudo mkdir /home/admin/arnote  
+echo "Директория создана успешно. Копируем файлы...."  
+sudo cp -a /var/lib/jenkins/workspace/arNote/* /home/admin/arnote/  
+echo "Подменяем properties-файл для профиля prod"  
+sudo cp -f /home/admin/application-prod.properties /home/admin/arnote/src/main/resources/  
+echo "Пытаемся вызвать Maven и собрать проект..."  
+sudo mvn -f /home/admin/arnote/pom.xml clean package  
+echo "Скрипт выполнен!!!"  
+</code></pre>  
 
 **arnote-wrapper.sh**
 
 #!/bin/sh
 # Restart arNote script-wrapper
 
-echo  " * * *   REBUILD AND RESTART ARNOTE SCRIPT   * * * "
-echo "Пытаемся остановить unit"
-sudo systemctl restart arnote
-echo "Unit успешно остановлен"
-echo "Пытаемся запустить скрипт удаления старых файлов и пересборки сервиса Maven'ом"
-. /home/admin/arnote.sh
+<pre><code>
+echo  " * * *   REBUILD AND RESTART ARNOTE SCRIPT   * * * "  
+echo "Пытаемся остановить unit"  
+sudo systemctl restart arnote  
+echo "Unit успешно остановлен"  
+echo "Пытаемся запустить скрипт удаления старых файлов и пересборки сервиса Maven'ом"  
+. /home/admin/arnote.sh  
 
-echo "========= !!! Скрипт-wrapper успешно выполнен!!! ==========="
-echo "Пытемся снова запустить Unit"
-sudo systemctl start arnote
-echo "Unit успешно запущен!"
+echo "========= !!! Скрипт-wrapper успешно выполнен!!! ==========="  
+echo "Пытемся снова запустить Unit"  
+sudo systemctl start arnote  
+echo "Unit успешно запущен!"  
+</code></pre>
 
 
  

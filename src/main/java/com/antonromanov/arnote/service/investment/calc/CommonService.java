@@ -240,6 +240,6 @@ public class CommonService {
                 .filter(i->ticker.equals(i.getTicker()))
                 .findFirst()
                 .map(FoundInstrumentRs::getStockExchange)
-                .orElse(StockExchange.MOEX);
+                .orElse(StockExchange.MOEX); //todo: спорный момент. Тут по хорошему надо эксепшн бросать.
     }
 }
