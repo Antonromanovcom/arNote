@@ -13,7 +13,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class WebController {
 
 	@RequestMapping(value = "/", method = {RequestMethod.GET, RequestMethod.POST})
-	public String welcome() {
+	public String indexPage() {
+		return "index";
+	}
+
+	@RequestMapping(value = "/investing", method = {RequestMethod.GET, RequestMethod.POST})
+	public String investPage() {
+		return "index";
+	}
+
+	@RequestMapping(value = "/401", method = {RequestMethod.GET, RequestMethod.POST})
+	public String welcomePage() {
 		return "index";
 	}
 

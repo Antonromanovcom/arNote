@@ -366,7 +366,8 @@ var routes = [
     },
     {
         path: 'investing',
-        component: _ui_layout_investing_investing_component__WEBPACK_IMPORTED_MODULE_7__["InvestingComponent"]
+        component: _ui_layout_investing_investing_component__WEBPACK_IMPORTED_MODULE_7__["InvestingComponent"],
+        canActivate: [_service_auth_guard_service__WEBPACK_IMPORTED_MODULE_8__["AuthGuardService"]]
     }
     /*,
     { path: '**', redirectTo: '401' }*/
@@ -711,12 +712,11 @@ var AuthService = /** @class */ (function () {
         return this.http.post(url, newUser, httpOptions);
     };
     AuthService.prototype.isAuthenticated = function () {
-        return !isExpired;
+        return !(helper.isTokenExpired(myRawToken));
     };
     AuthService.prototype.refreshToken = function () {
         myRawToken = localStorage.getItem('token');
         isExpired = helper.isTokenExpired(myRawToken);
-        console.log('TOKEN EXPIRE - ' + isExpired);
     };
     AuthService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])(),
@@ -1102,7 +1102,7 @@ var EditComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--<clr-main-container>-->\n<header class=\"header-1\">\n  <div class=\"branding\">\n    <a class=\"nav-link\">\n      <clr-icon shape=\"shield\"></clr-icon>\n      <span class=\"title\">arNote Project</span>\n    </a>\n  </div>\n  <div class=\"header-nav\">\n    <a *ngIf=\"idToken\" class=\"active nav-link nav-icon\" clrVerticalNavLink routerLink=\"../\" routerLinkActive=\"active\">\n      <clr-icon shape=\"home\"></clr-icon>\n    </a>\n  </div>\n  <div class=\"header-actions\">\n    <clr-dropdown class=\"dropdown bottom-right\">\n      <button class=\"nav-icon\" clrDropdownToggle>\n        <clr-icon shape=\"user\"></clr-icon>\n        <clr-icon shape=\"caret down\"></clr-icon>\n      </button>\n\n      <div class=\"dropdown-menu\">\n        <label class=\"dropdown-header\">Меню пользователя</label>\n        <a *ngFor=\"let item of loginDropDownMenu\" (click)=\"loginIconHandler(item)\"  clrDropdownItem>{{item}}</a>\n      </div>\n    </clr-dropdown>\n\n  </div>\n</header>\n\n\n<clr-modal [(clrModalOpen)]=\"isLogin\">\n  <h3 class=\"modal-title\">Войти</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"loginForm\">\n\n      <!--ПОЛЕ ЛОГИН-->\n\n      <clr-input-container>\n\n        <label #label for=\"login\" class=\"input-label clr-col-12\">Логин</label>\n        <input type=\"text\" clrInput formControlName=\"login\" id=\"login\" name=\"login\" autocomplete=\"off\" required\n               size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ ПАРОЛЬ-->\n\n      <clr-input-container>\n\n        <label #label for=\"password\" class=\"input-label clr-col-12\">Пароль</label>\n        <input type=\"password\" clrInput formControlName=\"password\" id=\"password\" name=\"password\" autocomplete=\"off\" required\n               size=\"100\">\n      </clr-input-container>\n\n\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"sendLogin()\" class=\"btn btn-primary mt-1\">Войти</button>\n    </div>\n\n  </div>\n</clr-modal>\n\n  <!-- ФОРМА РЕГИСТРАЦИИ ЮЗЕРА -->\n\n  <clr-modal [(clrModalOpen)]=\"isRegister\">\n    <h3 class=\"modal-title\">Новой юзер</h3>\n    <div class=\"modal-body\">\n      <form clrForm [formGroup]=\"registerForm\">\n\n        <!--ПОЛЕ ЛОГИН-->\n\n        <clr-input-container>\n\n          <label #label for=\"reglogin\" class=\"input-label clr-col-12\">Логин</label>\n          <input type=\"text\" clrInput formControlName=\"login\" id=\"reglogin\" name=\"login\" autocomplete=\"off\" required\n                 size=\"100\">\n        </clr-input-container>\n\n        <!--ПОЛЕ ПАРОЛЬ-->\n\n        <clr-input-container>\n\n          <label #label for=\"regpassword\" class=\"input-label clr-col-12\">Пароль</label>\n          <input type=\"password\" clrInput formControlName=\"password\" id=\"regpassword\" name=\"password\" autocomplete=\"off\" required\n                 size=\"100\">\n        </clr-input-container>\n\n        <!--ПОЛЕ EMAIL-->\n\n        <clr-input-container>\n\n          <label #label for=\"regemail\" class=\"input-label clr-col-12\">E-mail</label>\n          <input type=\"email\" clrInput formControlName=\"email\" id=\"regemail\" name=\"email\" autocomplete=\"off\" required\n                 size=\"100\">\n        </clr-input-container>\n        <br/>\n        <!--<span class=\"label label-danger\">Не используйте почтовые ящики сервиса mail.ru!</span>-->\n\n        <!--ПОЛЕ ПОЛНОЕ ИМЯ-->\n\n        <clr-input-container>\n\n          <label #label for=\"registerfullname\" class=\"input-label clr-col-12\">Полное имя</label>\n          <input type=\"text\" clrInput formControlName=\"fullname\" id=\"registerfullname\" name=\"fullname\" autocomplete=\"off\" size=\"100\">\n        </clr-input-container>\n\n      </form>\n\n      <div class=\"row\">\n        <button type=\"button\" (click)=\"register()\" class=\"btn btn-primary mt-1\">Зарегистрироваться</button>\n      </div>\n\n    </div>\n  </clr-modal>\n\n\n<!--ФОРМА РЕДАКТИРОВАНИЯ ПОЛЬЗОВАТЕЛЬСКИХ ДАННЫХ-->\n\n<clr-modal [(clrModalOpen)]=\"isUserDataEdit\">\n  <h3 class=\"modal-title\">Редактирование пользовательских данных</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"userInfoForm\">\n\n      <!--ПОЛЕ ЛОГИН-->\n\n      <clr-input-container>\n\n        <label #label for=\"editlogin\" class=\"input-label clr-col-12\">Логин</label>\n        <input type=\"text\" clrInput formControlName=\"editlogin\" id=\"editlogin\" name=\"editlogin\" autocomplete=\"off\" required\n               size=\"100\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!--ПОЛЕ ПАРОЛЬ-->\n\n      <clr-password-container>\n\n        <label #label for=\"editpassword\" class=\"input-label clr-col-12\">Пароль</label>\n        <input type=\"password\" clrPassword formControlName=\"editpassword\" id=\"editpassword\" name=\"editpassword\" autocomplete=\"off\"\n               size=\"100\">\n        </clr-password-container>\n\n      <br/>\n\n      <!-- ENCRYPTED MODE -->\n\n      <clr-checkbox-wrapper>\n\n        <label #label for=\"isencrypted\" class=\"input-label clr-col-12\">Шифрование данных на фронте</label>\n        <input type=\"checkbox\" clrCheckbox  formControlName=\"isencrypted\" id=\"isencrypted\" name=\"isencrypted\">\n        </clr-checkbox-wrapper>\n\n      <!--ПОЛЕ EMAIL-->\n\n      <clr-input-container>\n\n        <label #label for=\"email\" class=\"input-label clr-col-12\">Email</label>\n        <input type=\"email\" clrInput formControlName=\"email\" id=\"email\" name=\"email\" autocomplete=\"off\" required\n               size=\"100\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!-- ПОЛЕ ПОЛНОЕ ИМЯ -->\n\n      <clr-input-container>\n\n        <label #label for=\"fullname\" class=\"input-label clr-col-12\">Полное имя</label>\n        <input type=\"text\" clrInput formControlName=\"fullname\" id=\"fullname\" name=\"fullname\" autocomplete=\"off\"\n               size=\"100\">\n      </clr-input-container>\n\n      <!-- ПОЛЕ КЛЮЧ ШИФРОВАНИЯ -->\n\n      <clr-password-container *ngIf=\"user.userCryptoMode\">\n\n        <label #label for=\"cryptkey\" class=\"input-label clr-col-12\">Персональный ключ шифрования</label>\n        <input type=\"password\" clrPassword formControlName=\"cryptkey\" id=\"cryptkey\" name=\"cryptkey\" autocomplete=\"off\" required\n               size=\"100\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-password-container>\n      <br/>\n\n      <span *ngIf=\"user.userCryptoMode\" class=\"label label-warning\">Ключ хранится только у Вас. Запомните его и не теряйте.</span>\n\n\n\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"changeUserData()\" class=\"btn btn-primary mt-1\"  [disabled]=\"!userInfoForm.valid\">ИЗМЕНИТЬ</button>\n      <button type=\"button\" *ngIf=\"user.userCryptoMode\" (click)=\"clearCryptoKey()\" class=\"btn btn-danger mt-1\"  [disabled]=\"!userInfoForm.valid\">СТЕРЕТЬ КЛЮЧ ШИФРОВАНИЯ</button>\n    </div>\n\n  </div>\n</clr-modal>\n\n<!--</clr-main-container>-->\n"
+module.exports = "<!--<clr-main-container>-->\n<header class=\"header-1\">\n  <div class=\"branding\">\n    <a class=\"nav-link\">\n      <clr-icon shape=\"shield\"></clr-icon>\n      <span class=\"title\">arNote Project</span>\n    </a>\n  </div>\n  <div *ngIf=\"authService.isAuthenticated()\" class=\"header-nav\">\n    <a class=\"active nav-link nav-icon\" clrVerticalNavLink routerLink=\"../\" routerLinkActive=\"active\">\n      <clr-icon shape=\"home\"></clr-icon>\n    </a>\n  </div>\n\n  <!--<div class=\"header-actions\">\n    <clr-dropdown class=\"dropdown bottom-right\" [clrCloseMenuOnItemClick]=\"true\">\n      <button class=\"nav-icon\" clrDropdownToggle>\n        <clr-icon shape=\"user\"></clr-icon>\n        <clr-icon shape=\"caret down\"></clr-icon>\n      </button>\n\n      <div class=\"dropdown-menu\">\n        <label class=\"dropdown-header\">Меню пользователя</label>\n        <a *ngFor=\"let item of loginDropDownMenu\" (click)=\"loginIconHandler(item)\"  clrDropdownItem>{{item}}</a>\n      </div>\n    </clr-dropdown>\n  </div>-->\n\n  <div class=\"header-actions\">\n\n    <clr-dropdown [clrCloseMenuOnItemClick]=\"true\">\n      <button class=\"nav-icon\" clrDropdownTrigger>\n        <clr-icon shape=\"user\"></clr-icon>\n        <clr-icon shape=\"caret down\"></clr-icon>\n      </button>\n      <clr-dropdown-menu *clrIfOpen>\n        <label class=\"dropdown-header\">Меню пользователя</label>\n<!--        <a *ngFor=\"let item of loginDropDownMenu\" (click)=\"loginIconHandler(item)\"  clrDropdownItem>{{item}}</a>-->\n        <div clrDropdownItem (click)=\"loginIconHandler('Регистрация')\">Регистрация</div>\n        <div clrDropdownItem (click)=\"loginIconHandler(loginLogoutText)\">{{loginLogoutText}}</div>\n      </clr-dropdown-menu>\n    </clr-dropdown>\n\n  </div>\n</header>\n\n\n<clr-modal [(clrModalOpen)]=\"isLogin\">\n  <h3 class=\"modal-title\">Войти</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"loginForm\">\n\n      <!--ПОЛЕ ЛОГИН-->\n\n      <clr-input-container>\n\n        <label #label for=\"login\" class=\"input-label clr-col-12\">Логин</label>\n        <input type=\"text\" clrInput formControlName=\"login\" id=\"login\" name=\"login\" autocomplete=\"off\" required\n               size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ ПАРОЛЬ-->\n\n      <clr-input-container>\n\n        <label #label for=\"password\" class=\"input-label clr-col-12\">Пароль</label>\n        <input type=\"password\" clrInput formControlName=\"password\" id=\"password\" name=\"password\" autocomplete=\"off\" required\n               size=\"100\">\n      </clr-input-container>\n\n\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"sendLogin()\" class=\"btn btn-primary mt-1\">Войти</button>\n    </div>\n\n  </div>\n</clr-modal>\n\n  <!-- ФОРМА РЕГИСТРАЦИИ ЮЗЕРА -->\n\n  <clr-modal [(clrModalOpen)]=\"isRegister\">\n    <h3 class=\"modal-title\">Новой юзер</h3>\n    <div class=\"modal-body\">\n      <form clrForm [formGroup]=\"registerForm\">\n\n        <!--ПОЛЕ ЛОГИН-->\n\n        <clr-input-container>\n\n          <label #label for=\"reglogin\" class=\"input-label clr-col-12\">Логин</label>\n          <input type=\"text\" clrInput formControlName=\"login\" id=\"reglogin\" name=\"login\" autocomplete=\"off\" required\n                 size=\"100\">\n        </clr-input-container>\n\n        <!--ПОЛЕ ПАРОЛЬ-->\n\n        <clr-input-container>\n\n          <label #label for=\"regpassword\" class=\"input-label clr-col-12\">Пароль</label>\n          <input type=\"password\" clrInput formControlName=\"password\" id=\"regpassword\" name=\"password\" autocomplete=\"off\" required\n                 size=\"100\">\n        </clr-input-container>\n\n        <!--ПОЛЕ EMAIL-->\n\n        <clr-input-container>\n\n          <label #label for=\"regemail\" class=\"input-label clr-col-12\">E-mail</label>\n          <input type=\"email\" clrInput formControlName=\"email\" id=\"regemail\" name=\"email\" autocomplete=\"off\" required\n                 size=\"100\">\n        </clr-input-container>\n        <br/>\n        <!--<span class=\"label label-danger\">Не используйте почтовые ящики сервиса mail.ru!</span>-->\n\n        <!--ПОЛЕ ПОЛНОЕ ИМЯ-->\n\n        <clr-input-container>\n\n          <label #label for=\"registerfullname\" class=\"input-label clr-col-12\">Полное имя</label>\n          <input type=\"text\" clrInput formControlName=\"fullname\" id=\"registerfullname\" name=\"fullname\" autocomplete=\"off\" size=\"100\">\n        </clr-input-container>\n\n      </form>\n\n      <div class=\"row\">\n        <button type=\"button\" (click)=\"register()\" class=\"btn btn-primary mt-1\">Зарегистрироваться</button>\n      </div>\n\n    </div>\n  </clr-modal>\n\n\n<!--ФОРМА РЕДАКТИРОВАНИЯ ПОЛЬЗОВАТЕЛЬСКИХ ДАННЫХ-->\n\n<clr-modal [(clrModalOpen)]=\"isUserDataEdit\">\n  <h3 class=\"modal-title\">Редактирование пользовательских данных</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"userInfoForm\">\n\n      <!--ПОЛЕ ЛОГИН-->\n\n      <clr-input-container>\n\n        <label #label for=\"editlogin\" class=\"input-label clr-col-12\">Логин</label>\n        <input type=\"text\" clrInput formControlName=\"editlogin\" id=\"editlogin\" name=\"editlogin\" autocomplete=\"off\" required\n               size=\"100\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!--ПОЛЕ ПАРОЛЬ-->\n\n      <clr-password-container>\n\n        <label #label for=\"editpassword\" class=\"input-label clr-col-12\">Пароль</label>\n        <input type=\"password\" clrPassword formControlName=\"editpassword\" id=\"editpassword\" name=\"editpassword\" autocomplete=\"off\"\n               size=\"100\">\n        </clr-password-container>\n\n      <br/>\n\n      <!-- ENCRYPTED MODE -->\n\n      <clr-checkbox-wrapper>\n\n        <label #label for=\"isencrypted\" class=\"input-label clr-col-12\">Шифрование данных на фронте</label>\n        <input type=\"checkbox\" clrCheckbox  formControlName=\"isencrypted\" id=\"isencrypted\" name=\"isencrypted\">\n        </clr-checkbox-wrapper>\n\n      <!--ПОЛЕ EMAIL-->\n\n      <clr-input-container>\n\n        <label #label for=\"email\" class=\"input-label clr-col-12\">Email</label>\n        <input type=\"email\" clrInput formControlName=\"email\" id=\"email\" name=\"email\" autocomplete=\"off\" required\n               size=\"100\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!-- ПОЛЕ ПОЛНОЕ ИМЯ -->\n\n      <clr-input-container>\n\n        <label #label for=\"fullname\" class=\"input-label clr-col-12\">Полное имя</label>\n        <input type=\"text\" clrInput formControlName=\"fullname\" id=\"fullname\" name=\"fullname\" autocomplete=\"off\"\n               size=\"100\">\n      </clr-input-container>\n\n      <!-- ПОЛЕ КЛЮЧ ШИФРОВАНИЯ -->\n\n      <clr-password-container *ngIf=\"user.userCryptoMode\">\n\n        <label #label for=\"cryptkey\" class=\"input-label clr-col-12\">Персональный ключ шифрования</label>\n        <input type=\"password\" clrPassword formControlName=\"cryptkey\" id=\"cryptkey\" name=\"cryptkey\" autocomplete=\"off\" required\n               size=\"100\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-password-container>\n      <br/>\n\n      <span *ngIf=\"user.userCryptoMode\" class=\"label label-warning\">Ключ хранится только у Вас. Запомните его и не теряйте.</span>\n\n\n\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"changeUserData()\" class=\"btn btn-primary mt-1\"  [disabled]=\"!userInfoForm.valid\">ИЗМЕНИТЬ</button>\n      <button type=\"button\" *ngIf=\"user.userCryptoMode\" (click)=\"clearCryptoKey()\" class=\"btn btn-danger mt-1\"  [disabled]=\"!userInfoForm.valid\">СТЕРЕТЬ КЛЮЧ ШИФРОВАНИЯ</button>\n    </div>\n\n  </div>\n</clr-modal>\n\n<!--</clr-main-container>-->\n"
 
 /***/ }),
 
@@ -1203,20 +1203,22 @@ var HeaderComponent = /** @class */ (function () {
         if (idToken) {
             if (this.authService.isAuthenticated()) {
                 this.loginDropDownMenu = ['О пользователе', 'Выйти'];
+                this.loginLogoutText = 'Выйти';
             }
             else {
                 this.loginDropDownMenu = ['Зарегистрироваться', 'Войти'];
+                this.loginLogoutText = 'Войти';
             }
         }
         else {
             this.loginDropDownMenu = ['Зарегистрироваться', 'Войти'];
+            this.loginLogoutText = 'Войти';
         }
         this.subscription = this.commonService.error$.subscribe(function (error) {
             console.log('message ->' + error);
             if (error != null) {
                 _this.serviceMessage = error;
                 if (_this.serviceMessage.messageType === _this.serviceMessage.SESSION_EXPIRED) {
-                    console.log('pizdec ->' + error);
                     _this.loginDropDownMenu = ['Зарегистрироваться', 'Войти'];
                 }
             }
@@ -1259,9 +1261,11 @@ var HeaderComponent = /** @class */ (function () {
     HeaderComponent.prototype.loginIconHandler = function (item) {
         if (item === 'Войти') {
             this.isLogin = true;
+            this.loginLogoutText = 'Выйти';
         }
         else if (item === 'Выйти') {
             this.loginDropDownMenu = ['Зарегистрироваться', 'Войти'];
+            this.loginLogoutText = 'Войти';
             localStorage.removeItem('token');
             this.router.navigate(['401']);
         }
@@ -1942,7 +1946,7 @@ var InvestingComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<clr-main-container>\n  <clr-header class=\"header\">\n    <app-header></app-header>\n  </clr-header>\n  <div class=\"content-container\">\n    <clr-vertical-nav [clr-nav-level]=\"1\">\n      <a clrVerticalNavLink routerLink=\"../401\">О проекте</a>\n      <a *ngIf=\"idToken && !isExpired\" clrVerticalNavLink routerLink=\"../\" >Главная</a>\n      <a *ngIf=\"idToken && !isExpired\" clrVerticalNavLink routerLink=\"../investing\">Инвестиции</a>\n    </clr-vertical-nav>\n    <div class=\"content-area\">\n      <router-outlet></router-outlet>\n    </div>\n  </div>\n  <app-session-timeout-modal></app-session-timeout-modal>\n</clr-main-container>\n"
+module.exports = "<clr-main-container>\n  <clr-header class=\"header\">\n    <app-header></app-header>\n  </clr-header>\n  <div class=\"content-container\">\n    <clr-vertical-nav [clr-nav-level]=\"1\">\n      <a clrVerticalNavLink routerLink=\"../401\">О проекте</a>\n      <a *ngIf=\"auth.isAuthenticated()\" clrVerticalNavLink routerLink=\"../\" >Главная</a>\n      <a *ngIf=\"auth.isAuthenticated()\" clrVerticalNavLink routerLink=\"../investing\">Инвестиции</a>\n    </clr-vertical-nav>\n    <div class=\"content-area\">\n      <router-outlet></router-outlet>\n    </div>\n  </div>\n  <app-session-timeout-modal></app-session-timeout-modal>\n</clr-main-container>\n"
 
 /***/ }),
 
@@ -1960,18 +1964,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _service_common_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../service/common.service */ "./src/app/service/common.service.ts");
 /* harmony import */ var _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @auth0/angular-jwt */ "./node_modules/@auth0/angular-jwt/index.js");
+/* harmony import */ var _service_auth_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../service/auth.service */ "./src/app/service/auth.service.ts");
+
 
 
 
 
 var LayoutComponent = /** @class */ (function () {
-    function LayoutComponent() {
-        this.timeLeft = 2;
-        this.jwtHelper = new _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_3__["JwtHelperService"]();
+    function LayoutComponent(auth) {
+        this.auth = auth;
+        this.timeLeft = 1;
     }
     LayoutComponent.prototype.ngOnInit = function () {
-        this.idToken = localStorage.getItem('token');
-        this.isExpired = this.jwtHelper.isTokenExpired(this.idToken);
         this.startTimer();
     };
     LayoutComponent.prototype.startTimer = function () {
@@ -1981,10 +1985,10 @@ var LayoutComponent = /** @class */ (function () {
                 _this.timeLeft--;
             }
             else {
-                _this.idToken = localStorage.getItem('token');
-                _this.timeLeft = 2;
+                _this.auth.refreshToken();
+                _this.timeLeft = 1;
             }
-        }, 1000);
+        }, 500);
     };
     LayoutComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -1993,7 +1997,7 @@ var LayoutComponent = /** @class */ (function () {
             changeDetection: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectionStrategy"].OnPush,
             providers: [_service_common_service__WEBPACK_IMPORTED_MODULE_2__["CommonService"], _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_3__["JwtHelperService"]]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_service_auth_service__WEBPACK_IMPORTED_MODULE_4__["AuthService"]])
     ], LayoutComponent);
     return LayoutComponent;
 }());
