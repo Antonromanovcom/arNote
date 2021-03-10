@@ -149,6 +149,7 @@ public class MainServiceImpl implements MainService {
     public List<Wish> findAllWishesByWishName(SearchRq request, ArNoteUser user) {
         return wishRepository.findAllByUser(user).stream()
                 .filter(w->w.getWish().toLowerCase().contains(request.getWishName().toLowerCase()))
+                .filter(wf->!wf.getRealized() && !wf.getAc())
                 .collect(Collectors.toList());
     }
 
