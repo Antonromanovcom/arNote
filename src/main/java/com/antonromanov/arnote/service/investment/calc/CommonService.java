@@ -125,7 +125,8 @@ public class CommonService {
      */
     public DeltaRs prepareDelta(Bond bond) {
         SharesCalcService service = calcFactory.getCalculator(bond.getStockExchange());
-        return bond.getType() == BondType.SHARE ?
+
+        DeltaRs localDelta =  bond.getType() == BondType.SHARE ?
                 (service.calculateDelta(service.getBoardId(bond.getTicker()), bond.getTicker(),
                         service.getRealTimeQuote(bond.getTicker()).getCurrentPrice(),
                         bond.getPurchaseList())) :
@@ -135,6 +136,13 @@ public class CommonService {
                         .deltaPeriod(0L)
                         .tinkoffDelta(0D)
                         .build();
+
+        return localDelta != null ? localDelta : DeltaRs.builder()
+                .tinkoffDeltaPercent(0D)
+                .deltaInRubles(0D)
+                .deltaPeriod(0L)
+                .tinkoffDelta(0D)
+                .build();
     }
 
 

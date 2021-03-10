@@ -345,6 +345,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_layout_unauthorize_unauthorize_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../ui/layout/unauthorize/unauthorize.component */ "./src/app/ui/layout/unauthorize/unauthorize.component.ts");
 /* harmony import */ var _ui_layout_investing_investing_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../ui/layout/investing/investing.component */ "./src/app/ui/layout/investing/investing.component.ts");
 /* harmony import */ var _service_auth_guard_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../service/auth-guard.service */ "./src/app/service/auth-guard.service.ts");
+/* harmony import */ var _ui_layout_monthgrouping_monthgrouping_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../ui/layout/monthgrouping/monthgrouping.component */ "./src/app/ui/layout/monthgrouping/monthgrouping.component.ts");
+
 
 
 
@@ -368,9 +370,12 @@ var routes = [
         path: 'investing',
         component: _ui_layout_investing_investing_component__WEBPACK_IMPORTED_MODULE_7__["InvestingComponent"],
         canActivate: [_service_auth_guard_service__WEBPACK_IMPORTED_MODULE_8__["AuthGuardService"]]
+    },
+    {
+        path: 'months',
+        component: _ui_layout_monthgrouping_monthgrouping_component__WEBPACK_IMPORTED_MODULE_9__["MonthsComponent"],
+        canActivate: [_service_auth_guard_service__WEBPACK_IMPORTED_MODULE_8__["AuthGuardService"]]
     }
-    /*,
-    { path: '**', redirectTo: '401' }*/
 ];
 var AppRoutingModule = /** @class */ (function () {
     function AppRoutingModule() {
@@ -1946,7 +1951,7 @@ var InvestingComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<clr-main-container>\n  <clr-header class=\"header\">\n    <app-header></app-header>\n  </clr-header>\n  <div class=\"content-container\">\n    <clr-vertical-nav [clr-nav-level]=\"1\">\n      <a clrVerticalNavLink routerLink=\"../401\">О проекте</a>\n      <a *ngIf=\"auth.isAuthenticated()\" clrVerticalNavLink routerLink=\"../\" >Главная</a>\n      <a *ngIf=\"auth.isAuthenticated()\" clrVerticalNavLink routerLink=\"../investing\">Инвестиции</a>\n    </clr-vertical-nav>\n    <div class=\"content-area\">\n      <router-outlet></router-outlet>\n    </div>\n  </div>\n  <app-session-timeout-modal></app-session-timeout-modal>\n</clr-main-container>\n"
+module.exports = "<clr-main-container>\n  <clr-header class=\"header\">\n    <app-header></app-header>\n  </clr-header>\n  <div class=\"content-container\">\n    <clr-vertical-nav [clr-nav-level]=\"1\">\n      <a clrVerticalNavLink routerLink=\"../401\">О проекте</a>\n      <a *ngIf=\"auth.isAuthenticated()\" clrVerticalNavLink routerLink=\"../\" >Список желаний</a>\n      <a *ngIf=\"auth.isAuthenticated()\" clrVerticalNavLink routerLink=\"../months\" >Желания по месяцам</a>\n      <a *ngIf=\"auth.isAuthenticated()\" clrVerticalNavLink routerLink=\"../investing\">Инвестиции</a>\n    </clr-vertical-nav>\n    <div class=\"content-area\">\n      <router-outlet></router-outlet>\n    </div>\n  </div>\n  <app-session-timeout-modal></app-session-timeout-modal>\n</clr-main-container>\n"
 
 /***/ }),
 
@@ -2024,7 +2029,7 @@ module.exports = "\n::ng-deep clr-icon:hover {\n  transform: scale(1.2);\n\n}\n\
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<clr-alert [clrAlertType]=\"'success'\" *ngIf=\"result\">\n  <clr-alert-item>\n        <span class=\"alert-text\">\n            {{result}}\n        </span>\n  </clr-alert-item>\n</clr-alert>\n\n<clr-alert [clrAlertType]=\"'danger'\" *ngIf=\"error\">\n  <clr-alert-item>\n        <span class=\"alert-text\">\n            {{error}}\n        </span>\n  </clr-alert-item>\n</clr-alert>\n\n<clr-datagrid *ngIf=\"!monthOrdermode\">\n  <clr-dg-action-bar>\n    <div class=\"actions-container\">\n      <div class=\"ar-900-hide\">\n        <button class=\"btn btn-primary\" (click)=\"openEditWish($event, null, 2)\">Добавить</button>\n        <button class=\"btn btn-secondary\" (click)=\"getWishes(apiUrl)\">Обновить</button>\n        <button class=\"btn btn-secondary; hidden-md-down\" (click)=\"openAddSalaryModal($event)\">Задать зарплату</button>\n        <button class=\"btn btn-secondary; hidden-md-down\" (click)=\"openParseCsv($event)\" *ngIf=\"userRole==='ADMIN'\">Парсинг csv</button>\n        <button class=\"{{filterMode ? 'btn btn-danger; hidden-md-down' : 'btn btn-secondary; hidden-md-down'}}\"\n                (click)=\"filterWishes()\"> {{filterButtonText}}</button>\n        <clr-dropdown class=\"hidden-md-down\">\n          <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\n            РЕЖИМ ОТОБРАЖЕНИЯ\n            <clr-icon shape=\"caret down\"></clr-icon>\n          </button>\n          <clr-dropdown-menu *clrIfOpen>\n            <label class=\"dropdown-header\">Режим отображения</label>\n            <a *ngFor=\"let item of filterTypes\" (click)=\"changeFilter(item)\" clrDropdownItem>{{item}}</a>\n          </clr-dropdown-menu>\n        </clr-dropdown>\n\n        <clr-dropdown class=\"hidden-md-down\">\n          <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\n            СОРТИРОВКА\n            <clr-icon shape=\"caret down\"></clr-icon>\n          </button>\n          <clr-dropdown-menu *clrIfOpen>\n            <label class=\"dropdown-header\">Сортировка</label>\n            <a *ngFor=\"let item of mainSort\" (click)=\"sortMainList(item)\" clrDropdownItem>{{item}}</a>\n          </clr-dropdown-menu>\n        </clr-dropdown>\n      </div>\n\n      <!--МИНИ-КНОПКИ ДЛЯ МОБИЛКИ-->\n\n      <div class=\"ar-900-show\">\n        <div class=\"clr-row\" style=\"margin-left: 1%\">\n          <button type=\"button\" class=\"btn btn-icon\" (click)=\"openEditWish($event, null, 2)\"\n                  aria-label=\"Добавить желание\">\n            <clr-icon shape=\"plus\"></clr-icon>\n          </button>\n          <button type=\"button\" class=\"btn btn-icon\" (click)=\"getWishes(apiUrl)\" aria-label=\"Обновить\">\n            <clr-icon shape=\"refresh\"></clr-icon>\n          </button>\n          <div class=\"ar-360-hide\">\n            <button type=\"button\" (click)=\"openAddSalaryModal($event)\" class=\"btn btn-icon\"\n                    aria-label=\"Задать зарплату\">\n              <clr-icon shape=\"ruble\"></clr-icon>\n            </button>\n          </div>\n          <button type=\"button\" class=\"{{filterMode ? 'btn btn-icon btn-danger' : 'btn btn-icon'}}\"\n                  (click)=\"filterWishes()\" aria-label=\"Поиск\">\n            <clr-icon shape=\"search\"></clr-icon>\n          </button>\n          <button type=\"button\" class=\"{{filterMode ? 'btn btn-icon btn-danger' : 'btn btn-icon'}}\"\n                  (click)=\"isSummInfoForm = true\" aria-label=\"Итоги\">\n            <clr-icon shape=\"help\"></clr-icon>\n          </button>\n\n          <clr-dropdown>\n            <button type=\"button\" class=\"btn btn-icon\" aria-label=\"Режимы\" clrDropdownTrigger>\n              <clr-icon shape=\"eye\"></clr-icon>\n              <clr-icon shape=\"caret down\"></clr-icon>\n            </button>\n            <clr-dropdown-menu clrPosition=\"bottom-right\" *clrIfOpen>\n              <label class=\"dropdown-header\">Режим отображения</label>\n              <a *ngFor=\"let item of filterTypes\" (click)=\"changeFilter(item)\" clrDropdownItem>{{item}}</a>\n            </clr-dropdown-menu>\n          </clr-dropdown>\n\n          <div class=\"ar-475-hide\">\n\n            <clr-dropdown>\n              <button type=\"button\" class=\"btn btn-icon\" aria-label=\"Сортировка\" clrDropdownTrigger>\n                <clr-icon shape=\"sort-by\"></clr-icon>\n                <clr-icon shape=\"caret down\"></clr-icon>\n              </button>\n              <clr-dropdown-menu *clrIfOpen>\n                <label class=\"dropdown-header\">Сортировка</label>\n                <a *ngFor=\"let item of mainSort\" (click)=\"sortMainList(item)\" clrDropdownItem>{{item}}</a>\n              </clr-dropdown-menu>\n            </clr-dropdown>\n          </div>\n        </div>\n      </div>\n    </div>\n  </clr-dg-action-bar>\n\n  <clr-dg-column>Желание</clr-dg-column>\n  <clr-dg-column>Цена</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"20\" class=\"hidden-md-down\">Приоритет</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">.</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">.</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">Ред.</clr-dg-column>\n\n  <clr-dg-row *clrDgItems=\"let item of asyncWishList | async\" [clrDgItem]=\"item\">\n    <clr-dg-cell><a (click)=\"openEditWish($event, item, 1)\">{{item.wish}}</a></clr-dg-cell>\n    <clr-dg-cell style=\"text-align: center\">{{item.price | number:'2.'}}</clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">{{item.priority}}</clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\n      <clr-icon shape=\"upload\" (click)=\"changePriority(item, 'down')\"></clr-icon>\n    </clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\n      <clr-icon shape=\"download\" (click)=\"changePriority(item, 'up')\"></clr-icon>\n    </clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\n      <clr-icon shape=\"edit\" (click)=\"openEditWish($event, item, 1)\"></clr-icon>\n    </clr-dg-cell>\n  </clr-dg-row>\n\n  <clr-dg-footer>\n    <div class=\"clr-row\">\n      <div class=\"ar-900-hide\">\n      <span class=\"label label-danger\" style=\"margin-left: 1%\">ИТОГО<span\n        class=\"badge badge-orange\">{{summAll | number:'2.'}} руб.</span></span>\n        <span class=\"label label-danger\">Реализация<span class=\"badge badge-danger\">{{periodAll}} мес.</span></span>\n        <span class=\"label label-success\">ИТОГО (PRIOR)<span class=\"badge badge-orange\">{{summPriority | number:'2.'}}\n          руб.</span></span>\n        <span class=\"label label-success\">Реализация<span\n          class=\"badge badge-success\">{{periodPriority}} мес.</span></span>\n        <span class=\"label label-gray\">Среднее время<span\n          class=\"badge badge-blue\">{{implementationPeriod}}</span></span>\n      </div>\n\n      <div>\n        <clr-dg-pagination #pagination [clrDgPageSize]=\"15\">\n          <clr-dg-page-size [clrPageSizeOptions]=\"[3,5,10,15,30,50,100]\" class=\"ar-475-hide\" style=\"margin-left: 4%\">\n            жел/стр.\n          </clr-dg-page-size>\n          <span class=\"ar-360-hide\"> {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}\n            из {{pagination.totalItems}} жел.</span>\n        </clr-dg-pagination>\n      </div>\n    </div>\n\n  </clr-dg-footer>\n</clr-datagrid>\n\n<div *ngIf=\"monthOrdermode\">\n  <div class=\"ar-900-hide\">\n    <button class=\"btn btn-primary\" (click)=\"toMainTableMode()\"> Вернуться в табличный режим</button>\n    <button class=\"btn btn-secondary\" (click)=\"getWishesWithMonthGroupping('?sortType=all')\"> Обновить</button>\n    <clr-dropdown>\n      <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\n        СОРТИРОВКА\n        <clr-icon shape=\"caret down\"></clr-icon>\n      </button>\n      <clr-dropdown-menu *clrIfOpen>\n        <label class=\"dropdown-header\">Сортировка</label>\n        <a *ngFor=\"let item of groupMonthSort\" (click)=\"sortGroupList(item)\" clrDropdownItem>{{item}}</a>\n      </clr-dropdown-menu>\n    </clr-dropdown>\n  </div>\n\n  <!--КНОПКИ ДЛЯ МОБИЛКИ-->\n  <div class=\"ar-900-show\">\n    <button type=\"button\" class=\"btn btn-icon\" (click)=\"toMainTableMode()\" aria-label=\"Вернуться в табличный режим\">\n      <clr-icon shape=\"undo\"></clr-icon>\n    </button>\n    <button type=\"button\" class=\"btn btn-icon\" (click)=\"getWishesWithMonthGroupping('?sortType=all')\"\n            aria-label=\"Обновить\">\n      <clr-icon shape=\"refresh\"></clr-icon>\n    </button>\n  </div>\n\n  <clr-tree-node *ngFor=\"let month of wishGroups\" [(clrExpanded)]=\"month.expanded\">\n    <span class=\"{{month.colorClass}}\">{{month.monthName}} <span class=\"badge\">{{month.sum}}</span></span>\n    <span [ngClass]=\"(month.balance>0)?'badge badge-success':'badge badge-danger'\">{{month.balance}}</span>\n    <span *ngIf=\"month.overflow\" class=\"badge badge-danger\">Перебор!</span>\n\n    <clr-tree-node *ngFor=\"let items of month.wishList\">\n      <a [routerLink]=\"\" (click)=\"editMonthGroupItem(items)\">\n        <div class=\"string-truncate\">{{items.wish}}</div>\n      </a>{{'&nbsp;| ' + items.price + ' |'}}\n      <clr-icon shape=\"upload\" (click)=\"changePriorityMonth(items, 'up')\"></clr-icon>\n      |\n      <clr-icon shape=\"download\" (click)=\"changePriorityMonth(items, 'down')\"></clr-icon>\n    </clr-tree-node>\n  </clr-tree-node>\n</div>\n\n\n<!--    МОДАЛ С ДОБАВЛЕНИЕМ / РЕДАКТИРОВАНИЯ ЖЕЛАНИЯ -->\n\n<app-ar-modal id=\"add-edit-wish\" *ngIf=\"isEdit\" >\n  <h3 class=\"modal-title\">{{isEditMode ? 'Редактировать желание' : 'Добавить желание'}}</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"form\">\n\n      <!--ПОЛЕ ДАТА СОЗДАНИЯ-->\n\n      <clr-input-container>\n        <label #label for=\"creationDate\" class=\"input-label clr-col-12\">Дата создания</label>\n        <input type=\"text\" clrInput formControlName=\"creationDate\" id=\"creationDate\" name=\"creationDate\"\n               autocomplete=\"off\" readonly\n               size=\"50\">\n      </clr-input-container>\n\n      <!--ПОЛЕ ID-->\n\n      <clr-input-container hidden>\n        <label #label for=\"id\" class=\"input-label clr-col-12\">id</label>\n        <input type=\"text\" clrInput formControlName=\"id\" id=\"id\" name=\"id\" autocomplete=\"off\" readonly required\n               size=\"50\">\n      </clr-input-container>\n\n      <!--ПОЛЕ ИМЯ-->\n\n      <clr-input-container>\n        <label #label for=\"name\" class=\"input-label clr-col-12\">Название</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"name\"\n               id=\"name\"\n               name=\"name\"\n               autocomplete=\"off\" required size=\"100\">\n\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!--ПОЛЕ ОПИСАНИЕ-->\n\n      <clr-input-container>\n        <label #label for=\"description\" class=\"input-label clr-col-12\">Описание</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"description\"\n               id=\"description\"\n               name=\"description\"\n               autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ URL-->\n\n      <clr-input-container>\n        <label #label for=\"url\" class=\"input-label clr-col-12\">URL</label>\n        <input type=\"url\"\n               clrInput\n               formControlName=\"url\"\n               id=\"url\"\n               name=\"url\"\n               autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ PRIORITY-->\n\n      <clr-input-container>\n        <label #label for=\"priority\" class=\"input-label clr-col-12\">Приоритет</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"priority\"\n               id=\"priority\"\n               name=\"priority\"\n               autocomplete=\"off\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!--ПОЛЕ PRICE-->\n\n      <clr-input-container>\n        <label #label for=\"price\" class=\"input-label clr-col-12\">Цена</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"price\"\n               id=\"price\"\n               name=\"price\"\n               autocomplete=\"off\">\n      </clr-input-container>\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"addEditWish()\" class=\"btn btn-primary mt-1\">Сохранить</button>\n      <button type=\"button\" (click)=\"deleteWish()\" *ngIf=\"isEditMode\" class=\"btn btn-danger mt-1\">Удалить</button>\n      <button type=\"button\" (click)=\"realizeWish()\" *ngIf=\"isEditMode\" class=\"btn btn-success mt-1\">Реализовано</button>\n      <button type=\"button\" (click)=\"closeAddEditWish()\" class=\"btn btn-secondary mt-1\">Закрыть</button>\n    </div>\n\n  </div>\n</app-ar-modal>\n\n<!--    МОДАЛ ДОБАВЛЕНИЯ ЗАРПЛАТЫ -->\n\n<app-ar-modal id=\"add-salary\" *ngIf=\"isSalaryAdd\">\n  <h3 class=\"modal-title\">Добавить зарплату</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"salaryForm\">\n\n      <!--ПОЛЕ SALARY-->\n\n      <clr-input-container>\n        <label #label for=\"salary\" class=\"input-label clr-col-12\">Зарплата</label>\n        <input type=\"text\" clrInput formControlName=\"salary\" id=\"salary\" name=\"salary\" autocomplete=\"off\" required\n               size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ RESIDUAL SALARY-->\n      <clr-input-container>\n        <label #label for=\"residualSalary\" class=\"input-label clr-col-12\">Остаточная зарплата</label>\n        <input type=\"text\" clrInput formControlName=\"residualSalary\" id=\"residualSalary\" name=\"residualSalary\"\n               autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n      <br/>\n      <span\n        class=\"label label-warning\">Зарплата, которая остается у вас после всех трат. Расчет идет именно по ней.</span>\n    </form>\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"addSalary()\" class=\"btn btn-primary mt-1\">Добавить</button>\n      <button type=\"button\" (click)=\"closeSalaryModal()\" class=\"btn btn-secondary mt-1\">Закрыть</button>\n    </div>\n  </div>\n</app-ar-modal>\n\n<!-- МОДАЛ ПОИСКА -->\n\n<app-ar-modal id=\"search-modal\" *ngIf=\"isFilterModal\">\n  <h3 class=\"modal-title\">Фильтры и поиск</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"filterForm\">\n\n      <!-- ПОЛЕ ПОИСКА / ФИЛЬТРАЦИИ ПО ЖЕЛАНИЮ -->\n\n      <clr-input-container>\n        <label #label for=\"wish\" class=\"input-label clr-col-12\">Желание</label>\n        <input type=\"text\" clrInput formControlName=\"wish\" id=\"wish\" name=\"wish\" autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n    </form>\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"applyFilter()\" class=\"btn btn-primary mt-1\">Фильтровать</button>\n      <button type=\"button\" (click)=\"closeSearchModal()\" class=\"btn btn-secondary mt-1\">Закрыть</button>\n    </div>\n  </div>\n</app-ar-modal>\n\n\n<clr-modal [(clrModalOpen)]=\"isCsvParse\">\n  <h3 class=\"modal-title\">Парсинг csv-файла</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"csvForm\">\n\n      <!--ПОЛЕ FILE-->\n\n      <clr-input-container>\n        <label #label for=\"csvfile\" class=\"input-label clr-col-12\">Укажите csv-файл</label>\n        <input type=\"file\" clrInput formControlName=\"csvfile\" id=\"csvfile\" name=\"csvfile\" autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n      <form [formGroup]=\"uploadForm\" (ngSubmit)=\"onSubmit()\">\n        <input type=\"file\" name=\"profile\" (change)=\"onFileSelect($event)\"/>\n        <div>\n          <button type=\"submit\">Upload</button>\n        </div>\n      </form>\n    </form>\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"sendCsvFile()\" class=\"btn btn-primary mt-1\">Парсить</button>\n    </div>\n  </div>\n</clr-modal>\n\n<!--ФОРМА РЕДАКТИРОВАНИЯ ЖЕЛАНИЯ ПРИ ПОМЕСЯЧНОЙ ГРУППИРОВКЕ -->\n\n<clr-modal [(clrModalOpen)]=\"isMonthGroupModeWishEdit\">\n  <h3 class=\"modal-title\">Изменить порядок желания</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"MonthGroupModeWishEdit\">\n\n      <!-- ПОЛЕ ЖЕЛАНИЕ -->\n\n      <clr-input-container>\n\n        <label #label for=\"selected_wish\" class=\"input-label clr-col-12\">Желание</label>\n        <input type=\"text\" clrInput formControlName=\"wish\" id=\"selected_wish\" name=\"wish\" autocomplete=\"off\"\n               required readonly\n               size=\"100%\">\n      </clr-input-container>\n\n      <div>\n        <clr-select-container>\n          <label #label for=\"month_field\" class=\"input-label clr-col-12\">Месяц</label>\n          <select id=\"month_field\" formControlName=\"month\" clrSelect>\n            <option *ngFor=\"let currentMonth of monthList\" [value]=\"currentMonth\">{{currentMonth}}</option>\n          </select>\n        </clr-select-container>\n      </div>\n\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"applyMonthChange4Wish()\" class=\"btn btn-primary mt-1\">Принять</button>\n    </div>\n\n  </div>\n</clr-modal>\n\n\n<!--ФОРМА ВЫВОДА ИТОГОВЫХ ДАННЫХ -->\n\n<clr-modal [(clrModalOpen)]=\"isSummInfoForm\">\n  <h3 class=\"modal-title\">ИТОГО</h3>\n  <div class=\"modal-body\">\n\n    <div>\n      <span class=\"label label-danger\">ВСЕ ЖЕЛАНИЯ <span\n        class=\"badge badge-orange\">{{summAll | number:'2.'}} руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-danger\">Реализация<span class=\"badge badge-danger\">{{periodAll}} мес.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-success\">ИТОГО (PRIOR)<span class=\"badge badge-orange\">{{summPriority | number:'2.'}}\n        руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-success\">Реализация<span\n        class=\"badge badge-success\">{{periodPriority}} мес.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-gray\">Среднее время<span class=\"badge badge-blue\">{{implementationPeriod}}\n        дней.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-purple\">Реализовано за все время<span class=\"badge badge-blue\">{{implemetedSummAllTime}}\n        руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-purple\">Зарплата<span class=\"badge badge-blue\">{{lastSalary}}\n        руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-light-blue\">Реализовано за тек.месяц<span\n        class=\"badge badge-blue\">{{implemetedSummMonth}} руб.</span></span>\n    </div>\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"isSummInfoForm=false\" class=\"btn btn-primary mt-1\">Закрыть</button>\n    </div>\n\n\n  </div>\n</clr-modal>\n"
+module.exports = "<clr-alert [clrAlertType]=\"'success'\" *ngIf=\"result\">\n  <clr-alert-item>\n        <span class=\"alert-text\">\n            {{result}}\n        </span>\n  </clr-alert-item>\n</clr-alert>\n\n<clr-alert [clrAlertType]=\"'danger'\" *ngIf=\"error\">\n  <clr-alert-item>\n        <span class=\"alert-text\">\n            {{error}}\n        </span>\n  </clr-alert-item>\n</clr-alert>\n\n<clr-datagrid *ngIf=\"!monthOrdermode\">\n  <clr-dg-action-bar>\n    <div class=\"actions-container\">\n      <div class=\"ar-900-hide\">\n        <button class=\"btn btn-primary\" (click)=\"openEditWish($event, null, 2)\">Добавить</button>\n        <button class=\"btn btn-secondary\" (click)=\"getWishes(apiUrl)\">Обновить</button>\n        <button class=\"btn btn-secondary; hidden-md-down\" (click)=\"openAddSalaryModal($event)\">Задать зарплату</button>\n        <button class=\"btn btn-secondary; hidden-md-down\" (click)=\"openParseCsv($event)\" *ngIf=\"userRole==='ADMIN'\">Парсинг csv</button>\n        <button class=\"{{filterMode ? 'btn btn-danger; hidden-md-down' : 'btn btn-secondary; hidden-md-down'}}\"\n                (click)=\"filterWishes()\"> {{filterButtonText}}</button>\n        <clr-dropdown class=\"hidden-md-down\">\n          <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\n            РЕЖИМ ОТОБРАЖЕНИЯ\n            <clr-icon shape=\"caret down\"></clr-icon>\n          </button>\n          <clr-dropdown-menu *clrIfOpen>\n            <label class=\"dropdown-header\">Режим отображения</label>\n            <a *ngFor=\"let item of filterTypes\" (click)=\"changeFilter(item)\" clrDropdownItem>{{item}}</a>\n          </clr-dropdown-menu>\n        </clr-dropdown>\n\n        <clr-dropdown class=\"hidden-md-down\">\n          <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\n            СОРТИРОВКА\n            <clr-icon shape=\"caret down\"></clr-icon>\n          </button>\n          <clr-dropdown-menu *clrIfOpen>\n            <label class=\"dropdown-header\">Сортировка</label>\n            <a *ngFor=\"let item of mainSort\" (click)=\"sortMainList(item)\" clrDropdownItem>{{item}}</a>\n          </clr-dropdown-menu>\n        </clr-dropdown>\n      </div>\n\n      <!--МИНИ-КНОПКИ ДЛЯ МОБИЛКИ-->\n\n      <div class=\"ar-900-show\">\n        <div class=\"clr-row\" style=\"margin-left: 1%\">\n          <button type=\"button\" class=\"btn btn-icon\" (click)=\"openEditWish($event, null, 2)\"\n                  aria-label=\"Добавить желание\">\n            <clr-icon shape=\"plus\"></clr-icon>\n          </button>\n          <button type=\"button\" class=\"btn btn-icon\" (click)=\"getWishes(apiUrl)\" aria-label=\"Обновить\">\n            <clr-icon shape=\"refresh\"></clr-icon>\n          </button>\n          <div class=\"ar-360-hide\">\n            <button type=\"button\" (click)=\"openAddSalaryModal($event)\" class=\"btn btn-icon\"\n                    aria-label=\"Задать зарплату\">\n              <clr-icon shape=\"ruble\"></clr-icon>\n            </button>\n          </div>\n          <button type=\"button\" class=\"{{filterMode ? 'btn btn-icon btn-danger' : 'btn btn-icon'}}\"\n                  (click)=\"filterWishes()\" aria-label=\"Поиск\">\n            <clr-icon shape=\"search\"></clr-icon>\n          </button>\n          <button type=\"button\" class=\"{{filterMode ? 'btn btn-icon btn-danger' : 'btn btn-icon'}}\"\n                  (click)=\"isSummInfoForm = true\" aria-label=\"Итоги\">\n            <clr-icon shape=\"help\"></clr-icon>\n          </button>\n\n          <clr-dropdown>\n            <button type=\"button\" class=\"btn btn-icon\" aria-label=\"Режимы\" clrDropdownTrigger>\n              <clr-icon shape=\"eye\"></clr-icon>\n              <clr-icon shape=\"caret down\"></clr-icon>\n            </button>\n            <clr-dropdown-menu clrPosition=\"bottom-right\" *clrIfOpen>\n              <label class=\"dropdown-header\">Режим отображения</label>\n              <a *ngFor=\"let item of filterTypes\" (click)=\"changeFilter(item)\" clrDropdownItem>{{item}}</a>\n            </clr-dropdown-menu>\n          </clr-dropdown>\n\n          <div class=\"ar-475-hide\">\n\n            <clr-dropdown>\n              <button type=\"button\" class=\"btn btn-icon\" aria-label=\"Сортировка\" clrDropdownTrigger>\n                <clr-icon shape=\"sort-by\"></clr-icon>\n                <clr-icon shape=\"caret down\"></clr-icon>\n              </button>\n              <clr-dropdown-menu *clrIfOpen>\n                <label class=\"dropdown-header\">Сортировка</label>\n                <a *ngFor=\"let item of mainSort\" (click)=\"sortMainList(item)\" clrDropdownItem>{{item}}</a>\n              </clr-dropdown-menu>\n            </clr-dropdown>\n          </div>\n        </div>\n      </div>\n    </div>\n  </clr-dg-action-bar>\n\n  <clr-dg-column>Желание</clr-dg-column>\n  <clr-dg-column>Цена</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"20\" class=\"hidden-md-down\">Приоритет</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">.</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">.</clr-dg-column>\n  <clr-dg-column [style.width.px]=\"10\" class=\"hidden-md-down\">Ред.</clr-dg-column>\n\n  <clr-dg-row *clrDgItems=\"let item of asyncWishList | async\" [clrDgItem]=\"item\">\n    <clr-dg-cell><a (click)=\"openEditWish($event, item, 1)\">{{item.wish}}</a></clr-dg-cell>\n    <clr-dg-cell style=\"text-align: center\">{{item.price | number:'2.'}}</clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">{{item.priority}}</clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\n      <clr-icon shape=\"upload\" (click)=\"changePriority(item, 'down')\"></clr-icon>\n    </clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\n      <clr-icon shape=\"download\" (click)=\"changePriority(item, 'up')\"></clr-icon>\n    </clr-dg-cell>\n    <clr-dg-cell class=\"hidden-md-down\" style=\"text-align: center\">\n      <clr-icon shape=\"edit\" (click)=\"openEditWish($event, item, 1)\"></clr-icon>\n    </clr-dg-cell>\n  </clr-dg-row>\n\n  <clr-dg-footer>\n    <div class=\"clr-row\">\n      <div class=\"ar-900-hide\">\n      <span class=\"label label-danger\" style=\"margin-left: 1%\">ИТОГО<span\n        class=\"badge badge-orange\">{{summAll | number:'2.'}} руб.</span></span>\n        <span class=\"label label-danger\">Реализация<span class=\"badge badge-danger\">{{periodAll}} мес.</span></span>\n        <span class=\"label label-success\">ИТОГО (PRIOR)<span class=\"badge badge-orange\">{{summPriority | number:'2.'}}\n          руб.</span></span>\n        <span class=\"label label-success\">Реализация<span\n          class=\"badge badge-success\">{{periodPriority}} мес.</span></span>\n        <span class=\"label label-gray\">Среднее время<span\n          class=\"badge badge-blue\">{{implementationPeriod}}</span></span>\n      </div>\n\n      <div>\n        <clr-dg-pagination #pagination [clrDgPageSize]=\"15\">\n          <clr-dg-page-size [clrPageSizeOptions]=\"[3,5,10,15,30,50,100]\" class=\"ar-475-hide\" style=\"margin-left: 4%\">\n            жел/стр.\n          </clr-dg-page-size>\n          <span class=\"ar-360-hide\"> {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}\n            из {{pagination.totalItems}} жел.</span>\n        </clr-dg-pagination>\n      </div>\n    </div>\n\n  </clr-dg-footer>\n</clr-datagrid>\n\n<!--    МОДАЛ С ДОБАВЛЕНИЕМ / РЕДАКТИРОВАНИЯ ЖЕЛАНИЯ -->\n\n<app-ar-modal id=\"add-edit-wish\" *ngIf=\"isEdit\" >\n  <h3 class=\"modal-title\">{{isEditMode ? 'Редактировать желание' : 'Добавить желание'}}</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"form\">\n\n      <!--ПОЛЕ ДАТА СОЗДАНИЯ-->\n\n      <clr-input-container>\n        <label #label for=\"creationDate\" class=\"input-label clr-col-12\">Дата создания</label>\n        <input type=\"text\" clrInput formControlName=\"creationDate\" id=\"creationDate\" name=\"creationDate\"\n               autocomplete=\"off\" readonly\n               size=\"50\">\n      </clr-input-container>\n\n      <!--ПОЛЕ ID-->\n\n      <clr-input-container hidden>\n        <label #label for=\"id\" class=\"input-label clr-col-12\">id</label>\n        <input type=\"text\" clrInput formControlName=\"id\" id=\"id\" name=\"id\" autocomplete=\"off\" readonly required\n               size=\"50\">\n      </clr-input-container>\n\n      <!--ПОЛЕ ИМЯ-->\n\n      <clr-input-container>\n        <label #label for=\"name\" class=\"input-label clr-col-12\">Название</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"name\"\n               id=\"name\"\n               name=\"name\"\n               autocomplete=\"off\" required size=\"100\">\n\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!--ПОЛЕ ОПИСАНИЕ-->\n\n      <clr-input-container>\n        <label #label for=\"description\" class=\"input-label clr-col-12\">Описание</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"description\"\n               id=\"description\"\n               name=\"description\"\n               autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ URL-->\n\n      <clr-input-container>\n        <label #label for=\"url\" class=\"input-label clr-col-12\">URL</label>\n        <input type=\"url\"\n               clrInput\n               formControlName=\"url\"\n               id=\"url\"\n               name=\"url\"\n               autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ PRIORITY-->\n\n      <clr-input-container>\n        <label #label for=\"priority\" class=\"input-label clr-col-12\">Приоритет</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"priority\"\n               id=\"priority\"\n               name=\"priority\"\n               autocomplete=\"off\">\n        <clr-control-error *clrIfError=\"'required'\">Обязательно для заполнения</clr-control-error>\n      </clr-input-container>\n\n      <!--ПОЛЕ PRICE-->\n\n      <clr-input-container>\n        <label #label for=\"price\" class=\"input-label clr-col-12\">Цена</label>\n        <input type=\"text\"\n               clrInput\n               formControlName=\"price\"\n               id=\"price\"\n               name=\"price\"\n               autocomplete=\"off\">\n      </clr-input-container>\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"addEditWish()\" class=\"btn btn-primary mt-1\">Сохранить</button>\n      <button type=\"button\" (click)=\"deleteWish()\" *ngIf=\"isEditMode\" class=\"btn btn-danger mt-1\">Удалить</button>\n      <button type=\"button\" (click)=\"realizeWish()\" *ngIf=\"isEditMode\" class=\"btn btn-success mt-1\">Реализовано</button>\n      <button type=\"button\" (click)=\"closeAddEditWish()\" class=\"btn btn-secondary mt-1\">Закрыть</button>\n    </div>\n\n  </div>\n</app-ar-modal>\n\n<!--    МОДАЛ ДОБАВЛЕНИЯ ЗАРПЛАТЫ -->\n\n<app-ar-modal id=\"add-salary\" *ngIf=\"isSalaryAdd\">\n  <h3 class=\"modal-title\">Добавить зарплату</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"salaryForm\">\n\n      <!--ПОЛЕ SALARY-->\n\n      <clr-input-container>\n        <label #label for=\"salary\" class=\"input-label clr-col-12\">Зарплата</label>\n        <input type=\"text\" clrInput formControlName=\"salary\" id=\"salary\" name=\"salary\" autocomplete=\"off\" required\n               size=\"100\">\n      </clr-input-container>\n\n      <!--ПОЛЕ RESIDUAL SALARY-->\n      <clr-input-container>\n        <label #label for=\"residualSalary\" class=\"input-label clr-col-12\">Остаточная зарплата</label>\n        <input type=\"text\" clrInput formControlName=\"residualSalary\" id=\"residualSalary\" name=\"residualSalary\"\n               autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n      <br/>\n      <span\n        class=\"label label-warning\">Зарплата, которая остается у вас после всех трат. Расчет идет именно по ней.</span>\n    </form>\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"addSalary()\" class=\"btn btn-primary mt-1\">Добавить</button>\n      <button type=\"button\" (click)=\"closeSalaryModal()\" class=\"btn btn-secondary mt-1\">Закрыть</button>\n    </div>\n  </div>\n</app-ar-modal>\n\n<!-- МОДАЛ ПОИСКА -->\n\n<app-ar-modal id=\"search-modal\" *ngIf=\"isFilterModal\">\n  <h3 class=\"modal-title\">Фильтры и поиск</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"filterForm\">\n\n      <!-- ПОЛЕ ПОИСКА / ФИЛЬТРАЦИИ ПО ЖЕЛАНИЮ -->\n\n      <clr-input-container>\n        <label #label for=\"wish\" class=\"input-label clr-col-12\">Желание</label>\n        <input type=\"text\" clrInput formControlName=\"wish\" id=\"wish\" name=\"wish\" autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n    </form>\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"applyFilter()\" class=\"btn btn-primary mt-1\">Фильтровать</button>\n      <button type=\"button\" (click)=\"closeSearchModal()\" class=\"btn btn-secondary mt-1\">Закрыть</button>\n    </div>\n  </div>\n</app-ar-modal>\n\n\n<clr-modal [(clrModalOpen)]=\"isCsvParse\">\n  <h3 class=\"modal-title\">Парсинг csv-файла</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"csvForm\">\n\n      <!--ПОЛЕ FILE-->\n\n      <clr-input-container>\n        <label #label for=\"csvfile\" class=\"input-label clr-col-12\">Укажите csv-файл</label>\n        <input type=\"file\" clrInput formControlName=\"csvfile\" id=\"csvfile\" name=\"csvfile\" autocomplete=\"off\" required size=\"100\">\n      </clr-input-container>\n      <form [formGroup]=\"uploadForm\" (ngSubmit)=\"onSubmit()\">\n        <input type=\"file\" name=\"profile\" (change)=\"onFileSelect($event)\"/>\n        <div>\n          <button type=\"submit\">Upload</button>\n        </div>\n      </form>\n    </form>\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"sendCsvFile()\" class=\"btn btn-primary mt-1\">Парсить</button>\n    </div>\n  </div>\n</clr-modal>\n\n<!--ФОРМА ВЫВОДА ИТОГОВЫХ ДАННЫХ -->\n\n<clr-modal [(clrModalOpen)]=\"isSummInfoForm\">\n  <h3 class=\"modal-title\">ИТОГО</h3>\n  <div class=\"modal-body\">\n\n    <div>\n      <span class=\"label label-danger\">ВСЕ ЖЕЛАНИЯ <span\n        class=\"badge badge-orange\">{{summAll | number:'2.'}} руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-danger\">Реализация<span class=\"badge badge-danger\">{{periodAll}} мес.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-success\">ИТОГО (PRIOR)<span class=\"badge badge-orange\">{{summPriority | number:'2.'}}\n        руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-success\">Реализация<span\n        class=\"badge badge-success\">{{periodPriority}} мес.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-gray\">Среднее время<span class=\"badge badge-blue\">{{implementationPeriod}}\n        дней.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-purple\">Реализовано за все время<span class=\"badge badge-blue\">{{implemetedSummAllTime}}\n        руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-purple\">Зарплата<span class=\"badge badge-blue\">{{lastSalary}}\n        руб.</span></span>\n    </div>\n    <div>\n      <span class=\"label label-light-blue\">Реализовано за тек.месяц<span\n        class=\"badge badge-blue\">{{implemetedSummMonth}} руб.</span></span>\n    </div>\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"isSummInfoForm=false\" class=\"btn btn-primary mt-1\">Закрыть</button>\n    </div>\n\n\n  </div>\n</clr-modal>\n"
 
 /***/ }),
 
@@ -2084,14 +2089,10 @@ var MainComponent = /** @class */ (function () {
         this.sortWishesByPriceDescUrl = this.myBaseUrl + '?sort=PRICE_DESC'; // очистить фильтр желаний
         this.sortWishesByPriorityUrl = this.myBaseUrl + '?sort=PRIOR'; // очистить фильтр желаний
         this.wishesWithoutSortUrl = this.myBaseUrl + '?sort=ALL'; // очистить фильтр желаний
-        this.groupWishesUrl = this.myBaseUrl + '/groups';
-        this.userViewModeUrl = this.myBaseUrl + '/users/toggle';
         this.apiGetSumm = this.myBaseUrl + '/summ'; // ссылка для получения сумм
         this.apiSalary = this.myBaseUrl + '/salary'; // ссылка для получения сумм
         this.parseUrl = this.myBaseUrl + '/parsecsv'; // url для парсинга csv
         this.changePriorityUrl = this.myBaseUrl + '/changepriority'; // url для быстрого изменения приоритета
-        this.changePriorityMonthUrl = this.myBaseUrl + '/changemonth'; // url для быстрого изменения приоритета
-        this.changePriorityMonthManualyUrl = this.myBaseUrl + '/transferwish'; // url для быстрого изменения приоритета
         this.searchWishesUrl = this.myBaseUrl + '/filter'; // поиск желаний
         // --------------------------------- ПЕРЕМЕННЫЕ -------------------------------------
         this.cryptokey = ''; // пользовательский ключ шифрования
@@ -2110,15 +2111,10 @@ var MainComponent = /** @class */ (function () {
         this.curDateFormated = '';
         this.isEditMode = false; // редактировать или добавить
         this.isCsvParse = false; // отправить на парсинг csv
-        this.isMonthGroupModeWishEdit = false; // вывод формы редактирования желания при помесячной группировке
         this.isSummInfoForm = false; // вывод формы с итоговой информацией (сумма всех желаний, время реализации)
         // --------------------------------- ХРАНИЛИЩА -------------------------------------
-        this.wishes = []; // старый контейнер желаний
         this.asyncWishList = new rxjs__WEBPACK_IMPORTED_MODULE_5__["Subject"](); // асинхронный контейнер желаний
-        this.wishGroups = []; // контейнер желаний
-        this.monthList = []; // контейнер месяцев
-        this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр', 'Помесячная группировка']; // фильтры
-        this.groupMonthSort = ['Без сортировки', 'По имени', 'По сумме [1..10]', 'По сумме [10..1]']; // сортировка помесячной группировки
+        this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр']; // фильтры
         this.mainSort = ['По имени', 'По сумме [1..10]', 'По сумме [10..1]', 'По приоритету', 'Без сортировки']; // сортировка помесячной группировки
         this.form = this.fb.group({
             id: ['', []],
@@ -2156,27 +2152,14 @@ var MainComponent = /** @class */ (function () {
                     _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required
                 ]]
         });
-        this.MonthGroupModeWishEdit = this.fb.group({
-            id: ['', [
-                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required
-                ]],
-            wish: ['', [
-                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required
-                ]],
-            month: ['', [
-                    _angular_forms__WEBPACK_IMPORTED_MODULE_4__["Validators"].required
-                ]]
-        });
         this.curDateFormated = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
     }
     MainComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.isUserCrypto = false;
         this.getWishes(this.apiUrl);
         this.uploadForm = this.fb.group({
             profile: ['']
         });
-        this.getUserViewMode();
         this.subscription = this.commonService.error$.subscribe(function (error) {
             if (error == null) {
                 _this.globalError = new _service_message_code__WEBPACK_IMPORTED_MODULE_10__["MessageCode"]();
@@ -2208,100 +2191,10 @@ var MainComponent = /** @class */ (function () {
         });
         // Закрываем пункт меню группировки по месяцам если нет зарплат
         if (this.isSalaryExists) {
-            this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр', 'Помесячная группировка']; // фильтры
+            this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр']; // фильтры
         }
         else {
             this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр']; // фильтры
-        }
-        // Проверка ключа шифрования
-        this.cryptokey = localStorage.getItem('cryptokey');
-        if ((this.isUserCrypto) && (!this.cryptokey)) {
-            this.error = 'Мы не смогли забрать с куки ваш ключ шифрования и при этом у вас включена эта настройка. ' +
-                'Задайте ключ шифрования меню О пользователе';
-            Object(rxjs__WEBPACK_IMPORTED_MODULE_5__["timer"])(4000).subscribe(function () {
-                _this.error = null;
-            });
-        }
-    };
-    MainComponent.prototype.getUserViewMode = function () {
-        var _this = this;
-        this.httpService.getData(this.userViewModeUrl + '/GET').pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
-            return _this.errorHandler(err, 'Невозможно получить настройки пользовательского отображения!');
-        })).subscribe(function (data) {
-            console.log('data.viewMode => ' + data.viewMode);
-            if (data.viewMode === 'TREE') {
-                _this.monthOrdermode = true;
-                _this.getWishesWithMonthGroupping('?sortType=all'); // todo конечно полный пиздец!!!!!!
-            }
-            else {
-                _this.monthOrdermode = false;
-            }
-        });
-    };
-    MainComponent.prototype.setUserViewMode = function (mode) {
-        var _this = this;
-        this.httpService.getData(this.userViewModeUrl + '/' + mode).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
-            return _this.errorHandler(err, 'Невозможно получить настройки пользовательского отображения!');
-        })).subscribe(function (data) {
-            console.log('data.viewMode => ' + data.viewMode);
-        });
-    };
-    MainComponent.prototype.getWishesWithMonthGroupping = function (sorting) {
-        var _this = this;
-        this.httpService.getData(this.groupWishesUrl + sorting).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
-            return _this.errorHandler(err, 'Невозможно получить желания!');
-        })).subscribe(function (data) {
-            _this.wishGroups = data.list;
-            _this.monthOrdermode = true;
-        });
-    };
-    // Вытащить список месяцев и лет, пришедший с бека
-    MainComponent.prototype.getMonths = function () {
-        var _this = this;
-        this.monthList.length = 0;
-        this.wishGroups.forEach(function (element) {
-            _this.monthList.push(element.monthName + ' ' + element.year);
-        });
-    };
-    // Применить изменение (месячного) порядка для желания
-    MainComponent.prototype.applyMonthChange4Wish = function () {
-        var _this = this;
-        console.log(this.MonthGroupModeWishEdit.value.month);
-        this.httpService.getData(this.changePriorityMonthManualyUrl + '?id=' +
-            this.MonthGroupModeWishEdit.value.id + '&month=' +
-            this.MonthGroupModeWishEdit.value.month).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
-            return _this.errorHandler(err, 'Невозможно изменить приоритет!');
-        })).subscribe(function (res) {
-            console.log(res);
-            _this.showAlert('Приоритет успешно изменен! ', 'ADD MODE', res);
-            _this.getWishes(_this.apiUrl);
-            _this.getWishesWithMonthGroupping('?sortType=all');
-            _this.isMonthGroupModeWishEdit = false;
-        });
-    };
-    // Редактирование желания при помесячной группировке
-    MainComponent.prototype.editMonthGroupItem = function (items) {
-        this.getMonths();
-        console.log(items.wish);
-        this.isMonthGroupModeWishEdit = true;
-        this.MonthGroupModeWishEdit.patchValue({
-            id: items.id,
-            wish: items.wish
-        });
-    };
-    // Изменить сортировку помесячной группировки
-    MainComponent.prototype.sortGroupList = function (item) {
-        if (item === 'По имени') {
-            this.getWishesWithMonthGroupping('?sortType=name');
-        }
-        else if (item === 'По сумме [1..10]') {
-            this.getWishesWithMonthGroupping('?sortType=price-asc');
-        }
-        else if (item === 'Без сортировки') {
-            this.getWishesWithMonthGroupping('?sortType=all');
-        }
-        else {
-            this.getWishesWithMonthGroupping('?sortType=price-desc');
         }
     };
     /**
@@ -2334,10 +2227,6 @@ var MainComponent = /** @class */ (function () {
         if (item === 'Все') {
             this.getWishes(this.allWishesFilterUrl);
         }
-        else if (item === 'Помесячная группировка') {
-            this.getWishesWithMonthGroupping('?sortType=all');
-            this.setUserViewMode('TREE');
-        }
         else if (item === 'Очистить фильтр') {
             this.getWishes(this.clearWishesFilterUrl);
         }
@@ -2345,38 +2234,13 @@ var MainComponent = /** @class */ (function () {
             this.getWishes(this.priorityWishesFilterUrl);
         }
     };
-    /*up(event: any, item: Wish) {
-      item.priority = item.priority + 1;
-      this.wishes.sort((a, b) => a.priority - b.priority);
-    }
-  
-  
-    down(event: any, item: Wish) {
-  
-      item.priority = item.priority - 1;
-      if (item.priority < 1) {
-        item.priority = 1;
-      }
-      this.wishes.sort((a, b) => a.priority - b.priority);
-    }*/
-    MainComponent.prototype.isCrypto = function () {
-        var _this = this;
-        this.httpService.isCryptoUser().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
-            return _this.errorHandler(err, 'Невозможно получить крипто-статус пользователя!');
-        })).subscribe(function (data) {
-            _this.isUserCrypto = data.userCryptoMode;
-            _this.userRole = data.userRole;
-        });
-    };
     // Загрузить все желания в табличном режиме.
     MainComponent.prototype.getWishes = function (url) {
         var _this = this;
         this.httpService.getData(url).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
             return _this.errorHandler(err, 'Невозможно получить желания!');
         })).subscribe(function (data) {
-            // this.wishes = data.list;
             _this.asyncWishList.next(data.list);
-            // console.log(this.wishes);
         });
         this.httpService.getData(this.apiGetSumm).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
             return _this.errorHandler(err, 'Невозможно посчитать итоговые стоимости!');
@@ -2390,7 +2254,7 @@ var MainComponent = /** @class */ (function () {
             _this.implemetedSummMonth = data.implemetedSummMonth;
             _this.isSalaryExists = true;
             _this.lastSalary = data.lastSalary;
-            _this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр', 'Помесячная группировка'];
+            _this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр'];
             console.log('Sal: ' + data.lastSalary);
         });
     };
@@ -2404,7 +2268,6 @@ var MainComponent = /** @class */ (function () {
         this.httpService.searchWishes(payload, this.searchWishesUrl).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
             return _this.errorHandler(err, 'Невозможно найти желания!');
         })).subscribe(function (data) {
-            // this.wishes = data.list;
             _this.asyncWishList.next(data.list);
         });
     };
@@ -2415,10 +2278,6 @@ var MainComponent = /** @class */ (function () {
         })).subscribe(function (res) {
             _this.showAlert('Желание с id [' + _this.form.value.id + '] успешно удалено!', 'ADD MODE', res);
         });
-    };
-    MainComponent.prototype.toMainTableMode = function () {
-        this.monthOrdermode = false;
-        this.setUserViewMode('TABLE');
     };
     MainComponent.prototype.errorHandler = function (err, message) {
         var _this = this;
@@ -2586,18 +2445,6 @@ var MainComponent = /** @class */ (function () {
             _this.getWishes(_this.apiUrl);
         });
     };
-    MainComponent.prototype.changePriorityMonth = function (item, move) {
-        var _this = this;
-        console.log('URL ->' + this.changePriorityMonthUrl + '/' + item.id + '/' + move);
-        this.httpService.getData(this.changePriorityMonthUrl + '/' + item.id + '/' + move).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["catchError"])(function (err) {
-            return _this.errorHandler(err, 'Невозможно изменить приоритет!');
-        })).subscribe(function (res) {
-            console.log(res);
-            _this.showAlert('Приоритет успешно изменен! ', 'ADD MODE', res);
-            _this.getWishes(_this.apiUrl);
-            _this.getWishesWithMonthGroupping('?sortType=all');
-        });
-    };
     // Показать окно включения/выключения фильтров
     MainComponent.prototype.filterWishes = function () {
         if (!this.filterMode) {
@@ -2660,6 +2507,267 @@ var MainComponent = /** @class */ (function () {
             _angular_common__WEBPACK_IMPORTED_MODULE_12__["DatePipe"]])
     ], MainComponent);
     return MainComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/ui/layout/monthgrouping/monthgrouping.component.css":
+/*!*********************************************************************!*\
+  !*** ./src/app/ui/layout/monthgrouping/monthgrouping.component.css ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\n::ng-deep clr-icon:hover {\n  transform: scale(1.2);\n\n}\n\n.dropdown .dropdown-toggle {\n  margin: 5px;\n}\n\n.sumallrow {\n  background-color: #790909;\n  color: #ffffff;\n}\n\n::ng-deep  .main-container {\n}\n\n.sumpriorrow {\n  background-color: #299834;\n  color: #ffdb51;\n\n}\n\n@media screen and (min-width: 1447px) {\n  .ar-900-show {\n    display:none!important;\n  }\n}\n\n@media screen and (max-width: 1447px) {\n  .ar-900-hide {\n    display:none!important;\n  }\n  .ar-900-show {\n    display:initial!important;\n  }\n}\n\n@media screen and (max-width: 475px) {\n  .ar-475-hide {\n    display:none!important;\n  }\n\n  .string-truncate {\n    width: 120px;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n  }\n\n}\n\n@media screen and (min-width: 475px) {\n  .ar-475-show {\n    display:none!important;\n  }\n}\n\n@media screen and (max-width: 360px) {\n  .ar-360-hide {\n    display:none!important;\n  }\n}\n\n@media screen and (max-width: 500px){\n\n  .table tr td:nth-child(3),\n  .table tr th:nth-child(3) {\n    display: none;\n  }\n  .table tr td:nth-child(4),\n  .table tr th:nth-child(4) {\n    display: none;\n  }\n\n  .table tr td:nth-child(5),\n  .table tr th:nth-child(5) {\n    display: none;\n  }\n\n  .table tr td:nth-child(6),\n  .table tr th:nth-child(6) {\n    display: none;\n  }\n\n}\n\n.fas .fa-arrow-up{\n  background: #0c5460;\n}\n\n.fa, .fas:hover {\n  background: aqua;\n}\n\n:host{\n\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvdWkvbGF5b3V0L21vbnRoZ3JvdXBpbmcvbW9udGhncm91cGluZy5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFDQTtFQUdFLHFCQUFxQjs7QUFFdkI7O0FBRUE7RUFDRSxXQUFXO0FBQ2I7O0FBRUE7RUFDRSx5QkFBeUI7RUFDekIsY0FBYztBQUNoQjs7QUFFQTtBQUNBOztBQUVBO0VBQ0UseUJBQXlCO0VBQ3pCLGNBQWM7O0FBRWhCOztBQUVBO0VBQ0U7SUFDRSxzQkFBc0I7RUFDeEI7QUFDRjs7QUFFQTtFQUNFO0lBQ0Usc0JBQXNCO0VBQ3hCO0VBQ0E7SUFDRSx5QkFBeUI7RUFDM0I7QUFDRjs7QUFFQTtFQUNFO0lBQ0Usc0JBQXNCO0VBQ3hCOztFQUVBO0lBQ0UsWUFBWTtJQUNaLG1CQUFtQjtJQUNuQixnQkFBZ0I7SUFDaEIsdUJBQXVCO0VBQ3pCOztBQUVGOztBQUVBO0VBQ0U7SUFDRSxzQkFBc0I7RUFDeEI7QUFDRjs7QUFJQTtFQUNFO0lBQ0Usc0JBQXNCO0VBQ3hCO0FBQ0Y7O0FBRUE7O0VBRUU7O0lBRUUsYUFBYTtFQUNmO0VBQ0E7O0lBRUUsYUFBYTtFQUNmOztFQUVBOztJQUVFLGFBQWE7RUFDZjs7RUFFQTs7SUFFRSxhQUFhO0VBQ2Y7O0FBRUY7O0FBR0E7RUFDRSxtQkFBbUI7QUFDckI7O0FBSUE7RUFDRSxnQkFBZ0I7QUFDbEI7O0FBQ0E7O0FBRUEiLCJmaWxlIjoic3JjL2FwcC91aS9sYXlvdXQvbW9udGhncm91cGluZy9tb250aGdyb3VwaW5nLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJcbjo6bmctZGVlcCBjbHItaWNvbjpob3ZlciB7XG4gIC13ZWJraXQtdHJhbnNmb3JtOiBzY2FsZSgxLjIpO1xuICAtbXMtdHJhbnNmb3JtOiBzY2FsZSgxLjIpO1xuICB0cmFuc2Zvcm06IHNjYWxlKDEuMik7XG5cbn1cblxuLmRyb3Bkb3duIC5kcm9wZG93bi10b2dnbGUge1xuICBtYXJnaW46IDVweDtcbn1cblxuLnN1bWFsbHJvdyB7XG4gIGJhY2tncm91bmQtY29sb3I6ICM3OTA5MDk7XG4gIGNvbG9yOiAjZmZmZmZmO1xufVxuXG46Om5nLWRlZXAgIC5tYWluLWNvbnRhaW5lciB7XG59XG5cbi5zdW1wcmlvcnJvdyB7XG4gIGJhY2tncm91bmQtY29sb3I6ICMyOTk4MzQ7XG4gIGNvbG9yOiAjZmZkYjUxO1xuXG59XG5cbkBtZWRpYSBzY3JlZW4gYW5kIChtaW4td2lkdGg6IDE0NDdweCkge1xuICAuYXItOTAwLXNob3cge1xuICAgIGRpc3BsYXk6bm9uZSFpbXBvcnRhbnQ7XG4gIH1cbn1cblxuQG1lZGlhIHNjcmVlbiBhbmQgKG1heC13aWR0aDogMTQ0N3B4KSB7XG4gIC5hci05MDAtaGlkZSB7XG4gICAgZGlzcGxheTpub25lIWltcG9ydGFudDtcbiAgfVxuICAuYXItOTAwLXNob3cge1xuICAgIGRpc3BsYXk6aW5pdGlhbCFpbXBvcnRhbnQ7XG4gIH1cbn1cblxuQG1lZGlhIHNjcmVlbiBhbmQgKG1heC13aWR0aDogNDc1cHgpIHtcbiAgLmFyLTQ3NS1oaWRlIHtcbiAgICBkaXNwbGF5Om5vbmUhaW1wb3J0YW50O1xuICB9XG5cbiAgLnN0cmluZy10cnVuY2F0ZSB7XG4gICAgd2lkdGg6IDEyMHB4O1xuICAgIHdoaXRlLXNwYWNlOiBub3dyYXA7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICB0ZXh0LW92ZXJmbG93OiBlbGxpcHNpcztcbiAgfVxuXG59XG5cbkBtZWRpYSBzY3JlZW4gYW5kIChtaW4td2lkdGg6IDQ3NXB4KSB7XG4gIC5hci00NzUtc2hvdyB7XG4gICAgZGlzcGxheTpub25lIWltcG9ydGFudDtcbiAgfVxufVxuXG5cblxuQG1lZGlhIHNjcmVlbiBhbmQgKG1heC13aWR0aDogMzYwcHgpIHtcbiAgLmFyLTM2MC1oaWRlIHtcbiAgICBkaXNwbGF5Om5vbmUhaW1wb3J0YW50O1xuICB9XG59XG5cbkBtZWRpYSBzY3JlZW4gYW5kIChtYXgtd2lkdGg6IDUwMHB4KXtcblxuICAudGFibGUgdHIgdGQ6bnRoLWNoaWxkKDMpLFxuICAudGFibGUgdHIgdGg6bnRoLWNoaWxkKDMpIHtcbiAgICBkaXNwbGF5OiBub25lO1xuICB9XG4gIC50YWJsZSB0ciB0ZDpudGgtY2hpbGQoNCksXG4gIC50YWJsZSB0ciB0aDpudGgtY2hpbGQoNCkge1xuICAgIGRpc3BsYXk6IG5vbmU7XG4gIH1cblxuICAudGFibGUgdHIgdGQ6bnRoLWNoaWxkKDUpLFxuICAudGFibGUgdHIgdGg6bnRoLWNoaWxkKDUpIHtcbiAgICBkaXNwbGF5OiBub25lO1xuICB9XG5cbiAgLnRhYmxlIHRyIHRkOm50aC1jaGlsZCg2KSxcbiAgLnRhYmxlIHRyIHRoOm50aC1jaGlsZCg2KSB7XG4gICAgZGlzcGxheTogbm9uZTtcbiAgfVxuXG59XG5cblxuLmZhcyAuZmEtYXJyb3ctdXB7XG4gIGJhY2tncm91bmQ6ICMwYzU0NjA7XG59XG5cblxuXG4uZmEsIC5mYXM6aG92ZXIge1xuICBiYWNrZ3JvdW5kOiBhcXVhO1xufVxuOmhvc3R7XG5cbn1cbiJdfQ== */"
+
+/***/ }),
+
+/***/ "./src/app/ui/layout/monthgrouping/monthgrouping.component.html":
+/*!**********************************************************************!*\
+  !*** ./src/app/ui/layout/monthgrouping/monthgrouping.component.html ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<clr-alert [clrAlertType]=\"'success'\" *ngIf=\"result\">\n  <clr-alert-item>\n        <span class=\"alert-text\">\n            {{result}}\n        </span>\n  </clr-alert-item>\n</clr-alert>\n\n<clr-alert [clrAlertType]=\"'danger'\" *ngIf=\"error\">\n  <clr-alert-item>\n        <span class=\"alert-text\">\n            {{error}}\n        </span>\n  </clr-alert-item>\n</clr-alert>\n\n<div>\n  <div class=\"ar-900-hide\">\n    <button class=\"btn btn-secondary\" (click)=\"getWishesWithMonthGrouping('?sortType=all')\"> Обновить</button>\n    <clr-dropdown>\n      <button type=\"button\" class=\"btn btn-outline-primary\" clrDropdownTrigger>\n        СОРТИРОВКА\n        <clr-icon shape=\"caret down\"></clr-icon>\n      </button>\n      <clr-dropdown-menu *clrIfOpen>\n        <label class=\"dropdown-header\">Сортировка</label>\n        <a *ngFor=\"let item of groupMonthSort\" (click)=\"sortGroupList(item)\" clrDropdownItem>{{item}}</a>\n      </clr-dropdown-menu>\n    </clr-dropdown>\n  </div>\n\n  <!--КНОПКИ ДЛЯ МОБИЛКИ-->\n  <div class=\"ar-900-show\">\n    <button type=\"button\" class=\"btn btn-icon\" (click)=\"getWishesWithMonthGrouping('?sortType=all')\"\n            aria-label=\"Обновить\">\n      <clr-icon shape=\"refresh\"></clr-icon>\n    </button>\n  </div>\n\n  <clr-tree-node *ngFor=\"let month of asyncWishGroups | async\" [clrExpanded]=\"true\">\n    <span class=\"{{month.colorClass}}\">{{month.monthName}} <span class=\"badge\">{{month.sum}}</span></span>\n    <span [ngClass]=\"(month.balance>0)?'badge badge-success':'badge badge-danger'\">{{month.balance}}</span>\n    <span *ngIf=\"month.overflow\" class=\"badge badge-danger\">Перебор!</span>\n    <clr-tree-node *ngFor=\"let items of month.wishList\">\n      <a [routerLink]=\"\" (click)=\"editMonthGroupItem(items)\">\n        <div class=\"string-truncate\">{{items.wish}}</div>\n      </a>{{'&nbsp;| ' + items.price + ' |'}}\n      <clr-icon shape=\"upload\" (click)=\"changePriorityMonth(items, 'up')\"></clr-icon>\n      |\n      <clr-icon shape=\"download\" (click)=\"changePriorityMonth(items, 'down')\"></clr-icon>\n    </clr-tree-node>\n  </clr-tree-node>\n</div>\n\n<!--ФОРМА РЕДАКТИРОВАНИЯ ЖЕЛАНИЯ ПРИ ПОМЕСЯЧНОЙ ГРУППИРОВКЕ -->\n\n<clr-modal [(clrModalOpen)]=\"isMonthGroupModeWishEdit\">\n  <h3 class=\"modal-title\">Изменить порядок желания</h3>\n  <div class=\"modal-body\">\n    <form clrForm [formGroup]=\"MonthGroupModeWishEdit\">\n\n      <!-- ПОЛЕ ЖЕЛАНИЕ -->\n\n      <clr-input-container>\n\n        <label #label for=\"selected_wish\" class=\"input-label clr-col-12\">Желание</label>\n        <input type=\"text\" clrInput formControlName=\"wish\" id=\"selected_wish\" name=\"wish\" autocomplete=\"off\"\n               required readonly\n               size=\"100%\">\n      </clr-input-container>\n\n      <div>\n        <clr-select-container>\n          <label #label for=\"month_field\" class=\"input-label clr-col-12\">Месяц</label>\n          <select id=\"month_field\" formControlName=\"month\" clrSelect>\n            <option *ngFor=\"let currentMonth of monthList\" [value]=\"currentMonth\">{{currentMonth}}</option>\n          </select>\n        </clr-select-container>\n      </div>\n\n    </form>\n\n    <div class=\"row\">\n      <button type=\"button\" (click)=\"applyMonthChange4Wish()\" class=\"btn btn-primary mt-1\">Принять</button>\n    </div>\n  </div>\n</clr-modal>\n"
+
+/***/ }),
+
+/***/ "./src/app/ui/layout/monthgrouping/monthgrouping.component.ts":
+/*!********************************************************************!*\
+  !*** ./src/app/ui/layout/monthgrouping/monthgrouping.component.ts ***!
+  \********************************************************************/
+/*! exports provided: MonthsComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MonthsComponent", function() { return MonthsComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _service_http_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../service/http.service */ "./src/app/service/http.service.ts");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _service_common_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../service/common.service */ "./src/app/service/common.service.ts");
+/* harmony import */ var _service_message_code__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../service/message.code */ "./src/app/service/message.code.ts");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../environments/environment */ "./src/environments/environment.ts");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+
+
+
+
+
+
+
+
+
+
+var MonthsComponent = /** @class */ (function () {
+    function MonthsComponent(commonService, httpService, fb, datePipe) {
+        this.commonService = commonService;
+        this.httpService = httpService;
+        this.fb = fb;
+        this.datePipe = datePipe;
+        // --------------------------------- URL'ы -------------------------------------
+        this.SERVER_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_7__["environment"].serverUrl;
+        this.myBaseUrl = this.SERVER_URL + '/rest/wishes';
+        this.apiUrl = this.myBaseUrl; // все желания // основная ссылка на api
+        this.priorityWishesFilterUrl = this.myBaseUrl + '?filter=PRIOR'; // приоритетные желания
+        this.allWishesFilterUrl = this.myBaseUrl + '?filter=ALL'; // все желания
+        this.clearWishesFilterUrl = this.myBaseUrl + '?filter=NONE'; // очистить фильтр желаний
+        this.sortWishesByNameUrl = this.myBaseUrl + '?sort=NAME'; // очистить фильтр желаний
+        this.sortWishesByPriceAscUrl = this.myBaseUrl + '?sort=PRICE_ASC'; // очистить фильтр желаний
+        this.sortWishesByPriceDescUrl = this.myBaseUrl + '?sort=PRICE_DESC'; // очистить фильтр желаний
+        this.sortWishesByPriorityUrl = this.myBaseUrl + '?sort=PRIOR'; // очистить фильтр желаний
+        this.wishesWithoutSortUrl = this.myBaseUrl + '?sort=ALL'; // очистить фильтр желаний
+        this.groupWishesUrl = this.myBaseUrl + '/groups';
+        this.changePriorityMonthUrl = this.myBaseUrl + '/changemonth'; // url для быстрого изменения приоритета
+        this.changePriorityMonthManualyUrl = this.myBaseUrl + '/transferwish'; // url для быстрого изменения приоритета
+        this.searchWishesUrl = this.myBaseUrl + '/filter'; // поиск желаний
+        this.implemetedSummAllTime = ''; // общая сумма реализованного за все время
+        this.implemetedSummMonth = ''; // общая сумма реализованного за текущий месяц
+        this.monthOrdermode = false; // режим отображение дерева группировки по месяцам
+        this.isSalaryExists = false;
+        this.lastSalary = 0;
+        this.curDateFormated = '';
+        this.isEditMode = false; // редактировать или добавить
+        this.isCsvParse = false; // отправить на парсинг csv
+        this.isMonthGroupModeWishEdit = false; // вывод формы редактирования желания при помесячной группировке
+        this.isSummInfoForm = false; // вывод формы с итоговой информацией (сумма всех желаний, время реализации)
+        // --------------------------------- ХРАНИЛИЩА -------------------------------------
+        this.asyncWishList = new rxjs__WEBPACK_IMPORTED_MODULE_4__["Subject"](); // асинхронный контейнер желаний
+        this.wishGroups = []; // контейнер желаний
+        this.asyncWishGroups = new rxjs__WEBPACK_IMPORTED_MODULE_4__["Subject"](); // асинхронный контейнер желаний с помесячной группировкой
+        this.monthList = []; // контейнер месяцев
+        this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр', 'Помесячная группировка']; // фильтры
+        this.groupMonthSort = ['Без сортировки', 'По имени', 'По сумме [1..10]', 'По сумме [10..1]']; // сортировка помесячной группировки
+        // --------------------------------- ФОРМЫ -------------------------------------
+        this.MonthGroupModeWishEdit = this.fb.group({
+            id: ['', [
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_3__["Validators"].required
+                ]],
+            wish: ['', [
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_3__["Validators"].required
+                ]],
+            month: ['', [
+                    _angular_forms__WEBPACK_IMPORTED_MODULE_3__["Validators"].required
+                ]]
+        });
+        this.curDateFormated = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+    }
+    MonthsComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.getWishesWithMonthGrouping('?sortType=all');
+        this.subscription = this.commonService.error$.subscribe(function (error) {
+            if (error == null) {
+                _this.globalError = new _service_message_code__WEBPACK_IMPORTED_MODULE_6__["MessageCode"]();
+                _this.globalError.messageType = 'NO ERRORS';
+            }
+            else {
+                _this.globalError = error;
+                _this.isEdit = false;
+                if (_this.globalError.messageType === _this.globalError.AUTH_LOGIN_OK) {
+                    // this.getWishesWithMonthGrouping('?sortType=all');
+                }
+                else if (_this.globalError.messageType === _this.globalError.USER_DATA_CHANGE_OK) {
+                    _this.isEdit = false;
+                    _this.result = _this.globalError.USER_DATA_CHANGE_OK;
+                    Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["timer"])(4000).subscribe(function () {
+                        _this.result = null;
+                    });
+                }
+                else {
+                    _this.error = error.messageType;
+                    Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["timer"])(4000).subscribe(function () {
+                        _this.error = null;
+                    });
+                }
+            }
+        });
+    };
+    /**
+     *  Получить список желаний, сгруппированый по месяцам.
+     *
+     *  sorting - тип сортировки.
+     */
+    MonthsComponent.prototype.getWishesWithMonthGrouping = function (sorting) {
+        var _this = this;
+        this.httpService.getData(this.groupWishesUrl + sorting).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_9__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно получить желания!');
+        })).subscribe(function (data) {
+            _this.asyncWishGroups.next(data.list);
+            _this.monthList.length = 0;
+            data.list.forEach(function (element) {
+                _this.monthList.push(element.monthName + ' ' + element.year);
+                console.log(_this.monthList);
+            });
+            _this.monthOrdermode = true;
+        });
+    };
+    // Применить изменение (месячного) порядка для желания
+    MonthsComponent.prototype.applyMonthChange4Wish = function () {
+        var _this = this;
+        console.log(this.MonthGroupModeWishEdit.value.month);
+        this.httpService.getData(this.changePriorityMonthManualyUrl + '?id=' +
+            this.MonthGroupModeWishEdit.value.id + '&month=' +
+            this.MonthGroupModeWishEdit.value.month).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_9__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно изменить приоритет!');
+        })).subscribe(function (res) {
+            console.log(res);
+            _this.showAlert('Приоритет успешно изменен! ', 'ADD MODE', res);
+            _this.getWishesWithMonthGrouping('?sortType=all');
+            _this.isMonthGroupModeWishEdit = false;
+        });
+    };
+    // Редактирование желания при помесячной группировке
+    MonthsComponent.prototype.editMonthGroupItem = function (items) {
+        this.isMonthGroupModeWishEdit = true;
+        this.MonthGroupModeWishEdit.patchValue({
+            id: items.id,
+            wish: items.wish
+        });
+    };
+    // Изменить сортировку помесячной группировки
+    MonthsComponent.prototype.sortGroupList = function (item) {
+        if (item === 'По имени') {
+            this.getWishesWithMonthGrouping('?sortType=name');
+        }
+        else if (item === 'По сумме [1..10]') {
+            this.getWishesWithMonthGrouping('?sortType=price-asc');
+        }
+        else if (item === 'Без сортировки') {
+            this.getWishesWithMonthGrouping('?sortType=all');
+        }
+        else {
+            this.getWishesWithMonthGrouping('?sortType=price-desc');
+        }
+    };
+    /**
+     * Обработчик ошибок.
+     *
+     * err
+     * message
+     */
+    MonthsComponent.prototype.errorHandler = function (err, message) {
+        var _this = this;
+        this.isEdit = false;
+        this.isSalaryAdd = false;
+        console.log('error - ' + err.error);
+        if (err.error === 'ERR-01') {
+            this.error = 'У вас нет сохраненных зарплат! Невозможно посчитать сроки реализации! Добавьте хотя бы одну зарплату!';
+            this.isSalaryExists = false;
+            this.asyncWishList = null;
+            this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр'];
+        }
+        else if (err.error === 'ERR-02') {
+            this.error = 'У вас нет сохраненных желаний! Добавьте хотя бы одно желание!';
+            this.isSalaryExists = false;
+            this.filterTypes = ['Все', 'Приоритет', 'Очистить фильтр'];
+        }
+        else {
+            this.error = message;
+        }
+        console.log(err);
+        Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["timer"])(4000).subscribe(function () {
+            _this.error = null;
+        });
+        return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["throwError"])(err);
+    };
+    MonthsComponent.prototype.showAlert = function (text, mode, result) {
+        var _this = this;
+        this.isEdit = false;
+        this.isSalaryAdd = false;
+        this.isCsvParse = false;
+        this.result = text;
+        Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["timer"])(4000).subscribe(function () {
+            _this.result = null;
+        });
+    };
+    MonthsComponent.prototype.changePriorityMonth = function (item, move) {
+        var _this = this;
+        console.log('URL ->' + this.changePriorityMonthUrl + '/' + item.id + '/' + move);
+        this.httpService.getData(this.changePriorityMonthUrl + '/' + item.id + '/' + move).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_9__["catchError"])(function (err) {
+            return _this.errorHandler(err, 'Невозможно изменить приоритет!');
+        })).subscribe(function (res) {
+            console.log(res);
+            _this.showAlert('Приоритет успешно изменен! ', 'ADD MODE', res);
+            _this.getWishesWithMonthGrouping('?sortType=all');
+        });
+    };
+    MonthsComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            selector: 'app-months',
+            template: __webpack_require__(/*! ./monthgrouping.component.html */ "./src/app/ui/layout/monthgrouping/monthgrouping.component.html"),
+            providers: [_service_http_service__WEBPACK_IMPORTED_MODULE_2__["HttpService"], _angular_common__WEBPACK_IMPORTED_MODULE_8__["DatePipe"]],
+            styles: [__webpack_require__(/*! ./monthgrouping.component.css */ "./src/app/ui/layout/monthgrouping/monthgrouping.component.css")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_service_common_service__WEBPACK_IMPORTED_MODULE_5__["CommonService"], _service_http_service__WEBPACK_IMPORTED_MODULE_2__["HttpService"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormBuilder"],
+            _angular_common__WEBPACK_IMPORTED_MODULE_8__["DatePipe"]])
+    ], MonthsComponent);
+    return MonthsComponent;
 }());
 
 
@@ -3000,6 +3108,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _auth0_angular_jwt__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @auth0/angular-jwt */ "./node_modules/@auth0/angular-jwt/index.js");
 /* harmony import */ var _layout_session_timeout_modal_session_timeout_modal_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./layout/session-timeout-modal/session-timeout-modal.component */ "./src/app/ui/layout/session-timeout-modal/session-timeout-modal.component.ts");
 /* harmony import */ var _layout_new_modal_ar_modal_component__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./layout/new-modal/ar-modal.component */ "./src/app/ui/layout/new-modal/ar-modal.component.ts");
+/* harmony import */ var _layout_monthgrouping_monthgrouping_component__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./layout/monthgrouping/monthgrouping.component */ "./src/app/ui/layout/monthgrouping/monthgrouping.component.ts");
+
 
 
 
@@ -3029,6 +3139,7 @@ var UiModule = /** @class */ (function () {
                 _layout_header_header_component__WEBPACK_IMPORTED_MODULE_6__["HeaderComponent"],
                 _layout_sidebar_sidebar_component__WEBPACK_IMPORTED_MODULE_7__["SidebarComponent"],
                 _layout_main_main_component__WEBPACK_IMPORTED_MODULE_11__["MainComponent"],
+                _layout_monthgrouping_monthgrouping_component__WEBPACK_IMPORTED_MODULE_20__["MonthsComponent"],
                 _layout_edit_edit_component__WEBPACK_IMPORTED_MODULE_13__["EditComponent"],
                 _layout_unauthorize_unauthorize_component__WEBPACK_IMPORTED_MODULE_16__["UnauthorizeComponent"],
                 _layout_investing_investing_component__WEBPACK_IMPORTED_MODULE_8__["InvestingComponent"],
