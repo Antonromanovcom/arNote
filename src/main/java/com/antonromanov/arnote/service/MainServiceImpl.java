@@ -148,6 +148,9 @@ public class MainServiceImpl implements MainService {
     @Override
     public List<Wish> findAllWishesByWishName(SearchRq request, ArNoteUser user) {
         return wishRepository.findAllByUser(user).stream()
+                .filter(wichCheckNull->wichCheckNull.getRealized()!=null &&
+                        wichCheckNull.getAc()!=null &&
+                        wichCheckNull.getWish()!=null)
                 .filter(w-> !w.getRealized() &&
                         !w.getAc() &&
                         w.getWish().toLowerCase().contains(request.getWishName().toLowerCase())).collect(Collectors.toList());
