@@ -20,7 +20,8 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{
 
 
 
-	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.priority = 1 and  w.user = :user order by w.wish ASC ")
+	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and" +
+			" w.priority = 1 and  w.user = :user order by w.wish ASC ")
 	List<Wish> getAllWithPriority1(@Param("user") ArNoteUser user);
 
 	/**
