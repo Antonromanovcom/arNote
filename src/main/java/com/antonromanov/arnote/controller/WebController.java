@@ -17,7 +17,7 @@ public class WebController {
 		return "index";
 	}
 
-	@RequestMapping(value = "/investing", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/investing", method = {RequestMethod.GET})
 	public String investPage() {
 		return "index";
 	}

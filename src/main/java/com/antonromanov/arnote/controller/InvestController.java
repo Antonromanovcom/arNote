@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.controller;
 
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.exceptions.BadTickerException;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.*;
@@ -275,6 +276,10 @@ public class InvestController {
         log.info("USER ID: " + user.getId());
         log.info("ticker: " + request.getTicker());
         Bond newOrUpdatedBond;
+
+        commonService.findInstrument(request.getTicker()).getInstruments().stream()
+                .filter(fi->request.getTicker().equals(fi.getTicker()))
+                .findFirst().orElseThrow(()-> new BadTickerException(request.getTicker()));
 
         if (!request.isPlan() && (request.getLot() != 0 && request.getPrice() != null && request.getPurchaseDate() != null)) {
 
