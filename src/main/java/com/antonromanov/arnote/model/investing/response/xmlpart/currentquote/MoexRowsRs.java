@@ -56,8 +56,6 @@ public class MoexRowsRs {
 
 
 
-
-
         //============= КУРСЫ ВАЛЮТ ================
 
         @XmlAttribute(name = "tradedate")
@@ -99,4 +97,9 @@ public class MoexRowsRs {
 
         @XmlAttribute(name = "LASTCHANGEPRCNT")
         private String lastChangePrcnt; // последнее изменение цены относительно присланного 15 минут назад в процентах
+
+        @XmlAttribute(name = "LCURRENTPRICE")
+        private String lCurrentPrice; // используем, если LAST пришел пустой
+
+
 }

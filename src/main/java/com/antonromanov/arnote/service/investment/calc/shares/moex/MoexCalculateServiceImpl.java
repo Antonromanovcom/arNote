@@ -178,6 +178,22 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                                 .map(Double::parseDouble).orElse(0D))
                         .build();
 
+                if (curPrice.getCurrentPrice()==null || curPrice.getCurrentPrice() == 0) {
+                    curPrice.setCurrentPrice(doc.getData().getRow().stream()
+                            .filter(r -> getBoardId(ticker).equals(r.getTradeMode()))
+                            .findFirst()
+                            .map(MoexRowsRs::getLCurrentPrice)
+                            .map(val -> {
+                                try {
+                                    Double.parseDouble(val);
+                                    return val;
+                                } catch (Exception e) {
+                                    return "0.0";
+                                }
+                            })
+                            .map(Double::parseDouble).orElse(0D));
+                }
+
                 cacheService.putToCacheWithRetentionTime(CacheDictType.REALTIME_QUOTES_WITH_RETENTION,
                         ticker,
                         curPrice, CurrentPriceRs.class, LocalDateTime.now());

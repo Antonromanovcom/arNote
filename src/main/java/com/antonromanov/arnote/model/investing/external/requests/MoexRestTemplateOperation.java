@@ -83,7 +83,7 @@ public enum MoexRestTemplateOperation {
                     .issMeta(false)
                     .issOnly(EnumSet.of(DataBlock.MARKETDATA))
                     .marketDataColumns(EnumSet.of(MarketData.SECID, MarketData.BOARDID, MarketData.LAST, MarketData.UPDATETIME,
-                            MarketData.LASTCHANGE, MarketData.LASTCHANGEPRCNT))
+                            MarketData.LASTCHANGE, MarketData.LASTCHANGEPRCNT, MarketData.LCURRENTPRICE))
                     .build(),
             MoexDocumentRs.class);
 
