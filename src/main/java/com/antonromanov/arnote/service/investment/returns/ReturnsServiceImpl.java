@@ -51,7 +51,7 @@ public class ReturnsServiceImpl implements ReturnsService {
                 .filter(bond->bond.getType()== BondType.SHARE)
                 .map(b -> {
                     DeltaRs deltaRs = commonService.prepareDelta(b);
-                    return deltaRs==null ? 0 : deltaRs.getDeltaInRubles();
+                    return deltaRs==null ? 0 : deltaRs.getTinkoffDelta();
                 }).reduce((double) 0, Double::sum));
     }
 
