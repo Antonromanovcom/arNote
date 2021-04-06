@@ -212,19 +212,20 @@ public class CommonService {
      * Получить ставку по тикеру и дате.
      *
      * @param
+     * @param foundBond
      * @param purchaseDate
      * @return
      */
-    public CurrentPriceRs getCurrentPriceByTickerAndDate(Bond bond, String purchaseDate) {
+    public CurrentPriceRs getCurrentPriceByTickerAndDate(FoundInstrumentRs foundBond, String purchaseDate) {
 
-        SharesCalcService calculator = calcFactory.getCalculator(bond.getStockExchange());
+        SharesCalcService calculator = calcFactory.getCalculator(foundBond.getStockExchange());
 
         if (LocalDate.parse(purchaseDate).isAfter(LocalDate.now())) {
             purchaseDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }
 
         final String finalPurchaseDate = purchaseDate;
-        return calculator.getHistory(bond.getTicker(), calculator.getBoardId(bond.getTicker()), LocalDate.parse(purchaseDate))
+        return calculator.getHistory(foundBond.getTicker(), calculator.getBoardId(foundBond.getTicker()), LocalDate.parse(purchaseDate))
                 .getData()
                 .getRow()
                 .stream()
@@ -233,8 +234,10 @@ public class CommonService {
                 .map(data -> CurrentPriceRs.builder()
                         .currentPrice(Double.valueOf(data.getLegalClosePrice()))
                         .date(LocalDate.parse(finalPurchaseDate))
+                        .currency(foundBond.getCurrencies())
+                        .ticker(data.getSecid())
                         .build())
-                .orElse(calculator.getRealTimeQuote(bond.getTicker()));
+                .orElse(calculator.getRealTimeQuote(foundBond.getTicker()));
     }
 
     /**

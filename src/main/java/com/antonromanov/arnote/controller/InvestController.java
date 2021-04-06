@@ -215,9 +215,12 @@ public class InvestController {
         log.info("ticker: " + ticker);
         log.info("purchase date: " + purchaseDate);
 
+        FoundInstrumentRs foundBond = commonService.findInstrument(ticker).getInstruments().stream()
+                .filter(fi->ticker.equals(fi.getTicker()))
+                .findFirst().orElseThrow(()-> new BadTickerException(ticker));
 
-        return commonService.getCurrentPriceByTickerAndDate(bondsRepo.findBondByUserAndTicker(user, ticker)
-                .orElseThrow(() -> new BadIncomeParameter(null)), purchaseDate);
+
+        return commonService.getCurrentPriceByTickerAndDate(foundBond, purchaseDate);
 
     }
 
