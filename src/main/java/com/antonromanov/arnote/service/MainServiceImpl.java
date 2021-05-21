@@ -157,8 +157,8 @@ public class MainServiceImpl implements MainService {
 
 
         return wishRepository.findAllByUser(user).stream()
-                .filter(wishCheckNull -> wishCheckNull.getRealized() != null && wishCheckNull.getAc() != null && wishCheckNull.getWish() != null)
-                .filter(w -> !w.getRealized() && !w.getAc())
+               // .filter(wishCheckNull -> wishCheckNull.getRealized() != null && wishCheckNull.getAc() != null && wishCheckNull.getWish() != null)
+                .filter(w -> ((w.getRealized()==null || !w.getRealized()) && (w.getAc()==null || !w.getAc())))
                 .filter(notArchivedWish -> notArchivedWish.getWish().toLowerCase().contains(request.getWishName().toLowerCase()))
                 .collect(Collectors.toList());
     }
