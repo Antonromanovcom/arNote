@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -47,7 +49,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  */
 @CrossOrigin()
 @RestController
-@RequestMapping("/rest/wishes")
+@RequestMapping("/rest/wishes") //todo: поменять все урлы на нормальные
 @Slf4j
 public class MainRestController extends ControllerBase {
 
@@ -61,8 +63,8 @@ public class MainRestController extends ControllerBase {
         private List<WishDTOList> list = new ArrayList<>();
     }
 
-    @Autowired //переехать на связывание через конструктор
-            MainService mainService;
+    @Autowired
+    MainService mainService; //todo: переехать на связывание через конструктор
 
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
@@ -567,17 +569,17 @@ public class MainRestController extends ControllerBase {
     @GetMapping("/users/toggle/{mode}")
     public ArNoteUser toggleUserMode(Principal principal, @PathVariable String mode) throws UserNotFoundException {
 
-            log.info("========= TOGGLE / GET USER MODE ============== ");
-            log.info("MODE: " + mode);
+        log.info("========= TOGGLE / GET USER MODE ============== ");
+        log.info("MODE: " + mode);
 
-            ArNoteUser localuser = getUserFromPrincipal(principal);
+        ArNoteUser localuser = getUserFromPrincipal(principal);
 
-            if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
-                localuser.setViewMode(mode);
-                return usersRepo.saveAndFlush(localuser);
-            } else {
-                return localuser;
-            }
+        if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
+            localuser.setViewMode(mode);
+            return usersRepo.saveAndFlush(localuser);
+        } else {
+            return localuser;
+        }
     }
 
     @CrossOrigin(origins = "*")

@@ -10,12 +10,14 @@ import org.apache.commons.math3.util.ArithmeticUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 
 
@@ -69,7 +71,6 @@ public class MainServiceImpl implements MainService {
 
     /**
      * Получить все желания с помесячной группировкой и детализованным наполнением.
-     *
      */
     @Override
     public List<WishDTOList> getAllWishesWithGroupPriority(ArNoteUser user) {
@@ -91,7 +92,7 @@ public class MainServiceImpl implements MainService {
                         .collect(Collectors.toList());
 
                 Integer sum = wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
-                amountForAllMonths = (getLastSalary(user).getResidualSalary()-sum) + amountForAllMonths; //считаем набегающий баланс
+                amountForAllMonths = (getLastSalary(user).getResidualSalary() - sum) + amountForAllMonths; //считаем набегающий баланс
 
                 wishDTOListGlobal.add(WishDTOList.builder()
                         .wishList(wishDTOListFiltered)
@@ -147,13 +148,19 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public List<Wish> findAllWishesByWishName(SearchRq request, ArNoteUser user) {
+
+       /* for (Wish element : wishRepository.findAllByUser(user)) {
+            if (element.getWish().toLowerCase().contains(request.getWishName().toLowerCase())) {
+                System.out.println("ok");
+            }
+        }*/
+
+
         return wishRepository.findAllByUser(user).stream()
-                .filter(wichCheckNull->wichCheckNull.getRealized()!=null &&
-                        wichCheckNull.getAc()!=null &&
-                        wichCheckNull.getWish()!=null)
-                .filter(w-> !w.getRealized() &&
-                        !w.getAc() &&
-                        w.getWish().toLowerCase().contains(request.getWishName().toLowerCase())).collect(Collectors.toList());
+                .filter(wishCheckNull -> wishCheckNull.getRealized() != null && wishCheckNull.getAc() != null && wishCheckNull.getWish() != null)
+                .filter(w -> !w.getRealized() && !w.getAc())
+                .filter(notArchivedWish -> notArchivedWish.getWish().toLowerCase().contains(request.getWishName().toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     @Override

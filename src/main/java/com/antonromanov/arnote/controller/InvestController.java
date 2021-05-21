@@ -18,11 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.Array;
 import java.security.Principal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -131,27 +129,14 @@ public class InvestController {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/returns")
-    public ConsolidatedReturnsRs returnsConsolidated(Principal principal) throws UserNotFoundException {
+    public List<String> returnsConsolidated(Principal principal) throws UserNotFoundException {
 
         log.info("============== CONSOLIDATED RETURNS TABLE ============== ");
         log.info("PRINCIPAL: " + principal.getName());
 
         ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
 
-        return ConsolidatedReturnsRs.builder()
-                .invested(returnsService.getTotalInvestment(user).orElse(0L))
-                .bondsReturns(returnsService.getTotalBondsReturns(user).orElse(0L))
-                .sharesDelta(returnsService.getSharesDelta(user).map(Double::longValue).orElse(0L))
-                .sharesReturns(returnsService.getTotalDivsReturn(user).orElse(0L))
-                .sum((returnsService.calculateTotalReturns(user)))
-                .targets(Stream.of(new Object[][]{
-                        {Targets.ONE_THOUSAND_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.ONE_THOUSAND_ROUBLES)},
-                        {Targets.FIVE_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.FIVE_THOUSANDS_ROUBLES)},
-                        {Targets.TEN_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.TEN_THOUSANDS_ROUBLES)},
-                        {Targets.THIRTY_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.THIRTY_THOUSANDS_ROUBLES)},
-                        {Targets.SIXTY_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.SIXTY_THOUSANDS_ROUBLES)},
-                }).collect(Collectors.toMap(data -> (Targets) data[0], data -> (Long) data[1])))
-                .build();
+        return new ArrayList<>(Arrays.asList("1", "2"));
     }
 
     /**
@@ -207,7 +192,7 @@ public class InvestController {
     public CurrentPriceRs getCurrentPriceByTicker(Principal principal,
                                                   @RequestParam @NotNull String ticker,
                                                   @RequestParam @NotNull String purchaseDate)
-            throws UserNotFoundException, BadIncomeParameter {
+            throws UserNotFoundException {
 
         log.info("============== GET CURRENT PRICE BY TICKER AND PURCHASE DATE ============== ");
         ArNoteUser user = getLocalUserFromPrincipal(principal);

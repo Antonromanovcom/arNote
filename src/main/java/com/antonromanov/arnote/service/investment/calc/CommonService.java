@@ -4,6 +4,7 @@ import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.response.*;
+import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
@@ -234,7 +235,7 @@ public class CommonService {
                 .map(data -> CurrentPriceRs.builder()
                         .currentPrice(Double.valueOf(data.getLegalClosePrice()))
                         .date(LocalDate.parse(finalPurchaseDate))
-                        .currency(foundBond.getCurrencies())
+                        .currency(Currencies.search(data.getCurrencyId()))
                         .ticker(data.getSecid())
                         .build())
                 .orElse(calculator.getRealTimeQuote(foundBond.getTicker()));

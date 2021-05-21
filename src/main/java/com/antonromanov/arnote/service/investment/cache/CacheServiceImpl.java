@@ -86,7 +86,6 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public <T> void putToCacheWithRetentionTime(CacheDictType dictionaryType, String key, T obj, Class<T> aClass, LocalDateTime timestamp) {
-       log.warn("Положили в КЭШ. dictionaryType: {}, key: {}, timestamp: {}", dictionaryType, key, timestamp);
         CacheObject<T> cachedObject = new CacheObject<>(obj, aClass);
         HashMap<String, ObjectCachedWithTimestamp> cachedElement = new HashMap<>();
         ObjectCachedWithTimestamp objWithTimestamp = ObjectCachedWithTimestamp.builder().timestamp(timestamp).obj(cachedObject).build();

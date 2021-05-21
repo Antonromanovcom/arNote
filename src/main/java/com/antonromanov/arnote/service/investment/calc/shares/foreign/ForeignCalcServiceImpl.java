@@ -363,6 +363,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
                         row.setSecid(ticker);
                         row.setTradeDate(es.getKey().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
                         row.setLegalClosePrice(String.valueOf(es.getValue() * curMultiplier));
+                        row.setCurrencyId("SUR");
                         return row;
                     })
                     .collect(Collectors.toCollection(ArrayList::new)));
