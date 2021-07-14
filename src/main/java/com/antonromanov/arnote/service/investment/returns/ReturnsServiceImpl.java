@@ -5,15 +5,16 @@ import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
-import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
+import com.antonromanov.arnote.model.investing.response.DividendRs;
+import com.antonromanov.arnote.model.investing.response.DivsDebug;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.service.investment.calc.CommonService;
 import com.antonromanov.arnote.service.investment.calc.bonds.BondCalcService;
-import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReturnsServiceImpl implements ReturnsService {
@@ -78,6 +79,33 @@ public class ReturnsServiceImpl implements ReturnsService {
                 .map(Math::round);
     }
 
+    @Override
+    public List<DivsDebug> getDivsDebug(ArNoteUser user) {
+        return repo.findAllByUser(user).stream()
+                .filter(bond -> bond.getType()==BondType.SHARE)
+                .map(b -> {
+                    ConsolidatedDividendsRs divsData = commonService.getDivsOrCoupons(b, user);
+                    List<DividendRs> divList = new ArrayList<>();
+
+                    if (divsData!=null && divsData.getDividendList().size()>0) {
+
+                        divList.add(DividendRs.builder()
+                                .value(divsData.getDividendList().stream()
+                                        .map(DividendRs::getValue)
+                                        .reduce((double) 0, Double::sum))
+                                .currencyId(divsData.getDividendList().get(0).getCurrencyId())
+                                .build());
+                    }
+                    return DivsDebug.builder()
+                            .ticker(b.getTicker())
+                            .divs(divList)
+                            .build();
+                }).collect(Collectors.toList());
+
+
+
+    }
+
     /**
      * Посчитать сколько надо вложить для получения заданной ежемесячной прибыли.
      *
@@ -86,7 +114,11 @@ public class ReturnsServiceImpl implements ReturnsService {
      */
     @Override
     public Long calculateRequiredInvestments(ArNoteUser user, Targets target) {
-        return Optional.of((getTotalInvestment(user).orElse(0L) * (target.getValue() * 12)) / calculateTotalReturns(user)).orElse(0L);
+        try {
+            return (getTotalInvestment(user).orElse(0L) * (target.getValue() * 12)) / calculateTotalReturns(user);
+        } catch (Exception e){
+            return 0L;
+        }
     }
 
     /**

@@ -153,6 +153,34 @@ public class InvestController {
     }
 
     /**
+     * Тестовый контроллер для отладки дивов. А то какие-то странные цифры стали приходить.
+     *
+     * @param principal - пользователь.
+     * @return - ConsolidatedReturnsRs
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping("/divs")
+    public DivsDetailsRs getDivsDetails(Principal principal) throws UserNotFoundException {
+
+        log.info("============== DIVS DETAILS ============== ");
+        log.info("PRINCIPAL: " + principal.getName());
+
+        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        List<DivsDebug> res = returnsService.getDivsDebug(user);
+
+
+        return DivsDetailsRs.builder()
+                .divs(res)
+                .sum(res.stream()
+                        .map(DivsDebug::getDivs)
+                        .map(t -> t.stream()
+                                .map(DividendRs::getValue)
+                                .reduce((double) 0, Double::sum))
+                        .reduce((double) 0, Double::sum))
+                .build();
+    }
+
+    /**
      * Найти инструменты по имени / тикеру или их куску.
      *
      * @param principal - пользак
@@ -214,8 +242,8 @@ public class InvestController {
         log.info("purchase date: " + purchaseDate);
 
         FoundInstrumentRs foundBond = commonService.findInstrument(ticker).getInstruments().stream()
-                .filter(fi->ticker.equals(fi.getTicker()))
-                .findFirst().orElseThrow(()-> new BadTickerException(ticker));
+                .filter(fi -> ticker.equals(fi.getTicker()))
+                .findFirst().orElseThrow(() -> new BadTickerException(ticker));
 
 
         return commonService.getCurrentPriceByTickerAndDate(foundBond, purchaseDate);
@@ -279,8 +307,8 @@ public class InvestController {
         Bond newOrUpdatedBond;
 
         commonService.findInstrument(request.getTicker()).getInstruments().stream()
-                .filter(fi->request.getTicker().equals(fi.getTicker()))
-                .findFirst().orElseThrow(()-> new BadTickerException(request.getTicker()));
+                .filter(fi -> request.getTicker().equals(fi.getTicker()))
+                .findFirst().orElseThrow(() -> new BadTickerException(request.getTicker()));
 
         if (!request.isPlan() && (request.getLot() != 0 && request.getPrice() != null && request.getPurchaseDate() != null)) {
 

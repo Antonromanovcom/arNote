@@ -1,7 +1,10 @@
 package com.antonromanov.arnote.service.investment.returns;
 
 import com.antonromanov.arnote.model.ArNoteUser;
+import com.antonromanov.arnote.model.investing.response.DivsDebug;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface ReturnsService {
@@ -25,6 +28,13 @@ public interface ReturnsService {
      * @return
      */
     Optional<Long> getTotalDivsReturn(ArNoteUser user);
+
+    /**
+     * Получаем детальную инфу по Дивам.
+     * @param user
+     * @return
+     */
+    List<DivsDebug> getDivsDebug(ArNoteUser user);
 
     /**
      * Посчитать сколько надо вложить для получения заданной ежемесячной прибыли.
