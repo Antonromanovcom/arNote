@@ -28,6 +28,11 @@ public class ReturnsServiceImpl implements ReturnsService {
         this.commonService = commonService;
     }
 
+    /**
+     * Запросить общую сумму инвестированного.
+     * @param user - текущий авторизовавшийся пользователь
+     * @return
+     */
     @Override
     public Optional<Long> getTotalInvestment(ArNoteUser user) {
         return Optional.of(repo.findAllByUser(user).stream()
@@ -85,14 +90,14 @@ public class ReturnsServiceImpl implements ReturnsService {
     }
 
     /**
-     * Посчитать общую сумму прибыли.
+     * Посчитать общую сумму прибыли: рост по акциям + купоны облигаций + дивиденды.
      *
      * @param user
      * @return
      */
     @Override
     public Long calculateTotalReturns(ArNoteUser user) {
-        return (getSharesDelta(user).map(Double::longValue).orElse(0L)) + 1L + getTotalDivsReturn(user).orElse(0L);
+        return (getSharesDelta(user).map(Double::longValue).orElse(0L)) + getTotalBondsReturns(user).orElse(0L) + getTotalDivsReturn(user).orElse(0L);
     }
 
     /**
