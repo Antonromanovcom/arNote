@@ -61,6 +61,17 @@ public class ReturnsServiceImpl implements ReturnsService {
                 }).reduce((double) 0, Double::sum));
     }
 
+    @Override
+    public Optional<Double> getSharesDeltaForBought(ArNoteUser user) {
+        return Optional.of(repo.findAllByUser(user).stream()
+                .filter(bond->bond.getType()== BondType.SHARE)
+                .filter(Bond::getIsBought)
+                .map(b -> {
+                    DeltaRs deltaRs = commonService.prepareDelta(b);
+                    return deltaRs==null ? 0 : deltaRs.getTinkoffDelta();
+                }).reduce((double) 0, Double::sum));
+    }
+
     /**
      * Получить общую доходность по дивидендам.
      *
@@ -71,6 +82,7 @@ public class ReturnsServiceImpl implements ReturnsService {
     public Optional<Long> getTotalDivsReturn(ArNoteUser user) {
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond -> bond.getType()==BondType.SHARE)
+                .filter(Bond::getIsBought)
                 .map(b -> {
                     ConsolidatedDividendsRs divs = commonService.getDivsOrCoupons(b, user);
                     return divs.getDivSum();
@@ -130,7 +142,7 @@ public class ReturnsServiceImpl implements ReturnsService {
      */
     @Override
     public Long calculateTotalReturns(ArNoteUser user) {
-        return (getSharesDelta(user).map(Double::longValue).orElse(0L)) +
+        return (getSharesDeltaForBought(user).map(Double::longValue).orElse(0L)) +
                 getTotalBondsReturns(user).orElse(0L) +
                 getTotalDivsReturn(user).orElse(0L);
     }
@@ -144,6 +156,7 @@ public class ReturnsServiceImpl implements ReturnsService {
     public Optional<Long> getTotalBondsReturns(ArNoteUser user) {
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond -> bond.getType()==BondType.BOND)
+                .filter(Bond::getIsBought)
                 .map(b -> {
                     ConsolidatedDividendsRs divs = bondCalcService.getCoupons(b, user);
                     return divs.getDivSum();

@@ -23,6 +23,13 @@ public interface ReturnsService {
     Optional<Double> getSharesDelta(ArNoteUser user);
 
     /**
+     * Получить дельту только по КУПЛЕННЫМ акциям пользователя.
+     * @param user
+     * @return
+     */
+    Optional<Double> getSharesDeltaForBought(ArNoteUser user);
+
+    /**
      * Получить общую доходность по дивидендам.
      * @param user
      * @return
