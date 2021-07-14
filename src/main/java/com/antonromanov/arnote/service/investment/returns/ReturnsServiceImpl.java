@@ -83,6 +83,7 @@ public class ReturnsServiceImpl implements ReturnsService {
     public List<DivsDebug> getDivsDebug(ArNoteUser user) {
         return repo.findAllByUser(user).stream()
                 .filter(bond -> bond.getType()==BondType.SHARE)
+                .filter(Bond::getIsBought)
                 .map(b -> {
                     ConsolidatedDividendsRs divsData = commonService.getDivsOrCoupons(b, user);
                     List<DividendRs> divList = new ArrayList<>();
@@ -129,7 +130,9 @@ public class ReturnsServiceImpl implements ReturnsService {
      */
     @Override
     public Long calculateTotalReturns(ArNoteUser user) {
-        return (getSharesDelta(user).map(Double::longValue).orElse(0L)) + getTotalBondsReturns(user).orElse(0L) + getTotalDivsReturn(user).orElse(0L);
+        return (getSharesDelta(user).map(Double::longValue).orElse(0L)) +
+                getTotalBondsReturns(user).orElse(0L) +
+                getTotalDivsReturn(user).orElse(0L);
     }
 
     /**
