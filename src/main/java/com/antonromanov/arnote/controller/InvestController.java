@@ -129,14 +129,27 @@ public class InvestController {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/returns")
-    public List<String> returnsConsolidated(Principal principal) throws UserNotFoundException {
+    public ConsolidatedReturnsRs returnsConsolidated(Principal principal) throws UserNotFoundException {
 
         log.info("============== CONSOLIDATED RETURNS TABLE ============== ");
         log.info("PRINCIPAL: " + principal.getName());
 
         ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
 
-        return new ArrayList<>(Arrays.asList("1", "2"));
+        return ConsolidatedReturnsRs.builder()
+                .invested(returnsService.getTotalInvestment(user).orElse(0L))
+                .bondsReturns(returnsService.getTotalBondsReturns(user).orElse(0L))
+                .sharesDelta(returnsService.getSharesDelta(user).map(Double::longValue).orElse(0L))
+                .sharesReturns(returnsService.getTotalDivsReturn(user).orElse(0L))
+                .sum((returnsService.calculateTotalReturns(user)))
+                .targets(Stream.of(new Object[][]{
+                        {Targets.ONE_THOUSAND_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.ONE_THOUSAND_ROUBLES)},
+                        {Targets.FIVE_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.FIVE_THOUSANDS_ROUBLES)},
+                        {Targets.TEN_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.TEN_THOUSANDS_ROUBLES)},
+                        {Targets.THIRTY_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.THIRTY_THOUSANDS_ROUBLES)},
+                        {Targets.SIXTY_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.SIXTY_THOUSANDS_ROUBLES)},
+                }).collect(Collectors.toMap(data -> (Targets) data[0], data -> (Long) data[1])))
+                .build();
     }
 
     /**
