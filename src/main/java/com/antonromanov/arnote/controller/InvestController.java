@@ -306,9 +306,17 @@ public class InvestController {
         log.info("ticker: " + request.getTicker());
         Bond newOrUpdatedBond;
 
-        commonService.findInstrument(request.getTicker()).getInstruments().stream()
+        /**
+         * Проверяем что хотя бы один такой инструмент нашелся, иначе кидаем эксепшн.
+         */
+        FoundInstrumentRs foundInstrument = commonService.findInstrument(request.getTicker())
+                .getInstruments().stream()
                 .filter(fi -> request.getTicker().equals(fi.getTicker()))
                 .findFirst().orElseThrow(() -> new BadTickerException(request.getTicker()));
+
+        log.info("Нашли хотя бы 1 инструмент по тикеру: {}", foundInstrument.getTicker());
+
+
 
         if (!request.isPlan() && (request.getLot() != 0 && request.getPrice() != null && request.getPurchaseDate() != null)) {
 
@@ -319,6 +327,9 @@ public class InvestController {
             purchase.setPurchaseDate(request.getPurchaseDate());
 
             if (existingBond.isPresent()) {
+                if (!existingBond.get().getIsBought()) {
+                    existingBond.get().setIsBought(true);
+                }
                 existingBond.get().getPurchaseList().add(purchase);
                 newOrUpdatedBond = bondsRepo.saveAndFlush(existingBond.get());
             } else {
