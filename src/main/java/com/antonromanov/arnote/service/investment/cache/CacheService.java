@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.service.investment.cache;
 
-import com.antonromanov.arnote.model.investing.cache.enums.CacheDictType;
+import com.antonromanov.arnote.domain.investing.dto.cache.enums.CacheDictType;
 import java.time.LocalDateTime;
 import java.util.List;
 

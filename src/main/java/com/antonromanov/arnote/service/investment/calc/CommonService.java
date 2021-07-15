@@ -1,13 +1,13 @@
 package com.antonromanov.arnote.service.investment.calc;
 
+import com.antonromanov.arnote.domain.investing.dto.response.*;
 import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.investing.Bond;
-import com.antonromanov.arnote.model.investing.BondType;
-import com.antonromanov.arnote.model.investing.response.*;
-import com.antonromanov.arnote.model.investing.response.enums.Currencies;
-import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
+import com.antonromanov.arnote.domain.investing.dto.common.Bond;
+import com.antonromanov.arnote.domain.investing.dto.common.BondType;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.service.investment.calc.bonds.BondCalcService;
 import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.service.investment.calc.shares.common.CalculateFactory;

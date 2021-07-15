@@ -1,13 +1,13 @@
 package com.antonromanov.arnote.service.investment.returns;
 
 import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.investing.Bond;
-import com.antonromanov.arnote.model.investing.BondType;
-import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
-import com.antonromanov.arnote.model.investing.response.DeltaRs;
-import com.antonromanov.arnote.model.investing.response.DividendRs;
-import com.antonromanov.arnote.model.investing.response.DivsDebug;
-import com.antonromanov.arnote.model.investing.response.enums.Targets;
+import com.antonromanov.arnote.domain.investing.dto.common.Bond;
+import com.antonromanov.arnote.domain.investing.dto.common.BondType;
+import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
+import com.antonromanov.arnote.domain.investing.dto.response.DeltaRs;
+import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
+import com.antonromanov.arnote.domain.investing.dto.response.DivsDebug;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Targets;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.service.investment.calc.CommonService;
 import com.antonromanov.arnote.service.investment.calc.bonds.BondCalcService;

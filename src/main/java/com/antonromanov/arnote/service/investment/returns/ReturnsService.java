@@ -1,8 +1,8 @@
 package com.antonromanov.arnote.service.investment.returns;
 
 import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.investing.response.DivsDebug;
-import com.antonromanov.arnote.model.investing.response.enums.Targets;
+import com.antonromanov.arnote.domain.investing.dto.response.DivsDebug;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Targets;
 
 import java.util.List;
 import java.util.Optional;

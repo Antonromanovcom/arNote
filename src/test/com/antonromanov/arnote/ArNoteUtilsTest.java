@@ -1,11 +1,11 @@
 package com.antonromanov.arnote;
 
 import com.antonromanov.arnote.model.investing.Bond;
-import com.antonromanov.arnote.model.investing.external.requests.ForeignRequests;
-import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
+import com.antonromanov.arnote.domain.investing.dto.external.requests.ForeignRequests;
+import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedInvestmentDataRs;
-import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.service.investment.calc.CommonService;

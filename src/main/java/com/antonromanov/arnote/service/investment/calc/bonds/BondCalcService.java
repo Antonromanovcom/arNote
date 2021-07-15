@@ -1,13 +1,13 @@
 package com.antonromanov.arnote.service.investment.calc.bonds;
 
 import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.investing.Bond;
-import com.antonromanov.arnote.model.investing.Purchase;
-import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
-import com.antonromanov.arnote.model.investing.response.DividendRs;
-import com.antonromanov.arnote.model.investing.response.enums.Currencies;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
+import com.antonromanov.arnote.domain.investing.dto.common.Bond;
+import com.antonromanov.arnote.domain.investing.dto.common.Purchase;
+import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
+import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
 import java.util.List;
 import java.util.Optional;
 

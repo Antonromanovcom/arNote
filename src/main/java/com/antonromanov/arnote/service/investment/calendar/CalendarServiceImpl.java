@@ -1,11 +1,11 @@
 package com.antonromanov.arnote.service.investment.calendar;
 
-import com.antonromanov.arnote.model.investing.BondType;
-import com.antonromanov.arnote.model.investing.CalendarRs;
-import com.antonromanov.arnote.model.investing.response.ConsolidatedInvestmentDataRs;
-import com.antonromanov.arnote.model.investing.response.MonthDetailRs;
-import com.antonromanov.arnote.model.investing.response.ReturnsPerMonthRs;
-import com.antonromanov.arnote.model.investing.response.enums.Months;
+import com.antonromanov.arnote.domain.investing.dto.common.BondType;
+import com.antonromanov.arnote.domain.investing.dto.common.CalendarRs;
+import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedInvestmentDataRs;
+import com.antonromanov.arnote.domain.investing.dto.response.MonthDetailRs;
+import com.antonromanov.arnote.domain.investing.dto.response.ReturnsPerMonthRs;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Months;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;

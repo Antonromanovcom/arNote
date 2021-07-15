@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.repositoty;
 
-import com.antonromanov.arnote.model.investing.Purchase;
+import com.antonromanov.arnote.domain.investing.dto.common.Purchase;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

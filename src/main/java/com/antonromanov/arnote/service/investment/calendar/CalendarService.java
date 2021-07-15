@@ -1,9 +1,8 @@
 package com.antonromanov.arnote.service.investment.calendar;
 
-import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.investing.CalendarRs;
-import com.antonromanov.arnote.model.investing.response.ConsolidatedInvestmentDataRs;
-import com.antonromanov.arnote.model.investing.response.ReturnsPerMonthRs;
+import com.antonromanov.arnote.domain.investing.dto.common.CalendarRs;
+import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedInvestmentDataRs;
+import com.antonromanov.arnote.domain.investing.dto.response.ReturnsPerMonthRs;
 
 import java.util.List;
 

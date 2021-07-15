@@ -1,15 +1,15 @@
 package com.antonromanov.arnote.service.investment.calc.bonds;
 
 import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.investing.Bond;
-import com.antonromanov.arnote.model.investing.Purchase;
-import com.antonromanov.arnote.model.investing.cache.enums.CacheDictType;
-import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
-import com.antonromanov.arnote.model.investing.response.DividendRs;
-import com.antonromanov.arnote.model.investing.response.enums.Currencies;
-import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
+import com.antonromanov.arnote.domain.investing.dto.common.Bond;
+import com.antonromanov.arnote.domain.investing.dto.common.Purchase;
+import com.antonromanov.arnote.domain.investing.dto.cache.enums.CacheDictType;
+import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
+import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
+import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTemplateOperation;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.service.investment.cache.CacheService;
 import com.antonromanov.arnote.service.investment.requestservice.RequestService;
 import lombok.extern.slf4j.Slf4j;

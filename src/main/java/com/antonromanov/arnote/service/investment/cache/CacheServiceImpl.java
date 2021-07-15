@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.service.investment.cache;
 
-import com.antonromanov.arnote.model.investing.cache.enums.CacheDictType;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.domain.investing.dto.cache.enums.CacheDictType;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

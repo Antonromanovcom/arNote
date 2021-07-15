@@ -1,10 +1,10 @@
 package com.antonromanov.arnote.service.investment.xmlparse;
 
 import com.antonromanov.arnote.exceptions.MoexXmlResponseMarshalingException;
-import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
-import com.antonromanov.arnote.model.investing.response.DividendRs;
-import com.antonromanov.arnote.model.investing.response.enums.Currencies;
-import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
+import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
+import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.common.CommonMoexDoc;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

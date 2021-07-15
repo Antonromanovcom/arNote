@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.service.investment.calc.shares.common;
 
-import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
 import com.antonromanov.arnote.service.investment.calc.shares.SharesCalcService;
 
 /**

@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.repositoty;
 
 import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.investing.Bond;
+import com.antonromanov.arnote.domain.investing.dto.common.Bond;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

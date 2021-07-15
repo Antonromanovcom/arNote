@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.model;
 
 
-import com.antonromanov.arnote.model.investing.InvestingSortMode;
+import com.antonromanov.arnote.domain.investing.dto.common.InvestingSortMode;
 import com.antonromanov.arnote.model.wish.SortMode;
 import com.antonromanov.arnote.model.wish.enums.FilterMode;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
