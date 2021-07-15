@@ -6,10 +6,10 @@ import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTe
 import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedInvestmentDataRs;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
-import com.antonromanov.arnote.repositoty.BondsRepo;
-import com.antonromanov.arnote.repositoty.UsersRepo;
-import com.antonromanov.arnote.service.investment.calc.CommonService;
-import com.antonromanov.arnote.service.investment.requestservice.RequestService;
+import com.antonromanov.arnote.domain.wish.repositoty.BondsRepo;
+import com.antonromanov.arnote.domain.wish.repositoty.UsersRepo;
+import com.antonromanov.arnote.domain.investing.service.calc.CommonService;
+import com.antonromanov.arnote.domain.investing.service.requestservice.RequestService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

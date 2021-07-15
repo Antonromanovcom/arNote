@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.security;
 
-import com.antonromanov.arnote.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
