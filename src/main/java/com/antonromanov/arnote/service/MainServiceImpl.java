@@ -61,7 +61,7 @@ public class MainServiceImpl implements MainService {
                 .monthNumber(computerMonthNumber(maxPrior + 1 > 12 ? (maxPrior + 1 - 12) : maxPrior + 1).getMonthValue())
                 .monthName(computerMonthNumber(maxPrior).getMonth().getDisplayName(TextStyle.FULL_STANDALONE,
                         Locale.getDefault()))
-                .year(String.valueOf(getCurrentYear(maxPrior)))
+                .year(String.valueOf(computerMonthNumber(maxPrior).getYear()))
                 .colspan(2)
                 .sum(wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck))
                 .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice)
