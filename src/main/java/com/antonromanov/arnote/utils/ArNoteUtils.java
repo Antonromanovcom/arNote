@@ -277,6 +277,9 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         Date date = new Date();
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         int month = localDate.getMonthValue();
+        log.warn(" Если (month + (priority - 1)> 12, то есть {} + {} - 1 > 12",  month, priority);
+        log.warn(" Тогда (month + (priority - 1)) - 12 и это равно {}",  ((month + (priority - 1)) - 12));
+        log.warn(" А иначе (month + (priority - 1)) и это будет",  (month + (priority - 1)));
         return Month.of((month + (priority - 1)) > 12 ? (month + (priority - 1)) - 12 : (month + (priority - 1))).getValue();
     }
 

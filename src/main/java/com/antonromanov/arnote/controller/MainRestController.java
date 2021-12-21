@@ -119,7 +119,7 @@ public class MainRestController extends ControllerBase {
             if (mainService.getAllWishesByUserId(localUser).size() > 0) {
 
                 DtoWithOrder dtOwithOrder = new DtoWithOrder(); //todo: билдер
-                String result = "";
+                String result;
                 String finalSortType = sortType; //todo: очень не красивое решение - надо что-то с этим делать.
                 wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
 
