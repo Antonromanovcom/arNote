@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.controller;
 
-import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+
 import com.antonromanov.arnote.exceptions.BadTickerException;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.ArNoteUser;
@@ -16,14 +16,11 @@ import com.antonromanov.arnote.service.investment.calendar.CalendarService;
 import com.antonromanov.arnote.service.investment.returns.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.constraints.NotNull;
-import java.lang.reflect.Array;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import static com.antonromanov.arnote.utils.ArNoteUtils.complexPredicate;
 
 

@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.format.TextStyle;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,7 +40,7 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public int getMaxPriority(ArNoteUser user) {
+    public int getMaxPriority(ArNoteUser user) { //todo: описание!!!!!
         List<Wish> wishDTOList = wishRepository.getAllWithGroupOrder(user);
         Comparator<Wish> comparator = Comparator.comparing(Wish::getPriorityGroup);
 
@@ -54,10 +55,12 @@ public class MainServiceImpl implements MainService {
                                                            List<WishDTO> wishDTOListFiltered,
                                                            int maxPrior,
                                                            ArNoteUser user) {
+
         wishDTOListGlobal.add(WishDTOList.builder()
                 .wishList(wishDTOListFiltered)
-                .monthNumber(computerMonthNumber(maxPrior + 1 > 12 ? (maxPrior + 1 - 12) : maxPrior + 1))
-                .monthName(computerMonth(maxPrior))
+                .monthNumber(computerMonthNumber(maxPrior + 1 > 12 ? (maxPrior + 1 - 12) : maxPrior + 1).getMonthValue())
+                .monthName(computerMonthNumber(maxPrior).getMonth().getDisplayName(TextStyle.FULL_STANDALONE,
+                        Locale.getDefault()))
                 .year(String.valueOf(getCurrentYear(maxPrior)))
                 .colspan(2)
                 .sum(wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck))
@@ -96,14 +99,15 @@ public class MainServiceImpl implements MainService {
 
                 wishDTOListGlobal.add(WishDTOList.builder()
                         .wishList(wishDTOListFiltered)
-                        .monthNumber(computerMonthNumber(currentMonth))
-                        .monthName(computerMonth(currentMonth))
-                        .year(String.valueOf(getCurrentYear(currentMonth)))
+                        .monthNumber(computerMonthNumber(currentMonth).getMonthValue())
+                        .monthName(computerMonthNumber(currentMonth).getMonth().getDisplayName(TextStyle.FULL_STANDALONE,
+                                Locale.getDefault()))
+                        .year(String.valueOf(computerMonthNumber(currentMonth).getYear())) //todo: НАХУЯ ТУТ СТРИНГ-то ?????????
                         .colspan(2)
                         .sum(sum)
                         .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice)
                                 .reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary())
-                        .colorClass(getClassColorByMonth(computerMonthNumber(currentMonth), (wishDTOListFiltered.stream()
+                        .colorClass(getClassColorByMonth(computerMonthNumber(currentMonth).getMonthValue(), (wishDTOListFiltered.stream()
                                 .map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user)
                                 .getResidualSalary()))
                         .expanded(true)

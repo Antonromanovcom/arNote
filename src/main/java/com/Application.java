@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 @EnableCaching
 public class Application {
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
@@ -46,8 +47,6 @@ public class Application {
         factoryBean.setServiceLocatorInterface(CalculateFactory.class);
         return factoryBean;
     }
-
-   // MOEX("moexCalculator"), SPB("foreignCalculator");
 
     @Bean(name = "MOEX")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)

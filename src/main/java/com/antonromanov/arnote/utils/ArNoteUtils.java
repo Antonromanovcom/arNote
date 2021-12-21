@@ -264,47 +264,23 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return password;
     }
 
-    public static String computerMonth(Integer priority) {
-        log.warn("Метод computerMonth");
+    public static LocalDate computerMonthNumber(Integer priority) {
         Date date = new Date();
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        int month = localDate.getMonthValue();
-
-        Locale currentLocale = Locale.getDefault();
-
-        log.warn(" priority = {}",  priority);
-        log.warn(" Если (month + (priority - 1)> 12, то есть {} + {} - 1 > 12",  month, priority);
-        log.warn(" Тогда (month + (priority - 1)) - 12 и это равно =  {}",  ((month + (priority - 1)) - 12));
-        log.warn(" А иначе (month + (priority - 1)) и это будет = {}",  (month + (priority - 1)));
-
-        return Month.of((month + (priority - 1)) > 12 ? (month + (priority - 1)) - 12 : (month + (priority - 1)))
-                .getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
-    }
-
-    public static int computerMonthNumber(Integer priority) {
-        Date date = new Date();
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        int month = localDate.getMonthValue();
-        log.warn("Метод computerMonthNumber");
-        log.warn(" priority = {}",  priority);
-        log.warn(" Если (month + (priority - 1)> 12, то есть {} + {} - 1 > 12",  month, priority);
-        log.warn(" Тогда (month + (priority - 1)) - 12 и это равно =  {}",  ((month + (priority - 1)) - 12));
-        log.warn(" А иначе (month + (priority - 1)) и это будет = {}",  (month + (priority - 1)));
-        return Month.of((month + (priority - 1)) > 12 ? (month + (priority - 1)) - 12 : (month + (priority - 1))).getValue();
+        return localDate.plusMonths(Long.valueOf(priority));
     }
 
 
-    public static int getCurrentYear(Integer proirity) {
+    public static int getCurrentYear(Integer priority) {
         Date date = new Date();
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         int month = localDate.getMonthValue();
-        return (month + (proirity - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
+        return (month + (priority - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
     }
 
     public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
         return WishDTO.builder()
                 .id(w.getId())
-//				.wish(w.getWish().length()<50 ? w.getWish() : w.getWish().substring(0, 50) + "...")
                 .wish(w.getWish())
                 .price(w.getPrice())
                 .priority(w.getPriority())
@@ -313,7 +289,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 .url(w.getUrl())
                 .priorityGroup(w.getPriorityGroup())
                 .priorityGroupOrder(w.getPriorityGroupOrder())
-                .month(computerMonth(w.getPriorityGroup() == null ? maxPrior : w.getPriorityGroup()))
+                .month(computerMonthNumber((w.getPriorityGroup() == null ? maxPrior : w.getPriorityGroup())).getMonth().getDisplayName(TextStyle.FULL_STANDALONE,
+                        Locale.getDefault()))
                 .build();
     }
 
@@ -759,7 +736,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
             double tcsDeltaFinal = tinkoffSameLotButNewPrice - tkcAveragePurchasePrice;
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_FINAL, tcsDeltaFinal);
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_PERCENT, ((tcsDeltaFinal * 100) / tinkoffSameLotButNewPrice));
-        } else{
+        } else {
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_FINAL, 0.0D);
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_PERCENT, 0.0D);
         }
