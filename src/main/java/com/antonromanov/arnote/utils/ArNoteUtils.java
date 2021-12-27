@@ -18,7 +18,7 @@ import com.antonromanov.arnote.model.investing.response.enums.TinkoffDeltaFinalV
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
-import com.antonromanov.arnote.model.wish.Salary;
+import com.antonromanov.arnote.entity.common.Salary;
 import com.antonromanov.arnote.model.wish.Wish;
 import com.antonromanov.arnote.model.wish.WishDTO;
 import com.google.gson.Gson;
@@ -201,6 +201,19 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return salary;
     }
 
+    /**
+     * Конвертим пришедший json в новую Salary
+     */
+    public static Date localDateToDate(LocalDate date)  {
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+        return Date.from(date.atStartOfDay(defaultZoneId).toInstant());
+    }
+
+
+
+
+
+
 
     /**
      * Конвертим пришедший json в новый WISH
@@ -270,7 +283,14 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         int month = localDate.getMonthValue();
 
         Locale currentLocale = Locale.getDefault();
-        return Month.of((month + (proirity - 1)) > 12 ? (month + (proirity - 1)) - 12 : (month + (proirity - 1))).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
+        return Month.of((month + (proirity - 1)) > 12 ?
+                (month + (proirity - 1)) - 12 :
+                (month + (proirity - 1))).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
+    }
+
+    public static String getMonthByNumber(Integer montNumber) {
+        Locale currentLocale = Locale.getDefault();
+        return Month.of((montNumber)).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
     }
 
     public static int computerMonthNumber(Integer priority) {
@@ -746,7 +766,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
             double tcsDeltaFinal = tinkoffSameLotButNewPrice - tkcAveragePurchasePrice;
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_FINAL, tcsDeltaFinal);
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_PERCENT, ((tcsDeltaFinal * 100) / tinkoffSameLotButNewPrice));
-        } else{
+        } else {
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_FINAL, 0.0D);
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_PERCENT, 0.0D);
         }

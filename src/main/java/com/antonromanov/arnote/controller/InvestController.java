@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.controller;
 
-import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.BadTickerException;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.ArNoteUser;
@@ -11,19 +10,16 @@ import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
-import com.antonromanov.arnote.service.investment.calc.CommonService;
-import com.antonromanov.arnote.service.investment.calendar.CalendarService;
-import com.antonromanov.arnote.service.investment.returns.ReturnsService;
+import com.antonromanov.arnote.services.investment.calc.CommonService;
+import com.antonromanov.arnote.services.investment.calendar.CalendarService;
+import com.antonromanov.arnote.services.investment.returns.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.constraints.NotNull;
-import java.lang.reflect.Array;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import static com.antonromanov.arnote.utils.ArNoteUtils.complexPredicate;
 
 
@@ -232,8 +228,7 @@ public class InvestController {
     @GetMapping("/price-by-date")
     public CurrentPriceRs getCurrentPriceByTicker(Principal principal,
                                                   @RequestParam @NotNull String ticker,
-                                                  @RequestParam @NotNull String purchaseDate)
-            throws UserNotFoundException {
+                                                  @RequestParam @NotNull String purchaseDate) throws UserNotFoundException {
 
         log.info("============== GET CURRENT PRICE BY TICKER AND PURCHASE DATE ============== ");
         ArNoteUser user = getLocalUserFromPrincipal(principal);

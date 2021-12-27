@@ -2,6 +2,7 @@ package com.antonromanov.arnote.controller;
 
 import com.antonromanov.arnote.email.EmailSender;
 import com.antonromanov.arnote.email.EmailStatus;
+import com.antonromanov.arnote.entity.common.Salary;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.exceptions.enums.ErrorCodes;
@@ -10,7 +11,7 @@ import com.antonromanov.arnote.model.ResponseStatusDTO;
 import com.antonromanov.arnote.model.wish.*;
 import com.antonromanov.arnote.model.wish.enums.FilterMode;
 import com.antonromanov.arnote.repositoty.UsersRepo;
-import com.antonromanov.arnote.service.MainService;
+import com.antonromanov.arnote.services.MainService;
 import com.antonromanov.arnote.utils.ControllerBase;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +24,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.zone.ZoneRules;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -503,6 +505,39 @@ public class MainRestController extends ControllerBase {
 
         }, null, null, null, resp);
     }
+
+
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/ttt")
+    public ResponseEntity<String> ttt() {
+
+        int milliseconds = -360000;
+        int seconds = Math.toIntExact( TimeUnit.MILLISECONDS.toSeconds( milliseconds ) );
+        ZoneOffset targetOffset = ZoneOffset.ofTotalSeconds( seconds );
+
+        // Capture the current moment as seen in UTC (an offset of zero hours-minutes-seconds).
+        Instant now = Instant.now();
+
+        // Loop through all know time zones, comparing each one’s zone to the target zone.
+        List <ZoneId> hits = new ArrayList <>();
+        Set< String > zoneNames = ZoneId.getAvailableZoneIds();
+        for ( String zoneName : zoneNames )
+        {
+            ZoneId zoneId = ZoneId.of( zoneName );
+            ZoneRules rules = zoneId.getRules();
+            // ZoneRules rules = zoneId.getRules() ;
+            ZoneOffset offset = rules.getOffset( now );
+            if ( offset.equals( targetOffset ) )
+            {
+                hits.add( zoneId );
+            }
+        }
+        return ResponseEntity.ok("1");
+    }
+
+
+
 
 
     @CrossOrigin(origins = "*")
