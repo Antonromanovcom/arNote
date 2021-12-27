@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PutLegalClientManagerTaskRs>
+    <RqUID>b32858e538704611821d502b118d166e</RqUID>
+    <RqTm>2021-06-02T15:08:30Z</RqTm>
+    <SPName>urn:sbrfsystems:99-crmorg</SPName>
+    <SystemId>urn:sbrfsystems:99-ufs-sr</SystemId>
+    <Method>EFSZPUpdateAction</Method>
+    <Status>
+        <StatusCode>0</StatusCode>
+        <ServerStatusCode/>
+        <Severity>Info</Severity>
+        <StatusDesc/>
+    </Status>
+    <ManagerTaskInfo>
+        <ActionCRMId>1-3WUS3WLX</ActionCRMId>
+        <UserLogin>PUSHKAREV1-DA</UserLogin>
+        <Owner>
+            <FullName>Пушкарев Денис Андреевич</FullName>
+            <ContactInfo>
+                <PhoneNum/>
+                <EmailAddr>pushkarev.d.andre@omega.sbrf.ru</EmailAddr>
+            </ContactInfo>
+        </Owner>
+        <ClientRequestNumber/>
+        <EndDate>2021-06-02T12:08:30Z</EndDate>
+        <InitiatorFlg>0</InitiatorFlg>
+        <ModId>3</ModId>
+    </ManagerTaskInfo>
+</PutLegalClientManagerTaskRs>
+
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?><PutLegalClientManagerTaskRq>
+<RqUID>b32858e538704611821d502b118d166e</RqUID>
+<RqTm>2021-06-02T15:08:26.036+03:00</RqTm>
+<SPName>urn:sbrfsystems:99-ufs-sr</SPName>
+<SystemId>urn:sbrfsystems:99-crmorg</SystemId>
+<Method>EFSZPUpdateAction</Method>
+<UserLogin>Pushkarev1-DA</UserLogin>
+<InboundClientRequestId></InboundClientRequestId>
+<CreateManagerTaskProfile>
+    <ActionCRMId>1-3WUS3WLX</ActionCRMId>
+    <OrgRec/>
+    <Comments>
+        {"description":null,"code":"UNKNOWN","status":null,"typeTaskUzp":null,"isSalaryDeal":null,"groupResult":null,"form":null,"landing":null,"presentation":null}
+    </Comments>
+    <ApplicationType>Task</ApplicationType>
+    <ActivityStatus>Done</ActivityStatus>
+    <SBRFResult>Approved</SBRFResult>
+    <SBRFDecision>rejected</SBRFDecision>
+    <ListOfContacts/>
+    <ListOfSalesPoints/>
+    <ListOfComment>
+        <CommentInfo>
+            <CommentId>1-3WUS3WM4</CommentId>
+            <Comments>{"isAlone":null,"comments":"","codeOperation":null,"scenarioStatus":null,"opptyStage":null}
+            </Comments>
+        </CommentInfo>
+    </ListOfComment>
+</CreateManagerTaskProfile>
+</PutLegalClientManagerTaskRq>
