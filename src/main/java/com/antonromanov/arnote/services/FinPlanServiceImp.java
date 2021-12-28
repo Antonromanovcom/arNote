@@ -230,12 +230,16 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
      * @return
      */
     private Integer getFinalYear(ArNoteUser user) {
-        LocalDate creditDate = getLastCreditDate(getAllCredits(user));
-        LocalDate lastGoalsDate = getLastGoalsDate(globalGoalList);
         Integer yearFromApplicationProperties = curYear + finalYear;
-        return Stream.of(creditDate.getYear(), lastGoalsDate.getYear(), yearFromApplicationProperties)
-                .max(Integer::compareTo)
-                .orElse(yearFromApplicationProperties);
+        if (getLastCreditDate(getAllCredits(user)).isPresent()) {
+            LocalDate creditDate = getLastCreditDate(getAllCredits(user)).get();
+            LocalDate lastGoalsDate = getLastGoalsDate(globalGoalList);
+            return Stream.of(creditDate.getYear(), lastGoalsDate.getYear(), yearFromApplicationProperties)
+                    .max(Integer::compareTo)
+                    .orElse(yearFromApplicationProperties);
+        } else {
+            return yearFromApplicationProperties;
+        }
     }
 
 
@@ -545,14 +549,18 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
      * @param credits
      * @return
      */
-    public LocalDate getLastCreditDate(List<Credit> credits) {
-        return getCalculatedLoansTable(credits).getCalculatedLoansList().stream()
-                .map(v -> v.entrySet().stream()
-                        .max(Map.Entry.comparingByKey())
-                        .orElseThrow(FinPlanningException::new)
-                        .getKey())
-                .max(LocalDate::compareTo)
-                .orElse(LocalDate.now());
+    public Optional<LocalDate> getLastCreditDate(List<Credit> credits) {
+         try {
+             return getCalculatedLoansTable(credits).getCalculatedLoansList().stream()
+                     .map(v -> v.entrySet().stream()
+                             .max(Map.Entry.comparingByKey())
+                             // .map(r->r.getKey())).max(rr->rr.m)
+                             .orElseThrow(FinPlanningException::new)
+                             .getKey())
+                     .max(LocalDate::compareTo);
+         } catch (RuntimeException e){
+             return Optional.empty();
+         }
     }
 
     /**
