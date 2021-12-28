@@ -53,13 +53,11 @@ public class MainServiceImpl implements MainService {
                                                            List<WishDTO> wishDTOListFiltered,
                                                            int maxPrior,
                                                            ArNoteUser user) {
-
         wishDTOListGlobal.add(WishDTOList.builder()
                 .wishList(wishDTOListFiltered)
-                .monthNumber(computerMonthNumber(maxPrior + 1 > 12 ? (maxPrior + 1 - 12) : maxPrior + 1).getMonthValue())
-                .monthName(computerMonthNumber(maxPrior).getMonth().getDisplayName(TextStyle.FULL_STANDALONE,
-                        Locale.getDefault()))
-                .year(String.valueOf(computerMonthNumber(maxPrior).getYear()))
+                .monthNumber(computerMonthNumber(maxPrior + 1 > 12 ? (maxPrior + 1 - 12) : maxPrior + 1))
+                .monthName(computerMonth(maxPrior))
+                .year(String.valueOf(getCurrentYear(maxPrior)))
                 .colspan(2)
                 .sum(wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck))
                 .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice)
