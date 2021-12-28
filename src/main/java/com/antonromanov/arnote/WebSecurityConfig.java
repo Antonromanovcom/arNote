@@ -36,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/").permitAll()
 				.antMatchers("/*.js").permitAll()
 				.antMatchers(HttpMethod.POST, "/login", "/rest/wishes/users").permitAll()
-				.antMatchers(HttpMethod.GET, "/login", "/favicon.ico", "/investing", "/401").permitAll()
+				.antMatchers(HttpMethod.GET, "/login", "/favicon.ico", "/investing", "/401", "/months").permitAll()
 				// Need authentication.
 				.anyRequest().authenticated()
 				.and()

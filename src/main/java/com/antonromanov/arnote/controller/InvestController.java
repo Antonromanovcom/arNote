@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.controller;
 
+
 import com.antonromanov.arnote.exceptions.BadTickerException;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.ArNoteUser;

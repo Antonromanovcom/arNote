@@ -13,6 +13,7 @@ import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.FoundInstrumentRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
 import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.enums.Months;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.enums.TinkoffDeltaFinalValuesType;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
@@ -32,9 +33,9 @@ import org.passay.PasswordGenerator;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.time.*;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -42,7 +43,6 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -304,14 +304,12 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     public static int getCurrentYear(Integer proirity) {
         Date date = new Date();
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        int month = localDate.getMonthValue();
-        return (month + (proirity - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
+        return localDate.plusMonths(Long.valueOf(priority));
     }
 
     public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
         return WishDTO.builder()
                 .id(w.getId())
-//				.wish(w.getWish().length()<50 ? w.getWish() : w.getWish().substring(0, 50) + "...")
                 .wish(w.getWish())
                 .price(w.getPrice())
                 .priority(w.getPriority())
@@ -320,7 +318,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 .url(w.getUrl())
                 .priorityGroup(w.getPriorityGroup())
                 .priorityGroupOrder(w.getPriorityGroupOrder())
-                .month(computerMonth(w.getPriorityGroup() == null ? maxPrior : w.getPriorityGroup()))
+                .month(computerMonthNumber((w.getPriorityGroup() == null ? maxPrior : w.getPriorityGroup())).getMonth().getDisplayName(TextStyle.FULL_STANDALONE,
+                        Locale.getDefault()))
                 .build();
     }
 
@@ -511,17 +510,9 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 log.error("Ошибка парсинга даты: {}", monthAndYear);
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
             } else {
-                int minMonth = (YearMonth.now().getMonthValue()); // приоритет = 1
-                log.info("Текущий Месяц: {}", minMonth);
-                if ((Calendar.getInstance().get(Calendar.YEAR)) == Integer.parseInt(year)) {
-                    log.info("Перемещаем желание в рамках текущего года");
-                    log.info("Разница между приоритетами: {}", monthNameToNumber(month) - minMonth + 1);
-                    return monthNameToNumber(month) - minMonth + 1; // разница между приоритетами;
-                } else {
-                    log.info("Указан НЕ текущий год");
-                    log.info("Разница между приоритетами: {}", (12 - minMonth) + 1 + monthNameToNumber(month));
-                    return (12 - minMonth) + 1 + monthNameToNumber(month); // разница между приоритетами;
-                }
+
+                return 1 + (LocalDate.now().plusMonths(ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
+                                monthNameToNumber(month), 1))).getMonthValue());
             }
         } else if (Pattern.compile("[A-Za-z]+ [0-9]+").matcher(monthAndYear).find()) {
 
@@ -536,17 +527,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 log.error("Ошибка парсинга даты: {}", monthAndYear);
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
             } else {
-                int minMonth = (YearMonth.now().getMonthValue()); // приоритет = 1
-                log.info("Текущий Месяц: {}", minMonth);
-                if ((Calendar.getInstance().get(Calendar.YEAR)) == Integer.parseInt(year)) {
-                    log.info("Перемещаем желание в рамках текущего года");
-                    log.info("Разница между приоритетами: {}", monthNameToNumber(month) - minMonth + 1);
-                    return monthNameToNumber(convertEnglishNames(month)) - minMonth + 1; // разница между приоритетами;
-                } else {
-                    log.info("Указан НЕ текущий год");
-                    log.info("Разница между приоритетами: {}", (12 - minMonth) + 1 + monthNameToNumber(convertEnglishNames(month)));
-                    return (12 - minMonth) + 1 + monthNameToNumber(convertEnglishNames(month)); // разница между приоритетами;
-                }
+                return 1+(LocalDate.now().plusMonths(ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
+                                monthNameToNumber(convertEnglishNames(month)), 1))).getMonthValue());
             }
 
         } else {

@@ -416,6 +416,8 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
 
         MoexDocumentRs document = new MoexDocumentRs();
         MoexDataRs documentData = new MoexDataRs();
+
+        
         ArrayList<MoexRowsRs> rows = filteredList.stream()
                 .map(r -> {
                     MoexRowsRs row = new MoexRowsRs();
