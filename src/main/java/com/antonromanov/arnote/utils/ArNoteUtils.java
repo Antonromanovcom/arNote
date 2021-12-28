@@ -309,9 +309,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 .url(w.getUrl())
                 .priorityGroup(w.getPriorityGroup())
                 .priorityGroupOrder(w.getPriorityGroupOrder())
-                .month(computerMonthNumber((w.getPriorityGroup() == null ?
-                        maxPrior :
-                        w.getPriorityGroup())).getMonth().getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault()))
+                .month(computerMonth(w.getPriorityGroup() == null ? maxPrior : w.getPriorityGroup()))
                 .build();
     }
 
