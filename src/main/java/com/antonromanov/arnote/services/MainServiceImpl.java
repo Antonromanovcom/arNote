@@ -95,15 +95,14 @@ public class MainServiceImpl implements MainService {
 
                 wishDTOListGlobal.add(WishDTOList.builder()
                         .wishList(wishDTOListFiltered)
-                        .monthNumber(computerMonthNumber(currentMonth).getMonthValue())
-                        .monthName(computerMonthNumber(currentMonth).getMonth().getDisplayName(TextStyle.FULL_STANDALONE,
-                                Locale.getDefault()))
-                        .year(String.valueOf(computerMonthNumber(currentMonth).getYear())) //todo: НАХУЯ ТУТ СТРИНГ-то ?????????
+                        .monthNumber(computerMonthNumber(currentMonth))
+                        .monthName(computerMonth(currentMonth))
+                        .year(String.valueOf(getCurrentYear(currentMonth)))
                         .colspan(2)
                         .sum(sum)
                         .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice)
                                 .reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary())
-                        .colorClass(getClassColorByMonth(computerMonthNumber(currentMonth).getMonthValue(), (wishDTOListFiltered.stream()
+                        .colorClass(getClassColorByMonth(computerMonthNumber(currentMonth), (wishDTOListFiltered.stream()
                                 .map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user)
                                 .getResidualSalary()))
                         .expanded(true)
