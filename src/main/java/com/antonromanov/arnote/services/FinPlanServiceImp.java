@@ -446,7 +446,9 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
 
 
                 Set<LocalDateTime> dates1 = salaryListByUser.stream()
-                        .map(Salary::getSalaryTimeStamp).distinct().collect(Collectors.toSet());
+                        .map(Salary::getSalaryTimeStamp).collect(Collectors.toSet());
+
+                Set<String> myStrings = new TreeSet<>();
 
 
            //    Set<LocalDateTime> dates = new HashSet<>();
