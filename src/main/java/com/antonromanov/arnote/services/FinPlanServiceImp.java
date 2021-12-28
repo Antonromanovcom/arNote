@@ -426,7 +426,8 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
      * @param user      - пользак.
      * @return
      */
-    public Optional<Salary> getClosestSalary(int year, int currMonth, ArNoteUser user) {
+    public Optional<Salary> getClosestSalary(int year, int currMonth, ArNoteUser user) { //todo: СРОЧНО ПЕРЕПИСАТЬ!
+
 
         List<Salary> salaryListByUser = salaryRepo.getLastSalaryListByUserDesc(user);
         LocalDateTime resultTime;
@@ -441,9 +442,14 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
 
              /*   NavigableSet<LocalDateTime> dates = salaryListByUser.stream()
                         .map(Salary::getSalaryTimeStamp).distinct()
-                        .collect(Collectors.toCollection((Supplier<TreeSet>) TreeSet::new));*/ //todo: Иван Тропин рассказал, что в Сэт можно прописать свой компаратор на этапе инициализации. Нам так не проще ли будет сделать?
+                        .collect(Collectors.toCollection((Supplier<TreeSet>) TreeSet::new)); *///todo: Иван Тропин рассказал, что в Сэт можно прописать свой компаратор на этапе инициализации. Нам так не проще ли будет сделать?
 
-               Set<LocalDateTime> dates = new HashSet<>();
+
+                Set<LocalDateTime> dates1 = salaryListByUser.stream()
+                        .map(Salary::getSalaryTimeStamp).distinct().collect(Collectors.toSet());
+
+
+           //    Set<LocalDateTime> dates = new HashSet<>();
 
                 if ((LocalDateTime.of(year, currMonth, 1, 0, 0)).isBefore(minTimeStamp)) {
             //        resultTime = dates.ceiling(LocalDateTime.of(year, currMonth, 1, 0, 0));
