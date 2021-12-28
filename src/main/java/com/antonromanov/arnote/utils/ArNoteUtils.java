@@ -295,7 +295,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return Month.of((month + (priority - 1)) > 12 ? (month + (priority - 1)) - 12 : (month + (priority - 1))).getValue();
     }
 
-    public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
+    /*public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
         return WishDTO.builder()
                 .id(w.getId())
                 .wish(w.getWish())
@@ -310,7 +310,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                         maxPrior :
                         w.getPriorityGroup())).getMonth().getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault()))
                 .build();
-    }
+    }*/
 
     public static String getClassColorByMonth(int month, boolean overdraft) {
 
