@@ -450,34 +450,21 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                         .map(Salary::getSalaryTimeStamp)
                         .orElseThrow(FinPlanningException::new);
 
-             /*   NavigableSet<LocalDateTime> dates = salaryListByUser.stream()
-                        .map(Salary::getSalaryTimeStamp).distinct()
-                        .collect(Collectors.toCollection((Supplier<TreeSet>) TreeSet::new)); *///todo: Иван Тропин рассказал, что в Сэт можно прописать свой компаратор на этапе инициализации. Нам так не проще ли будет сделать?
-
-
-                Set<LocalDateTime> dates1 = salaryListByUser.stream()
-                        .map(Salary::getSalaryTimeStamp).collect(Collectors.toSet());
-
-                Set<String> myStrings = new TreeSet<>();
-                NavigableSet<LocalDateTime> myStrings2 = convertToSet(salaryListByUser.stream()
-                        .map(e->e.getSalaryTimeStamp()).collect(Collectors.toList()));
-
-
-                NavigableSet<LocalDateTime> dates3 = new TreeSet<>();
-           //    Set<LocalDateTime> dates = new HashSet<>();
+                NavigableSet<LocalDateTime> dates = convertToSet(salaryListByUser.stream()
+                        .map(Salary::getSalaryTimeStamp).collect(Collectors.toList()));
 
                 if ((LocalDateTime.of(year, currMonth, 1, 0, 0)).isBefore(minTimeStamp)) {
-            //        resultTime = dates.ceiling(LocalDateTime.of(year, currMonth, 1, 0, 0));
+                    resultTime = dates.ceiling(LocalDateTime.of(year, currMonth, 1, 0, 0));
                 } else {
-            //        resultTime = dates.floor(LocalDateTime.of(year, currMonth, 1, 0, 0));
+                    resultTime = dates.floor(LocalDateTime.of(year, currMonth, 1, 0, 0));
                 }
 
-             //   if (resultTime == null) {
+                if (resultTime == null) {
                     return Optional.empty();
-            //    }
-               /* return salaryListByUser.stream()
+                }
+                return salaryListByUser.stream()
                         .filter(v -> v.getSalaryTimeStamp().isEqual(resultTime))
-                        .findFirst();*/
+                        .findFirst();
 
             } catch (Exception e) {
                 return Optional.empty();
@@ -832,8 +819,8 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
             Optional<Credit> loan = creditRepo.findCreditByUserAndId(arNoteUser, id);
             if (loan.isPresent()) {
                 List<Goal> goalsList = purchaseRepo.findAllByRepaymentAndUser(loan.get().getId(), arNoteUser);
-                if (goalsList.size()>0) {
-                   purchaseRepo.deleteInBatch(goalsList);
+                if (goalsList.size() > 0) {
+                    purchaseRepo.deleteInBatch(goalsList);
                 }
             }
             loan.ifPresent(creditRepo::delete);
