@@ -210,10 +210,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
 
 
-
-
-
-
     /**
      * Конвертим пришедший json в новый WISH
      */
@@ -299,13 +295,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return Month.of((month + (priority - 1)) > 12 ? (month + (priority - 1)) - 12 : (month + (priority - 1))).getValue();
     }
 
-
-    public static int getCurrentYear(Integer priority) {
-        Date date = new Date();
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        return localDate.plusMonths(Long.valueOf(priority));
-    }
-
     public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
         return WishDTO.builder()
                 .id(w.getId())
@@ -317,8 +306,9 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 .url(w.getUrl())
                 .priorityGroup(w.getPriorityGroup())
                 .priorityGroupOrder(w.getPriorityGroupOrder())
-                .month(computerMonthNumber((w.getPriorityGroup() == null ? maxPrior : w.getPriorityGroup())).getMonth().getDisplayName(TextStyle.FULL_STANDALONE,
-                        Locale.getDefault()))
+                .month(computerMonthNumber((w.getPriorityGroup() == null ?
+                        maxPrior :
+                        w.getPriorityGroup())).getMonth().getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault()))
                 .build();
     }
 
