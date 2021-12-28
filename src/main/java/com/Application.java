@@ -1,8 +1,8 @@
 package com;
 
-import com.antonromanov.arnote.service.investment.calc.shares.foreign.ForeignCalcServiceImpl;
-import com.antonromanov.arnote.service.investment.calc.shares.moex.MoexCalculateServiceImpl;
-import com.antonromanov.arnote.service.investment.calc.shares.common.CalculateFactory;
+import com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl;
+import com.antonromanov.arnote.services.investment.calc.shares.moex.MoexCalculateServiceImpl;
+import com.antonromanov.arnote.services.investment.calc.shares.common.CalculateFactory;
 import com.google.common.cache.CacheBuilder;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

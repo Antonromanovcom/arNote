@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.utils;
 
+import com.antonromanov.arnote.entity.common.Salary;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.JsonNullException;
 import com.antonromanov.arnote.exceptions.JsonParseException;
@@ -9,17 +10,15 @@ import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.InvestingFilterMode;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.external.requests.ForeignRequests;
+import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.FoundInstrumentRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;
-import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
-import com.antonromanov.arnote.model.investing.response.enums.Months;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.enums.TinkoffDeltaFinalValuesType;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
-import com.antonromanov.arnote.model.wish.Salary;
 import com.antonromanov.arnote.model.wish.Wish;
 import com.antonromanov.arnote.model.wish.WishDTO;
 import com.google.gson.Gson;
@@ -101,8 +100,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
     public static Gson createNullableGsonBuilder() {
 
-        // Trick to get the DefaultDateTypeAdapter instance
-        // Create a first instance a Gson
         Gson gson = new GsonBuilder()
                 .setDateFormat("dd/MM/yyyy")
                 .create();
@@ -117,8 +114,13 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return new GsonBuilder()
                 .registerTypeAdapter(Date.class, safeDateTypeAdapter)
                 .create();
+    }
 
-        //	return gson;
+    public static int getCurrentYear(Integer priority) {
+        Date date = new Date();
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        int month = localDate.getMonthValue();
+        return (month + (priority - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
     }
 
 
@@ -201,6 +203,15 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return salary;
     }
 
+    /**
+     * Конвертим пришедший json в новую Salary
+     */
+    public static Date localDateToDate(LocalDate date)  {
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+        return Date.from(date.atStartOfDay(defaultZoneId).toInstant());
+    }
+
+
 
     /**
      * Конвертим пришедший json в новый WISH
@@ -264,10 +275,27 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return password;
     }
 
-    public static LocalDate computerMonthNumber(Integer priority) {
+    public static String computerMonth(Integer proirity) {
         Date date = new Date();
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        return localDate.plusMonths(Long.valueOf(priority));
+        int month = localDate.getMonthValue();
+
+        Locale currentLocale = Locale.getDefault();
+        return Month.of((month + (proirity - 1)) > 12 ?
+                (month + (proirity - 1)) - 12 :
+                (month + (proirity - 1))).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
+    }
+
+    public static String getMonthByNumber(Integer montNumber) {
+        Locale currentLocale = Locale.getDefault();
+        return Month.of((montNumber)).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
+    }
+
+    public static int computerMonthNumber(Integer priority) {
+        Date date = new Date();
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        int month = localDate.getMonthValue();
+        return Month.of((month + (priority - 1)) > 12 ? (month + (priority - 1)) - 12 : (month + (priority - 1))).getValue();
     }
 
     public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
@@ -281,8 +309,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 .url(w.getUrl())
                 .priorityGroup(w.getPriorityGroup())
                 .priorityGroupOrder(w.getPriorityGroupOrder())
-                .month(computerMonthNumber((w.getPriorityGroup() == null ? maxPrior : w.getPriorityGroup())).getMonth().getDisplayName(TextStyle.FULL_STANDALONE,
-                        Locale.getDefault()))
+                .month(computerMonth(w.getPriorityGroup() == null ? maxPrior : w.getPriorityGroup()))
                 .build();
     }
 

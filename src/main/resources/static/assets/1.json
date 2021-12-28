@@ -1,0 +1,666 @@
+{
+  "success": true,
+  "body": {
+    "orgList": [
+      {
+        "orgId": "1-1BZIA6UV",
+        "name": "!АО \"Орбита\"",
+        "inn": "8542863308",
+        "kpp": "",
+        "fullAddress": "",
+        "actionList": [
+          {
+            "actionID": "1-1DBEFXBM",
+            "description": "",
+            "dateEnd": "2020-12-29T06:00:32Z",
+            "dateStart": "2020-12-29T05:45:32Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1DBEFXC0",
+              "args": {}
+            },
+            "code": "",
+            "contactInfo": {
+              "contactId": "1-1CYGNAIF",
+              "fullName": "Заполните Имя Заполните Фамилию ",
+              "jobTitle": "employee",
+              "email": "hfhfhf@gfgd.ru",
+              "mobilePhoneNum": "",
+              "extNumber": null
+            },
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1CYGNAIC",
+              "nameSalePoint": "Радуга"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "opptyId": "1-1DBEFRDK",
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "salesStage": "1-3H5AJMG",
+              "salesStageName": "01.Ввод данных",
+              "saleMethod": "1-3H5AJMF",
+              "saleMethodName": "ЗП проект - Малый, Микро",
+              "dealType": "SOLO"
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Talks"
+          },
+          {
+            "actionID": "1-1DJ9GXJK",
+            "description": "",
+            "dateEnd": "2021-02-03T15:07:37Z",
+            "dateStart": "2021-02-03T14:52:37Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1DJ9GXK0",
+              "args": {}
+            },
+            "code": "",
+            "contactInfo": {
+              "contactId": "1-1D03G4QK",
+              "fullName": "Заполните Имя Заполните Фамилию ",
+              "jobTitle": "employee",
+              "email": "",
+              "mobilePhoneNum": "+7 (999) 8887766",
+              "extNumber": null
+            },
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1D03G4QH",
+              "nameSalePoint": "Точка с телефоном"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "opptyId": "1-1DJ9FXZ5",
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "salesStage": "1-3H5AJMG",
+              "salesStageName": "01.Ввод данных",
+              "saleMethod": "1-3H5AJMF",
+              "saleMethodName": "ЗП проект - Малый, Микро",
+              "dealType": "SOLO"
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Talks"
+          },
+          {
+            "actionID": "1-1E3HK3TB",
+            "description": "",
+            "dateEnd": "2021-04-21T10:05:14Z",
+            "dateStart": "2021-04-21T09:35:14Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1E3HK3TQ",
+              "args": {}
+            },
+            "code": "literacy",
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1D1Q174O",
+              "nameSalePoint": "Кармен 3"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "opptyId": "1-1DXONXQZ",
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "1-3H5AJMG",
+              "salesStageName": "01.Ввод данных",
+              "saleMethod": "1-3H5AJMF",
+              "saleMethodName": "ЗП проект - Малый, Микро",
+              "dealType": "SOLO"
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "OfficeActivity"
+          },
+          {
+            "actionID": "1-1E3PRHW8",
+            "description": "",
+            "dateEnd": "2021-04-22T08:40:54Z",
+            "dateStart": "2021-04-22T08:25:54Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1E3PRHWN",
+              "args": {}
+            },
+            "code": "literacy",
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1DJQJVRI",
+              "nameSalePoint": "ЧВК Вагнера"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "opptyId": "1-1E3PQSG4",
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "1-3H5AJMG",
+              "salesStageName": "01.Ввод данных",
+              "saleMethod": "1-3H5AJMF",
+              "saleMethodName": "ЗП проект - Малый, Микро",
+              "dealType": "SOLO"
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Calling"
+          },
+          {
+            "actionID": "1-1DTIZ1CD",
+            "description": "",
+            "dateEnd": "2021-03-28T09:01:33Z",
+            "dateStart": "2021-03-19T06:59:30Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1DTIZ1CK",
+              "args": {}
+            },
+            "code": "literacy",
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1DJQJVRI",
+              "nameSalePoint": "ЧВК Вагнера"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Calling"
+          },
+          {
+            "actionID": "1-1DTDYCQA",
+            "description": "",
+            "dateEnd": "2021-03-28T09:01:33Z",
+            "dateStart": "2021-03-18T13:49:40Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1DTDYCQH",
+              "args": {}
+            },
+            "code": "literacy",
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1DJQJVRI",
+              "nameSalePoint": "ЧВК Вагнера"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Calling"
+          },
+          {
+            "actionID": "1-1DTDYCIV",
+            "description": "",
+            "dateEnd": "2021-03-28T09:01:33Z",
+            "dateStart": "2021-03-18T13:49:30Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1DTDYCJ2",
+              "args": {}
+            },
+            "code": "literacy",
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1DJQJVRI",
+              "nameSalePoint": "ЧВК Вагнера"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Calling"
+          },
+          {
+            "actionID": "1-1DTDWDTX",
+            "description": "",
+            "dateEnd": "2021-03-28T09:01:33Z",
+            "dateStart": "2021-03-18T13:49:26Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1DTDWDU4",
+              "args": {}
+            },
+            "code": "literacy",
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1DJQJVRI",
+              "nameSalePoint": "ЧВК Вагнера"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Calling"
+          },
+          {
+            "actionID": "1-1DTDYCDX",
+            "description": "",
+            "dateEnd": "2021-03-28T09:01:33Z",
+            "dateStart": "2021-03-18T13:49:21Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1DTDYCE4",
+              "args": {}
+            },
+            "code": "literacy",
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1DJQJVRI",
+              "nameSalePoint": "ЧВК Вагнера"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Calling"
+          },
+          {
+            "actionID": "1-1DTDWDMI",
+            "description": "",
+            "dateEnd": "2021-03-28T09:01:33Z",
+            "dateStart": "2021-03-18T13:49:13Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1DTDWDMP",
+              "args": {}
+            },
+            "code": "literacy",
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1DJQJVRI",
+              "nameSalePoint": "ЧВК Вагнера"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Calling"
+          },
+          {
+            "actionID": "1-1DT38CK2",
+            "description": "",
+            "dateEnd": "2021-03-28T09:01:33Z",
+            "dateStart": "2021-03-17T11:25:47Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1DT38CK9",
+              "args": {}
+            },
+            "code": "literacy",
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1DJQJVRI",
+              "nameSalePoint": "ЧВК Вагнера"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Calling"
+          },
+          {
+            "actionID": "1-1E8CLEO3",
+            "description": "",
+            "dateEnd": "2021-05-12T07:30:07Z",
+            "dateStart": "2021-05-12T06:30:07Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1E8CLEOB",
+              "args": {}
+            },
+            "code": "literacy",
+            "contactInfo": {
+              "contactId": "1-1CYGYGWD",
+              "fullName": "toBeDefined Лоплгп ",
+              "jobTitle": "employee",
+              "email": "hjfhjcjh@gugug.ru",
+              "mobilePhoneNum": "",
+              "extNumber": null
+            },
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1DJQJVRI",
+              "nameSalePoint": "ЧВК Вагнера"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Talks"
+          },
+          {
+            "actionID": "1-1DKIZZNE",
+            "description": "",
+            "dateEnd": "2021-05-12T12:28:11Z",
+            "dateStart": "2021-05-12T12:13:11Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1E8FEZTF",
+              "args": {}
+            },
+            "code": "UNKNOWN",
+            "contactInfo": {
+              "contactId": "1-1D02OONI",
+              "fullName": "Заполните Имя Заполните Фамилию ",
+              "jobTitle": "employee",
+              "email": "yfgfgf@dddf.tu",
+              "mobilePhoneNum": "",
+              "extNumber": null
+            },
+            "form": "hint",
+            "groupResult": "",
+            "isSalaryDeal": true,
+            "salesPointInfo": {
+              "salePointId": "1-1D02OONF",
+              "nameSalePoint": "Оранж тест про"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "",
+            "productName": "зарплатный продукт",
+            "presentation": "",
+            "applicationType": "Calling"
+          },
+          {
+            "actionID": "1-1ECHKJLA",
+            "description": "Предложить\nклиенту продукт\nСберЗдоровье Психолог-онлайн",
+            "dateEnd": "2021-12-30T03:30:22Z",
+            "dateStart": "2021-05-28T13:31:39Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "СберЗдоровье. Психолог- онлайн. ММБ",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1ECHKJLI",
+              "args": {
+                "comments": "Hola!"
+              }
+            },
+            "code": "SBER_PSIH_ONL_MMB",
+            "contactInfo": {
+              "contactId": "1-1CI4BI4I",
+              "fullName": "firstName1 lastName1 middleName1",
+              "jobTitle": "employee",
+              "email": "boss@yandex.ru",
+              "mobilePhoneNum": "+7 (915) 7777777",
+              "extNumber": null
+            },
+            "form": "satellite",
+            "groupResult": "all",
+            "isSalaryDeal": false,
+            "salesPointInfo": {
+              "salePointId": "1-1CZH477V",
+              "nameSalePoint": "Оранж тес1ы"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "https://lk.sberhealth.ru/checkout/mmb/163",
+            "productName": "зарплатный продукт",
+            "presentation": "https://marvelapp.com/prototype/7g3g19i/screen/77343620",
+            "applicationType": "Task"
+          },
+          {
+            "actionID": "1-1ECIF7C7",
+            "description": "Предложить\nклиенту продукт\nСберЗдоровье Психолог-онлайн",
+            "dateEnd": "2021-12-30T03:30:22Z",
+            "dateStart": "2021-05-28T13:31:29Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "СберЗдоровье. Психолог- онлайн. ММБ",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1ECIF7CF",
+              "args": {
+                "comments": "Hola!"
+              }
+            },
+            "code": "SBER_PSIH_ONL_MMB",
+            "contactInfo": {
+              "contactId": "1-1CI4BI4I",
+              "fullName": "firstName1 lastName1 middleName1",
+              "jobTitle": "employee",
+              "email": "boss@yandex.ru",
+              "mobilePhoneNum": "+7 (915) 7777777",
+              "extNumber": null
+            },
+            "form": "satellite",
+            "groupResult": "all",
+            "isSalaryDeal": false,
+            "salesPointInfo": {
+              "salePointId": "1-1CZH477V",
+              "nameSalePoint": "Оранж тес1ы"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "https://lk.sberhealth.ru/checkout/mmb/163",
+            "productName": "зарплатный продукт",
+            "presentation": "https://marvelapp.com/prototype/7g3g19i/screen/77343620",
+            "applicationType": "Task"
+          },
+          {
+            "actionID": "1-1ECFUXIC",
+            "description": "Предложить\nклиенту продукт\nСберЗдоровье Психолог-онлайн",
+            "dateEnd": "2021-12-30T03:30:22Z",
+            "dateStart": "2021-05-28T13:15:17Z",
+            "statusTaskUzp": "PLAN_ALL",
+            "typeTaskUzp": "СберЗдоровье. Психолог- онлайн. ММБ",
+            "timeIsAlmostOver": false,
+            "commentInfo": {
+              "commentId": "1-1ECFUXIK",
+              "args": {
+                "comments": "Hola!"
+              }
+            },
+            "code": "SBER_PSIH_ONL_MMB",
+            "contactInfo": {
+              "contactId": "1-1CI4BI4I",
+              "fullName": "firstName1 lastName1 middleName1",
+              "jobTitle": "employee",
+              "email": "boss@yandex.ru",
+              "mobilePhoneNum": "+7 (915) 7777777",
+              "extNumber": null
+            },
+            "form": "satellite",
+            "groupResult": "all",
+            "isSalaryDeal": false,
+            "salesPointInfo": {
+              "salePointId": "1-1CZH477V",
+              "nameSalePoint": "Оранж тес1ы"
+            },
+            "fullAddress": "",
+            "opptyInfo": {
+              "salesStageMzp": "MEET",
+              "sumInCurrencyEkv": 0,
+              "saleMethodMzp": "SALE_ZP",
+              "staffCount": 0,
+              "salesStage": "",
+              "salesStageName": "",
+              "saleMethod": "",
+              "saleMethodName": ""
+            },
+            "landing": "https://lk.sberhealth.ru/checkout/mmb/163",
+            "productName": "зарплатный продукт",
+            "presentation": "https://marvelapp.com/prototype/7g3g19i/screen/77343620",
+            "applicationType": "Task"
+          }
+        ]
+      }
+    ],
+    "status": {
+      "statusCode": 0,
+      "severity": "INFO",
+      "statusDesc": " RqUID: 240076ed91f54bb0932e350e66e5dd3e, 3528bdc94fb74de8b8a3526b7283b0a9 [GET_TASKS] |  RqUID: 240076ed91f54bb0932e350e66e5dd3e, 3528bdc94fb74de8b8a3526b7283b0a9, 3a3a227b3d0a415285e0ac6e3ce0a2e1, 0d1fa1e3e8ac4703a4239f61ccf1d848 [DEALS]"
+    },
+    "resultsLastPage": true
+  }
+}
