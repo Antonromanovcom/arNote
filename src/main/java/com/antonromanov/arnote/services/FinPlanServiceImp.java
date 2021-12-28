@@ -458,6 +458,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                 Set<String> myStrings2 = convertToSet(salaryListByUser.stream()
                         .map(e->e.getSalarydate().toString()).collect(Collectors.toList()));
 
+                NavigableSet<LocalDateTime> dates3 = new TreeSet<>();
            //    Set<LocalDateTime> dates = new HashSet<>();
 
                 if ((LocalDateTime.of(year, currMonth, 1, 0, 0)).isBefore(minTimeStamp)) {
