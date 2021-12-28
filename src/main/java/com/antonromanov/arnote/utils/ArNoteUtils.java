@@ -100,8 +100,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
     public static Gson createNullableGsonBuilder() {
 
-        // Trick to get the DefaultDateTypeAdapter instance
-        // Create a first instance a Gson
         Gson gson = new GsonBuilder()
                 .setDateFormat("dd/MM/yyyy")
                 .create();
@@ -116,8 +114,13 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return new GsonBuilder()
                 .registerTypeAdapter(Date.class, safeDateTypeAdapter)
                 .create();
+    }
 
-        //	return gson;
+    public static int getCurrentYear(Integer priority) {
+        Date date = new Date();
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        int month = localDate.getMonthValue();
+        return (month + (priority - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
     }
 
 
@@ -295,7 +298,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return Month.of((month + (priority - 1)) > 12 ? (month + (priority - 1)) - 12 : (month + (priority - 1))).getValue();
     }
 
-    /*public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
+    public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
         return WishDTO.builder()
                 .id(w.getId())
                 .wish(w.getWish())
@@ -310,7 +313,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                         maxPrior :
                         w.getPriorityGroup())).getMonth().getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault()))
                 .build();
-    }*/
+    }
 
     public static String getClassColorByMonth(int month, boolean overdraft) {
 
