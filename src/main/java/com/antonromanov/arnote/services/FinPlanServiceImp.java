@@ -28,7 +28,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -418,9 +417,14 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                         .orElseThrow(FinPlanningException::new));
     }
 
-    // Generic method to convert list to set
-    public static <T> Set<T> convertToSet(List<T> list)
-    {
+    /**
+     * Список в NavigableSet.
+     *
+     * @param list
+     * @param <T>
+     * @return
+     */
+    public static <T> NavigableSet<T> convertToSet(List<T> list) {
         return new TreeSet<>(list);
     }
 
@@ -455,8 +459,9 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                         .map(Salary::getSalaryTimeStamp).collect(Collectors.toSet());
 
                 Set<String> myStrings = new TreeSet<>();
-                Set<String> myStrings2 = convertToSet(salaryListByUser.stream()
-                        .map(e->e.getSalarydate().toString()).collect(Collectors.toList()));
+                NavigableSet<LocalDateTime> myStrings2 = convertToSet(salaryListByUser.stream()
+                        .map(e->e.getSalaryTimeStamp()).collect(Collectors.toList()));
+
 
                 NavigableSet<LocalDateTime> dates3 = new TreeSet<>();
            //    Set<LocalDateTime> dates = new HashSet<>();
