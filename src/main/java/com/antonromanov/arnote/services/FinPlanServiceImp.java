@@ -418,6 +418,12 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                         .orElseThrow(FinPlanningException::new));
     }
 
+    // Generic method to convert list to set
+    public static <T> Set<T> convertToSet(List<T> list)
+    {
+        return new TreeSet<>(list);
+    }
+
     /**
      * Получить ближайшую к дате ЗП по пользователю.
      *
@@ -449,7 +455,8 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                         .map(Salary::getSalaryTimeStamp).collect(Collectors.toSet());
 
                 Set<String> myStrings = new TreeSet<>();
-
+                Set<String> myStrings2 = convertToSet(salaryListByUser.stream()
+                        .map(e->e.getSalarydate().toString()).collect(Collectors.toList()));
 
            //    Set<LocalDateTime> dates = new HashSet<>();
 
