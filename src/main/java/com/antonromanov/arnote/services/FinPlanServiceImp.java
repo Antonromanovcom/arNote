@@ -550,17 +550,17 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
      * @return
      */
     public Optional<LocalDate> getLastCreditDate(List<Credit> credits) {
-         try {
-             return getCalculatedLoansTable(credits).getCalculatedLoansList().stream()
-                     .map(v -> v.entrySet().stream()
-                             .max(Map.Entry.comparingByKey())
-                             // .map(r->r.getKey())).max(rr->rr.m)
-                             .orElseThrow(FinPlanningException::new)
-                             .getKey())
-                     .max(LocalDate::compareTo);
-         } catch (RuntimeException e){
-             return Optional.empty();
-         }
+        try {
+            return getCalculatedLoansTable(credits).getCalculatedLoansList().stream()
+                    .map(v -> v.entrySet().stream()
+                            .max(Map.Entry.comparingByKey())
+                            // .map(r->r.getKey())).max(rr->rr.m)
+                            .orElseThrow(FinPlanningException::new)
+                            .getKey())
+                    .max(LocalDate::compareTo);
+        } catch (RuntimeException e) {
+            return Optional.empty();
+        }
     }
 
     /**
@@ -1027,16 +1027,34 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
 
         Optional<Freeze> currentFreeze = freezeRepo.findFreezeByUserAndMonthAndYear(arNoteUser, payload.getYear(), payload.getMonth());
 
-        return globalBalanceMap.entrySet().stream()
-                .filter(v -> v.getKey().getYear() == payload.getYear() && v.getKey().getMonthValue() == payload.getMonth())
-                .peek(t -> t.getValue().setDate(payload.getYear() + " " + getMonthByNumber(payload.getMonth())))
-                .peek(d -> d.getValue().setDateInDateFormat(localDateToDate(LocalDate.of(payload.getYear(),
-                        payload.getMonth(),
-                        1))))
-                .peek(f -> f.getValue().setFreeze(currentFreeze.isPresent()))
-                .findFirst()
-                .map(Map.Entry::getValue)
-                .orElse(FinalBalanceCalculationsRs.builder().build());
+        if (globalBalanceMap.size() < 1) { // если пользак только начал и у него ничего не заполнено
+            return FinalBalanceCalculationsRs.builder()
+                    .currentIncomeDetail(CurrentIncomeRs.builder().build())
+                    .emptyCalculations(true)
+                    .date(payload.getYear() + " " + getMonthByNumber(payload.getMonth()))
+                    .dateInDateFormat(localDateToDate(LocalDate.of(payload.getYear(),
+                            payload.getMonth(),
+                            1)))
+                    .build();
+        } else {
+            return globalBalanceMap.entrySet().stream()
+                    .filter(v -> v.getKey().getYear() == payload.getYear() && v.getKey().getMonthValue() == payload.getMonth())
+                    .peek(t -> t.getValue().setDate(payload.getYear() + " " + getMonthByNumber(payload.getMonth())))
+                    .peek(d -> d.getValue().setDateInDateFormat(localDateToDate(LocalDate.of(payload.getYear(),
+                            payload.getMonth(),
+                            1))))
+                    .peek(f -> f.getValue().setFreeze(currentFreeze.isPresent()))
+                    .findFirst()
+                    .map(Map.Entry::getValue)
+                    .orElse(FinalBalanceCalculationsRs.builder()
+                            .date(payload.getYear() + " " + getMonthByNumber(payload.getMonth()))
+                            .dateInDateFormat(localDateToDate(LocalDate.of(payload.getYear(),
+                                    payload.getMonth(),
+                                    1)))
+                            .currentIncomeDetail(CurrentIncomeRs.builder().build())
+                            .emptyCalculations(true)
+                            .build());
+        }
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.antonromanov.arnote.dto.rs;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
 import java.util.Date;
 
 
@@ -26,4 +26,5 @@ public class FinalBalanceCalculationsRs {
     String date; // дата
     Date dateInDateFormat; // дата
     Boolean freeze; // фриз-фикс есть по этой дате?
+    Boolean emptyCalculations; // флаг того, что пользак только начал и карта расчетов у него - все по нулям (null)
 }
