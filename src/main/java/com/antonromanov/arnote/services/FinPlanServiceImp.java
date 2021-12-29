@@ -256,7 +256,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
 
         globalBalanceMap.clear();
         List<Income> allIncomesByUser = incomeRepo.findAllByUserOrderByIncomeDateAsc(user); // все доходы юзера
-        if (allIncomesByUser.size() != 0) {
+     //   if (allIncomesByUser.size() != 0) {
 
             getYearsRange(yearsCount).forEach(y -> {
 
@@ -340,7 +340,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                     }
                 }
             });
-        }
+       // }
     }
 
     /**
@@ -1044,6 +1044,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                             payload.getMonth(),
                             1))))
                     .peek(f -> f.getValue().setFreeze(currentFreeze.isPresent()))
+                    .peek(f -> f.getValue().setEmptyCalculations(false))
                     .findFirst()
                     .map(Map.Entry::getValue)
                     .orElse(FinalBalanceCalculationsRs.builder()
