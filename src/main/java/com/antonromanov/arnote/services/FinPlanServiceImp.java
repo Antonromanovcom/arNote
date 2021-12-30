@@ -351,20 +351,27 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
      */
     private Integer getLoanPaymentsByDate(int curMonth, int curYear, ArNoteUser user) {
 
-        return getCalculatedLoansTable(getAllCredits(user)).getCalculatedLoansList().stream()
-                .map(l -> l.entrySet().stream()
-                        .filter(d -> d.getKey().getYear() == curYear && d.getKey().getMonthValue() == curMonth)
-                        .map(m -> m.getValue().getLoanList().stream()
-                                .findFirst()
-                                .map(v -> creditRepo.findById(v.getLoanId())
-                                        .map(Credit::getFullPayPerMonth)
-                                        .orElse(0)
-                                )
-                                .orElse(0))
-                        .reduce(Integer::sum)
-                        .orElse(0))
-                .findFirst()
-                .orElse(0);
+        List<Integer> resultSum = new ArrayList<>();
+
+        for (LinkedHashMap<LocalDate, LoanListTr> map: getCalculatedLoansTable(getAllCredits(user)).getCalculatedLoansList()){
+            Optional<LoanListTr> loan = map.entrySet().stream()
+                    .filter(d -> d.getKey().getYear() == curYear && d.getKey().getMonthValue() == curMonth)
+                    .map(Map.Entry::getValue)
+                    .findFirst();
+            if (loan.isPresent()){
+                List<Credit> ll = loan.get().getLoanList().stream().map(v -> creditRepo.findById(v.getLoanId())
+                        .orElseThrow(RuntimeException::new)).collect(Collectors.toList());
+
+                resultSum.add(loan.get().getLoanList().stream().map(v -> creditRepo.findById(v.getLoanId())
+                        .orElseThrow(RuntimeException::new))
+                        .map(Credit::getFullPayPerMonth)
+                .reduce(Integer::sum).orElse(0));
+
+            }
+        }
+
+        return resultSum.stream().reduce(Integer::sum).orElse(0);
+
     }
 
     /**
