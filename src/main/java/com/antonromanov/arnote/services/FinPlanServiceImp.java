@@ -588,17 +588,20 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
      */
     public CalculatedLoansTableTr getCalculatedLoansTable(List<Credit> credits) {
 
-        List<LinkedHashMap<LocalDate, LoanListTr>> resultList = new LinkedList<>();
-        LinkedHashMap<LocalDate, LoanListTr> payMap = new LinkedHashMap<>();
+        List<LinkedHashMap<LocalDate, LoanListTr>> resultList = new LinkedList<>(); // конечный ответ: список мап. Каждая мапа дата + данные по кредиту
+        LinkedHashMap<LocalDate, LoanListTr> payMap = new LinkedHashMap<>(); // сама мапа - дата + данные по кредиту.
 
+        /**
+         * Бегаем по всем переданным кредитам.
+         */
         credits.forEach(credit -> {
             LocalDate creditDate = new Date(credit.getStartDate()
                     .getTime())
                     .toInstant()
                     .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
+                    .toLocalDate(); // тащим стартовую дату кредита и конвертим в LocalDate
 
-            int paySum = credit.getStartAmount(); // сколько еще осталось платить
+            int paySum = credit.getStartAmount(); // сколько еще денег осталось платить
 
             int currentMonth = 0;
             while (paySum > 0) {
@@ -630,7 +633,9 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                     Integer repaymentByDateAndLoanId = creditWithRepaymentMap.entrySet().stream()
                             .filter(z -> creditRepo
                                     .findById(z.getKey())
-                                    .orElseThrow(FinPlanningException::new) != null)
+                                    .orElseThrow(FinPlanningException::new) != null &&
+                                    credit.getId().equals(z.getKey()))
+
                             .findFirst()
                             .map(Map.Entry::getValue)
                             .map(b -> {
@@ -664,18 +669,9 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                             .get()
                             .getValue();
 
-                    if (localLoanList.getLoanList() == null) {
-                        System.out.println("fuck");
-                    }
-
                     localLoanList.getLoanList().add(LoanTr.builder()
                             .amount(paySum)
                             .loanId(credit.getId())
-                            //  .fullPayPerMonth(credit.getFullPayPerMonth())
-                            // .creditNumber(credit.getCreditNumber())
-                            //  .description(credit.getDescription())
-                            //  .realPayPerMonth(credit.getRealPayPerMonth())
-                            //  .startDate(credit.getStartDate())
                             .build());
 
                 } else {
