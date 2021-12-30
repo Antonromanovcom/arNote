@@ -257,7 +257,6 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
         globalBalanceMap.clear();
         List<Income> allIncomesByUser = incomeRepo.findAllByUserOrderByIncomeDateAsc(user); // все доходы юзера
      //   if (allIncomesByUser.size() != 0) {
-
             getYearsRange(yearsCount).forEach(y -> {
 
                 int startPoint = 1;
@@ -291,14 +290,14 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                             getPreviousExpense(currMonth, (finalCalculatedYear - yearsCount + y)) - // минус предыдущий расход
                             monthlySpending - // минус среднемесячный расход
                             getLoanPaymentsByDate(currMonth, (finalCalculatedYear - yearsCount + y), user) + // минус покрытие кредитов
-                            currentIncome; // + ежемесячный доход
-                    currentSalaryByDate.map(Salary::getFullSalary); // + зарплата
+                            currentIncome + // + ежемесячный доход
+                    currentSalaryByDate.map(Salary::getFullSalary).orElse(0); // + зарплата
 
                     if (globalBalanceMap.isEmpty()) {
                         globalBalanceMap.put(LocalDate.of((finalCalculatedYear - yearsCount + y), currMonth, 1),
                                 FinalBalanceCalculationsRs.builder()
                                         .balance(currentFreeze.map(Freeze::getAmount).orElse(calculatedRemains))
-                                        .currentIncome(currentIncome)
+                                        .currentIncome(currentIncome + currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
                                         .loanPayments(getLoanPaymentsByDate(currMonth, (finalCalculatedYear - yearsCount + y), user))
                                         .monthlySpending(monthlySpending)
                                         .currentIncomeDetail(CurrentIncomeRs.builder()
@@ -331,7 +330,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                                                         .build())
                                                         .collect(Collectors.toList()))
                                                 .build())
-                                        .currentIncome(currentIncome)
+                                        .currentIncome(currentIncome + currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
                                         .loanPayments(getLoanPaymentsByDate(currMonth, (finalCalculatedYear - yearsCount + y), user))
                                         .monthlySpending(monthlySpending)
                                         .previousExpense(getPreviousExpense(currMonth, (finalCalculatedYear - yearsCount + y)))
