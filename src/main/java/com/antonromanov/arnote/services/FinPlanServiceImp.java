@@ -407,7 +407,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                 .filter(g -> dateToLocalDate(g.getStartDate()).getYear() == calculatedYear &&
                         dateToLocalDate(g.getStartDate()).getMonthValue() == calculatedMonth)
                 .map(Goal::getPrice)
-                .findFirst()
+                .reduce(Integer::sum)
                 .orElse(0);
     }
 
