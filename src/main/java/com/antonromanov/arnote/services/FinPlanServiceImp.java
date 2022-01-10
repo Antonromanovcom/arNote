@@ -3,6 +3,7 @@ package com.antonromanov.arnote.services;
 import com.antonromanov.arnote.dto.rq.*;
 import com.antonromanov.arnote.dto.rs.*;
 import com.antonromanov.arnote.dto.transfer.CalculatedLoansTableTr;
+import com.antonromanov.arnote.dto.transfer.ClosedLoanTr;
 import com.antonromanov.arnote.dto.transfer.LoanListTr;
 import com.antonromanov.arnote.dto.transfer.LoanTr;
 import com.antonromanov.arnote.entity.common.Salary;
@@ -72,6 +73,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
     // =================== БАЗОВЫЕ ГЛОБАЛЬНЫЕ КОНСТАНТЫ ======================
     private int curYear; // текущий год
     LinkedHashMap<LocalDate, FinalBalanceCalculationsRs> globalBalanceMap = new LinkedHashMap<>(); // глобальная мапа остатков
+    LinkedHashMap<Long, ClosedLoanTr> globalMapOfClosedLoans = new LinkedHashMap<>(); // глобальная мапа выплаченых кредитов
     List<Goal> globalGoalList = new ArrayList<>(); // глобальная мапа расходов
     FinPlanListRs globalConsolidatedTable; // глобальная консолидированная мапа чтобы каждый раз не ходить в БД
     // =================== ============================ ======================
@@ -256,90 +258,90 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
 
         globalBalanceMap.clear();
         List<Income> allIncomesByUser = incomeRepo.findAllByUserOrderByIncomeDateAsc(user); // все доходы юзера
-     //   if (allIncomesByUser.size() != 0) {
-            getYearsRange(yearsCount).forEach(y -> {
+        //   if (allIncomesByUser.size() != 0) {
+        getYearsRange(yearsCount).forEach(y -> {
 
-                int startPoint = 1;
-                if (y == 1) {
-                    startPoint = startMonth;
+            int startPoint = 1;
+            if (y == 1) {
+                startPoint = startMonth;
+            }
+
+            for (int currMonth = startPoint; currMonth <= 12; currMonth++) {
+
+                Optional<Salary> currentSalaryByDate = getClosestSalary((finalCalculatedYear - yearsCount + y), currMonth, user);
+                int monthlySpending = (currentSalaryByDate)
+                        .map(Salary::getLivingExpenses)
+                        .orElse(0); // средние ежемесячные расходы
+
+                int finalCurrMonth = currMonth;
+                Optional<Freeze> currentFreeze = freezeRepo.findFreezeByUserAndMonthAndYear(user,
+                        (finalCalculatedYear - yearsCount + y),
+                        currMonth);
+
+                List<Income> incomesForCurrentDate = allIncomesByUser.stream()
+                        .filter(i -> dateToLocalDate(i.getIncomeDate()).getYear() == (finalCalculatedYear - yearsCount + y)) // фильтруем по году
+                        .filter(i -> dateToLocalDate(i.getIncomeDate()).getMonthValue() == finalCurrMonth)
+                        .collect(Collectors.toList());
+                int currentIncome = incomesForCurrentDate
+                        .stream()
+                        .findFirst()
+                        .map(Income::getIncome)
+                        .orElse(0);
+
+                int calculatedRemains = getPreviousIncome(currMonth, (finalCalculatedYear - yearsCount + y)) - // предыдущий доход
+                        getPreviousExpense(currMonth, (finalCalculatedYear - yearsCount + y)) - // минус предыдущий расход
+                        monthlySpending - // минус среднемесячный расход
+                        getLoanPaymentsByDate(currMonth, (finalCalculatedYear - yearsCount + y), user) + // минус покрытие кредитов
+                        currentIncome + // + ежемесячный доход
+                        currentSalaryByDate.map(Salary::getFullSalary).orElse(0); // + зарплата
+
+                if (globalBalanceMap.isEmpty()) {
+                    globalBalanceMap.put(LocalDate.of((finalCalculatedYear - yearsCount + y), currMonth, 1),
+                            FinalBalanceCalculationsRs.builder()
+                                    .balance(currentFreeze.map(Freeze::getAmount).orElse(calculatedRemains))
+                                    .currentIncome(currentIncome + currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
+                                    .loanPayments(getLoanPaymentsByDate(currMonth, (finalCalculatedYear - yearsCount + y), user))
+                                    .monthlySpending(monthlySpending)
+                                    .currentIncomeDetail(CurrentIncomeRs.builder()
+                                            .salary(currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
+                                            .incomeList(incomesForCurrentDate.stream().map(i -> IncomeRs.builder()
+                                                    .id(i.getId())
+                                                    .incomeDate(i.getIncomeDate())
+                                                    .incomeDescription(i.getDescription())
+                                                    .amount(i.getIncome())
+                                                    .isBonus(i.getIsBonus())
+                                                    .build())
+                                                    .collect(Collectors.toList()))
+                                            .build())
+                                    .previousExpense(getPreviousExpense(currMonth, (finalCalculatedYear - yearsCount + y)))
+                                    .previousIncome(getPreviousIncome(currMonth, (finalCalculatedYear - yearsCount + y)))
+                                    .build());
+                } else {
+
+                    globalBalanceMap.put(LocalDate.of((finalCalculatedYear - yearsCount + y), currMonth, 1),
+                            FinalBalanceCalculationsRs.builder()
+                                    .balance(currentFreeze.map(Freeze::getAmount).orElse(calculatedRemains))
+                                    .currentIncomeDetail(CurrentIncomeRs.builder()
+                                            .salary(currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
+                                            .incomeList(incomesForCurrentDate.stream().map(i -> IncomeRs.builder()
+                                                    .id(i.getId())
+                                                    .incomeDate(i.getIncomeDate())
+                                                    .incomeDescription(i.getDescription())
+                                                    .isBonus(i.getIsBonus())
+                                                    .amount(i.getIncome())
+                                                    .build())
+                                                    .collect(Collectors.toList()))
+                                            .build())
+                                    .currentIncome(currentIncome + currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
+                                    .loanPayments(getLoanPaymentsByDate(currMonth, (finalCalculatedYear - yearsCount + y), user))
+                                    .monthlySpending(monthlySpending)
+                                    .previousExpense(getPreviousExpense(currMonth, (finalCalculatedYear - yearsCount + y)))
+                                    .previousIncome(getPreviousIncome(currMonth, (finalCalculatedYear - yearsCount + y)))
+                                    .build());
                 }
-
-                for (int currMonth = startPoint; currMonth <= 12; currMonth++) {
-
-                    Optional<Salary> currentSalaryByDate = getClosestSalary((finalCalculatedYear - yearsCount + y), currMonth, user);
-                    int monthlySpending = (currentSalaryByDate)
-                            .map(Salary::getLivingExpenses)
-                            .orElse(0); // средние ежемесячные расходы
-
-                    int finalCurrMonth = currMonth;
-                    Optional<Freeze> currentFreeze = freezeRepo.findFreezeByUserAndMonthAndYear(user,
-                            (finalCalculatedYear - yearsCount + y),
-                            currMonth);
-
-                    List<Income> incomesForCurrentDate = allIncomesByUser.stream()
-                            .filter(i -> dateToLocalDate(i.getIncomeDate()).getYear() == (finalCalculatedYear - yearsCount + y)) // фильтруем по году
-                            .filter(i -> dateToLocalDate(i.getIncomeDate()).getMonthValue() == finalCurrMonth)
-                            .collect(Collectors.toList());
-                    int currentIncome = incomesForCurrentDate
-                            .stream()
-                            .findFirst()
-                            .map(Income::getIncome)
-                            .orElse(0);
-
-                    int calculatedRemains = getPreviousIncome(currMonth, (finalCalculatedYear - yearsCount + y)) - // предыдущий доход
-                            getPreviousExpense(currMonth, (finalCalculatedYear - yearsCount + y)) - // минус предыдущий расход
-                            monthlySpending - // минус среднемесячный расход
-                            getLoanPaymentsByDate(currMonth, (finalCalculatedYear - yearsCount + y), user) + // минус покрытие кредитов
-                            currentIncome + // + ежемесячный доход
-                    currentSalaryByDate.map(Salary::getFullSalary).orElse(0); // + зарплата
-
-                    if (globalBalanceMap.isEmpty()) {
-                        globalBalanceMap.put(LocalDate.of((finalCalculatedYear - yearsCount + y), currMonth, 1),
-                                FinalBalanceCalculationsRs.builder()
-                                        .balance(currentFreeze.map(Freeze::getAmount).orElse(calculatedRemains))
-                                        .currentIncome(currentIncome + currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
-                                        .loanPayments(getLoanPaymentsByDate(currMonth, (finalCalculatedYear - yearsCount + y), user))
-                                        .monthlySpending(monthlySpending)
-                                        .currentIncomeDetail(CurrentIncomeRs.builder()
-                                                .salary(currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
-                                                .incomeList(incomesForCurrentDate.stream().map(i -> IncomeRs.builder()
-                                                        .id(i.getId())
-                                                        .incomeDate(i.getIncomeDate())
-                                                        .incomeDescription(i.getDescription())
-                                                        .amount(i.getIncome())
-                                                        .isBonus(i.getIsBonus())
-                                                        .build())
-                                                        .collect(Collectors.toList()))
-                                                .build())
-                                        .previousExpense(getPreviousExpense(currMonth, (finalCalculatedYear - yearsCount + y)))
-                                        .previousIncome(getPreviousIncome(currMonth, (finalCalculatedYear - yearsCount + y)))
-                                        .build());
-                    } else {
-
-                        globalBalanceMap.put(LocalDate.of((finalCalculatedYear - yearsCount + y), currMonth, 1),
-                                FinalBalanceCalculationsRs.builder()
-                                        .balance(currentFreeze.map(Freeze::getAmount).orElse(calculatedRemains))
-                                        .currentIncomeDetail(CurrentIncomeRs.builder()
-                                                .salary(currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
-                                                .incomeList(incomesForCurrentDate.stream().map(i -> IncomeRs.builder()
-                                                        .id(i.getId())
-                                                        .incomeDate(i.getIncomeDate())
-                                                        .incomeDescription(i.getDescription())
-                                                        .isBonus(i.getIsBonus())
-                                                        .amount(i.getIncome())
-                                                        .build())
-                                                        .collect(Collectors.toList()))
-                                                .build())
-                                        .currentIncome(currentIncome + currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
-                                        .loanPayments(getLoanPaymentsByDate(currMonth, (finalCalculatedYear - yearsCount + y), user))
-                                        .monthlySpending(monthlySpending)
-                                        .previousExpense(getPreviousExpense(currMonth, (finalCalculatedYear - yearsCount + y)))
-                                        .previousIncome(getPreviousIncome(currMonth, (finalCalculatedYear - yearsCount + y)))
-                                        .build());
-                    }
-                }
-            });
-       // }
+            }
+        });
+        // }
     }
 
     /**
@@ -353,19 +355,19 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
 
         List<Integer> resultSum = new ArrayList<>();
 
-        for (LinkedHashMap<LocalDate, LoanListTr> map: getCalculatedLoansTable(getAllCredits(user)).getCalculatedLoansList()){
+        for (LinkedHashMap<LocalDate, LoanListTr> map : getCalculatedLoansTable(getAllCredits(user)).getCalculatedLoansList()) {
             Optional<LoanListTr> loan = map.entrySet().stream()
                     .filter(d -> d.getKey().getYear() == curYear && d.getKey().getMonthValue() == curMonth)
                     .map(Map.Entry::getValue)
                     .findFirst();
-            if (loan.isPresent()){
+            if (loan.isPresent()) {
                 List<Credit> ll = loan.get().getLoanList().stream().map(v -> creditRepo.findById(v.getLoanId())
                         .orElseThrow(RuntimeException::new)).collect(Collectors.toList());
 
                 resultSum.add(loan.get().getLoanList().stream().map(v -> creditRepo.findById(v.getLoanId())
                         .orElseThrow(RuntimeException::new))
                         .map(Credit::getFullPayPerMonth)
-                .reduce(Integer::sum).orElse(0));
+                        .reduce(Integer::sum).orElse(0));
 
             }
         }
@@ -665,6 +667,14 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                     paySum = 0;
                 }
 
+                if (paySum == 0) {
+                    globalMapOfClosedLoans.put(credit.getId(), ClosedLoanTr.builder()
+                            .startDate(dateToLocalDate(credit.getStartDate()))
+                            .closeDate(paymentDate)
+                            .loanNumber(credit.getCreditNumber())
+                            .build());
+                }
+
 
                 if (payMap.entrySet().stream()
                         .filter(r -> r.getKey().isEqual(paymentDate)).findFirst().isPresent()) {
@@ -779,18 +789,34 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
         ArNoteUser arNoteUser = users.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
         int nextLoanNumber;
         try {
+            int savedLoanNumber;
             if (!getAllCredits(arNoteUser).isEmpty()) {
                 if (getAllCredits(arNoteUser).stream()
                         .max(Comparator.comparing(Credit::getCreditNumber))
-                        .orElseThrow(FinPlanningException::new).getCreditNumber() >= 5) {
-                    throw new AddNewCreditException();
+                        .orElseThrow(FinPlanningException::new).getCreditNumber() >= 5) { // заняты все слоты ?
+
+                    Map<Long, ClosedLoanTr> closedLoansForNow = globalMapOfClosedLoans.entrySet().stream()
+                            .filter(r -> r.getValue().getCloseDate().withDayOfMonth(1).isBefore(
+                                    dateToLocalDate(request.getStartDate()).withDayOfMonth(1)))
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+                    if (closedLoansForNow.size() > 0) { // нашли закрытые кредиты на момент startDate создаваемого кредита
+                        savedLoanNumber = closedLoansForNow.entrySet().stream()
+                                .min(Comparator.comparing(e -> e.getValue().getLoanNumber())) // берем минимальный из найденных
+                                .map(w -> w.getValue().getLoanNumber()).orElseThrow(RuntimeException::new);
+                        nextLoanNumber = savedLoanNumber;
+                    } else {
+                        throw new AddNewCreditException();
+                    }
+                } else {
+                    savedLoanNumber = getAllCredits(arNoteUser).stream()
+                            .max(Comparator.comparing(Credit::getCreditNumber))
+                            .map(Credit::getCreditNumber).orElse(0);
+
+                    nextLoanNumber = savedLoanNumber == 0 ? 1 : savedLoanNumber + 1;
                 }
 
-                int savedLoanNumber = getAllCredits(arNoteUser).stream()
-                        .max(Comparator.comparing(Credit::getCreditNumber))
-                        .map(Credit::getCreditNumber).orElse(0);
 
-                nextLoanNumber = savedLoanNumber == 0 ? 1 : savedLoanNumber + 1;
             } else {
                 nextLoanNumber = 1;
             }

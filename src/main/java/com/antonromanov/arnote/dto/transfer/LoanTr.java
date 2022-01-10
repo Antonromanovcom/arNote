@@ -17,9 +17,4 @@ import lombok.Data;
 public class LoanTr {
     Long loanId;
     Integer amount;
-    /*Integer fullPayPerMonth;
-    Integer realPayPerMonth;
-    Integer creditNumber;
-    Date startDate;
-    String description;*/
 }
