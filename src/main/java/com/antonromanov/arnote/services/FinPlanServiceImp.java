@@ -122,6 +122,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
         globalGoalList = purchaseRepo.findAllByUser(arNoteUser);
 
         int finalCalculatedYear = getFinalYear(arNoteUser);
+        CalculatedLoansTableTr calculatedLoansTable = getCalculatedLoansTable(getAllCredits(arNoteUser));
         int yearsCount = (startYear == null || startYear < 2000) ?
                 curYear - 2019 + 1 :
                 (finalCalculatedYear) - startYear + 1;
@@ -144,7 +145,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                         .month(getMonthByNumber(currMonth))
                         .monthNumber(currMonth)
                         .year(localYear)
-                        .credits(getCreditsFiltered(getAllCredits(arNoteUser), localYear, currMonth))
+                        .credits(getCreditsFiltered(calculatedLoansTable.getCalculatedLoansList(), localYear, currMonth))
                         .purchasePlan(getPurchasePlan(localYear, currMonth))
                         .remains(prepareFinalBalance(localYear, currMonth))
                         .freeze(isThisFreeze(localYear, currMonth, arNoteUser))
@@ -619,14 +620,13 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                 /**
                  * Ищем досрочные "погашалки" кредита
                  */
-                Map<Long, Map<LocalDate, Integer>> creditWithRepaymentMap =
+               /* List<Map<Long, Map<LocalDate, Integer>>> creditWithRepaymentMap1 =
                         globalGoalList
                                 .stream()
                                 .filter(r -> r.getRepayment() != null &&
                                         dateToLocalDate(r.getStartDate()).getYear() == paymentDate.getYear() &&
                                         dateToLocalDate(r.getStartDate()).getMonthValue() == paymentDate.getMonthValue()
                                 )
-                                .findFirst()
                                 .map(c -> {
                                             Map<Long, Map<LocalDate, Integer>> repaymentMap = new HashMap<>();
                                             Map<LocalDate, Integer> dateAndRepayment = new HashMap<>();
@@ -634,8 +634,29 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                                             repaymentMap.put(c.getRepayment(), dateAndRepayment);
                                             return repaymentMap;
                                         }
+                                ).collect(Collectors.toList());
+
+                Map<Long, Map<LocalDate, Integer>> creditWithRepaymentMap = creditWithRepaymentMap1.stream().findFirst().orElse(Collections.emptyMap());
+                Map<Long, Map<LocalDate, Integer>> creditWithRepaymentMap2 = creditWithRepaymentMap1.stream()
+                        .flatMap(m->m.entrySet().stream())
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2)->v1));*/
+
+                Map<Long, Map<LocalDate, Integer>> creditWithRepaymentMap =
+                        globalGoalList
+                                .stream()
+                                .filter(r -> r.getRepayment() != null &&
+                                        dateToLocalDate(r.getStartDate()).getYear() == paymentDate.getYear() &&
+                                        dateToLocalDate(r.getStartDate()).getMonthValue() == paymentDate.getMonthValue()
                                 )
-                                .orElse(Collections.emptyMap());
+                                .map(c -> {
+                                            Map<Long, Map<LocalDate, Integer>> repaymentMap = new HashMap<>();
+                                            Map<LocalDate, Integer> dateAndRepayment = new HashMap<>();
+                                            dateAndRepayment.put(dateToLocalDate(c.getStartDate()), c.getPrice());
+                                            repaymentMap.put(c.getRepayment(), dateAndRepayment);
+                                            return repaymentMap;
+                                        }
+                                ).flatMap(m -> m.entrySet().stream())
+                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1));
 
                 if (!creditWithRepaymentMap.isEmpty()) {
                     Integer repaymentByDateAndLoanId = creditWithRepaymentMap.entrySet().stream()
@@ -653,13 +674,12 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                                 Integer repayment = b.entrySet().stream().findFirst()
                                         .orElseThrow(FinPlanningException::new).getValue();
 
-                                if (tempDate.getYear() == paymentDate.getYear() &&
-                                        tempDate.getMonthValue() == paymentDate.getMonthValue()) {
-                                    return repayment;
-                                } else {
-                                    return 0;
-                                }
-                            }).orElse(0);
+                                return tempDate.getYear() == paymentDate.getYear() &&
+                                        tempDate.getMonthValue() == paymentDate.getMonthValue() ? repayment : 0;
+
+                            })
+                            //.reduce(Integer::sum)
+                            .orElse(0);
                     paySum = paySum - repaymentByDateAndLoanId;
                 }
 
@@ -722,12 +742,11 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
      * Получить и рассчитать текущие кредиты отфильтрованные по текущей дате.
      *
      * @param
-     * @param credits
      * @return
      */
-    public CreditListRs getCreditsFiltered(List<Credit> credits, Integer year, Integer month) {
+    public CreditListRs getCreditsFiltered(List<LinkedHashMap<LocalDate, LoanListTr>> calculatedLoansList, Integer year, Integer month) {
 
-        List<CreditRs> creditList = getCalculatedLoansTable(credits).getCalculatedLoansList().stream()
+        List<CreditRs> creditList = calculatedLoansList.stream()
                 .map(pm -> filterMap(pm, year, month))
                 .findFirst()
                 .orElse(null);
