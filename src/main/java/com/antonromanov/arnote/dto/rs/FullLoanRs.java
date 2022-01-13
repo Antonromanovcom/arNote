@@ -1,10 +1,8 @@
 package com.antonromanov.arnote.dto.rs;
 
-import com.antonromanov.arnote.entity.finplan.Credit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
 import java.util.Date;
 
 /**

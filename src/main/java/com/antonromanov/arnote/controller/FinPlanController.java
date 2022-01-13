@@ -99,6 +99,22 @@ public class FinPlanController {
     }
 
     /**
+     * Запросить свободные слоты по кредитам.
+     *
+     * @param principal
+     * @return
+     * @throws Exception
+     */
+    @CrossOrigin(origins = "*")
+    @PostMapping("/loan/slots")
+    public FreeLoanSlotsRs getLoansSlots(Principal principal, @RequestBody LoanByDateRq payload) throws UserNotFoundException {
+        log.info("Free Loans Slots by Date = {}", payload);
+        return service.getLoansSlots(principal, payload);
+    }
+
+
+
+    /**
      * Запросить кредит по дате.
      *
      * @param principal
@@ -107,7 +123,7 @@ public class FinPlanController {
      */
     @CrossOrigin(origins = "*")
     @PostMapping("/loan/bydate")
-    public FullLoansListRs loanByDate(Principal principal, @RequestBody LoanByDateRq payload) throws UserNotFoundException {
+    public FullLoansListRs loanByDate(Principal principal, @RequestBody LoanByDateRq payload) {
         log.info("Credit by Date = {}", payload);
         return service.getLoanByDate(payload, principal);
     }

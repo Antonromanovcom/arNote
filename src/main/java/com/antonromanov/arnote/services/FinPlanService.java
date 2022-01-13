@@ -173,4 +173,13 @@ public interface FinPlanService {
      * @return
      */
     SingleOperationRs deleteFreeze(Principal principal, Long year, Long month);
+
+    /**
+     * Получить свободные слоты по кредитам.
+     *
+     * @param principal
+     * @param payload
+     * @return
+     */
+    FreeLoanSlotsRs getLoansSlots(Principal principal, LoanByDateRq payload) throws UserNotFoundException;
 }

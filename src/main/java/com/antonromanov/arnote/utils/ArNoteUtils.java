@@ -1,10 +1,7 @@
 package com.antonromanov.arnote.utils;
 
 import com.antonromanov.arnote.entity.common.Salary;
-import com.antonromanov.arnote.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.exceptions.JsonNullException;
-import com.antonromanov.arnote.exceptions.JsonParseException;
-import com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException;
+import com.antonromanov.arnote.exceptions.*;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.InvestingFilterMode;
@@ -743,6 +740,31 @@ public class ArNoteUtils { //todo: надо будет разнести отде
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_PERCENT, 0.0D);
         }
         return resultMap;
+    }
+
+
+
+    /**
+     * Достать ближайшую дату к заданной.
+     *
+     * @param dates
+     * @param currentDate
+     * @return
+     */
+    public static Long getNearestDate(Map<Long, LocalDate> dates, LocalDate currentDate) {
+
+        NavigableSet<LocalDate> datesInSet = new TreeSet<>(dates.values());
+        LocalDate minDate =  datesInSet.lower(currentDate);
+
+        if (minDate!=null){
+            return dates.entrySet()
+                    .stream()
+                    .filter(w->w.getValue().isEqual(minDate))
+                    .findFirst()
+                    .map(Map.Entry::getKey).orElse(0L);
+        } else {
+        return null;
+        }
     }
 
     /**
