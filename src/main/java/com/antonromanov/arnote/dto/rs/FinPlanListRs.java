@@ -15,5 +15,4 @@ import java.util.Map;
 @AllArgsConstructor
 public class FinPlanListRs {
     private List<FinPlanRs> finPlans;
-
 }

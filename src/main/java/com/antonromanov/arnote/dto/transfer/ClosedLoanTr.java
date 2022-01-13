@@ -10,7 +10,6 @@ import java.time.LocalDate;
  * Кредит закрытый
  *
  */
-
 @Data
 @Builder
 @AllArgsConstructor
