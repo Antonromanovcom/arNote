@@ -1167,6 +1167,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                             .collect(Collectors.toList()))
                     .build();
         } catch (Exception e) {
+            log.error("Произошла ошибка при получении кредитов по дате: {}", e.getMessage());
             return FullLoansListRs.builder()
                     .loansList(Collections.emptyList())
                     .build();
