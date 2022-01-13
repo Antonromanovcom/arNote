@@ -166,7 +166,8 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                         .build());
             }
         });
-        return FinPlanListRs.builder().finPlans(finalList).build();
+        globalConsolidatedTable =  FinPlanListRs.builder().finPlans(finalList).build();
+        return globalConsolidatedTable;
     }
 
     /**
@@ -1157,7 +1158,6 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
     @Override
     public FullLoansListRs getLoanByDate(LoanByDateRq payload, Principal principal) { // todo: еще раз - все ответы в перспективе заворачиваем в один враппер со статусом. Единая обработка хендлером по всему приложению
         try {
-
             return FullLoansListRs.builder()
                     .loansList((globalConsolidatedTable.getFinPlans().stream()
                             .filter(f -> f.getYear() == dateToLocalDate(payload.getStartDate()).getYear() &&
