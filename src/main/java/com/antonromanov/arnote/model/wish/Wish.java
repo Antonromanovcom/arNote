@@ -17,9 +17,8 @@ public class Wish {
 
     @Id
     @Column(name="id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    /*@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wishes_seq_gen")
-    @SequenceGenerator(name = "wishes_seq_gen", sequenceName ="wishes_id_seq", allocationSize = 1, initialValue = 500)*/
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wishes_seq_gen")
+    @SequenceGenerator(name = "wishes_seq_gen", sequenceName ="wishes_id_seq", allocationSize = 1, initialValue = 500)
 
     private long id;
 
