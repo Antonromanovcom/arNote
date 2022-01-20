@@ -20,7 +20,7 @@ public class Wish {
     @Id
     @Column(name="id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wishes_seq_gen")
-    @SequenceGenerator(name = "wishes_seq_gen", sequenceName ="wishes_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "wishes_seq_gen", sequenceName ="wishes_id_seq")
     private long id;
 
     @Column(name = "wish")
