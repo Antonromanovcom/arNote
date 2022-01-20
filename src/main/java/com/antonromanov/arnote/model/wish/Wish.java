@@ -1,9 +1,7 @@
 package com.antonromanov.arnote.model.wish;
 
 import javax.persistence.*;
-
 import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.wish.WishGroup;
 import lombok.*;
 import java.util.Date;
 
@@ -20,7 +18,7 @@ public class Wish {
     @Id
     @Column(name="id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wishes_seq_gen")
-    @SequenceGenerator(name = "wishes_seq_gen", sequenceName ="wishes_id_seq")
+    @SequenceGenerator(name = "wishes_seq_gen", sequenceName ="wishes_id_seq", allocationSize = 1, initialValue = 500)
     private long id;
 
     @Column(name = "wish")
