@@ -18,4 +18,5 @@ public class CreditRq {
     private Date startDate; // Дата взятия кредита
     private String desc; // Описание чтобы как-то отличать кредиты
     private Long id;
+    private Integer slotNumber;
 }
