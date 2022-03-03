@@ -64,7 +64,7 @@ public class Credit {
                 .startAmount(newLoan.getStartAmount() == null ? oldLoan.getStartAmount() : newLoan.getStartAmount())
                 .fullPayPerMonth(newLoan.getFullPayPerMonth() == null ? oldLoan.getFullPayPerMonth() : newLoan.getFullPayPerMonth())
                 .realPayPerMonth(newLoan.getRealPayPerMonth() == null ? oldLoan.getRealPayPerMonth() : newLoan.getRealPayPerMonth())
-                .creditNumber(oldLoan.getCreditNumber())
+                .creditNumber(newLoan.getSlotNumber() == null ? oldLoan.getCreditNumber() : newLoan.getSlotNumber())
                 .startDate(newLoan.getStartDate() == null ? oldLoan.getStartDate() : newLoan.getStartDate())
                 .user(user)
                 .description(newLoan.getDesc() == null ? oldLoan.getDescription() : newLoan.getDesc())

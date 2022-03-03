@@ -29,6 +29,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -67,6 +70,8 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
 
     @Value("${finplan.final.year}")
     private Integer finalYear; // + кол-во лет по которым считаем верхнюю границу диапазона отображаемого в консолидированной таблице
+
+    AtomicInteger atomicInt = new AtomicInteger(0);
 
 
     // =================== БАЗОВЫЕ ГЛОБАЛЬНЫЕ КОНСТАНТЫ ======================
@@ -133,14 +138,17 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
         ArNoteUser arNoteUser = users.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
         globalGoalList = purchaseRepo.findAllByUser(arNoteUser);
         int finalCalculatedYear = getFinalYear(arNoteUser);
-        CalculatedLoansTableTr calculatedLoansTable = getCalculatedLoansTable(getAllCredits(arNoteUser));
+        log.info("[SRV] Calculate Loans Table...");
+        CalculatedLoansTableTr calculatedLoansTable = getCalculatedLoansTable(getAllCredits(arNoteUser)); // todo: ** 1 **
+        log.info("[SRV] Calculate Loans Table - DONE");
         int yearsCount = calculateYearsCount(arNoteUser);
         if (startMonth == null || startMonth < 1 || startMonth > 12 || yearsCount == 1) {
             startMonth = 1;
         }
 
         List<FinPlanRs> finalList = new ArrayList<>();
-        calculateFullRemains(arNoteUser, startMonth, yearsCount, finalCalculatedYear, calculatedLoansTable);
+        calculateFullRemains(arNoteUser, startMonth, yearsCount, finalCalculatedYear, calculatedLoansTable); // todo: ** 2 ( => 1) **
+        log.info("[SRV] Calculate Full Remains Table - DONE");
         getYearsRange(yearsCount).forEach(y -> {
 
             int startPoint = 1;
@@ -167,6 +175,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                         .borderWidth(currMonth==12? "3px double #8B0000" : "1px solid grey")
                         .build());
             }
+            log.info("Year {} ", (finalCalculatedYear) - yearsCount + y);
         });
         globalConsolidatedTable = FinPlanListRs.builder().finPlans(finalList).build();
         return globalConsolidatedTable;
@@ -212,7 +221,6 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
     }
 
     private Integer prepareFinalBalance(int year, int month) {
-        log.info("[SRV] Prepare final Balance...");
         if (!globalBalanceMap.isEmpty()) {
             return globalBalanceMap.entrySet().stream()
                     .filter(v -> v.getKey().getYear() == year && v.getKey().getMonthValue() == month)
@@ -283,7 +291,6 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                                       CalculatedLoansTableTr calculatedLoansTable) {
 
         globalBalanceMap.clear();
-        log.info("Start calculating full remains data....");
         List<Income> allIncomesByUser = incomeRepo.findAllByUserOrderByIncomeDateAsc(user); // все доходы юзера
         List<Salary> salaryListByUser = salaryRepo.getLastSalaryListByUserDesc(user);
         List<Freeze> allFreezesByUser = freezeRepo.findAllByUser(user);
@@ -295,7 +302,6 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
             }
 
             for (int currMonth = startPoint; currMonth <= 12; currMonth++) {
-                log.info("[FR] [Cycle] Calculating " + (finalCalculatedYear - yearsCount + y) + " " + getMonthByNumber(currMonth));
                 Optional<Salary> currentSalaryByDate = getClosestSalary(salaryListByUser, (finalCalculatedYear - yearsCount + y), currMonth);
                 int monthlySpending = (currentSalaryByDate)
                         .map(Salary::getLivingExpenses)
@@ -521,7 +527,6 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
      * @return
      */
     private ConsolidatedPurchasesRs getPurchasePlan(int year, int month) {
-        log.info("[SRV] Gettin Purchase plan...");
         List<PurchasesRs> purchaseList = globalGoalList.stream()
                 .filter(p -> ((dateToLocalDate(p.getStartDate()))
                         .getMonthValue() == month && dateToLocalDate(p.getStartDate()).getYear() == year))
@@ -747,7 +752,7 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
      * @return
      */
     public CreditListRs getCreditsFiltered(List<LinkedHashMap<LocalDate, LoanListTr>> calculatedLoansList, Integer year, Integer month) {
-        log.info("[SRV] Gettin Loans Filtered...");
+
         List<CreditRs> creditList = calculatedLoansList.stream()
                 .map(pm -> filterMap(pm, year, month))
                 .findFirst()
@@ -1492,4 +1497,39 @@ public class FinPlanServiceImp implements FinPlanService { //todo: класс б
                 .openSlots(Arrays.asList(1, 2, 3, 4, 5))
                 .build();
     }
+
+    /**
+     * Стартовать вычисления консолидированной таблицы.
+     *
+     * @param principal
+     * @return
+     */
+    @Override
+    public void startCalculation(Principal principal) {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        IntStream.range(0, 1000)
+                .forEach(i -> {
+                    Runnable task = () ->{
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        atomicInt.updateAndGet(n -> n + 2);
+
+                    };
+
+                    executor.submit(task);
+                });
+
+        executor.shutdown();
+    }
+
+    @Override
+    public Integer getThreadStatus() {
+        return atomicInt.get();
+    }
+
+
 }

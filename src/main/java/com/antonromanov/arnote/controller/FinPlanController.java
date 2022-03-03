@@ -7,6 +7,7 @@ import com.antonromanov.arnote.services.FinPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 
@@ -53,6 +54,48 @@ public class FinPlanController {
     public FinPlanListRs getFinPlanTableFromDb(Principal principal) throws Exception {
         log.info("Get Consolidated List From DB...");
         return service.getFinPlanTableFromDb(principal);
+    }
+
+    /**
+     * Пытаемся запихнуть получение консолдированной таблы в поток
+     *
+     * @param principal
+     * @return
+     * @throws Exception
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping("/consolidated/thread/start")
+    public SingleOperationRs getFinPlanTableFromDbStart(Principal principal) throws Exception {
+        log.info("Get Consolidated List From DB. Start calculation in Thread...");
+        service.startCalculation(principal);
+        return SingleOperationRs.builder()
+                .status(ResponseStatusRs.builder()
+                        .status("Thread Started")
+                        .description("Thread Started")
+                        .code(200)
+                        .build())
+                .build();
+    }
+
+    /**
+     * Получить статус потока
+     *
+     * @param principal
+     * @return
+     * @throws Exception
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping("/consolidated/thread/get")
+    public SingleOperationRs getThreadStatus(Principal principal) throws Exception {
+        log.info("Get Thread Status");
+
+        return SingleOperationRs.builder()
+                .status(ResponseStatusRs.builder()
+                        .status("INT = " + service.getThreadStatus())
+                        .description("Thread Status gained")
+                        .code(200)
+                        .build())
+                .build();
     }
 
     /**
@@ -111,7 +154,6 @@ public class FinPlanController {
         log.info("Free Loans Slots by Date = {}", payload);
         return service.getLoansSlots(principal, payload);
     }
-
 
 
     /**

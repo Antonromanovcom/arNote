@@ -182,4 +182,17 @@ public interface FinPlanService {
      * @return
      */
     FreeLoanSlotsRs getLoansSlots(Principal principal, LoanByDateRq payload) throws UserNotFoundException;
+
+    /**
+     * Стартовать вычисления консолидированной таблицы.
+     *
+     * @param principal
+     * @return
+     */
+    void startCalculation(Principal principal);
+
+    /**
+     * Получить статус потока
+     */
+    Integer getThreadStatus();
 }
