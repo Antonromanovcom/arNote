@@ -250,40 +250,51 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
             Map<String, Object> divList = response.map(r -> {
                 JSONObject obj = new JSONObject(response.get()).getJSONObject("chart");
                 JSONArray result = obj.getJSONArray("result");
-                return result.getJSONObject(0).getJSONObject("events").getJSONObject("dividends").toMap();
-            }).orElseThrow(MoexRequestException::new);
+                try {
+                    return result.getJSONObject(0).getJSONObject("events").getJSONObject("dividends").toMap();
+                } catch (Exception e) {
+                    return new HashMap<String, Object>();
+                }
+            }).orElse(new HashMap<>());
 
-            String currencyInfo = response.map(r -> {
-                JSONObject obj = new JSONObject(response.get()).getJSONObject("chart");
-                JSONArray result = obj.getJSONArray("result");
-                return result.getJSONObject(0).getJSONObject("meta").getString("currency");
-            }).orElseThrow(MoexRequestException::new);
+            ConsolidatedDividendsRs resultDivs;
+            if (divList.size()<1) {
+                 resultDivs = ConsolidatedDividendsRs.builder()
+                         .dividendList(null)
+                         .build();
+            } else {
+                String currencyInfo = response.map(r -> {
+                    JSONObject obj = new JSONObject(response.get()).getJSONObject("chart");
+                    JSONArray result = obj.getJSONArray("result");
+                    return result.getJSONObject(0).getJSONObject("meta").getString("currency");
+                }).orElseThrow(MoexRequestException::new);
 
-            Map<LocalDate, YahooDivRs> divListBasedOnLocalDatesAsKey = divList.entrySet().stream()
-                    .map(o -> {
-                        ObjectMapper mapper = new ObjectMapper();
-                        Map<String, Double> valueMap = mapper.convertValue(o.getValue(), Map.class);
-                        return new AbstractMap
-                                .SimpleEntry<LocalDate, YahooDivRs>(parseStringEpochMilDate(o.getKey()),
-                                YahooDivRs.builder()
-                                        .amount(valueMap.get("amount"))
-                                        .date(parseStringEpochMilDate(String.valueOf(valueMap.get("date"))))
-                                        .build());
-                    })
-                    .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+                Map<LocalDate, YahooDivRs> divListBasedOnLocalDatesAsKey = divList.entrySet().stream()
+                        .map(o -> {
+                            ObjectMapper mapper = new ObjectMapper();
+                            Map<String, Double> valueMap = mapper.convertValue(o.getValue(), Map.class);
+                            return new AbstractMap
+                                    .SimpleEntry<LocalDate, YahooDivRs>(parseStringEpochMilDate(o.getKey()),
+                                    YahooDivRs.builder()
+                                            .amount(valueMap.get("amount"))
+                                            .date(parseStringEpochMilDate(String.valueOf(valueMap.get("date"))))
+                                            .build());
+                        })
+                        .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
 
-            Map<LocalDate, YahooDivRs> mapSorted = new TreeMap<LocalDate, YahooDivRs>(divListBasedOnLocalDatesAsKey);
+                Map<LocalDate, YahooDivRs> mapSorted = new TreeMap<LocalDate, YahooDivRs>(divListBasedOnLocalDatesAsKey);
 
-            ConsolidatedDividendsRs resultDivs = ConsolidatedDividendsRs.builder()
-                    .dividendList(mapSorted.entrySet()
-                            .parallelStream()
-                            .map(e -> DividendRs.builder()
-                                    .registryCloseDate(e.getValue().getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                                    .currencyId(Currencies.search(currencyInfo))
-                                    .value(e.getValue().getAmount() * getCurrencyMultiplier(currencyInfo))
-                                    .build())
-                            .collect(Collectors.toList()))
-                    .build();
+                resultDivs = ConsolidatedDividendsRs.builder()
+                        .dividendList(mapSorted.entrySet()
+                                .parallelStream()
+                                .map(e -> DividendRs.builder()
+                                        .registryCloseDate(e.getValue().getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                                        .currencyId(Currencies.search(currencyInfo))
+                                        .value(e.getValue().getAmount() * getCurrencyMultiplier(currencyInfo))
+                                        .build())
+                                .collect(Collectors.toList()))
+                        .build();
+            }
 
             resultDivs.calculateSum();
             resultDivs.calculatePercent(getHistory(bond.getTicker(), null, null));

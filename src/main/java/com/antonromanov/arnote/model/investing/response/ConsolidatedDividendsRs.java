@@ -30,7 +30,7 @@ public class ConsolidatedDividendsRs {
      * Подсчитать сумму дивидендов.
      */
     public void calculateSum() {
-        if (this.getDividendList().size() > 0) {
+        if (this.getDividendList() != null && this.getDividendList().size() > 0) {
             this.divSum = dividendList.stream()
                     .filter(div -> (LocalDate.parse(div.getRegistryCloseDate())).getYear() == LocalDate.now().getYear() - 1)
                     .map(DividendRs::getValue)
@@ -48,7 +48,7 @@ public class ConsolidatedDividendsRs {
      * @param history - выборка по ставкам
      */
     public void calculatePercent(MoexDocumentRs history) {
-        if (this.getDividendList().size() > 0 && !Double.isNaN(divSum)) {
+        if (this.getDividendList() != null && this.getDividendList().size() > 0 && !Double.isNaN(divSum)) {
 
             Double v1 = dividendList.stream()
                     .filter(div -> (LocalDate.parse(div.getRegistryCloseDate())).getYear() == LocalDate.now().getYear() - 1)
