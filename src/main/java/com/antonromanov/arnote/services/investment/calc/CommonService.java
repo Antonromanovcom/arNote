@@ -83,7 +83,7 @@ public class CommonService {
      * @return
      */
     public Integer getLot(Bond bond, ArNoteUser user) {
-        return bond.getType() == BondType.SHARE ?
+        return bond.getType() == BondType.SHARE || bond.getType() == BondType.INDEX ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).getMinimalLot(bond.getTicker(), user)) :
                 bondCalcService.getBondLot(bond, user, bond.getPurchaseList());
     }
@@ -96,7 +96,7 @@ public class CommonService {
      * @return
      */
     public Integer getFinalPrice(Bond bond, ArNoteUser user) {
-        return bond.getType() == BondType.SHARE ?
+        return bond.getType() == BondType.SHARE  || bond.getType() == BondType.INDEX ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).calculateFinalPrice(bond, user)) :
                 bondCalcService.calculateFinalPrice(bond, user);
     }

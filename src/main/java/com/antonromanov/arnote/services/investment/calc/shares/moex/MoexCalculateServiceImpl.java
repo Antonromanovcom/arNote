@@ -352,25 +352,17 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      */
     @Override
     public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
-        try {
+
             if (bond.getIsBought()) { // если это ФАКТ
                 return bond.getPurchaseList().stream()
                         .map(p -> p.getLot() * p.getPrice())
                         .reduce((double) 0, Double::sum).intValue();
 
             } else { // если ПЛАН
-                Long longFinalPrice = (Math.round(((getRealTimeQuote(bond.getTicker()
-                )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user)));
+                Double currPrice = getRealTimeQuote(bond.getTicker()).getCurrentPrice();
+                Long longFinalPrice = (Math.round((currPrice == null ? Double.NaN : currPrice) * getMinimalLot(bond.getTicker(), user)));
                 return longFinalPrice.intValue();
             }
-        } catch (Exception e) {
-            log.error("********************************************************");
-            log.error("Тикер: {}", bond.getTicker());
-            log.error("RealTimeQuote: {}", getRealTimeQuote(bond.getTicker()));
-            log.error("MinimalLot: {}", getMinimalLot(bond.getTicker(), user));
-            log.error("********************************************************");
-            throw new RuntimeException ();
-        }
     }
 
     /**
