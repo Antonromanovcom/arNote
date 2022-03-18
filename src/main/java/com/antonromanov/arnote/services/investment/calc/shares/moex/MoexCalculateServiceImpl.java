@@ -353,13 +353,15 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     @Override
     public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
         if (bond.getIsBought()) { // если это ФАКТ
-           /* return bond.getPurchaseList().stream()
+            return bond.getPurchaseList().stream()
                     .map(p -> p.getLot() * p.getPrice())
-                    .reduce((double) 0, Double::sum).intValue();*/
-            return 0;
+                    .reduce((double) 0, Double::sum).intValue();
+
         } else { // если ПЛАН
-            return (int) Math.round(((getRealTimeQuote(bond.getTicker()
-            )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user));
+           /* return (int) Math.round(((getRealTimeQuote(bond.getTicker()
+            )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user));*/
+
+            return 0;
         }
     }
 
