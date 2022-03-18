@@ -358,10 +358,9 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                     .reduce((double) 0, Double::sum).intValue();
 
         } else { // если ПЛАН
-           /* return (int) Math.round(((getRealTimeQuote(bond.getTicker()
-            )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user));*/
-
-            return 0;
+            Long longFinalPrice = (Math.round(((getRealTimeQuote(bond.getTicker()
+            )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user)));
+                    return  longFinalPrice.intValue();
         }
     }
 
