@@ -44,7 +44,7 @@ public class CommonService {
      * @return
      */
     public Double prepareCurrentPrice(Bond bond) {
-        return bond.getType() == BondType.SHARE ?
+        return bond.getType() == BondType.SHARE || bond.getType() == BondType.INDEX?
                 ((calcFactory.getCalculator(bond.getStockExchange()))
                         .getRealTimeQuote(bond.getTicker())
                         .getCurrentPrice()) :
@@ -96,7 +96,7 @@ public class CommonService {
      * @return
      */
     public Integer getFinalPrice(Bond bond, ArNoteUser user) {
-        return bond.getType() == BondType.SHARE ?
+        return (bond.getType() == BondType.SHARE || bond.getType() == BondType.INDEX) ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).calculateFinalPrice(bond, user)) :
                 bondCalcService.calculateFinalPrice(bond, user);
     }
@@ -188,7 +188,7 @@ public class CommonService {
         List<MoexRowsRs> foreignShares = (foreignService.findInstrumentsByName(keyword)).getData().getRow();
 
         SearchResultsRs searchResults = new SearchResultsRs();
-        searchResults.setInstruments(prepareInstruments(foundShares, BondType.SHARE, StockExchange.MOEX));
+        searchResults.setInstruments(prepareInstruments(foundShares, null, StockExchange.MOEX));
         searchResults.getInstruments().addAll(prepareInstruments(foundBonds, BondType.BOND, StockExchange.MOEX));
         searchResults.getInstruments().addAll(prepareInstruments(foreignShares, BondType.SHARE, StockExchange.SPB));
 

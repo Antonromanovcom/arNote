@@ -647,11 +647,22 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                         .currencies(Currencies.search(r.getCurrencyId()))
                         .description(r.getSecName())
                         .stockExchange(stockExchange)
-                        .type(type)
+                        .type(type==null ? getInstrumentTypeByBoardId(r.getBoardId()) : type)
                         .build())
                 .filter(distinctByKey(FoundInstrumentRs::getTicker))
                 .limit(5)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Определяем ETF по boardId.
+     *
+     * @param boardId
+     * @return
+     */
+    public static BondType getInstrumentTypeByBoardId(String boardId) {
+            return  ("TQTD".equals(boardId) || "TQTE".equals(boardId) || "TQTF".equals(boardId)) ? BondType.INDEX :
+                    BondType.SHARE;
     }
 
     /**

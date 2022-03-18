@@ -2,6 +2,7 @@ package com.antonromanov.arnote.services.investment.calc.shares.moex;
 
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
+import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.cache.enums.CacheDictType;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -132,17 +134,33 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                 return cacheService.getDictWithRetention(CacheDictType.REALTIME_QUOTES_WITH_RETENTION, ticker);
             } else {
 
-
-                MoexDocumentRs doc = (MoexDocumentRs) httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_15_MINUTE_PRICE_UPDATE,
-                        ticker, null);
+                MoexDocumentRs doc;
+                if (getInstrumentTypeByBoardId(getBoardId(ticker)) == BondType.INDEX) {
+                    Optional<MoexRowsRs> filteredRow = getCurrentQuoteByBoardId(getBoardId(ticker))
+                            .getData()
+                            .getRow()
+                            .stream()
+                            .filter(r -> ticker.equals(r.getSecid()))
+                            .findFirst();
+                    filteredRow.ifPresent(r->r.setTradeMode(getBoardId(ticker)));
+                    doc = new MoexDocumentRs();
+                    MoexDataRs newData = new MoexDataRs();
+                    newData.setRow(new ArrayList<> (Collections.singletonList(filteredRow.orElse(new MoexRowsRs()))));
+                    doc.setData(newData);
+                } else {
+                    doc = (MoexDocumentRs) httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_15_MINUTE_PRICE_UPDATE,
+                            ticker, null);
+                }
 
                 CurrentPriceRs curPrice = CurrentPriceRs.builder()
                         .ticker(ticker)
                         .currency(Currencies.RUB)
                         .currentPrice(doc.getData().getRow().stream()
+                                .filter(Objects::nonNull)
                                 .filter(r -> getBoardId(ticker).equals(r.getTradeMode()))
                                 .findFirst()
-                                .map(MoexRowsRs::getLast15MinuteQuote)
+                                .map(v->getInstrumentTypeByBoardId(getBoardId(ticker)) == BondType.INDEX ? v.getPrevAdmittedQuote() :
+                                        v.getLast15MinuteQuote())
                                 .map(val -> {
                                     try {
                                         Double.parseDouble(val);
@@ -170,7 +188,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                                 .map(Double::parseDouble).orElse(0D))
                         .build();
 
-                if (curPrice.getCurrentPrice()==null || curPrice.getCurrentPrice() == 0) {
+                if (curPrice.getCurrentPrice() == null || curPrice.getCurrentPrice() == 0) {
                     curPrice.setCurrentPrice(doc.getData().getRow().stream()
                             .filter(r -> getBoardId(ticker).equals(r.getTradeMode()))
                             .findFirst()
