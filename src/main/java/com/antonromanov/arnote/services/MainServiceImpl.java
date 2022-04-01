@@ -11,6 +11,7 @@ import org.apache.commons.math3.util.ArithmeticUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.format.TextStyle;
@@ -18,6 +19,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 
 
@@ -37,16 +39,22 @@ public class MainServiceImpl implements MainService {
         return wishRepository.getAllWithPriority1(user);
     }
 
+    /**
+     * Берем максимальный priorityGroup, добавляем +1 и возвращаем.
+     *
+     * @param user
+     * @return
+     */
     @Override
     public int getMaxPriority(ArNoteUser user) { //todo: описание!!!!!
         List<Wish> wishDTOList = wishRepository.getAllWithGroupOrder(user);
         Comparator<Wish> comparator = Comparator.comparing(Wish::getPriorityGroup);
 
-        if ((wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).max(comparator).isPresent())) { //todo: при каких случаях он будет отсутствовать? Да и вообще упростить этот кода надо
-            return (wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null).max(comparator).get().getPriorityGroup()) + 1;
-        } else {
-            return 1;
-        }
+        return wishDTOList.stream().filter(wish -> wish.getPriorityGroup() != null)
+                .max(comparator)
+                .map(e -> e.getPriorityGroup() + 1)
+                .orElse(1);
+
     }
 
     private void addItemInWishDTOListForNullPriorityWishes(List<WishDTOList> wishDTOListGlobal,
@@ -77,9 +85,10 @@ public class MainServiceImpl implements MainService {
         int maxPrior = getMaxPriority(user);
         List<WishDTOList> wishDTOListGlobal = new ArrayList<>();
 
-        if (maxPrior - 1 > 0) {
+        if (maxPrior - 1 > 0) { // есть задачи с приоритетами
             int currentMonth = 1;
             Integer amountForAllMonths = 0; // набегающий баланс
+
             while (currentMonth < maxPrior) {
 
                 int finalCurrentMonth = currentMonth;

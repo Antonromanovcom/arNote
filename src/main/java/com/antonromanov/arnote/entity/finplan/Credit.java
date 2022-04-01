@@ -43,7 +43,7 @@ public class Credit {
     @ManyToOne(cascade = CascadeType.REFRESH)
     private ArNoteUser user;
 
-    @Column(name = "credit_desc", nullable = true)
+    @Column(name = "credit_desc")
     private String description;
 
     public static Credit $toDbEntity(CreditRq rq, int nextLoanNumber, ArNoteUser user) {

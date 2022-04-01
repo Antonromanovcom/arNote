@@ -498,8 +498,9 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
             } else {
 
-                return 1 + (LocalDate.now().plusMonths(ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
-                                monthNameToNumber(month), 1))).getMonthValue());
+
+                return 1 + Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
+                                monthNameToNumber(month), 1))));
             }
         } else if (Pattern.compile("[A-Za-z]+ [0-9]+").matcher(monthAndYear).find()) {
 
@@ -514,8 +515,9 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 log.error("Ошибка парсинга даты: {}", monthAndYear);
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
             } else {
-                return 1+(LocalDate.now().plusMonths(ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
-                                monthNameToNumber(convertEnglishNames(month)), 1))).getMonthValue());
+                // log.info("Ставим. Текущая дата + 1 мес: {}", month);
+                return 1+Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
+                                monthNameToNumber(convertEnglishNames(month)), 1))));
             }
 
         } else {
