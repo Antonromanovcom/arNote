@@ -32,14 +32,7 @@ http://84.201.163.22:8080/
 * Обновить данные по бумагам
 * Когда я ищу индекс (ETF) и нахожу - я хочу на фронте видеть, что я нашел индекс, а не SHARE.
 * Добавил NOK и в запланированные бумаги и получаю:
-
-_org.json.JSONException: JSONObject["events"] not found.
-        at org.json.JSONObject.get(JSONObject.java:566)
-        at org.json.JSONObject.getJSONObject(JSONObject.java:778)
-        at com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl.lambda$getDividends$9(ForeignCalcServiceImpl.java:253)
-        at java.base/java.util.Optional.map(Optional.java:265)
-        at com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl.getDividends(ForeignCalcServiceImpl.java:250)_
-
+* Вьюшки (например для желаний)
 * В КОНСОЛИДИРОВАННОЙ ТАблице почему-то по некоторым бумагам не происхлдит умножение мин-лота на цену одной бумаги и хотя аоказывает мнимальный лот, к примеру 10, а цену бумаги 300, показывает не 3000 цена, 300
 * Фонды
 
@@ -185,6 +178,7 @@ _org.json.JSONException: JSONObject["events"] not found.
 * Публичные списки
 * Блог
 * Чат
+* Трекер багов с номерами, чтобы не хранить это в ридми
 * Разные списки
 * Файловое облако
 
