@@ -27,6 +27,7 @@ import com.antonromanov.arnote.services.investment.cache.CacheService;
 import com.antonromanov.arnote.services.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.services.investment.requestservice.RequestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 /**
  * Имплементация расчетного сервиса для работы с иностранными бумагами.
  */
+@Slf4j
 public class ForeignCalcServiceImpl implements SharesCalcService {
 
     @Autowired
@@ -420,7 +422,9 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
         AlphavantageSearchListRs response = httpClient.sendAndMarshallForeignRequest(ForeignRequests.FIND_INSTRUMENT,
                 new LinkedList<>(Arrays.asList(keyword, "SYMBOL_SEARCH", ALFA_ADVANTAGE_API_KEY)), AlphavantageSearchListRs.class);
 
-        if (response!=null) {
+        log.info("Запрос на поиск {} отработал. Найдено {} совпадений! ", keyword, response.getBestMatches().size());
+
+        if (response!=null && response.getBestMatches().size()>0) {
             List<AlphavantageSearchRs> filteredList = response.getBestMatches().stream()
                     .filter(Objects::nonNull)
                     .filter(sec -> "Equity".equalsIgnoreCase(sec.getType()))

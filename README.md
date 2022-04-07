@@ -30,27 +30,66 @@ http://84.201.163.22:8080/
 
 # Максимальный приоритет:
 
-* Фильтр по индексам на фронте, где?
 * Добавляю например в План MAGN. Показывает - 1 лот. Цена 43.48, ИТОГО - 435 !!! С хуяли !!!!!!!!?????
 * По ETF - почему не показывает динамику изменения за сегодня / все время?
+* Захожу с мобилки, ищу FXR (мне нужен FXRW), улетает запрос - https://www.alphavantage.co/query?function=SYMBOL_SEARCH&apikey=3PV5BRWZZZM1T2BA&keywords=fxr. Он отвечает нормально. Но все валится с :
+
+2022-04-07 13:40:33 ERROR o.a.c.c.C.[.[.[.[dispatcherServlet]  - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.NullPointerException] with root cause
+java.lang.NullPointerException: null
+	at com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl.findInstrumentsByName(ForeignCalcServiceImpl.java:424)
+	at com.antonromanov.arnote.services.investment.calc.CommonService.findInstrument(CommonService.java:192)
+	at com.antonromanov.arnote.controller.InvestController.findInstrumentByName(InvestController.java:194)
+	at jdk.internal.reflect.GeneratedMethodAccessor219.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:189)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:102)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:800)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1038)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634)
+	
+	
 * Индексы добавляются и на фронт потом подгружаются, но у них пишется 
+* Убираем на хер динамический поиск. Делаем по кнопке
+. Если вместо "." указать "," в сумме при добавлении бумаги - запрос валится. Нужно валидировать это.
 * Календарь покупок с фильтром / поиском по бумагам
 * Добавил FXRW - показывает План и при этом продажи. Как такое может быть? 
 * Проверить кейс - бумага была в Плане, а я решил ее купить - как онО отыграет?
 * Если я бумагу удаляю, покупки по ней тоже удаляются?
-* Место, где я стучусь в буржуйские АПИ и если они не отвечают возвращаю null - не красиво сделано. Надо порефакторить, подумать как исправить. Может быть, сделать типа запрос-пинг. И если он вернул false, то просто не дергать все остальные запросы буржуйские.
+* Почему-то при поиске бумаги делается 2 одинаковых запроса к альфа-адвантедж
+* Почему бы не кешировать поиск (подумать как)?
+* Место, где я стучусь в буржуйские АПИ и если они не отвечают, возвращаю null - не красиво сделано. Надо порефакторить, подумать как исправить. Может быть, сделать типа запрос-пинг. И если он вернул false, то просто не дергать все остальные запросы буржуйские.
 * Обновить данные по бумагам
 * Когда я ищу индекс (ETF) и нахожу - я хочу на фронте видеть, что я нашел индекс, а не SHARE.
 * Добавил NOK и в запланированные бумаги и получаю:
 * Вьюшки (например для желаний)
 * Вообще надо решить вопрос со столбцами Минимальный Лот / Куплено. Например для ПЛАН не нужно показывать сколько куплено. Это путает. Нужно подумать как это лучше сделать.
 * Когда стучишься из под корпоративной сети, он не может достучаться до Яху - нужен серт. И валится весь консолидированный запрос. Такого быть не должно. Такие бумаги по которым запрос свалился надо уметь просто пропускать.
-* В КОНСОЛИДИРОВАННОЙ ТАблице почему-то по некоторым бумагам не происходит умножение мин-лота на цену одной бумаги и хотя аоказывает мнимальный лот, к примеру 10, а цену бумаги 300, показывает не 3000 цена, 300
-* Фонды
+* В КОНСОЛИДИРОВАННОЙ Таблице почему-то по некоторым бумагам не происходит умножение мин-лота на цену одной бумаги и хотя показывает минимальный лот, к примеру 10, а цену бумаги 300, показывает не 3000 цена, 300
+* Вот я добавляю продажу по бумаге. А в какой валюте сумма?????
+* Поиск сыпится с:
+
+2022-04-07 13:18:34 INFO  c.a.a.controller.InvestController  - ============== FIND INSTRUMENT ==============
+2022-04-07 13:18:34 INFO  c.a.a.controller.InvestController  - USER ID: 1
+2022-04-07 13:18:34 INFO  c.a.a.controller.InvestController  - keyword: fxr
+2022-04-07 13:18:34 INFO  c.a.a.s.i.r.RequestServiceImpl  - Sending foreign request to: https://www.alphavantage.co/query?function=SYMBOL_SEARCH&apikey=3PV5BRWZZZM1T2BA&keywords=fxr
+2022-04-07 13:18:34 ERROR o.a.c.c.C.[.[.[.[dispatcherServlet]  - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.NullPointerException] with root cause
+java.lang.NullPointerException: null
+	at com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl.findInstrumentsByName(ForeignCalcServiceImpl.java:424)
+	at com.antonromanov.arnote.services.investment.calc.CommonService.findInstrument(CommonService.java:192)
+	at com.antonromanov.arnote.controller.InvestController.findInstrumentByName(InvestController.java:194)
+	at jdk.internal.reflect.GeneratedMethodAccessor219.invoke(Unknown Source)
 
 # Ближайшие срочные мелкие косяки и баги:
 
 * Я хочу видеть баланс портфеля при работе с бумагами в основном окне (сколько куплено, динамика)
+* Я хочу посмотреть деталку по бумаге и свои покупки по ней.
 * Бага: я решил добавить бумагу. Произошел поиск на фронте, заполнился список, а потом второй раз я захожу добавлять новую бумагу - а там опять этот же заполненный список. Его надо чистить!
 * Я хочу чтобы тот факт, что фильтр включен по бумагам как то отображалось на фронте
 * возможно есть какой-то компонент с драг-энд-дропом. Может его использовать в планировании по месяцам? Так же туда может быть добавить филтры и поиск, управление сортировкой? Ну и вообще это надо комплексно переделывать. Сейчас этим пользоваться откровенно не удобно
@@ -129,6 +168,7 @@ http://84.201.163.22:8080/
 * Надо ходить в историю и смотреть какую самую раннюю дату можем запросить. И как-то блочить возможность запрашивать даты раньше на фронте.
 * Не влезающие описания и названия облигаций
 * Перенести код настроек Дженкинса сюда
+* Может добавление бумаги сделать на беке асинхронно? Типа если свалилось с ошибкой - какое-то время еще долбится
 * Если описание не удалось достать - сходить для буржуйской бумаги за описанием бумаги еще куда-нибудь
 * Проверить, что  у купонов / дивов в разделе доход (календарь) - туда  не попадает план. И в доходе тоже
 * Зачем нам грузить именно всю историю? Для чего?
