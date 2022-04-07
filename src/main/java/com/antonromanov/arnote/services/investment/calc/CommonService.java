@@ -182,15 +182,18 @@ public class CommonService {
                 .filter(filterByKeyword(keyword))
                 .collect(Collectors.toList());
 
-        /*
-         * ============= Иностранные акции ====================
-         */
-        List<MoexRowsRs> foreignShares = (foreignService.findInstrumentsByName(keyword)).getData().getRow();
-
         SearchResultsRs searchResults = new SearchResultsRs();
         searchResults.setInstruments(prepareInstruments(foundShares, BondType.SHARE, StockExchange.MOEX));
         searchResults.getInstruments().addAll(prepareInstruments(foundBonds, BondType.BOND, StockExchange.MOEX));
-        searchResults.getInstruments().addAll(prepareInstruments(foreignShares, BondType.SHARE, StockExchange.SPB));
+
+        /*
+         * ============= Иностранные акции ====================
+         */
+        MoexDocumentRs foreignDocs = foreignService.findInstrumentsByName(keyword);
+        if (foreignDocs != null) { // null - например, если в сервис не смогли достучаться.
+            List<MoexRowsRs> foreignShares = (foreignService.findInstrumentsByName(keyword)).getData().getRow();
+            searchResults.getInstruments().addAll(prepareInstruments(foreignShares, BondType.SHARE, StockExchange.SPB));
+        }
 
         return searchResults;
     }

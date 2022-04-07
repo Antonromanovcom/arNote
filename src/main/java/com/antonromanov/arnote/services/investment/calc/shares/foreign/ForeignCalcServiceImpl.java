@@ -420,29 +420,33 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
         AlphavantageSearchListRs response = httpClient.sendAndMarshallForeignRequest(ForeignRequests.FIND_INSTRUMENT,
                 new LinkedList<>(Arrays.asList(keyword, "SYMBOL_SEARCH", ALFA_ADVANTAGE_API_KEY)), AlphavantageSearchListRs.class);
 
-        List<AlphavantageSearchRs> filteredList = response.getBestMatches().stream()
-                .filter(Objects::nonNull)
-                .filter(sec -> "Equity".equalsIgnoreCase(sec.getType()))
-                .collect(Collectors.toList());
+        if (response!=null) {
+            List<AlphavantageSearchRs> filteredList = response.getBestMatches().stream()
+                    .filter(Objects::nonNull)
+                    .filter(sec -> "Equity".equalsIgnoreCase(sec.getType()))
+                    .collect(Collectors.toList());
 
-        MoexDocumentRs document = new MoexDocumentRs();
-        MoexDataRs documentData = new MoexDataRs();
+            MoexDocumentRs document = new MoexDocumentRs();
+            MoexDataRs documentData = new MoexDataRs();
 
-        
-        ArrayList<MoexRowsRs> rows = filteredList.stream()
-                .map(r -> {
-                    MoexRowsRs row = new MoexRowsRs();
-                    row.setSecid(r.getSymbol());
-                    row.setCurrencyId(r.getCurrency());
-                    row.setSecName(r.getName());
-                    return row;
-                })
-                .filter(row->Currencies.search(row.getCurrencyId())!=null)
-                .collect(Collectors.toCollection(ArrayList::new));
 
-        documentData.setRow(rows);
-        document.setData(documentData);
-        return document;
+            ArrayList<MoexRowsRs> rows = filteredList.stream()
+                    .map(r -> {
+                        MoexRowsRs row = new MoexRowsRs();
+                        row.setSecid(r.getSymbol());
+                        row.setCurrencyId(r.getCurrency());
+                        row.setSecName(r.getName());
+                        return row;
+                    })
+                    .filter(row -> Currencies.search(row.getCurrencyId()) != null)
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            documentData.setRow(rows);
+            document.setData(documentData);
+            return document;
+        } else {
+            return new MoexDocumentRs();
+        }
 
     }
 }

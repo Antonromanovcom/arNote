@@ -175,12 +175,11 @@ public class RequestServiceImpl implements RequestService {
         String url = prepareForeignUrl(requestType,
                 serializeObjectToMVMap(requestType.getRequestParams()), prepareParametersMapFromList(ticker));
         log.info("Sending foreign request to: {}", url);
-        ResponseEntity<String> response = rt.getForEntity(url, String.class);
-
         try {
+            ResponseEntity<String> response = rt.getForEntity(url, String.class);
             return objectMapper.readValue(response.getBody(), clazz);
-        } catch (IOException e) {
-            log.error("Произошла ошибка парсинга результата по запросу: {}. Ошибка: {}", requestType, e.getMessage());
+        } catch (Exception e) {
+            log.error("Произошла ошибка запроса данных из API или ошибка парсинга результата по запросу: {}. Ошибка: {}", requestType, e.getMessage());
             return null;
         }
     }
