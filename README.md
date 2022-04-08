@@ -23,15 +23,17 @@ http://84.201.163.22:8080/
  ~/Maven/bin/mvn package -P local
 
 # Что сделали:
+* Починил вот эту штуку - "Добавляю например в План MAGN. Показывает - 1 лот. Цена 43.48, ИТОГО - 435 !!! С фига ли !!!!!!!!?????"
+* Придобавлении ETF он уходил как акция, потому что при поиске он отдавался на фронт как акция - починено.
+* По ETF стал возвращаться description
+* По ETF стала возвращаться delta
 
-* Теперь можно добавлять ETF.
-* Добавил фильтр по ETF.
-* Если запрос к АПИ валится - это не валит запрос к моему сервису. Я завернул запросы к буржуям в try-catch.
 
 # Максимальный приоритет:
 
-* Добавляю например в План MAGN. Показывает - 1 лот. Цена 43.48, ИТОГО - 435 !!! С хуяли !!!!!!!!?????
-* По ETF - почему не показывает динамику изменения за сегодня / все время?
+* Логика формирования дельты - какой-то бред!!! Нужно чтобы хотя бы какой-то отображаемый параметр хоть как-то бился с Тиньковым. Предлагаю начать использовать свечи. Пример запроса добавил в коллекцию Постман
+* getMinimalLot - в КЕШ!!!!!
+* Для ETF не приходит описание
 * Захожу с мобилки, ищу FXR (мне нужен FXRW), улетает запрос - https://www.alphavantage.co/query?function=SYMBOL_SEARCH&apikey=3PV5BRWZZZM1T2BA&keywords=fxr. Он отвечает нормально. Но все валится с :
 
 2022-04-07 13:40:33 ERROR o.a.c.c.C.[.[.[.[dispatcherServlet]  - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.NullPointerException] with root cause
@@ -53,13 +55,11 @@ java.lang.NullPointerException: null
 	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005)
 	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897)
 	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634)
-	
-	
-* Индексы добавляются и на фронт потом подгружаются, но у них пишется 
+
+
 * Убираем на хер динамический поиск. Делаем по кнопке
 . Если вместо "." указать "," в сумме при добавлении бумаги - запрос валится. Нужно валидировать это.
 * Календарь покупок с фильтром / поиском по бумагам
-* Добавил FXRW - показывает План и при этом продажи. Как такое может быть? 
 * Проверить кейс - бумага была в Плане, а я решил ее купить - как онО отыграет?
 * Если я бумагу удаляю, покупки по ней тоже удаляются?
 * Почему-то при поиске бумаги делается 2 одинаковых запроса к альфа-адвантедж
@@ -73,23 +73,15 @@ java.lang.NullPointerException: null
 * Когда стучишься из под корпоративной сети, он не может достучаться до Яху - нужен серт. И валится весь консолидированный запрос. Такого быть не должно. Такие бумаги по которым запрос свалился надо уметь просто пропускать.
 * В КОНСОЛИДИРОВАННОЙ Таблице почему-то по некоторым бумагам не происходит умножение мин-лота на цену одной бумаги и хотя показывает минимальный лот, к примеру 10, а цену бумаги 300, показывает не 3000 цена, 300
 * Вот я добавляю продажу по бумаге. А в какой валюте сумма?????
-* Поиск сыпится с:
 
-2022-04-07 13:18:34 INFO  c.a.a.controller.InvestController  - ============== FIND INSTRUMENT ==============
-2022-04-07 13:18:34 INFO  c.a.a.controller.InvestController  - USER ID: 1
-2022-04-07 13:18:34 INFO  c.a.a.controller.InvestController  - keyword: fxr
-2022-04-07 13:18:34 INFO  c.a.a.s.i.r.RequestServiceImpl  - Sending foreign request to: https://www.alphavantage.co/query?function=SYMBOL_SEARCH&apikey=3PV5BRWZZZM1T2BA&keywords=fxr
-2022-04-07 13:18:34 ERROR o.a.c.c.C.[.[.[.[dispatcherServlet]  - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.NullPointerException] with root cause
-java.lang.NullPointerException: null
-	at com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl.findInstrumentsByName(ForeignCalcServiceImpl.java:424)
-	at com.antonromanov.arnote.services.investment.calc.CommonService.findInstrument(CommonService.java:192)
-	at com.antonromanov.arnote.controller.InvestController.findInstrumentByName(InvestController.java:194)
-	at jdk.internal.reflect.GeneratedMethodAccessor219.invoke(Unknown Source)
 
 # Ближайшие срочные мелкие косяки и баги:
 
 * Я хочу видеть баланс портфеля при работе с бумагами в основном окне (сколько куплено, динамика)
+* Кнопка "Доходы" должна быть заблочена если идет отрицательная прибыль или купленых бумаг нет
+* Календарь заблочен должен быть если нет купленых бумаг
 * Я хочу посмотреть деталку по бумаге и свои покупки по ней.
+* Добавить Телеграмм Бот (https://habr.com/ru/post/528694/, https://github.com/taksebe-official/mentalCalculationBot/blob/master/src/main/java/ru/taksebe/telegram/mentalCalculation/MentalCalculationApplication.java, https://github.com/PauloGaldo/telegram-bot/blob/master/telegram-bot/src/main/java/de/simonscholz/bot/telegram/Configuration.java, https://github.com/xabgesagtx/telegram-spring-boot-starter/blob/master/src/main/java/com/github/xabgesagtx/bots/TelegramBotStarter.java, https://habr.com/ru/post/655329/, https://javarush.ru/groups/posts/2959-sozdaem-telegram-bota-s-ispoljhzovaniem-spring-boot, https://github.com/rubenlagus/TelegramBots/tree/master/telegrambots-spring-boot-starter/src/main/java/org/telegram/telegrambots/starter)
 * Бага: я решил добавить бумагу. Произошел поиск на фронте, заполнился список, а потом второй раз я захожу добавлять новую бумагу - а там опять этот же заполненный список. Его надо чистить!
 * Я хочу чтобы тот факт, что фильтр включен по бумагам как то отображалось на фронте
 * возможно есть какой-то компонент с драг-энд-дропом. Может его использовать в планировании по месяцам? Так же туда может быть добавить филтры и поиск, управление сортировкой? Ну и вообще это надо комплексно переделывать. Сейчас этим пользоваться откровенно не удобно

@@ -96,7 +96,7 @@ public class CommonService {
      * @return
      */
     public Integer getFinalPrice(Bond bond, ArNoteUser user) {
-        return bond.getType() == BondType.SHARE  || bond.getType() == BondType.INDEX ?
+        return bond.getType() == BondType.SHARE || bond.getType() == BondType.INDEX ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).calculateFinalPrice(bond, user)) :
                 bondCalcService.calculateFinalPrice(bond, user);
     }
@@ -112,7 +112,7 @@ public class CommonService {
 
         SharesCalcService service = calcFactory.getCalculator(bond.getStockExchange());
 
-        return bond.getType() == BondType.SHARE ?
+        return bond.getType() == BondType.SHARE || bond.getType() == BondType.INDEX ?
                 (service.getInstrumentName(service.getBoardId(bond.getTicker()), bond.getTicker())) :
                 (bondCalcService.getBondName(bond.getTicker()).orElse("-"));
     }
@@ -127,7 +127,7 @@ public class CommonService {
     public DeltaRs prepareDelta(Bond bond) {
         SharesCalcService service = calcFactory.getCalculator(bond.getStockExchange());
 
-        DeltaRs localDelta =  bond.getType() == BondType.SHARE ?
+        DeltaRs localDelta = bond.getType() == BondType.SHARE || bond.getType() == BondType.INDEX ?
                 (service.calculateDelta(service.getBoardId(bond.getTicker()), bond.getTicker(),
                         service.getRealTimeQuote(bond.getTicker()).getCurrentPrice(),
                         bond.getPurchaseList())) :
@@ -175,6 +175,14 @@ public class CommonService {
 
         List<MoexRowsRs> foundShares = allShares.getData().getRow().stream()
                 .filter(filterByKeyword(keyword))
+                .filter(s->!("TQTF".equals(s.getBoardId())  ||
+                        "TQTD".equals(s.getBoardId()) ||
+                        "TQTE".equals(s.getBoardId()))) // todo: "TQTF" вынести в какие-то енумы или константы !!!!
+                .collect(Collectors.toList());
+
+        List<MoexRowsRs> etf = allShares.getData().getRow().stream()
+                .filter(filterByKeyword(keyword))
+                .filter(s->"TQTF".equals(s.getBoardId())) // todo: "TQTF" вынести в какие-то енумы или константы !!!!
                 .collect(Collectors.toList());
 
 
@@ -185,13 +193,14 @@ public class CommonService {
         SearchResultsRs searchResults = new SearchResultsRs();
         searchResults.setInstruments(prepareInstruments(foundShares, BondType.SHARE, StockExchange.MOEX));
         searchResults.getInstruments().addAll(prepareInstruments(foundBonds, BondType.BOND, StockExchange.MOEX));
+        searchResults.getInstruments().addAll(prepareInstruments(etf, BondType.INDEX, StockExchange.MOEX));
 
         /*
          * ============= Иностранные акции ====================
          */
         MoexDocumentRs foreignDocs = foreignService.findInstrumentsByName(keyword);
-        if (foreignDocs != null) { // null - например, если в сервис не смогли достучаться.
-            List<MoexRowsRs> foreignShares = (foreignService.findInstrumentsByName(keyword)).getData().getRow();
+        if (foreignDocs.getData() != null) { // null - например, если в сервис не смогли достучаться.
+            List<MoexRowsRs> foreignShares = (foreignDocs).getData().getRow();
             searchResults.getInstruments().addAll(prepareInstruments(foreignShares, BondType.SHARE, StockExchange.SPB));
         }
 
@@ -202,7 +211,7 @@ public class CommonService {
      * Получить текущую цену бумаги.
      *
      * @param ticker - тикер бумаги.
-     * @param user - текущий пользак.
+     * @param user   - текущий пользак.
      * @return - CurrentPriceRs.
      */
     public CurrentPriceRs getCurrentPriceByTicker(String ticker, StockExchange se, ArNoteUser user) {
@@ -252,7 +261,7 @@ public class CommonService {
      */
     public StockExchange getInstrumentStockExchange(String ticker) {
         return findInstrument(ticker).getInstruments().stream()
-                .filter(i->ticker.equals(i.getTicker()))
+                .filter(i -> ticker.equals(i.getTicker()))
                 .findFirst()
                 .map(FoundInstrumentRs::getStockExchange)
                 .orElse(StockExchange.MOEX); //todo: спорный момент. Тут по хорошему надо эксепшн бросать.

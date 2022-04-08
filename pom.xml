@@ -48,42 +48,6 @@
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.2</version>
         </dependency>
-        <!--            </dependencies>-->
-        <!-- <build>
-             <plugins>
-                 <plugin>
-                     <artifactId>maven-assembly-plugin</artifactId>
-                     <executions>
-                         <execution>
-                             <phase>package</phase>
-                             <goals>
-                                 <goal>single</goal>
-                             </goals>
-                         </execution>
-                     </executions>
-                     <configuration>
-                         <archive>
-                             <manifest>
-                                 <addClasspath>true</addClasspath>
-                                 <mainClass>com.Application</mainClass>
-                             </manifest>
-                         </archive>
-                         <descriptorRefs>
-                             <descriptorRef>jar-with-dependencies</descriptorRef>
-                         </descriptorRefs>
-                     </configuration>
-                 </plugin>
-             </plugins>
-         </build>
-     </profile>-->
-
-        <!-- <profile>
-             <id>local</id>-->
-
-        <!--</profile>
-    </profiles>-->
-
-        <!--    <dependencies>-->
 
         <!--SPRING -->
 
@@ -102,6 +66,26 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
+
+        <!-- Telegram API -->
+        <!--<dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>4.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambotsextensions</artifactId>
+            <version>4.9</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots-spring-boot-starter</artifactId>
+            <version>5.7.1</version>
+        </dependency>
+
+
 
         <!--WEB-->
 

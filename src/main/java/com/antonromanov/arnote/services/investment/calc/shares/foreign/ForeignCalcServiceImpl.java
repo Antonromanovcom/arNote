@@ -422,8 +422,6 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
         AlphavantageSearchListRs response = httpClient.sendAndMarshallForeignRequest(ForeignRequests.FIND_INSTRUMENT,
                 new LinkedList<>(Arrays.asList(keyword, "SYMBOL_SEARCH", ALFA_ADVANTAGE_API_KEY)), AlphavantageSearchListRs.class);
 
-        log.info("Запрос на поиск {} отработал. Найдено {} совпадений! ", keyword, response.getBestMatches().size());
-
         if (response!=null && response.getBestMatches().size()>0) {
             List<AlphavantageSearchRs> filteredList = response.getBestMatches().stream()
                     .filter(Objects::nonNull)

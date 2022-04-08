@@ -415,19 +415,21 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    @Cacheable(cacheNames = "minimalLotsCache", key = "#user.id")
     public Integer getMinimalLot(String ticker, ArNoteUser user) {
-        return getDetailInfo(ticker)
+        String boardId = getBoardId(ticker);
+        Integer minLot =  getDetailInfo(ticker) //todo: упростить, засунуть в ретурн
                 .map(detailInfo -> detailInfo.getDataList().stream()
                         .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
                         .findFirst()
                         .map(sc -> sc.getRowsList().stream()
-                                .filter(row -> getBoardId(ticker).equals(row.getBoardId()))
+                                .filter(row -> boardId.equals(row.getBoardId()))
                                 .findFirst()
                                 .map(share -> Integer.parseInt(share.getLotSize()))
                                 .orElse(1))
                         .orElse(1))
                 .orElse(1);
+
+        return minLot;
     }
 
     /**
