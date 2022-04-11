@@ -30,6 +30,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -38,6 +39,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -577,7 +579,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      * @return
      */
     public static String prepareUrlForHistory(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
-                                              Map<String, String> pathParams, String dateFrom, String dateTill, int start) {
+                                              Map<String, String> pathParams, String dateFrom, String dateTill, int start) { //todo: почему тут пустой dateFrom ???? Зачем он тогда?
 
 
         queryParameters.put("start", Collections.singletonList(String.valueOf(start)));
@@ -594,6 +596,33 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
         return uriComponents.toString();
     }
+
+    /**
+     * Сформировать специальный URL для запроса истории.
+     *
+     * @return
+     */
+    public static String prepareUrlForCandles(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+                                              Map<String, String> pathParams, String dateFrom, String dateTill, int start) { //todo: объединить с prepareUrlForHistory
+
+
+        queryParameters.put("start", Collections.singletonList(String.valueOf(start)));
+        queryParameters.put("till", Collections.singletonList(dateTill));
+        queryParameters.put("from", Collections.singletonList(dateFrom));
+
+        UriComponents uriComponents = UriComponentsBuilder
+                .newInstance()
+                .scheme("http")
+                .host(urlBase)
+                .path(operation.getUrl())
+                .queryParams(queryParameters)
+                .buildAndExpand(pathParams);
+
+
+        return uriComponents.toString();
+    }
+
+
 
     /**
      * Предикат distinctBy для выкидывания одинаковых тикеров (дублей) при поиске.
@@ -742,6 +771,58 @@ public class ArNoteUtils { //todo: надо будет разнести отде
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_PERCENT, 0.0D);
         }
         return resultMap;
+    }
+
+    /**
+     * Рассчитываем дневнуб дельту из Свечей дельты.
+     *
+     * @return
+     */
+    public static Double getDayDeltaFromCandle(MoexDocumentRs doc) {
+       if (doc.getData()!=null && doc.getData().getRow().size()>0){
+
+           Double startDayValue = doc.getData().getRow().stream()
+                   .map(v->{
+                       ZoneId contractualZone = ZoneId.systemDefault();
+                       /*LocalDateTime convertedDateTime = OffsetDateTime
+                               .parse(v.getEnd(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT)) // todo: повторяется 2 раза - упростить.
+                               .atZoneSameInstant(contractualZone)
+                               .toLocalDateTime();*/
+
+                       DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                       ZonedDateTime convertedDateTime = ZonedDateTime.from(fmt.parse("25-12-2018 18:20:45"));
+                   //    System.out.println(zdt);
+
+
+                       return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
+                   })
+                   .min(Comparator.comparing(AbstractMap.SimpleEntry::getKey))
+                   .map(AbstractMap.SimpleEntry::getValue)
+                   .orElse(0D);
+
+           Double currentDayValue = doc.getData().getRow().stream()
+                   .map(v->{
+                     /*  ZoneId contractualZone = ZoneId.systemDefault();
+                       LocalDateTime convertedDateTime = OffsetDateTime
+                               .parse(v.getEnd(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT))
+                               .atZoneSameInstant(contractualZone)
+                               .toLocalDateTime();*/
+
+                       DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                       ZonedDateTime convertedDateTime = ZonedDateTime.from(fmt.parse("25-12-2018 18:20:45"));
+
+                       return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
+                   })
+                   .max(Comparator.comparing(AbstractMap.SimpleEntry::getKey))
+                   .map(AbstractMap.SimpleEntry::getValue)
+                   .orElse(0D);
+
+
+
+           return currentDayValue - startDayValue;
+       } else {
+           return (0d);
+       }
     }
 
 

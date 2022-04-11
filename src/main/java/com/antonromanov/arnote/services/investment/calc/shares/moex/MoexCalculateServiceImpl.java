@@ -24,7 +24,6 @@ import com.antonromanov.arnote.services.investment.calc.shares.SharesCalcService
 import com.antonromanov.arnote.services.investment.requestservice.RequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -49,6 +48,16 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     private Long lastQuote = 0L;
     private Long getAllSharesCount = 0L;
 
+
+    @Override
+    public MoexDocumentRs getCandles(String ticker, LocalDate fromDate, LocalDate tillDate) {
+        return  (MoexDocumentRs) httpClient.getCandles(MoexRestTemplateOperation.GET_CANDLES,
+                ticker,
+                fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                tillDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), 1);
+
+
+    }
 
     /**
      * Запросить дивиденды через API биржи, подсчитать сумму и проценты относительно текущей цены акции и вернуть все это.
@@ -170,7 +179,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                                 .map(Double::parseDouble).orElse(0D))
                         .build();
 
-                if (curPrice.getCurrentPrice()==null || curPrice.getCurrentPrice() == 0) {
+                if (curPrice.getCurrentPrice() == null || curPrice.getCurrentPrice() == 0) {
                     curPrice.setCurrentPrice(doc.getData().getRow().stream()
                             .filter(r -> getBoardId(ticker).equals(r.getTradeMode()))
                             .findFirst()
@@ -310,6 +319,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             return DeltaRs.builder()
                     .tinkoffDelta(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL))
                     .tinkoffDeltaPercent(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT))
+                    .candleDayDelta(getDayDeltaFromCandle(getCandles(ticker, LocalDate.now(), LocalDate.now())))
                     .deltaInRubles(doc.getData()
                             .getRow()
                             .stream()
@@ -353,16 +363,16 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     @Override
     public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
 
-            if (bond.getIsBought()) { // если это ФАКТ
-                return bond.getPurchaseList().stream()
-                        .map(p -> p.getLot() * p.getPrice())
-                        .reduce((double) 0, Double::sum).intValue();
+        if (bond.getIsBought()) { // если это ФАКТ
+            return bond.getPurchaseList().stream()
+                    .map(p -> p.getLot() * p.getPrice())
+                    .reduce((double) 0, Double::sum).intValue();
 
-            } else { // если ПЛАН
-                Double currPrice = getRealTimeQuote(bond.getTicker()).getCurrentPrice();
-                Long longFinalPrice = (Math.round((currPrice == null ? Double.NaN : currPrice) * getMinimalLot(bond.getTicker(), user)));
-                return longFinalPrice.intValue();
-            }
+        } else { // если ПЛАН
+            Double currPrice = getRealTimeQuote(bond.getTicker()).getCurrentPrice();
+            Long longFinalPrice = (Math.round((currPrice == null ? Double.NaN : currPrice) * getMinimalLot(bond.getTicker(), user)));
+            return longFinalPrice.intValue();
+        }
     }
 
     /**
@@ -417,7 +427,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     @Override
     public Integer getMinimalLot(String ticker, ArNoteUser user) {
         String boardId = getBoardId(ticker);
-        Integer minLot =  getDetailInfo(ticker) //todo: упростить, засунуть в ретурн
+        Integer minLot = getDetailInfo(ticker) //todo: упростить, засунуть в ретурн
                 .map(detailInfo -> detailInfo.getDataList().stream()
                         .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
                         .findFirst()

@@ -9,6 +9,7 @@ import com.antonromanov.arnote.model.investing.request.AddInstrumentRq;
 import com.antonromanov.arnote.model.investing.response.*;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.services.investment.calc.CommonService;
@@ -116,6 +117,26 @@ public class InvestController {
                                 user.getInvestingSortMode().getComparator())
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    /**
+     * Свечи. Временный контроллер
+     *
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping("/candles")
+    public MoexDocumentRs candles(Principal principal,
+                                  @RequestParam(required = false) String filter,
+                                  @RequestParam(required = false) String sort)
+            throws UserNotFoundException { // todo: удалить потом этот контроллер
+
+        log.info("============== CANDLES ============== ");
+        log.info("PRINCIPAL: " + principal.getName());
+
+        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+
+
+        return commonService.getCandles();
     }
 
     /**

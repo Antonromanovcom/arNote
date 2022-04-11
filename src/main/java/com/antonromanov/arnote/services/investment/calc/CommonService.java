@@ -44,11 +44,20 @@ public class CommonService {
      * @return
      */
     public Double prepareCurrentPrice(Bond bond) {
-        return bond.getType() == BondType.SHARE ?
+        return bond.getType() == BondType.SHARE || bond.getType() == BondType.INDEX ?
                 ((calcFactory.getCalculator(bond.getStockExchange()))
                         .getRealTimeQuote(bond.getTicker())
                         .getCurrentPrice()) :
                 bondCalcService.getCurrentBondPrice(bond.getTicker());
+    }
+
+    /**
+     * Получить свечи.
+     *
+     * @return
+     */
+    public MoexDocumentRs getCandles() {
+        return ((calcFactory.getCalculator(StockExchange.MOEX)).getCandles("SBER", LocalDate.now(), LocalDate.now()));
     }
 
     /**
@@ -58,7 +67,7 @@ public class CommonService {
      * @return
      */
     public String getCurrency(Bond bond, ArNoteUser user) {
-        return bond.getType() == BondType.SHARE ?
+        return bond.getType() == BondType.SHARE || bond.getType() == BondType.INDEX ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).getCurrencyOfShare(bond.getTicker())) :
                 bondCalcService.getBondCurrency(bond.getTicker()).name();
     }
@@ -70,7 +79,7 @@ public class CommonService {
      * @return
      */
     public ConsolidatedDividendsRs getDivsOrCoupons(Bond bond, ArNoteUser user) {
-        return bond.getType() == BondType.SHARE ?
+        return bond.getType() == BondType.SHARE || bond.getType() == BondType.INDEX ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).getDividends(bond, user)) :
                 bondCalcService.getCoupons(bond, user);
     }
@@ -175,14 +184,14 @@ public class CommonService {
 
         List<MoexRowsRs> foundShares = allShares.getData().getRow().stream()
                 .filter(filterByKeyword(keyword))
-                .filter(s->!("TQTF".equals(s.getBoardId())  ||
+                .filter(s -> !("TQTF".equals(s.getBoardId()) ||
                         "TQTD".equals(s.getBoardId()) ||
                         "TQTE".equals(s.getBoardId()))) // todo: "TQTF" вынести в какие-то енумы или константы !!!!
                 .collect(Collectors.toList());
 
         List<MoexRowsRs> etf = allShares.getData().getRow().stream()
                 .filter(filterByKeyword(keyword))
-                .filter(s->"TQTF".equals(s.getBoardId())) // todo: "TQTF" вынести в какие-то енумы или константы !!!!
+                .filter(s -> "TQTF".equals(s.getBoardId())) // todo: "TQTF" вынести в какие-то енумы или константы !!!!
                 .collect(Collectors.toList());
 
 

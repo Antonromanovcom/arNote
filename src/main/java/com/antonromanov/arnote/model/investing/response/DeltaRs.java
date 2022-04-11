@@ -21,6 +21,7 @@ public class DeltaRs {
      */
     @JsonSerialize(using = DoubleSerializer.class)
     private final Double deltaInRubles;
+
     /**
      * Дельта изменения бумаги в рублях по формуле как в приложении Тинькофф Инвестиции: (P*Sl)-(S(p*l)), где
      *
@@ -50,4 +51,11 @@ public class DeltaRs {
      */
     @JsonSerialize(using = DoubleSerializer.class)
     private final Double totalPercent;
+
+    /**
+     * Дельта изменения цены бумаги за день взятая по свечам с прямых торгов без всяких формул и пересчетов.
+     * Мой портфель в данной цене никак не отражается.
+     */
+    @JsonSerialize(using = DoubleSerializer.class)
+    private final Double candleDayDelta;
 }

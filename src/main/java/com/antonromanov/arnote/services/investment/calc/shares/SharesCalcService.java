@@ -15,6 +15,13 @@ import java.util.Optional;
 
 public interface SharesCalcService {
 
+    /**
+     * Получить Свечи
+     *
+     * @return
+     */
+    MoexDocumentRs getCandles(String ticker, LocalDate fromDate, LocalDate tillDate);
+
 
     /**
      * Запросить дивиденды через API биржи, подсчитать сумму и проценты относительно текущей цены акции и вернуть все это.

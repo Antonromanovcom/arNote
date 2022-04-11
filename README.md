@@ -12,8 +12,11 @@
 Сервис, который я выкатил в прод только 10.02.2021. Сервис "ходит" с помощью REST-запросов в API Московской биржи, запрашивает оттуда все доступные данные: котировки акции с промежутком 15 минут, описание бумаги, купоны, дивиденды, исторические данные по годам. Можно добавлять бумаги по тикеру, добавлять даты и объем покупки. После чего можно мониторить рост бумаги, прогнозировать потребные затраты в зависимости от текущего дохода и желаемого, получать календарь ближайших выплат. 
 Пока сервис работает только с Московской биржей и только с облигациями и акциями. Фонды и иностранные бумаги будут позже. 
 
+# Долгосрочное планирование бюджетов и трат
+Сервис, который позволяет планировать сроки выплат кредитов и расчитывать свои финансовые планы. Грубо говоря - сколько лет понадобится на реализацию тех или иных личных проектов с учетом каждодневных трат, вашей зарплаты и платежам по кредитам.
 
-#URL сервис-а
+
+# URL сервис-а
 http://84.201.163.22:8080/
 
 # Запуск на проде
@@ -24,8 +27,10 @@ http://84.201.163.22:8080/
 
 # Что сделали:
 * Починил вот эту штуку - "Добавляю например в План MAGN. Показывает - 1 лот. Цена 43.48, ИТОГО - 435 !!! С фига ли !!!!!!!!?????"
-* Придобавлении ETF он уходил как акция, потому что при поиске он отдавался на фронт как акция - починено.
+* "Придобавлении ETF он уходил как акция, потому что при поиске он отдавался на фронт как акция" - починено.
 * По ETF стал возвращаться description
+* "Когда я ищу индекс (ETF) и нахожу - я хочу на фронте видеть, что я нашел индекс, а не SHARE" - исправлено.
+* Вьюшки (например для желаний)
 * По ETF стала возвращаться delta
 
 
@@ -33,46 +38,20 @@ http://84.201.163.22:8080/
 
 * Логика формирования дельты - какой-то бред!!! Нужно чтобы хотя бы какой-то отображаемый параметр хоть как-то бился с Тиньковым. Предлагаю начать использовать свечи. Пример запроса добавил в коллекцию Постман
 * getMinimalLot - в КЕШ!!!!!
-* Для ETF не приходит описание
-* Захожу с мобилки, ищу FXR (мне нужен FXRW), улетает запрос - https://www.alphavantage.co/query?function=SYMBOL_SEARCH&apikey=3PV5BRWZZZM1T2BA&keywords=fxr. Он отвечает нормально. Но все валится с :
-
-2022-04-07 13:40:33 ERROR o.a.c.c.C.[.[.[.[dispatcherServlet]  - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.NullPointerException] with root cause
-java.lang.NullPointerException: null
-	at com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl.findInstrumentsByName(ForeignCalcServiceImpl.java:424)
-	at com.antonromanov.arnote.services.investment.calc.CommonService.findInstrument(CommonService.java:192)
-	at com.antonromanov.arnote.controller.InvestController.findInstrumentByName(InvestController.java:194)
-	at jdk.internal.reflect.GeneratedMethodAccessor219.invoke(Unknown Source)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:189)
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138)
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:102)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:800)
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1038)
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:942)
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1005)
-	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:897)
-	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634)
-
-
-* Убираем на хер динамический поиск. Делаем по кнопке
-. Если вместо "." указать "," в сумме при добавлении бумаги - запрос валится. Нужно валидировать это.
+* Если вместо "." указать "," в сумме при добавлении бумаги - запрос валится. Нужно валидировать это.
 * Календарь покупок с фильтром / поиском по бумагам
 * Проверить кейс - бумага была в Плане, а я решил ее купить - как онО отыграет?
-* Если я бумагу удаляю, покупки по ней тоже удаляются?
-* Почему-то при поиске бумаги делается 2 одинаковых запроса к альфа-адвантедж
-* Почему бы не кешировать поиск (подумать как)?
+* Если я бумагу удаляю, покупки по ней тоже удаляются? Может быть сделать статус (ПРОДАНА?)
+* Нужно продумать комментарии к бумаги и как отдельно выделять бумаги, которыи я коплю на налог (цвет, флажк, группы?)
+* Почему-то при поиске бумаги делается 2 одинаковых запроса к альфа-адвантедж 
 * Место, где я стучусь в буржуйские АПИ и если они не отвечают, возвращаю null - не красиво сделано. Надо порефакторить, подумать как исправить. Может быть, сделать типа запрос-пинг. И если он вернул false, то просто не дергать все остальные запросы буржуйские.
 * Обновить данные по бумагам
-* Когда я ищу индекс (ETF) и нахожу - я хочу на фронте видеть, что я нашел индекс, а не SHARE.
-* Добавил NOK и в запланированные бумаги и получаю:
-* Вьюшки (например для желаний)
 * Вообще надо решить вопрос со столбцами Минимальный Лот / Куплено. Например для ПЛАН не нужно показывать сколько куплено. Это путает. Нужно подумать как это лучше сделать.
 * Когда стучишься из под корпоративной сети, он не может достучаться до Яху - нужен серт. И валится весь консолидированный запрос. Такого быть не должно. Такие бумаги по которым запрос свалился надо уметь просто пропускать.
-* В КОНСОЛИДИРОВАННОЙ Таблице почему-то по некоторым бумагам не происходит умножение мин-лота на цену одной бумаги и хотя показывает минимальный лот, к примеру 10, а цену бумаги 300, показывает не 3000 цена, 300
 * Вот я добавляю продажу по бумаге. А в какой валюте сумма?????
+* Уже нужен фильтр/поиск по бумагам
+* Я хочу видеть формулу расчета дельты прямо на фронте
+* Свечи с буржуйских сайтов
 
 
 # Ближайшие срочные мелкие косяки и баги:
@@ -111,6 +90,14 @@ java.lang.NullPointerException: null
 * Сделать поиск в помесячной группировке
 * Надо убрать РеспонсЭнтити и возвращать нормальные ДТО-объекты, а не этот пиздец
 * Сделать какой-то учет текущей суммы
+* Почему бы не кешировать поиск (речь о ценных бамагах и вкладке Инвестиции)(подумать как)? И вообще подумать на счет поиска. Варианты: 
+
+1) С кнопкой.
+    1.1 самый тупой - кнопка внизу
+    1.2 посложнее - ставим новый Ангуляр и пробуем новые поля с кнопкой
+
+
+2) кеш поиска (поисковых запросов) + блочим поле пока ответ не придет / либо очередь запросов.
 * Для инвестиций: подумать над отображением графиков
 * Для инвестиций: подумать над добавлением алармов (и сбросов их в инсту)
 * Для инвестиций: подумать над добавлением алармов с информацией об удачном времени покупки / продажи, например о том, что бумага идет к ее историческому минимуму / перешла его, пробила новый (то же самое по максимуму). И не плохо было бы вообще показывать где-то исторический минимум / максимум. Например сделать деталку по бумаге.
@@ -267,6 +254,16 @@ select sum(p.price) from (select * from
   arnote.wishes w WHERE
   (w.id NOT IN (311) and extract(month FROM w.realization_date) = 10)) p
 WHERE NOT p.archive AND (p.realized=true);
+
+-- Вьюшка для удобного представления таблицы Желания
+CREATE VIEW wishes_view_not_realized AS
+  SELECT
+    w.id,
+    w.wish,
+    w.price,
+    w.priority,
+    w.priority_group
+  FROM arnote.public.wishes AS w WHERE w.user_id = 2 AND (w.realized  = FALSE OR w.realized ISNULL) ;
 
 
 #Скрипты

@@ -59,6 +59,11 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
     private final String ALFA_ADVANTAGE_API_KEY = "3PV5BRWZZZM1T2BA";
 
     @Override
+    public MoexDocumentRs getCandles(String ticker, LocalDate fromDate, LocalDate tillDate) {
+        return null;
+    }
+
+    @Override
     public ConsolidatedDividendsRs getDivsByTicker(String ticker) {
         return null;
     }
