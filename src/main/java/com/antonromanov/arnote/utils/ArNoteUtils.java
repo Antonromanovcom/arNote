@@ -23,6 +23,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
+import org.joda.time.DateTime;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
@@ -30,7 +31,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -39,8 +39,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -784,13 +785,18 @@ public class ArNoteUtils { //todo: надо будет разнести отде
            Double startDayValue = doc.getData().getRow().stream()
                    .map(v->{
                        ZoneId contractualZone = ZoneId.systemDefault();
-                       /*LocalDateTime convertedDateTime = OffsetDateTime
+                      /* LocalDateTime convertedDateTime = OffsetDateTime
                                .parse(v.getEnd(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT)) // todo: повторяется 2 раза - упростить.
                                .atZoneSameInstant(contractualZone)
-                               .toLocalDateTime();*/
+                               .toLocalDateTime();
 
-                       DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-                       ZonedDateTime convertedDateTime = ZonedDateTime.from(fmt.parse("25-12-2018 18:20:45"));
+                       DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");*/
+
+                       String time = "2012-09-12 15:04:01";
+                       DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                       DateTime convertedDateTime = DateTime.parse(time, dateTimeFormatter);
+
+                     //  ZonedDateTime convertedDateTime = ZonedDateTime.from(fmt.parse("25-12-2018 18:20:45"));
                    //    System.out.println(zdt);
 
 
@@ -808,8 +814,13 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                                .atZoneSameInstant(contractualZone)
                                .toLocalDateTime();*/
 
-                       DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-                       ZonedDateTime convertedDateTime = ZonedDateTime.from(fmt.parse("25-12-2018 18:20:45"));
+                       /*DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                       ZonedDateTime convertedDateTime = ZonedDateTime.from(fmt.parse("25-12-2018 18:20:45"));*/
+                  //     LocalDateTime convertedDateTime = LocalDateTime.parse("2015-02-20T06:30:00");
+
+                       String time = "2012-09-12 15:04:01";
+                       DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                       DateTime convertedDateTime = DateTime.parse(time, dateTimeFormatter);
 
                        return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
                    })
