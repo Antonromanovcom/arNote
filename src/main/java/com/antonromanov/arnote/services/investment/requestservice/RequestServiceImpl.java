@@ -119,8 +119,7 @@ public class RequestServiceImpl implements RequestService {
 
 
             return xmlParser.marshall(
-                    rt.getForEntity(url, String.class),
-                    type.getClassName());
+                    rt.getForEntity(url, String.class), type.getClassName());
         } catch (Exception e) {
             throw new MoexRequestException();
         }

@@ -12,7 +12,6 @@ import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.services.investment.calc.CommonService;
 import com.antonromanov.arnote.services.investment.calc.bonds.BondCalcService;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 import java.util.stream.Collectors;
 

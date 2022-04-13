@@ -24,6 +24,7 @@ import com.google.gson.TypeAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
@@ -788,38 +789,82 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     }
 
     /**
-     * Рассчитываем дневнуб дельту из Свечей дельты.
+     * Рассчитываем дневную дельту из Свечей.
      *
      * @return
      */
     public static Double getDayDeltaFromCandle(MoexDocumentRs doc) {
-       if (doc.getData()!=null && doc.getData().getRow().size()>0){
+        if (doc.getData()!=null && doc.getData().getRow().size()>0){
 
-           Double startDayValue = doc.getData().getRow().stream()
-                   .map(v->{
+            Double startDayValue = doc.getData().getRow().stream()
+                    .map(v->{
 
-                       DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                       DateTime convertedDateTime = DateTime.parse(v.getEnd(), dateTimeFormatter);
+                        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                        DateTime convertedDateTime = DateTime.parse(v.getEnd(), dateTimeFormatter);
 
-                       return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
-                   })
-                   .min(Map.Entry.comparingByKey())
-                   .map(AbstractMap.SimpleEntry::getValue)
-                   .orElse(0D);
+                        return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
+                    })
+                    .filter(d->jodaToJavaLocalDateTime(d.getKey()).toLocalDate().isBefore(LocalDate.now()))
+                    .max(Map.Entry.comparingByKey())
+                    .map(AbstractMap.SimpleEntry::getValue)
+                    .orElse(0D);
 
-           Double currentDayValue = doc.getData().getRow().stream()
-                   .map(ArNoteUtils::mapKeyToFindMinOrMax)
-                   .max(Map.Entry.comparingByKey())
-                   .map(AbstractMap.SimpleEntry::getValue)
-                   .orElse(0D);
+            Double currentDayValue = doc.getData().getRow().stream()
+                    .map(ArNoteUtils::mapKeyToFindMinOrMax)
+                    .max(Map.Entry.comparingByKey())
+                    .map(AbstractMap.SimpleEntry::getValue)
+                    .orElse(0D);
+            return currentDayValue - startDayValue;
+        } else {
+            return (0d);
+        }
+    }
+
+    /**
+     * JodaTime to Java LocalDateTime.
+     *
+     * @param dateTime
+     * @return
+     */
+    public static LocalDateTime jodaToJavaLocalDateTime(DateTime dateTime) {
+        return Instant.ofEpochMilli(dateTime.getMillis())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
 
 
+    }
 
-           log.info("Ticker =  {} | Start value {} Curr Value {}", doc.getData().getRow().get(0).getSecid(), startDayValue, currentDayValue);
-           return currentDayValue - startDayValue;
-       } else {
-           return (0d);
-       }
+    /**
+     * Рассчитываем  дельту за весь период из Свечей.
+     *
+     * @return
+     */
+    public static Double getAllPeriodDeltaFromCandle(MoexDocumentRs candles, MoexDocumentRs history, Double currentStockPrice) {
+        if (history.getData()!=null && history.getData().getRow().size()>0){
+
+            Double startValue = 0.0D;
+
+            if (candles.getData()!=null && candles.getData().getRow().size()>0) {
+                startValue = history.getData()
+                        .getRow()
+                        .stream()
+                        .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                        .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
+                        .orElse(0D);
+            }
+
+
+            Double currentDayValue = candles.getData().getRow().stream()
+                    .map(ArNoteUtils::mapKeyToFindMinOrMax)
+                    .max(Map.Entry.comparingByKey())
+                    .map(AbstractMap.SimpleEntry::getValue)
+                    .orElse(0D);
+
+
+            return (currentDayValue == 0.0D) ? currentStockPrice - startValue : currentDayValue - startValue;
+        } else {
+            return (0d);
+        }
     }
 
 

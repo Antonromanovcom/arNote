@@ -58,4 +58,25 @@ public class DeltaRs {
      */
     @JsonSerialize(using = DoubleSerializer.class)
     private final Double candleDayDelta;
+
+    /**
+     * Дельта изменения цены бумаги в процентах за день взятая по свечам с прямых торгов без всяких формул и пересчетов.
+     * Мой портфель в данной цене никак не отражается.
+     */
+    @JsonSerialize(using = DoubleSerializer.class)
+    private final Double candleDayDeltaPercent;
+
+    /**
+     * Дельта изменения цены бумаги в рублях за все время (макс - 10 лет) взятая по свечам с прямых торгов без всяких формул и пересчетов.
+     * Мой портфель в данной цене никак не отражается.
+     */
+    @JsonSerialize(using = DoubleSerializer.class)
+    private final Double candleAllTimeDelta;
+
+    /**
+     * Дельта изменения цены бумаги в процентах за все время (макс - 10 лет) взятая по свечам с прямых торгов без всяких формул и пересчетов.
+     * Мой портфель в данной цене никак не отражается.
+     */
+    @JsonSerialize(using = DoubleSerializer.class)
+    private final Double candleAllTimeDeltaPercent;
 }

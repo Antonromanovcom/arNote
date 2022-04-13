@@ -49,10 +49,14 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
 
     @Override
     public MoexDocumentRs getCandles(String ticker, LocalDate fromDate, LocalDate tillDate) {
-        return  (MoexDocumentRs) httpClient.getCandles(MoexRestTemplateOperation.GET_CANDLES,
+        MoexDocumentRs candles = (MoexDocumentRs) httpClient.getCandles(MoexRestTemplateOperation.GET_CANDLES,
                 ticker,
                 fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 tillDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), 1);
+
+        candles.getData().getRow().forEach(v->v.setSecid(ticker));
+
+        return candles;
 
 
     }
@@ -306,6 +310,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
         if (!isBlank(ticker) && !isBlank(boardId) && (currentStockPrice != null && currentStockPrice > 0)) {
 
             MoexDocumentRs doc = getHistory(ticker, boardId, null);
+            MoexDocumentRs candles = getCandles(ticker, LocalDate.now().minusDays(1), LocalDate.now());
 
             /*
              * Как считаем:
@@ -313,13 +318,20 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
              * deltaInRubles = текущая цена - (цена по самой ранней дате)
              * deltaPeriod = Миллисекунды от (текущая дата - (самая ранняя дата истории))
              * tinkoffDelta = (сумма покупок * текущую цену рынка) - (Сумма(лот * цену по каждой покупке))
+             * candleDayDelta = (цена текущая - цена закрытия вчера) * кол-во акций в портфеле
              */
-            Double dayDeltaFromCandle =  getDayDeltaFromCandle(getCandles(ticker, LocalDate.now(), LocalDate.now()));
+
+            Double dayDeltaFromCandle =  getDayDeltaFromCandle(candles);
+            Integer instrumentsCount =  purchaseList.stream()
+                    .map(Purchase::getLot)
+                    .reduce((a,b)->a*b)
+                    .orElse(0); // считаем кол-во бумаг в портфеле
             log.info("dayDeltaFromCandle for {} = {}", ticker, dayDeltaFromCandle);
+            log.info("instrumentsCount {} ", instrumentsCount);
             return DeltaRs.builder()
                     .tinkoffDelta(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL))
                     .tinkoffDeltaPercent(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT))
-                    .candleDayDelta(dayDeltaFromCandle)
+                    .candleDayDelta(dayDeltaFromCandle*instrumentsCount)
                     .deltaInRubles(doc.getData()
                             .getRow()
                             .stream()
@@ -328,6 +340,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                             .map(Math::round)
                             .map(n -> currentStockPrice - n)
                             .orElse(0D))
+                    .candleAllTimeDelta(getAllPeriodDeltaFromCandle(candles, doc, currentStockPrice))
                     .totalPercent(doc.getData()
                             .getRow()
                             .stream()
