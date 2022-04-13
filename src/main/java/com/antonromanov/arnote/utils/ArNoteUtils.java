@@ -75,6 +75,19 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     }
 
     /**
+     * Преобразование ключа для последующего поиска минимальной или максимальной даты.
+     *
+     * @param v
+     * @return
+     */
+    private static AbstractMap.SimpleEntry<DateTime, Double> mapKeyToFindMinOrMax(MoexRowsRs v) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        DateTime convertedDateTime = DateTime.parse(v.getEnd(), dateTimeFormatter);
+
+        return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
+    }
+
+    /**
      * Конвертим SQL-TIME в LOCALTIME
      *
      * @param time
@@ -784,52 +797,25 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
            Double startDayValue = doc.getData().getRow().stream()
                    .map(v->{
-                       ZoneId contractualZone = ZoneId.systemDefault();
-                      /* LocalDateTime convertedDateTime = OffsetDateTime
-                               .parse(v.getEnd(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT)) // todo: повторяется 2 раза - упростить.
-                               .atZoneSameInstant(contractualZone)
-                               .toLocalDateTime();
 
-                       DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");*/
-
-                       String time = "2012-09-12 15:04:01";
                        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                       DateTime convertedDateTime = DateTime.parse(time, dateTimeFormatter);
-
-                     //  ZonedDateTime convertedDateTime = ZonedDateTime.from(fmt.parse("25-12-2018 18:20:45"));
-                   //    System.out.println(zdt);
-
+                       DateTime convertedDateTime = DateTime.parse(v.getEnd(), dateTimeFormatter);
 
                        return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
                    })
-                   .min(Comparator.comparing(AbstractMap.SimpleEntry::getKey))
+                   .min(Map.Entry.comparingByKey())
                    .map(AbstractMap.SimpleEntry::getValue)
                    .orElse(0D);
 
            Double currentDayValue = doc.getData().getRow().stream()
-                   .map(v->{
-                     /*  ZoneId contractualZone = ZoneId.systemDefault();
-                       LocalDateTime convertedDateTime = OffsetDateTime
-                               .parse(v.getEnd(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT))
-                               .atZoneSameInstant(contractualZone)
-                               .toLocalDateTime();*/
-
-                       /*DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-                       ZonedDateTime convertedDateTime = ZonedDateTime.from(fmt.parse("25-12-2018 18:20:45"));*/
-                  //     LocalDateTime convertedDateTime = LocalDateTime.parse("2015-02-20T06:30:00");
-
-                       String time = "2012-09-12 15:04:01";
-                       DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-                       DateTime convertedDateTime = DateTime.parse(time, dateTimeFormatter);
-
-                       return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
-                   })
-                   .max(Comparator.comparing(AbstractMap.SimpleEntry::getKey))
+                   .map(ArNoteUtils::mapKeyToFindMinOrMax)
+                   .max(Map.Entry.comparingByKey())
                    .map(AbstractMap.SimpleEntry::getValue)
                    .orElse(0D);
 
 
 
+           log.info("Ticker =  {} | Start value {} Curr Value {}", doc.getData().getRow().get(0).getSecid(), startDayValue, currentDayValue);
            return currentDayValue - startDayValue;
        } else {
            return (0d);

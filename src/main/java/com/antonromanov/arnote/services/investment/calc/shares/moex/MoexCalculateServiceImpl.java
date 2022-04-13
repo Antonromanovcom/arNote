@@ -314,10 +314,12 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
              * deltaPeriod = Миллисекунды от (текущая дата - (самая ранняя дата истории))
              * tinkoffDelta = (сумма покупок * текущую цену рынка) - (Сумма(лот * цену по каждой покупке))
              */
+            Double dayDeltaFromCandle =  getDayDeltaFromCandle(getCandles(ticker, LocalDate.now(), LocalDate.now()));
+            log.info("dayDeltaFromCandle for {} = {}", ticker, dayDeltaFromCandle);
             return DeltaRs.builder()
                     .tinkoffDelta(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL))
                     .tinkoffDeltaPercent(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT))
-                    .candleDayDelta(getDayDeltaFromCandle(getCandles(ticker, LocalDate.now(), LocalDate.now())))
+                    .candleDayDelta(dayDeltaFromCandle)
                     .deltaInRubles(doc.getData()
                             .getRow()
                             .stream()
