@@ -25,12 +25,14 @@ import com.antonromanov.arnote.services.investment.requestservice.RequestService
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -54,7 +56,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                 fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 tillDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), 1);
 
-        candles.getData().getRow().forEach(v->v.setSecid(ticker));
+        candles.getData().getRow().forEach(v -> v.setSecid(ticker));
 
         return candles;
 
@@ -321,17 +323,22 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
              * candleDayDelta = (цена текущая - цена закрытия вчера) * кол-во акций в портфеле
              */
 
-            Double dayDeltaFromCandle =  getDayDeltaFromCandle(candles);
-            Integer instrumentsCount =  purchaseList.stream()
+            Double dayDeltaFromCandle = getDayDeltaFromCandle(candles);
+            Integer instrumentsCount = purchaseList.stream()
                     .map(Purchase::getLot)
-                    .reduce((a,b)->a*b)
+                    .reduce((a, b) -> a * b)
                     .orElse(0); // считаем кол-во бумаг в портфеле
-            log.info("dayDeltaFromCandle for {} = {}", ticker, dayDeltaFromCandle);
+
+            Double getClosePositionForTomorrow = getClosePositionForTomorrow(candles);
+            Double dayDeltaFromCandleInPercents = getClosePositionForTomorrow == 0.0D ? 0.0D :
+                    dayDeltaFromCandle / (getClosePositionForTomorrow(candles) * instrumentsCount) * 100; // дневная дельта из свечей в процентах
+            log.info("dayDeltaFromCandle for {} = {} / {}%", ticker, dayDeltaFromCandle, dayDeltaFromCandleInPercents);
             log.info("instrumentsCount {} ", instrumentsCount);
             return DeltaRs.builder()
                     .tinkoffDelta(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL))
                     .tinkoffDeltaPercent(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT))
-                    .candleDayDelta(dayDeltaFromCandle*instrumentsCount)
+                    .candleDayDelta(dayDeltaFromCandle * instrumentsCount)
+                    .candleDayDeltaPercent(dayDeltaFromCandleInPercents)
                     .deltaInRubles(doc.getData()
                             .getRow()
                             .stream()

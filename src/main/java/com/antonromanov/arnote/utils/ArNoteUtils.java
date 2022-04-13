@@ -31,6 +31,7 @@ import org.passay.PasswordGenerator;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import java.time.*;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
@@ -41,8 +42,10 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -220,11 +223,10 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     /**
      * Конвертим пришедший json в новую Salary
      */
-    public static Date localDateToDate(LocalDate date)  {
+    public static Date localDateToDate(LocalDate date) {
         ZoneId defaultZoneId = ZoneId.systemDefault();
         return Date.from(date.atStartOfDay(defaultZoneId).toInstant());
     }
-
 
 
     /**
@@ -517,7 +519,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
 
                 return 1 + Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
-                                monthNameToNumber(month), 1))));
+                        monthNameToNumber(month), 1))));
             }
         } else if (Pattern.compile("[A-Za-z]+ [0-9]+").matcher(monthAndYear).find()) {
 
@@ -533,8 +535,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
             } else {
                 // log.info("Ставим. Текущая дата + 1 мес: {}", month);
-                return 1+Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
-                                monthNameToNumber(convertEnglishNames(month)), 1))));
+                return 1 + Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
+                        monthNameToNumber(convertEnglishNames(month)), 1))));
             }
 
         } else {
@@ -636,7 +638,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
         return uriComponents.toString();
     }
-
 
 
     /**
@@ -789,32 +790,47 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     }
 
     /**
-     * Рассчитываем дневную дельту из Свечей.
+     * Вытаскиваем позицию (цену) закрытия бумаги за вчерашний день.
      *
+     * @param doc
      * @return
      */
-    public static Double getDayDeltaFromCandle(MoexDocumentRs doc) {
-        if (doc.getData()!=null && doc.getData().getRow().size()>0){
+    public static Double getClosePositionForTomorrow(MoexDocumentRs doc) {
+        if (doc.getData() != null && doc.getData().getRow().size() > 0) {
 
-            Double startDayValue = doc.getData().getRow().stream()
-                    .map(v->{
+            return doc.getData().getRow().stream()
+                    .map(v -> {
 
                         DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
                         DateTime convertedDateTime = DateTime.parse(v.getEnd(), dateTimeFormatter);
 
                         return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
                     })
-                    .filter(d->jodaToJavaLocalDateTime(d.getKey()).toLocalDate().isBefore(LocalDate.now()))
+                    .filter(d -> jodaToJavaLocalDateTime(d.getKey()).toLocalDate().isBefore(LocalDate.now()))
                     .max(Map.Entry.comparingByKey())
                     .map(AbstractMap.SimpleEntry::getValue)
                     .orElse(0D);
+
+        } else {
+            return (0d);
+        }
+    }
+
+    /**
+     * Рассчитываем дневную дельту из Свечей.
+     *
+     * @return
+     */
+    public static Double getDayDeltaFromCandle(MoexDocumentRs doc) {
+        if (doc.getData() != null && doc.getData().getRow().size() > 0) {
 
             Double currentDayValue = doc.getData().getRow().stream()
                     .map(ArNoteUtils::mapKeyToFindMinOrMax)
                     .max(Map.Entry.comparingByKey())
                     .map(AbstractMap.SimpleEntry::getValue)
                     .orElse(0D);
-            return currentDayValue - startDayValue;
+
+            return currentDayValue - getClosePositionForTomorrow(doc);
         } else {
             return (0d);
         }
@@ -840,11 +856,11 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      * @return
      */
     public static Double getAllPeriodDeltaFromCandle(MoexDocumentRs candles, MoexDocumentRs history, Double currentStockPrice) {
-        if (history.getData()!=null && history.getData().getRow().size()>0){
+        if (history.getData() != null && history.getData().getRow().size() > 0) {
 
             Double startValue = 0.0D;
 
-            if (candles.getData()!=null && candles.getData().getRow().size()>0) {
+            if (candles.getData() != null && candles.getData().getRow().size() > 0) {
                 startValue = history.getData()
                         .getRow()
                         .stream()
@@ -868,7 +884,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     }
 
 
-
     /**
      * Достать ближайшую дату к заданной.
      *
@@ -879,16 +894,16 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     public static Long getNearestDate(Map<Long, LocalDate> dates, LocalDate currentDate) {
 
         NavigableSet<LocalDate> datesInSet = new TreeSet<>(dates.values());
-        LocalDate minDate =  datesInSet.lower(currentDate);
+        LocalDate minDate = datesInSet.lower(currentDate);
 
-        if (minDate!=null){
+        if (minDate != null) {
             return dates.entrySet()
                     .stream()
-                    .filter(w->w.getValue().isEqual(minDate))
+                    .filter(w -> w.getValue().isEqual(minDate))
                     .findFirst()
                     .map(Map.Entry::getKey).orElse(0L);
         } else {
-        return null;
+            return null;
         }
     }
 
