@@ -19,6 +19,7 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.Moe
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexInstrumentDetailRowsRs;
+import com.antonromanov.arnote.model.wish.enums.DeltaMode;
 import com.antonromanov.arnote.services.investment.cache.CacheService;
 import com.antonromanov.arnote.services.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.services.investment.requestservice.RequestService;
@@ -32,7 +33,6 @@ import java.time.format.TextStyle;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -307,8 +307,10 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    public DeltaRs calculateDelta(String boardId, String ticker, Double currentStockPrice, List<Purchase> purchaseList) {
+    public DeltaRs calculateDelta(String ticker, Double currentStockPrice, List<Purchase> purchaseList,
+                                  DeltaMode deltaMode) { //todo: а в com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl у этого же метода не аналогичный ли код? Не имеет ли смысла его куда-то вынести?
 
+        String boardId = getBoardId(ticker);
         if (!isBlank(ticker) && !isBlank(boardId) && (currentStockPrice != null && currentStockPrice > 0)) {
 
             MoexDocumentRs doc = getHistory(ticker, boardId, null);
@@ -323,20 +325,40 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
              * candleDayDelta = (цена текущая - цена закрытия вчера) * кол-во акций в портфеле
              */
 
-            Double dayDeltaFromCandle = getDayDeltaFromCandle(candles);
-            Integer instrumentsCount = purchaseList.stream()
-                    .map(Purchase::getLot)
-                    .reduce((a, b) -> a * b)
-                    .orElse(0); // считаем кол-во бумаг в портфеле
+            Double dayDeltaFromCandle = 0.0D;
+            Integer instrumentsCount = 0;
+            Double dayDeltaFromCandleInPercents = 0.0D;
+            Double finalDelta;
+            Double finalDeltaInPercents;
 
-            Double getClosePositionForTomorrow = getClosePositionForTomorrow(candles);
-            Double dayDeltaFromCandleInPercents = getClosePositionForTomorrow == 0.0D ? 0.0D :
-                    dayDeltaFromCandle / (getClosePositionForTomorrow(candles) * instrumentsCount) * 100; // дневная дельта из свечей в процентах
-            log.info("dayDeltaFromCandle for {} = {} / {}%", ticker, dayDeltaFromCandle, dayDeltaFromCandleInPercents);
-            log.info("instrumentsCount {} ", instrumentsCount);
+            if (purchaseList.size() > 0) {
+                dayDeltaFromCandle = getDayDeltaFromCandle(candles);
+                instrumentsCount = purchaseList.stream()
+                        .map(Purchase::getLot)
+                        .reduce((a, b) -> a * b)
+                        .orElse(0); // считаем кол-во бумаг в портфеле
+
+
+                Double getClosePositionForTomorrow = getClosePositionForTomorrow(candles);
+                dayDeltaFromCandleInPercents = getClosePositionForTomorrow == 0.0D ? 0.0D :
+                        dayDeltaFromCandle / (getClosePositionForTomorrow(candles) * instrumentsCount) * 100; // дневная дельта из свечей в процентах
+                log.info("dayDeltaFromCandle for {} = {} / {}%", ticker, dayDeltaFromCandle, dayDeltaFromCandleInPercents);
+                log.info("instrumentsCount {} ", instrumentsCount);
+            } else {
+                log.warn("По бумаге {} нет продаж - не считаем дельту! ", ticker);
+            }
+
+            if (DeltaMode.CANDLE_DELTA == deltaMode) {
+                finalDelta = dayDeltaFromCandle * instrumentsCount;
+                finalDeltaInPercents = dayDeltaFromCandleInPercents;
+            } else {
+                finalDelta = getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL);
+                finalDeltaInPercents = getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT);
+            }
+
             return DeltaRs.builder()
-                    .tinkoffDelta(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL))
-                    .tinkoffDeltaPercent(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT))
+                    .tinkoffDelta(finalDelta)
+                    .tinkoffDeltaPercent(finalDeltaInPercents)
                     .candleDayDelta(dayDeltaFromCandle * instrumentsCount)
                     .candleDayDeltaPercent(dayDeltaFromCandleInPercents)
                     .deltaInRubles(doc.getData()
@@ -377,11 +399,10 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * Подготовить финальную цену (цена * лот).
      *
      * @param bond
-     * @param user
      * @return
      */
     @Override
-    public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
+    public Integer calculateFinalPrice(Bond bond) {
 
         if (bond.getIsBought()) { // если это ФАКТ
             return bond.getPurchaseList().stream()
@@ -390,7 +411,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
 
         } else { // если ПЛАН
             Double currPrice = getRealTimeQuote(bond.getTicker()).getCurrentPrice();
-            Long longFinalPrice = (Math.round((currPrice == null ? Double.NaN : currPrice) * getMinimalLot(bond.getTicker(), user)));
+            Long longFinalPrice = (Math.round((currPrice == null ? Double.NaN : currPrice) * getMinimalLot(bond.getTicker(), bond.getUser())));
             return longFinalPrice.intValue();
         }
     }
@@ -401,7 +422,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    public ConsolidatedDividendsRs getDividends(Bond bond, ArNoteUser user) {
+    public ConsolidatedDividendsRs getDividends(Bond bond) {
         return Optional.of(getDivsByTicker(bond.getTicker()))
                 .orElse(ConsolidatedDividendsRs.builder()
                         .dividendList(Collections.emptyList())

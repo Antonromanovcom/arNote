@@ -83,7 +83,7 @@ public class ReturnsServiceImpl implements ReturnsService {
                 .filter(bond -> bond.getType()==BondType.SHARE)
                 .filter(Bond::getIsBought)
                 .map(b -> {
-                    ConsolidatedDividendsRs divs = commonService.getDivsOrCoupons(b, user);
+                    ConsolidatedDividendsRs divs = commonService.getDivsOrCoupons(b);
                     return divs.getDivSum();
                 })
                 .reduce((double) 0, Double::sum))
@@ -96,7 +96,7 @@ public class ReturnsServiceImpl implements ReturnsService {
                 .filter(bond -> bond.getType()==BondType.SHARE)
                 .filter(Bond::getIsBought)
                 .map(b -> {
-                    ConsolidatedDividendsRs divsData = commonService.getDivsOrCoupons(b, user);
+                    ConsolidatedDividendsRs divsData = commonService.getDivsOrCoupons(b);
                     List<DividendRs> divList = new ArrayList<>();
 
                     if (divsData!=null && divsData.getDividendList().size()>0) {
@@ -157,7 +157,7 @@ public class ReturnsServiceImpl implements ReturnsService {
                 .filter(bond -> bond.getType()==BondType.BOND)
                 .filter(Bond::getIsBought)
                 .map(b -> {
-                    ConsolidatedDividendsRs divs = bondCalcService.getCoupons(b, user);
+                    ConsolidatedDividendsRs divs = bondCalcService.getCoupons(b);
                     return divs.getDivSum();
                 })
                 .reduce((double) 0, Double::sum))

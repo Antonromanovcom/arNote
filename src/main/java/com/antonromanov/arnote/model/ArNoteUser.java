@@ -3,6 +3,7 @@ package com.antonromanov.arnote.model;
 
 import com.antonromanov.arnote.model.investing.InvestingSortMode;
 import com.antonromanov.arnote.model.wish.SortMode;
+import com.antonromanov.arnote.model.wish.enums.DeltaMode;
 import com.antonromanov.arnote.model.wish.enums.FilterMode;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Getter;
@@ -87,6 +88,17 @@ public class ArNoteUser {
 	 */
 	@Column
 	private String viewMode;
+
+	/**
+	 * Какую дельту отдаем пользователю. Варианта два:
+	 *
+	 * 1) tinkoffDelta = (сумма покупок * текущую цену рынка) - (Сумма(лот * цену по каждой покупке))
+	 * 2) candleDayDelta = (цена текущая - цена закрытия вчера) * кол-во акций в портфеле
+	 *
+	 * Какой отображаем?
+	 */
+	@Enumerated(EnumType.STRING)
+	private DeltaMode deltaMode;
 
 	/**
 	 * Режим сортировки

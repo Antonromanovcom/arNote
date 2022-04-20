@@ -8,7 +8,7 @@ import com.antonromanov.arnote.model.investing.response.CurrentPriceRs;
 import com.antonromanov.arnote.model.investing.response.DeltaRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
-
+import com.antonromanov.arnote.model.wish.enums.DeltaMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -81,25 +81,26 @@ public interface SharesCalcService {
      * @param ticker            - тикер.
      * @param currentStockPrice - текущая рыночная ставка (цена)
      * @param purchaseList      - список покупок (цен) пользователя
+     * @param deltaMode      - как считаем Дельту.
      * @return
      */
-    DeltaRs calculateDelta(String boardId, String ticker, Double currentStockPrice, List<Purchase> purchaseList);
+    DeltaRs calculateDelta(String ticker, Double currentStockPrice, List<Purchase> purchaseList,
+                           DeltaMode deltaMode);
 
     /**
      * Подготовить финальную цену (цена * лот).
      *
      * @param bond
-     * @param user
      * @return
      */
-    Integer calculateFinalPrice(Bond bond, ArNoteUser user);
+    Integer calculateFinalPrice(Bond bond);
 
     /**
      * Подготовить дивиденды.
      *
      * @return
      */
-    ConsolidatedDividendsRs getDividends(Bond bond, ArNoteUser user);
+    ConsolidatedDividendsRs getDividends(Bond bond);
 
 
     /**
