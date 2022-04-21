@@ -30,6 +30,7 @@ import org.passay.PasswordGenerator;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import java.time.*;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
@@ -40,8 +41,10 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -847,35 +850,81 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     }
 
     /**
-     * Рассчитываем  дельту за весь период из Свечей.
+     * Взять покупки, кол-во купленных акций перемножить на стоимость и все это просуммировать.
+     *
+     * @param
+     * @return
+     */
+    public static Double getCostOfAllPurchasesOfSecurityInPortfolio(List<Purchase> purchaseList) {
+        return purchaseList.stream()
+                .map(v -> v.getLot() * v.getPrice())
+                .reduce(Double::sum)
+                .orElse(0.0D);
+
+
+    }
+
+
+    /**
+     * Рассчитываем  доход из Свечей по всем купленным бумагам.
+     * <p>
+     * Формула расчета ((Сt*CP)-(Sp[...]))
+     * где:
+     * <p>
+     * Ct - кол-во купленных бумаг (акций)
+     * CP - текущая цена
+     * Sp[...] - сумма покупок. То есть 10-апреля купили например 10 по цене 1.5, 11 мая купили 10 по цене 2.0,
+     * значит получаем: (10 * 1.5) + (10 * 2.0) = ....
      *
      * @return
      */
-    public static Double getAllPeriodDeltaFromCandle(MoexDocumentRs candles, MoexDocumentRs history, Double currentStockPrice) {
+    public static Double getIncomeForAllPurchasesFromCandle(MoexDocumentRs candles, MoexDocumentRs history,
+                                                            Double currentStockPrice,
+                                                            List<Purchase> purchaseList) {
         if (history.getData() != null && history.getData().getRow().size() > 0) {
 
-            Double startValue = 0.0D;
-
-            if (candles.getData() != null && candles.getData().getRow().size() > 0) {
-                startValue = history.getData()
-                        .getRow()
-                        .stream()
-                        .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                        .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
-                        .orElse(0D);
-            }
-
-
-            Double currentDayValue = candles.getData().getRow().stream()
+            Double currentDayValue = (candles.getData() == null || candles.getData().getRow() == null ||
+                    candles.getData().getRow().size() < 1) ? 0.0D : (candles.getData().getRow().stream()
                     .map(ArNoteUtils::mapKeyToFindMinOrMax)
                     .max(Map.Entry.comparingByKey())
                     .map(AbstractMap.SimpleEntry::getValue)
-                    .orElse(0D);
+                    .orElse(currentStockPrice));
+
+            Integer instrumentsCount = purchaseList.stream()
+                    .map(Purchase::getLot)
+                    .reduce(Integer::sum)
+                    .orElse(0); // считаем кол-во бумаг в портфеле //todo: в отдельный метод в Утилс
 
 
-            return (currentDayValue == 0.0D) ? currentStockPrice - startValue : currentDayValue - startValue;
+            return (currentDayValue * instrumentsCount) - getCostOfAllPurchasesOfSecurityInPortfolio(purchaseList);
         } else {
             return (0d);
+        }
+    }
+
+    /**
+     * Вариант метода getIncomeForAllPurchasesFromCandle, но считающий результат данного метода в процентах.
+     *
+     * Формула расчета:
+     *
+     * Сколько_процентов_составляет(Х от Y).
+     * где:
+     *
+     * X - результат метода getIncomeForAllPurchasesFromCandle
+     * Y - Sp[...]
+     * Sp[...] - сумма покупок. То есть 10-апреля купили например 10 по цене 1.5, 11 мая купили 10 по цене 2.0,
+     * значит получаем: (10 * 1.5) + (10 * 2.0) = ....
+     *
+     * @return
+     */
+    public static Double getIncomeForAllPurchasesInPercents(Double income, List<Purchase> purchaseList) {
+        if (income != 0) {
+
+            double coef = getCostOfAllPurchasesOfSecurityInPortfolio(purchaseList) / income;
+
+            return coef == 0 ? 0.0D : 100 / coef;
+        } else {
+            return 0.0D;
         }
     }
 

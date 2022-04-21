@@ -33,6 +33,7 @@ import java.time.format.TextStyle;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -330,12 +331,14 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             Double dayDeltaFromCandleInPercents = 0.0D;
             Double finalDelta;
             Double finalDeltaInPercents;
+            Double finalIncome;
+            Double finalIncomeInPercent;
 
             if (purchaseList.size() > 0) {
                 dayDeltaFromCandle = getDayDeltaFromCandle(candles);
                 instrumentsCount = purchaseList.stream()
                         .map(Purchase::getLot)
-                        .reduce((a, b) -> a * b)
+                        .reduce(Integer::sum)
                         .orElse(0); // считаем кол-во бумаг в портфеле
 
 
@@ -351,32 +354,33 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             if (DeltaMode.CANDLE_DELTA == deltaMode) {
                 finalDelta = dayDeltaFromCandle * instrumentsCount;
                 finalDeltaInPercents = dayDeltaFromCandleInPercents;
+                finalIncome= getIncomeForAllPurchasesFromCandle(candles, doc, currentStockPrice, purchaseList);
+                finalIncomeInPercent =getIncomeForAllPurchasesInPercents(finalIncome,purchaseList);
             } else {
                 finalDelta = getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL);
                 finalDeltaInPercents = getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT);
+                finalIncome= doc.getData()
+                        .getRow()
+                        .stream()
+                        .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                        .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
+                        .map(Math::round)
+                        .map(n -> currentStockPrice - n)
+                        .orElse(0D);
+                finalIncomeInPercent = doc.getData()
+                        .getRow()
+                        .stream()
+                        .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                        .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
+                        .map(n -> ((currentStockPrice - n) / n) * 100)
+                        .orElse(0D);
             }
 
             return DeltaRs.builder()
                     .tinkoffDelta(finalDelta)
                     .tinkoffDeltaPercent(finalDeltaInPercents)
-                    .candleDayDelta(dayDeltaFromCandle * instrumentsCount)
-                    .candleDayDeltaPercent(dayDeltaFromCandleInPercents)
-                    .deltaInRubles(doc.getData()
-                            .getRow()
-                            .stream()
-                            .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                            .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
-                            .map(Math::round)
-                            .map(n -> currentStockPrice - n)
-                            .orElse(0D))
-                    .candleAllTimeDelta(getAllPeriodDeltaFromCandle(candles, doc, currentStockPrice))
-                    .totalPercent(doc.getData()
-                            .getRow()
-                            .stream()
-                            .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                            .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
-                            .map(n -> ((currentStockPrice - n) / n) * 100)
-                            .orElse(0D))
+                    .deltaInRubles(finalIncome)
+                    .totalPercent(finalIncomeInPercent)
                     .deltaPeriod(doc.getData()
                             .getRow()
                             .stream()
