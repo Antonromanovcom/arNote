@@ -326,7 +326,7 @@ public class InvestController {
         log.info("ticker: " + request.getTicker());
         Bond newOrUpdatedBond;
 
-        /**
+        /*
          * Проверяем что хотя бы один такой инструмент нашелся, иначе кидаем эксепшн.
          */
         FoundInstrumentRs foundInstrument = commonService.findInstrument(request.getTicker())
@@ -334,18 +334,28 @@ public class InvestController {
                 .filter(fi -> request.getTicker().equals(fi.getTicker()))
                 .findFirst().orElseThrow(() -> new BadTickerException(request.getTicker()));
 
-        log.info("Нашли хотя бы 1 инструмент по тикеру: {}", foundInstrument.getTicker());
-
-
+        /*
+         * 1) Покупка фактическая (не ПЛАН)
+         * 2) Кол-во купленных бумаг > 0
+         * 3) Стоимость не пустая
+         * 4) Дата покупки не пустая
+         */
         if (!request.isPlan() && (request.getLot() != 0 && request.getPrice() != null && request.getPurchaseDate() != null)) {
 
             Optional<Bond> existingBond = bondsRepo.findBondByUserAndTicker(user, request.getTicker());
+
             Purchase purchase = new Purchase();
             purchase.setPrice(request.getPrice());
             purchase.setLot(request.getLot());
             purchase.setPurchaseDate(request.getPurchaseDate());
 
+            /*
+             * Если есть покупки по бумаге - добавляем в имеющуюся продажи
+             */
             if (existingBond.isPresent()) {
+                /*
+                 * Если бумага уже была и она была в планах - переводим в статус ФАКТ.
+                 */
                 if (!existingBond.get().getIsBought()) {
                     existingBond.get().setIsBought(true);
                 }

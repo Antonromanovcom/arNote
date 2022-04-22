@@ -600,6 +600,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
         queryParameters.put("start", Collections.singletonList(String.valueOf(start)));
         queryParameters.put("till", Collections.singletonList(dateTill));
+        queryParameters.put("from", Collections.singletonList(dateFrom));
 
         UriComponents uriComponents = UriComponentsBuilder
                 .newInstance()

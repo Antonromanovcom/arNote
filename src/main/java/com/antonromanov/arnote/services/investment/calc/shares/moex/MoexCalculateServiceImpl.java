@@ -503,15 +503,12 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      *
      * @param ticker  - тикер бумаги.
      * @param boardId - boardId (только для MOEX)
-     * @param forDate -на какую  дату запрашиваем.
+     * @param fromDate -на какую  дату запрашиваем.
      * @return - MoexDocumentRs
      */
     @Override
-    public MoexDocumentRs getHistory(String ticker, String boardId, LocalDate forDate) {
+    public MoexDocumentRs getHistory(String ticker, String boardId, LocalDate fromDate) {
 
-        if (cacheService.checkDict(CacheDictType.HISTORY, ticker + boardId)) {
-            return cacheService.getDict(CacheDictType.HISTORY, ticker + boardId);
-        } else {
             int start = 0; // начальная страница
             int step = 100; // шаг перемещения
             boolean isFinalPage = false; // проверочная переменная, определяющая, что дальше циклить не надо и мы достигли конца истории.
@@ -521,10 +518,10 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
 
                 LocalDate requestDate;
 
-                if (forDate == null) {
+                if (fromDate == null) {
                     requestDate = LocalDate.now().minusYears(10).withMonth(1).withDayOfMonth(1);
                 } else {
-                    requestDate = forDate;
+                    requestDate = fromDate;
                 }
 
                 String reqDateAsString = requestDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -569,9 +566,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                     log.info("Получили записей: {}", resultDoc.getData().getRow().size());
                 }
             }
-            cacheService.putToCache(CacheDictType.HISTORY, ticker + boardId, resultDoc, MoexDocumentRs.class);
             return resultDoc;
-        }
     }
 
     /**
