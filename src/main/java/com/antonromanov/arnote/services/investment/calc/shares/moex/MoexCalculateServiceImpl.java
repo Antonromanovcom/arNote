@@ -52,16 +52,20 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
 
     @Override
     public MoexDocumentRs getCandles(String ticker, LocalDate fromDate, LocalDate tillDate) {
-        MoexDocumentRs candles = (MoexDocumentRs) httpClient.getCandles(MoexRestTemplateOperation.GET_CANDLES,
-                ticker,
-                fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-                tillDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), 1);
 
-        candles.getData().getRow().forEach(v -> v.setSecid(ticker));
+        if (cacheService.checkDict(CacheDictType.CANDLES, ticker)) {
+            return cacheService.getDict(CacheDictType.CANDLES, ticker);
+        } else {
 
-        return candles;
+            MoexDocumentRs candles = (MoexDocumentRs) httpClient.getCandles(MoexRestTemplateOperation.GET_CANDLES,
+                    ticker,
+                    fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                    tillDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), 1);
 
-
+            candles.getData().getRow().forEach(v -> v.setSecid(ticker));
+            cacheService.putToCache(CacheDictType.CANDLES, ticker, candles, MoexDocumentRs.class);
+            return candles;
+        }
     }
 
     /**
@@ -473,6 +477,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     public Integer getMinimalLot(String ticker, ArNoteUser user) {
 
         String boardId = getBoardId(ticker);
+
         if (cacheService.checkDict(CacheDictType.MINIMAL_LOT, ticker + boardId)) {
             return cacheService.getDict(CacheDictType.MINIMAL_LOT, ticker + boardId);
         } else {
@@ -488,7 +493,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                                     .orElse(1))
                             .orElse(1))
                     .orElse(1);
-
+            cacheService.putToCache(CacheDictType.MINIMAL_LOT, ticker, minLot, Integer.class);
             return minLot;
         }
     }
