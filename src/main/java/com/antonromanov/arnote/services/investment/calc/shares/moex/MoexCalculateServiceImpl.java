@@ -354,12 +354,12 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             if (DeltaMode.CANDLE_DELTA == deltaMode) {
                 finalDelta = dayDeltaFromCandle * instrumentsCount;
                 finalDeltaInPercents = dayDeltaFromCandleInPercents;
-                finalIncome= getIncomeForAllPurchasesFromCandle(candles, doc, currentStockPrice, purchaseList);
-                finalIncomeInPercent =getIncomeForAllPurchasesInPercents(finalIncome,purchaseList);
+                finalIncome = getIncomeForAllPurchasesFromCandle(candles, doc, currentStockPrice, purchaseList);
+                finalIncomeInPercent = getIncomeForAllPurchasesInPercents(finalIncome, purchaseList);
             } else {
                 finalDelta = getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL);
                 finalDeltaInPercents = getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT);
-                finalIncome= doc.getData()
+                finalIncome = doc.getData()
                         .getRow()
                         .stream()
                         .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
@@ -471,20 +471,26 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      */
     @Override
     public Integer getMinimalLot(String ticker, ArNoteUser user) {
-        String boardId = getBoardId(ticker);
-        Integer minLot = getDetailInfo(ticker) //todo: упростить, засунуть в ретурн
-                .map(detailInfo -> detailInfo.getDataList().stream()
-                        .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
-                        .findFirst()
-                        .map(sc -> sc.getRowsList().stream()
-                                .filter(row -> boardId.equals(row.getBoardId()))
-                                .findFirst()
-                                .map(share -> Integer.parseInt(share.getLotSize()))
-                                .orElse(1))
-                        .orElse(1))
-                .orElse(1);
 
-        return minLot;
+        String boardId = getBoardId(ticker);
+        if (cacheService.checkDict(CacheDictType.MINIMAL_LOT, ticker + boardId)) {
+            return cacheService.getDict(CacheDictType.MINIMAL_LOT, ticker + boardId);
+        } else {
+
+            Integer minLot = getDetailInfo(ticker) //todo: упростить, засунуть в ретурн
+                    .map(detailInfo -> detailInfo.getDataList().stream()
+                            .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
+                            .findFirst()
+                            .map(sc -> sc.getRowsList().stream()
+                                    .filter(row -> boardId.equals(row.getBoardId()))
+                                    .findFirst()
+                                    .map(share -> Integer.parseInt(share.getLotSize()))
+                                    .orElse(1))
+                            .orElse(1))
+                    .orElse(1);
+
+            return minLot;
+        }
     }
 
     /**
