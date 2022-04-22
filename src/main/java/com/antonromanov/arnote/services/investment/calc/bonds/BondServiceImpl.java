@@ -76,7 +76,7 @@ public class BondServiceImpl implements BondCalcService {
      * @return
      */
     @Override
-    public ConsolidatedDividendsRs getCoupons(Bond bond, ArNoteUser user) {
+    public ConsolidatedDividendsRs getCoupons(Bond bond) {
 
         return ConsolidatedDividendsRs.builder()
                 .dividendList(prepareCouponList(getBondDataByTicker(bond.getTicker()).orElse(null)))
@@ -100,7 +100,7 @@ public class BondServiceImpl implements BondCalcService {
      * @return
      */
     @Override
-    public Integer getBondLot(Bond bond, ArNoteUser user, List<Purchase> purchaseList) {
+    public Integer getBondLot(Bond bond) {
 
         if (!bond.getIsBought()) { // если это план по облигации
             return getBondDataByTicker(bond.getTicker())
@@ -110,7 +110,7 @@ public class BondServiceImpl implements BondCalcService {
             /*
              * Считаем сумму покупок (сколько всего купили бумаг то)
              */
-            return purchaseList.stream()
+            return bond.getPurchaseList().stream()
                     .map(Purchase::getLot)
                     .reduce(0, Integer::sum);
         }
@@ -180,18 +180,16 @@ public class BondServiceImpl implements BondCalcService {
      * Подготовить финальную цену (цена * лот).
      *
      * @param bond
-     * @param user
      * @return
      */
     @Override
-    public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
+    public Integer calculateFinalPrice(Bond bond) {
             if (bond.getIsBought()) { // если это ФАКТ
                 return bond.getPurchaseList().stream()
                         .map(p -> p.getLot() * p.getPrice())
                         .reduce((double) 0, Double::sum).intValue();
             } else { // если ПЛАН
-                return (getBondLot(bond, user, bond.getPurchaseList()))
-                        * (getCurrentBondPrice(bond.getTicker()).intValue());
+                return getBondLot(bond) * (getCurrentBondPrice(bond.getTicker()).intValue());
             }
 
 

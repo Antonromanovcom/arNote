@@ -1,11 +1,9 @@
 package com.antonromanov.arnote.model.investing.response;
 
-import com.antonromanov.arnote.model.investing.response.BondRs;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import java.util.List;
 import java.util.Map;
 
 /**

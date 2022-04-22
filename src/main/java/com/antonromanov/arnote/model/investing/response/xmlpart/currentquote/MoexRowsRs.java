@@ -101,5 +101,24 @@ public class MoexRowsRs {
         @XmlAttribute(name = "LCURRENTPRICE")
         private String lCurrentPrice; // используем, если LAST пришел пустой
 
+        //========== СВЕЧИ ===========
+
+        @XmlAttribute(name = "open")
+        private String open; // цена открытия
+
+        @XmlAttribute(name = "close")
+        private String close; // цена закрытия
+
+        @XmlAttribute(name = "high")
+        private String high; // хаи за период
+
+        @XmlAttribute(name = "low")
+        private String low; // низы за период
+
+        @XmlAttribute(name = "end")
+        private String end; // время/дата завершения торгов
+
+
+
 
 }

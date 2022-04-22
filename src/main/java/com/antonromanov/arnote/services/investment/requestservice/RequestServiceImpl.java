@@ -97,12 +97,29 @@ public class RequestServiceImpl implements RequestService {
     public CommonMoexDoc getHistory(MoexRestTemplateOperation type, String ticker, String boardId, String dateFrom, String dateTill, int start) {
         try {
             log.info("Sending MOEX request for history. Url: {}",
-                    prepareUrlForHistory(MOEX_URL, type, serializeObjectToMVMap(type.getRequestParams().convertByAdapter()), prepareParametersMap(ticker, boardId), dateFrom, dateTill, start));
+                    prepareUrlForHistory(MOEX_URL, type, serializeObjectToMVMap(type.getRequestParams().convertByAdapter()),
+                            prepareParametersMap(ticker, boardId), dateFrom, dateTill, start));
 
             return xmlParser.marshall(
                     rt.getForEntity(prepareUrlForHistory(MOEX_URL, type, serializeObjectToMVMap(type.getRequestParams().convertByAdapter()),
                             prepareParametersMap(ticker, boardId), dateFrom, dateTill, start), String.class),
                     type.getClassName());
+        } catch (Exception e) {
+            throw new MoexRequestException();
+        }
+    }
+
+    @Override
+    public CommonMoexDoc getCandles(MoexRestTemplateOperation type, String ticker, String dateFrom, String dateTill, int start) {
+        try {
+
+          String url = prepareUrlForCandles(MOEX_URL, type, serializeObjectToMVMap(type.getRequestParams().convertByAdapter()),
+                  prepareParametersMap(ticker, null), dateFrom, dateTill, start); // todo: подумать как сделать один метод и для истории и для свечей
+            log.info("Sending MOEX request for candles. Url: {}", url);
+
+
+            return xmlParser.marshall(
+                    rt.getForEntity(url, String.class), type.getClassName());
         } catch (Exception e) {
             throw new MoexRequestException();
         }
@@ -115,7 +132,7 @@ public class RequestServiceImpl implements RequestService {
      * @param param2 - для MOEX как правило boardId.
      * @return
      */
-    private Map<String, String> prepareParametersMap(String param1, String param2) {
+    private Map<String, String> prepareParametersMap(String param1, String param2) { // todo: переделать чтобы разное кол-во параметров передавать можно было
         Map<String, String> m = new HashMap<>();
         m.put("p1", param1);
         m.put("p2", param2);

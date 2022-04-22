@@ -23,6 +23,7 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.Moe
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
+import com.antonromanov.arnote.model.wish.enums.DeltaMode;
 import com.antonromanov.arnote.services.investment.cache.CacheService;
 import com.antonromanov.arnote.services.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.services.investment.requestservice.RequestService;
@@ -57,6 +58,11 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
 
     private final String FOREIGN_KEY_FOR_CACHE = "|FOREIGN";
     private final String ALFA_ADVANTAGE_API_KEY = "3PV5BRWZZZM1T2BA";
+
+    @Override
+    public MoexDocumentRs getCandles(String ticker, LocalDate fromDate, LocalDate tillDate) {
+        return null;
+    }
 
     @Override
     public ConsolidatedDividendsRs getDivsByTicker(String ticker) {
@@ -166,7 +172,8 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    public DeltaRs calculateDelta(String boardId, String ticker, Double currentStockPrice, List<Purchase> purchaseList) {
+    public DeltaRs calculateDelta(String ticker, Double currentStockPrice, List<Purchase> purchaseList,
+                                  DeltaMode deltaMode) {
         if (!isBlank(ticker) && (currentStockPrice != null && currentStockPrice > 0)) {
 
             MoexDocumentRs doc = getHistory(ticker, null, null);
@@ -216,14 +223,14 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
     }
 
     @Override
-    public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
+    public Integer calculateFinalPrice(Bond bond) {
         if (bond.getIsBought()) { // если это ФАКТ
             return bond.getPurchaseList().stream()
                     .map(p -> p.getLot() * p.getPrice())
                     .reduce((double) 0, Double::sum).intValue();
         } else { // если ПЛАН
             return (int) Math.round(((getRealTimeQuote(bond.getTicker()
-            )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user));
+            )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), bond.getUser()));
         }
     }
 
@@ -233,7 +240,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    public ConsolidatedDividendsRs getDividends(Bond bond, ArNoteUser user) {
+    public ConsolidatedDividendsRs getDividends(Bond bond) {
 
         if (cacheService.checkDict(CacheDictType.DIVS_BY_TICKER, bond.getTicker())) {
             return cacheService.getDict(CacheDictType.DIVS_BY_TICKER, bond.getTicker());

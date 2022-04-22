@@ -35,6 +35,13 @@ public interface RequestService {
     CommonMoexDoc getHistory(MoexRestTemplateOperation type, String ticker, String boardId, String dateFrom, String dateTill, int start);
 
     /**
+     * Специфический запрос для запроса свечей.
+     *
+     * @return
+     */
+    CommonMoexDoc getCandles(MoexRestTemplateOperation type, String ticker, String dateFrom, String dateTill, int start); //todo: подумать как объединить свечи и историю в один метод
+
+    /**
      * Сериализовать параметры запроса в MultiValueMap для MOEX.
      *
      * @param type

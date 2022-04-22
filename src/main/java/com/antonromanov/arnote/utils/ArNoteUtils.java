@@ -23,12 +23,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
+import org.joda.time.DateTime;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import java.time.*;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
@@ -39,6 +41,10 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -69,6 +75,19 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      */
     public static boolean isBetween(LocalTime candidate, LocalTime start, LocalTime end) {
         return !candidate.isBefore(start) && !candidate.isAfter(end);
+    }
+
+    /**
+     * Преобразование ключа для последующего поиска минимальной или максимальной даты.
+     *
+     * @param v
+     * @return
+     */
+    private static AbstractMap.SimpleEntry<DateTime, Double> mapKeyToFindMinOrMax(MoexRowsRs v) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        DateTime convertedDateTime = DateTime.parse(v.getEnd(), dateTimeFormatter);
+
+        return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
     }
 
     /**
@@ -203,11 +222,10 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     /**
      * Конвертим пришедший json в новую Salary
      */
-    public static Date localDateToDate(LocalDate date)  {
+    public static Date localDateToDate(LocalDate date) {
         ZoneId defaultZoneId = ZoneId.systemDefault();
         return Date.from(date.atStartOfDay(defaultZoneId).toInstant());
     }
-
 
 
     /**
@@ -500,7 +518,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
 
                 return 1 + Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
-                                monthNameToNumber(month), 1))));
+                        monthNameToNumber(month), 1))));
             }
         } else if (Pattern.compile("[A-Za-z]+ [0-9]+").matcher(monthAndYear).find()) {
 
@@ -516,8 +534,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
             } else {
                 // log.info("Ставим. Текущая дата + 1 мес: {}", month);
-                return 1+Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
-                                monthNameToNumber(convertEnglishNames(month)), 1))));
+                return 1 + Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
+                        monthNameToNumber(convertEnglishNames(month)), 1))));
             }
 
         } else {
@@ -577,11 +595,12 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      * @return
      */
     public static String prepareUrlForHistory(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
-                                              Map<String, String> pathParams, String dateFrom, String dateTill, int start) {
+                                              Map<String, String> pathParams, String dateFrom, String dateTill, int start) { //todo: почему тут пустой dateFrom ???? Зачем он тогда?
 
 
         queryParameters.put("start", Collections.singletonList(String.valueOf(start)));
         queryParameters.put("till", Collections.singletonList(dateTill));
+        queryParameters.put("from", Collections.singletonList(dateFrom));
 
         UriComponents uriComponents = UriComponentsBuilder
                 .newInstance()
@@ -594,6 +613,32 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
         return uriComponents.toString();
     }
+
+    /**
+     * Сформировать специальный URL для запроса истории.
+     *
+     * @return
+     */
+    public static String prepareUrlForCandles(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+                                              Map<String, String> pathParams, String dateFrom, String dateTill, int start) { //todo: объединить с prepareUrlForHistory
+
+
+        queryParameters.put("start", Collections.singletonList(String.valueOf(start)));
+        queryParameters.put("till", Collections.singletonList(dateTill));
+        queryParameters.put("from", Collections.singletonList(dateFrom));
+
+        UriComponents uriComponents = UriComponentsBuilder
+                .newInstance()
+                .scheme("http")
+                .host(urlBase)
+                .path(operation.getUrl())
+                .queryParams(queryParameters)
+                .buildAndExpand(pathParams);
+
+
+        return uriComponents.toString();
+    }
+
 
     /**
      * Предикат distinctBy для выкидывания одинаковых тикеров (дублей) при поиске.
@@ -744,6 +789,145 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return resultMap;
     }
 
+    /**
+     * Вытаскиваем позицию (цену) закрытия бумаги за вчерашний день.
+     *
+     * @param doc
+     * @return
+     */
+    public static Double getClosePositionForTomorrow(MoexDocumentRs doc) {
+        if (doc.getData() != null && doc.getData().getRow().size() > 0) {
+
+            return doc.getData().getRow().stream()
+                    .map(v -> {
+
+                        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                        DateTime convertedDateTime = DateTime.parse(v.getEnd(), dateTimeFormatter);
+
+                        return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
+                    })
+                    .filter(d -> jodaToJavaLocalDateTime(d.getKey()).toLocalDate().isBefore(LocalDate.now()))
+                    .max(Map.Entry.comparingByKey())
+                    .map(AbstractMap.SimpleEntry::getValue)
+                    .orElse(0D);
+
+        } else {
+            return (0d);
+        }
+    }
+
+    /**
+     * Рассчитываем дневную дельту из Свечей.
+     *
+     * @return
+     */
+    public static Double getDayDeltaFromCandle(MoexDocumentRs doc) {
+        if (doc.getData() != null && doc.getData().getRow().size() > 0) {
+
+            Double currentDayValue = doc.getData().getRow().stream()
+                    .map(ArNoteUtils::mapKeyToFindMinOrMax)
+                    .max(Map.Entry.comparingByKey())
+                    .map(AbstractMap.SimpleEntry::getValue)
+                    .orElse(0D);
+
+            return currentDayValue - getClosePositionForTomorrow(doc);
+        } else {
+            return (0d);
+        }
+    }
+
+    /**
+     * JodaTime to Java LocalDateTime.
+     *
+     * @param dateTime
+     * @return
+     */
+    public static LocalDateTime jodaToJavaLocalDateTime(DateTime dateTime) {
+        return Instant.ofEpochMilli(dateTime.getMillis())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+
+    }
+
+    /**
+     * Взять покупки, кол-во купленных акций перемножить на стоимость и все это просуммировать.
+     *
+     * @param
+     * @return
+     */
+    public static Double getCostOfAllPurchasesOfSecurityInPortfolio(List<Purchase> purchaseList) {
+        return purchaseList.stream()
+                .map(v -> v.getLot() * v.getPrice())
+                .reduce(Double::sum)
+                .orElse(0.0D);
+
+
+    }
+
+
+    /**
+     * Рассчитываем  доход из Свечей по всем купленным бумагам.
+     * <p>
+     * Формула расчета ((Сt*CP)-(Sp[...]))
+     * где:
+     * <p>
+     * Ct - кол-во купленных бумаг (акций)
+     * CP - текущая цена
+     * Sp[...] - сумма покупок. То есть 10-апреля купили например 10 по цене 1.5, 11 мая купили 10 по цене 2.0,
+     * значит получаем: (10 * 1.5) + (10 * 2.0) = ....
+     *
+     * @return
+     */
+    public static Double getIncomeForAllPurchasesFromCandle(MoexDocumentRs candles, MoexDocumentRs history,
+                                                            Double currentStockPrice,
+                                                            List<Purchase> purchaseList) {
+        if (history.getData() != null && history.getData().getRow().size() > 0) {
+
+            Double currentDayValue = (candles.getData() == null || candles.getData().getRow() == null ||
+                    candles.getData().getRow().size() < 1) ? 0.0D : (candles.getData().getRow().stream()
+                    .map(ArNoteUtils::mapKeyToFindMinOrMax)
+                    .max(Map.Entry.comparingByKey())
+                    .map(AbstractMap.SimpleEntry::getValue)
+                    .orElse(currentStockPrice));
+
+            Integer instrumentsCount = purchaseList.stream()
+                    .map(Purchase::getLot)
+                    .reduce(Integer::sum)
+                    .orElse(0); // считаем кол-во бумаг в портфеле //todo: в отдельный метод в Утилс
+
+
+            return (currentDayValue * instrumentsCount) - getCostOfAllPurchasesOfSecurityInPortfolio(purchaseList);
+        } else {
+            return (0d);
+        }
+    }
+
+    /**
+     * Вариант метода getIncomeForAllPurchasesFromCandle, но считающий результат данного метода в процентах.
+     *
+     * Формула расчета:
+     *
+     * Сколько_процентов_составляет(Х от Y).
+     * где:
+     *
+     * X - результат метода getIncomeForAllPurchasesFromCandle
+     * Y - Sp[...]
+     * Sp[...] - сумма покупок. То есть 10-апреля купили например 10 по цене 1.5, 11 мая купили 10 по цене 2.0,
+     * значит получаем: (10 * 1.5) + (10 * 2.0) = ....
+     *
+     * @return
+     */
+    public static Double getIncomeForAllPurchasesInPercents(Double income, List<Purchase> purchaseList) {
+        if (income != 0) {
+
+            double coef = getCostOfAllPurchasesOfSecurityInPortfolio(purchaseList) / income;
+
+            return coef == 0 ? 0.0D : 100 / coef;
+        } else {
+            return 0.0D;
+        }
+    }
 
 
     /**
@@ -756,16 +940,16 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     public static Long getNearestDate(Map<Long, LocalDate> dates, LocalDate currentDate) {
 
         NavigableSet<LocalDate> datesInSet = new TreeSet<>(dates.values());
-        LocalDate minDate =  datesInSet.lower(currentDate);
+        LocalDate minDate = datesInSet.lower(currentDate);
 
-        if (minDate!=null){
+        if (minDate != null) {
             return dates.entrySet()
                     .stream()
-                    .filter(w->w.getValue().isEqual(minDate))
+                    .filter(w -> w.getValue().isEqual(minDate))
                     .findFirst()
                     .map(Map.Entry::getKey).orElse(0L);
         } else {
-        return null;
+            return null;
         }
     }
 

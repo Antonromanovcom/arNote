@@ -85,6 +85,11 @@ public enum MoexRestTemplateOperation {
                     .marketDataColumns(EnumSet.of(MarketData.SECID, MarketData.BOARDID, MarketData.LAST, MarketData.UPDATETIME,
                             MarketData.LASTCHANGE, MarketData.LASTCHANGEPRCNT, MarketData.LCURRENTPRICE))
                     .build(),
+            MoexDocumentRs.class),
+    GET_CANDLES("/engines/stock/markets/shares/securities/{p1:[a-z]{1,5}}/candles.xml",
+            UrlRequestParams.builder()
+                    .issMeta(false)
+                    .build(),
             MoexDocumentRs.class);
 
     private final String url;

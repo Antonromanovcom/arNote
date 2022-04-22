@@ -19,12 +19,12 @@ import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.Moe
 import com.antonromanov.arnote.model.investing.response.xmlpart.enums.DataBlock;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.instrumentinfo.MoexInstrumentDetailRowsRs;
+import com.antonromanov.arnote.model.wish.enums.DeltaMode;
 import com.antonromanov.arnote.services.investment.cache.CacheService;
 import com.antonromanov.arnote.services.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.services.investment.requestservice.RequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
@@ -49,6 +49,24 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     private Long lastQuote = 0L;
     private Long getAllSharesCount = 0L;
 
+
+    @Override
+    public MoexDocumentRs getCandles(String ticker, LocalDate fromDate, LocalDate tillDate) {
+
+        if (cacheService.checkDict(CacheDictType.CANDLES, ticker)) {
+            return cacheService.getDict(CacheDictType.CANDLES, ticker);
+        } else {
+
+            MoexDocumentRs candles = (MoexDocumentRs) httpClient.getCandles(MoexRestTemplateOperation.GET_CANDLES,
+                    ticker,
+                    fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                    tillDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), 1);
+
+            candles.getData().getRow().forEach(v -> v.setSecid(ticker));
+            cacheService.putToCache(CacheDictType.CANDLES, ticker, candles, MoexDocumentRs.class);
+            return candles;
+        }
+    }
 
     /**
      * Запросить дивиденды через API биржи, подсчитать сумму и проценты относительно текущей цены акции и вернуть все это.
@@ -170,7 +188,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                                 .map(Double::parseDouble).orElse(0D))
                         .build();
 
-                if (curPrice.getCurrentPrice()==null || curPrice.getCurrentPrice() == 0) {
+                if (curPrice.getCurrentPrice() == null || curPrice.getCurrentPrice() == 0) {
                     curPrice.setCurrentPrice(doc.getData().getRow().stream()
                             .filter(r -> getBoardId(ticker).equals(r.getTradeMode()))
                             .findFirst()
@@ -294,11 +312,14 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    public DeltaRs calculateDelta(String boardId, String ticker, Double currentStockPrice, List<Purchase> purchaseList) {
+    public DeltaRs calculateDelta(String ticker, Double currentStockPrice, List<Purchase> purchaseList,
+                                  DeltaMode deltaMode) { //todo: а в com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl у этого же метода не аналогичный ли код? Не имеет ли смысла его куда-то вынести?
 
+        String boardId = getBoardId(ticker);
         if (!isBlank(ticker) && !isBlank(boardId) && (currentStockPrice != null && currentStockPrice > 0)) {
 
             MoexDocumentRs doc = getHistory(ticker, boardId, null);
+            MoexDocumentRs candles = getCandles(ticker, LocalDate.now().minusDays(1), LocalDate.now());
 
             /*
              * Как считаем:
@@ -306,25 +327,64 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
              * deltaInRubles = текущая цена - (цена по самой ранней дате)
              * deltaPeriod = Миллисекунды от (текущая дата - (самая ранняя дата истории))
              * tinkoffDelta = (сумма покупок * текущую цену рынка) - (Сумма(лот * цену по каждой покупке))
+             * candleDayDelta = (цена текущая - цена закрытия вчера) * кол-во акций в портфеле
              */
+
+            Double dayDeltaFromCandle = 0.0D;
+            Integer instrumentsCount = 0;
+            Double dayDeltaFromCandleInPercents = 0.0D;
+            Double finalDelta;
+            Double finalDeltaInPercents;
+            Double finalIncome;
+            Double finalIncomeInPercent;
+
+            if (purchaseList.size() > 0) {
+                dayDeltaFromCandle = getDayDeltaFromCandle(candles);
+                instrumentsCount = purchaseList.stream()
+                        .map(Purchase::getLot)
+                        .reduce(Integer::sum)
+                        .orElse(0); // считаем кол-во бумаг в портфеле
+
+
+                Double getClosePositionForTomorrow = getClosePositionForTomorrow(candles);
+                dayDeltaFromCandleInPercents = getClosePositionForTomorrow == 0.0D ? 0.0D :
+                        dayDeltaFromCandle / (getClosePositionForTomorrow(candles) * instrumentsCount) * 100; // дневная дельта из свечей в процентах
+                log.info("dayDeltaFromCandle for {} = {} / {}%", ticker, dayDeltaFromCandle, dayDeltaFromCandleInPercents);
+                log.info("instrumentsCount {} ", instrumentsCount);
+            } else {
+                log.warn("По бумаге {} нет продаж - не считаем дельту! ", ticker);
+            }
+
+            if (DeltaMode.CANDLE_DELTA == deltaMode) {
+                finalDelta = dayDeltaFromCandle * instrumentsCount;
+                finalDeltaInPercents = dayDeltaFromCandleInPercents;
+                finalIncome = getIncomeForAllPurchasesFromCandle(candles, doc, currentStockPrice, purchaseList);
+                finalIncomeInPercent = getIncomeForAllPurchasesInPercents(finalIncome, purchaseList);
+            } else {
+                finalDelta = getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL);
+                finalDeltaInPercents = getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT);
+                finalIncome = doc.getData()
+                        .getRow()
+                        .stream()
+                        .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                        .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
+                        .map(Math::round)
+                        .map(n -> currentStockPrice - n)
+                        .orElse(0D);
+                finalIncomeInPercent = doc.getData()
+                        .getRow()
+                        .stream()
+                        .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
+                        .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
+                        .map(n -> ((currentStockPrice - n) / n) * 100)
+                        .orElse(0D);
+            }
+
             return DeltaRs.builder()
-                    .tinkoffDelta(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL))
-                    .tinkoffDeltaPercent(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT))
-                    .deltaInRubles(doc.getData()
-                            .getRow()
-                            .stream()
-                            .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                            .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
-                            .map(Math::round)
-                            .map(n -> currentStockPrice - n)
-                            .orElse(0D))
-                    .totalPercent(doc.getData()
-                            .getRow()
-                            .stream()
-                            .min(Comparator.comparing(n -> LocalDate.parse(n.getTradeDate())))
-                            .map(dv -> Double.valueOf(dv.getLegalClosePrice()))
-                            .map(n -> ((currentStockPrice - n) / n) * 100)
-                            .orElse(0D))
+                    .tinkoffDelta(finalDelta)
+                    .tinkoffDeltaPercent(finalDeltaInPercents)
+                    .deltaInRubles(finalIncome)
+                    .totalPercent(finalIncomeInPercent)
                     .deltaPeriod(doc.getData()
                             .getRow()
                             .stream()
@@ -347,22 +407,21 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * Подготовить финальную цену (цена * лот).
      *
      * @param bond
-     * @param user
      * @return
      */
     @Override
-    public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
+    public Integer calculateFinalPrice(Bond bond) {
 
-            if (bond.getIsBought()) { // если это ФАКТ
-                return bond.getPurchaseList().stream()
-                        .map(p -> p.getLot() * p.getPrice())
-                        .reduce((double) 0, Double::sum).intValue();
+        if (bond.getIsBought()) { // если это ФАКТ
+            return bond.getPurchaseList().stream()
+                    .map(p -> p.getLot() * p.getPrice())
+                    .reduce((double) 0, Double::sum).intValue();
 
-            } else { // если ПЛАН
-                Double currPrice = getRealTimeQuote(bond.getTicker()).getCurrentPrice();
-                Long longFinalPrice = (Math.round((currPrice == null ? Double.NaN : currPrice) * getMinimalLot(bond.getTicker(), user)));
-                return longFinalPrice.intValue();
-            }
+        } else { // если ПЛАН
+            Double currPrice = getRealTimeQuote(bond.getTicker()).getCurrentPrice();
+            Long longFinalPrice = (Math.round((currPrice == null ? Double.NaN : currPrice) * getMinimalLot(bond.getTicker(), bond.getUser())));
+            return longFinalPrice.intValue();
+        }
     }
 
     /**
@@ -371,7 +430,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @return
      */
     @Override
-    public ConsolidatedDividendsRs getDividends(Bond bond, ArNoteUser user) {
+    public ConsolidatedDividendsRs getDividends(Bond bond) {
         return Optional.of(getDivsByTicker(bond.getTicker()))
                 .orElse(ConsolidatedDividendsRs.builder()
                         .dividendList(Collections.emptyList())
@@ -416,20 +475,27 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      */
     @Override
     public Integer getMinimalLot(String ticker, ArNoteUser user) {
-        String boardId = getBoardId(ticker);
-        Integer minLot =  getDetailInfo(ticker) //todo: упростить, засунуть в ретурн
-                .map(detailInfo -> detailInfo.getDataList().stream()
-                        .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
-                        .findFirst()
-                        .map(sc -> sc.getRowsList().stream()
-                                .filter(row -> boardId.equals(row.getBoardId()))
-                                .findFirst()
-                                .map(share -> Integer.parseInt(share.getLotSize()))
-                                .orElse(1))
-                        .orElse(1))
-                .orElse(1);
 
-        return minLot;
+        String boardId = getBoardId(ticker);
+
+        if (cacheService.checkDict(CacheDictType.MINIMAL_LOT, ticker + boardId)) {
+            return cacheService.getDict(CacheDictType.MINIMAL_LOT, ticker + boardId);
+        } else {
+
+            Integer minLot = getDetailInfo(ticker) //todo: упростить, засунуть в ретурн
+                    .map(detailInfo -> detailInfo.getDataList().stream()
+                            .filter(data -> DataBlock.SECURITIES.getCode().equals(data.getId()))
+                            .findFirst()
+                            .map(sc -> sc.getRowsList().stream()
+                                    .filter(row -> boardId.equals(row.getBoardId()))
+                                    .findFirst()
+                                    .map(share -> Integer.parseInt(share.getLotSize()))
+                                    .orElse(1))
+                            .orElse(1))
+                    .orElse(1);
+            cacheService.putToCache(CacheDictType.MINIMAL_LOT, ticker, minLot, Integer.class);
+            return minLot;
+        }
     }
 
     /**
@@ -437,15 +503,12 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      *
      * @param ticker  - тикер бумаги.
      * @param boardId - boardId (только для MOEX)
-     * @param forDate -на какую  дату запрашиваем.
+     * @param fromDate -на какую  дату запрашиваем.
      * @return - MoexDocumentRs
      */
     @Override
-    public MoexDocumentRs getHistory(String ticker, String boardId, LocalDate forDate) {
+    public MoexDocumentRs getHistory(String ticker, String boardId, LocalDate fromDate) {
 
-        if (cacheService.checkDict(CacheDictType.HISTORY, ticker + boardId)) {
-            return cacheService.getDict(CacheDictType.HISTORY, ticker + boardId);
-        } else {
             int start = 0; // начальная страница
             int step = 100; // шаг перемещения
             boolean isFinalPage = false; // проверочная переменная, определяющая, что дальше циклить не надо и мы достигли конца истории.
@@ -455,10 +518,10 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
 
                 LocalDate requestDate;
 
-                if (forDate == null) {
+                if (fromDate == null) {
                     requestDate = LocalDate.now().minusYears(10).withMonth(1).withDayOfMonth(1);
                 } else {
-                    requestDate = forDate;
+                    requestDate = fromDate;
                 }
 
                 String reqDateAsString = requestDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -503,9 +566,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                     log.info("Получили записей: {}", resultDoc.getData().getRow().size());
                 }
             }
-            cacheService.putToCache(CacheDictType.HISTORY, ticker + boardId, resultDoc, MoexDocumentRs.class);
             return resultDoc;
-        }
     }
 
     /**

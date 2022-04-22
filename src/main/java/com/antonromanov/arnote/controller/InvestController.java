@@ -6,9 +6,12 @@ import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.*;
 import com.antonromanov.arnote.model.investing.request.AddInstrumentRq;
+import com.antonromanov.arnote.model.investing.request.DeltaToggleRq;
 import com.antonromanov.arnote.model.investing.response.*;
 import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.enums.Targets;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.model.wish.enums.DeltaMode;
 import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.services.investment.calc.CommonService;
@@ -16,11 +19,13 @@ import com.antonromanov.arnote.services.investment.calendar.CalendarService;
 import com.antonromanov.arnote.services.investment.returns.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import static com.antonromanov.arnote.utils.ArNoteUtils.complexPredicate;
 
 
@@ -109,13 +114,32 @@ public class InvestController {
         return ConsolidatedInvestmentDataRs.builder()
                 .bonds(bondsRepo.findAllByUser(user)
                         .stream()
-                        .map(bond -> prepareBondRs(bond, finalUser))
+                        .map(bond -> prepareBondRs(bond))
                         .filter(user.getInvestingFilterMode() != null ? complexPredicate(user.getInvestingFilterMode()) :
                                 s -> s.getTicker() != null)
                         .sorted(user.getInvestingSortMode() == null ? InvestingSortMode.NONE.getComparator() :
                                 user.getInvestingSortMode().getComparator())
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    /**
+     * Свечи. Временный контроллер
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping("/candles")
+    public MoexDocumentRs candles(Principal principal,
+                                  @RequestParam(required = false) String filter,
+                                  @RequestParam(required = false) String sort)
+            throws UserNotFoundException { // todo: удалить потом этот контроллер
+
+        log.info("============== CANDLES ============== ");
+        log.info("PRINCIPAL: " + principal.getName());
+
+        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+
+
+        return commonService.getCandles();
     }
 
     /**
@@ -268,7 +292,7 @@ public class InvestController {
         return ConsolidatedInvestmentDataRs.builder()
                 .bonds(bondsRepo.findAllByUser(user)
                         .stream()
-                        .map(b -> prepareBondRs(b, user))
+                        .map(this::prepareBondRs)
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -280,7 +304,7 @@ public class InvestController {
         return calendarService.getCalendar(ConsolidatedInvestmentDataRs.builder()
                 .bonds(bondsRepo.findAllByUser(user)
                         .stream()
-                        .map(bond -> prepareBondRs(bond, user))
+                        .map(this::prepareBondRs)
                         .collect(Collectors.toList()))
                 .build());
     }
@@ -302,7 +326,7 @@ public class InvestController {
         log.info("ticker: " + request.getTicker());
         Bond newOrUpdatedBond;
 
-        /**
+        /*
          * Проверяем что хотя бы один такой инструмент нашелся, иначе кидаем эксепшн.
          */
         FoundInstrumentRs foundInstrument = commonService.findInstrument(request.getTicker())
@@ -310,19 +334,28 @@ public class InvestController {
                 .filter(fi -> request.getTicker().equals(fi.getTicker()))
                 .findFirst().orElseThrow(() -> new BadTickerException(request.getTicker()));
 
-        log.info("Нашли хотя бы 1 инструмент по тикеру: {}", foundInstrument.getTicker());
-
-
-
+        /*
+         * 1) Покупка фактическая (не ПЛАН)
+         * 2) Кол-во купленных бумаг > 0
+         * 3) Стоимость не пустая
+         * 4) Дата покупки не пустая
+         */
         if (!request.isPlan() && (request.getLot() != 0 && request.getPrice() != null && request.getPurchaseDate() != null)) {
 
             Optional<Bond> existingBond = bondsRepo.findBondByUserAndTicker(user, request.getTicker());
+
             Purchase purchase = new Purchase();
             purchase.setPrice(request.getPrice());
             purchase.setLot(request.getLot());
             purchase.setPurchaseDate(request.getPurchaseDate());
 
+            /*
+             * Если есть покупки по бумаге - добавляем в имеющуюся продажи
+             */
             if (existingBond.isPresent()) {
+                /*
+                 * Если бумага уже была и она была в планах - переводим в статус ФАКТ.
+                 */
                 if (!existingBond.get().getIsBought()) {
                     existingBond.get().setIsBought(true);
                 }
@@ -357,12 +390,48 @@ public class InvestController {
     }
 
     /**
+     * Поменять режим подсчета Дельты.
+     *
+     * @param principal - пользак
+     * @param request   - реквест, содержащий даты и тикер.
+     * @return
+     */
+    @CrossOrigin(origins = "*")
+    @PostMapping("/toggledelta") //todo: все эти тогглы и фильтры надо пихать в отдельный контроллер по хорошему
+    public ArNoteUser toggleDeltaMode(Principal principal, @RequestBody DeltaToggleRq request) throws UserNotFoundException { // todo: ошибку надо кинуть на фронт если deltaType придет пустой
+
+        log.info("============== TOGGLE DELTA CALCULATION  ============== ");
+        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        log.info("USER ID: " + user.getId());
+        log.info("mode: " + request.getDeltaType());
+
+        user.setDeltaMode(DeltaMode.valueOf(request.getDeltaType()));
+        user = usersRepo.saveAndFlush(user);
+        return user;
+    }
+
+    /**
+     * Получить настройки пользователя // todo: возможно сделать отдельный контроллер по пользаку и все это запихать туда
+     *
+     * @return
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping("/usersettings") //todo: все эти тогглы и фильтры надо пихать в отдельный контроллер по хорошему
+    public ArNoteUser getUserSettings(Principal principal) throws UserNotFoundException {
+
+        log.info("============== GET USER SETTINGS  ============== ");
+        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        log.info("USER: " + user.getLogin());
+        return user;
+    }
+
+    /**
      * Подготовить респонс бумаги.
      *
      * @param bond - данные по бумаге из БД.
      * @return
      */
-    private BondRs prepareBondRs(Bond bond, ArNoteUser user) {
+    private BondRs prepareBondRs(Bond bond) {
 
         return BondRs.builder()
                 .id(bond.getId())
@@ -371,14 +440,15 @@ public class InvestController {
                 .isBought(bond.getIsBought())
                 .stockExchange(bond.getStockExchange().name())
                 .currentPrice(commonService.prepareCurrentPrice(bond))
-                .currency(commonService.getCurrency(bond, user))
-                .dividends(commonService.getDivsOrCoupons(bond, user))
-                .minLot(commonService.getLot(bond, user))
-                .finalPrice(commonService.getFinalPrice(bond, user))
+                .currency(commonService.getCurrency(bond))
+                .dividends(commonService.getDivsOrCoupons(bond))
+                .minLot(commonService.getLot(bond))
+                .finalPrice(commonService.getFinalPrice(bond))
                 .delta(commonService.prepareDelta(bond))
                 .description(commonService.getDescription(bond))
                 .build();
     }
+
 
     /**
      * Достать юзера из Принципала
