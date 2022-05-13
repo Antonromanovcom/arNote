@@ -27,6 +27,14 @@
         <main_dir>${project.parent.relativePath}/..</main_dir>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>maven-central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
+    </repositories>
+
     <!--<profiles>
         <profile>
             <id>prod</id>-->
@@ -85,11 +93,11 @@
             <version>4.9</version>
         </dependency>-->
 
-        <!--<dependency>
+        <dependency>
             <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-spring-boot-starter</artifactId>
-            <version>5.7.1</version>
-        </dependency>-->
+            <artifactId>telegrambots</artifactId>
+            <version>6.0.1</version>
+        </dependency>
 
 
 
