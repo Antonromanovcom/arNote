@@ -1,8 +1,6 @@
 package com.antonromanov.arnote.services.investment.calc.bonds;
 
-import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.investing.Bond;
-import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.model.investing.response.DividendRs;
 import com.antonromanov.arnote.model.investing.response.enums.Currencies;

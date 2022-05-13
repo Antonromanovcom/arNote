@@ -30,9 +30,11 @@ import org.passay.PasswordGenerator;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
+import java.io.*;
+import java.net.URL;
 import java.time.*;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,10 +43,11 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -53,6 +56,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  */
 @Slf4j
 public class ArNoteUtils { //todo: надо будет разнести отдельно wish-утилиты и инвест-утилиты
+
+
+    private final static String DIGITAL_PATTERN = "([0-9]+)";
+    private final static String XML_SPECIAL_DATE_PATTERN = "^(0[1-9]|1[0-2]).(0[1-9]|[12][0-9]|3[01])$";
+    private final static String WORK_CALENDAR_URL = "http://xmlcalendar.ru/data/ru/%s/calendar.xml";
 
     public enum ParseType {ADD, EDIT}
 
@@ -225,6 +233,10 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     public static Date localDateToDate(LocalDate date) {
         ZoneId defaultZoneId = ZoneId.systemDefault();
         return Date.from(date.atStartOfDay(defaultZoneId).toInstant());
+    }
+
+    public static java.sql.Date localDateToSqlDate(LocalDate date) {
+        return java.sql.Date.valueOf(date);
     }
 
 
@@ -478,8 +490,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return result;
     }
 
-    private static Pattern getDigitsPattern() {
-        return Pattern.compile("([0-9]+)", Pattern.MULTILINE);
+    private static Pattern getPattern(String regex) {
+        return Pattern.compile(regex, Pattern.MULTILINE);
     }
 
     private static Matcher getMatcher(Pattern pattern, String stringToMatch) {
@@ -488,7 +500,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
 
     private static MyPair getYearAndMonth(String monthAndYear) {
-        final Matcher matcher = getMatcher(getDigitsPattern(), monthAndYear);
+        final Matcher matcher = getMatcher(getPattern(DIGITAL_PATTERN), monthAndYear);
         String year = "";
         String month = "";
 
@@ -905,12 +917,12 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
     /**
      * Вариант метода getIncomeForAllPurchasesFromCandle, но считающий результат данного метода в процентах.
-     *
+     * <p>
      * Формула расчета:
-     *
+     * <p>
      * Сколько_процентов_составляет(Х от Y).
      * где:
-     *
+     * <p>
      * X - результат метода getIncomeForAllPurchasesFromCandle
      * Y - Sp[...]
      * Sp[...] - сумма покупок. То есть 10-апреля купили например 10 по цене 1.5, 11 мая купили 10 по цене 2.0,
@@ -974,6 +986,68 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                     .map(MoexRowsRs::getRate)
                     .map(Double::valueOf)
                     .orElse(Double.valueOf("1"));
+        }
+    }
+
+    /**
+     * Проверяем, что день выходной.
+     *
+     * @return
+     */
+    public static boolean checkIsHoliday(LocalDate purchaseDate) {
+        DayOfWeek day = DayOfWeek.of(purchaseDate.get(ChronoField.DAY_OF_WEEK));
+        return day == DayOfWeek.SUNDAY || day == DayOfWeek.SATURDAY;
+    }
+
+    /**
+     * Грузим производственный календарь по ссылке.
+     *
+     * @return
+     */
+    public static Optional<com.antonromanov.arnote.model.common.Calendar> getWorkCalendar(Integer year) {
+
+        String path = String.format(WORK_CALENDAR_URL, year);
+
+        try (BufferedInputStream in = new BufferedInputStream(new URL(path).openStream())) {
+            return Optional.of(unmarshall(in));
+        } catch (IOException e) {
+            log.error("Не удалось, найти файл xml производственного календаря или спарсить его!");
+            return Optional.empty();
+        }
+    }
+
+
+    /**
+     * Грузим производственный календарь по ссылке.
+     *
+     * @return
+     */
+    public static java.sql.Date getSqlDateFromXmlCalendar(String year, String xmlDate) {
+        if (isBlank(year) || isBlank(xmlDate)) {
+            return null;
+        } else {
+
+            Matcher matcher = getMatcher(getPattern(XML_SPECIAL_DATE_PATTERN), xmlDate);
+            LocalDate tempDate = null;
+            while (matcher.find()) {
+                 tempDate = LocalDate.of(Integer.parseInt(year),
+                        Integer.parseInt(matcher.group(1)),
+                        Integer.parseInt(matcher.group(2)));
+
+            }
+
+            return localDateToSqlDate(tempDate);
+        }
+    }
+
+    public static com.antonromanov.arnote.model.common.Calendar unmarshall(InputStream response) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(com.antonromanov.arnote.model.common.Calendar.class);
+            Unmarshaller un = jaxbContext.createUnmarshaller();
+            return (com.antonromanov.arnote.model.common.Calendar) un.unmarshal(response);
+        } catch (JAXBException e) {
+            log.error("Ошибка анмаршелинга: {}", e.getMessage());
+            throw new MoexXmlResponseMarshalingException();
         }
     }
 }

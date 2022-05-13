@@ -1,6 +1,11 @@
 package com.antonromanov.arnote.services.investment.calc;
 
+import com.antonromanov.arnote.entity.common.CalendarEntity;
+import com.antonromanov.arnote.exceptions.NoTradesForUserDateException;
+import com.antonromanov.arnote.exceptions.enums.ErrorCodes;
 import com.antonromanov.arnote.model.ArNoteUser;
+import com.antonromanov.arnote.model.common.Calendar;
+import com.antonromanov.arnote.model.common.enums.CalendarType;
 import com.antonromanov.arnote.model.investing.Bond;
 import com.antonromanov.arnote.model.investing.BondType;
 import com.antonromanov.arnote.model.investing.response.*;
@@ -9,6 +14,7 @@ import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.model.wish.enums.DeltaMode;
+import com.antonromanov.arnote.repositoty.CalendarRepo;
 import com.antonromanov.arnote.services.investment.calc.bonds.BondCalcService;
 import com.antonromanov.arnote.services.investment.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.services.investment.calc.shares.common.CalculateFactory;
@@ -18,10 +24,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.antonromanov.arnote.utils.ArNoteUtils.filterByKeyword;
-import static com.antonromanov.arnote.utils.ArNoteUtils.prepareInstruments;
+import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 
 /**
  * Сервис обрабатывающий операции, например, выдачи текущей цены бумаги, общие для разных типов (акция / облигация)
@@ -32,10 +39,12 @@ public class CommonService {
 
     private final BondCalcService bondCalcService;
     private final CalculateFactory calcFactory;
+    private final CalendarRepo calendarRepo;
 
-    public CommonService(CalculateFactory calcFactory, BondCalcService bondCalcService) {
+    public CommonService(CalculateFactory calcFactory, BondCalcService bondCalcService, CalendarRepo calendarRepo) {
         this.calcFactory = calcFactory;
         this.bondCalcService = bondCalcService;
+        this.calendarRepo = calendarRepo;
     }
 
     /**
@@ -231,6 +240,50 @@ public class CommonService {
         return resp;
     }
 
+    private Boolean checkDate(List<CalendarEntity> calendarEntityList, LocalDate date) { // todo: почему это вообще в этом классе?
+
+        CalendarType type = calendarEntityList.stream()
+                .filter(Objects::nonNull)
+                .filter(v -> v.getDate().toLocalDate().isEqual(date))
+                .findFirst()
+                .map(CalendarEntity::getType)
+                .orElse(CalendarType.WORK);
+
+        return type != CalendarType.WEEKEND;
+    }
+
+
+    public Boolean checkDateIsWorkDay(LocalDate purchaseDate) {
+
+        List<CalendarEntity> calendarEntityList = calendarRepo.findAll();
+        List<CalendarEntity> calendarEntityListByYear = calendarEntityList.stream()
+                .filter(Objects::nonNull)
+                .filter(v -> v.getDate().toLocalDate().getYear() == purchaseDate.getYear())
+                .collect(Collectors.toList());
+
+        if (calendarEntityListByYear.size() > 1) {
+            return checkDate(calendarEntityList, purchaseDate);
+        } else {
+
+            Optional<Calendar> cal = getWorkCalendar(purchaseDate.getYear());
+
+            if (cal.isPresent() && cal.get().getDays() != null && cal.get().getDays().size() > 0) {
+
+                List<CalendarEntity> calendarEntities = cal.get().getDays().stream()
+                        .map(v -> CalendarEntity.builder()
+                                .date(getSqlDateFromXmlCalendar(cal.get().getYear(), v.getDate()))
+                                .type(CalendarType.searchByIdType(v.getType()))
+                                .build())
+                        .collect(Collectors.toList());
+                calendarRepo.saveAll(calendarEntities);
+                return checkDate(calendarEntityList, purchaseDate);
+            } else { // нет записей в БД и не нашли записей в производственном календаре
+                return false;
+            }
+        }
+    }
+
+
     /**
      * Получить ставку по тикеру и дате.
      *
@@ -239,7 +292,7 @@ public class CommonService {
      * @param purchaseDate
      * @return
      */
-    public CurrentPriceRs getCurrentPriceByTickerAndDate(FoundInstrumentRs foundBond, String purchaseDate) {
+    public CurrentPriceRs getCurrentPriceByTickerAndDate(FoundInstrumentRs foundBond, String purchaseDate) throws NoTradesForUserDateException {
 
         SharesCalcService calculator = calcFactory.getCalculator(foundBond.getStockExchange());
 
@@ -248,19 +301,29 @@ public class CommonService {
         }
 
         final String finalPurchaseDate = purchaseDate;
-        return calculator.getHistory(foundBond.getTicker(), calculator.getBoardId(foundBond.getTicker()), LocalDate.parse(purchaseDate))
-                .getData()
-                .getRow()
-                .stream()
-                .filter(row -> LocalDate.parse(row.getTradeDate()).isEqual(LocalDate.parse(finalPurchaseDate)))
-                .findFirst()
-                .map(data -> CurrentPriceRs.builder()
-                        .currentPrice(Double.valueOf(data.getLegalClosePrice()))
-                        .date(LocalDate.parse(finalPurchaseDate))
-                        .currency(Currencies.search(data.getCurrencyId()))
-                        .ticker(data.getSecid())
-                        .build())
-                .orElse(calculator.getRealTimeQuote(foundBond.getTicker()));
+
+        if (!checkDateIsWorkDay(LocalDate.parse(purchaseDate))) {
+            throw new NoTradesForUserDateException(ErrorCodes.ERR_O7);
+        } else {
+            MoexDocumentRs history = calculator.getHistory(foundBond.getTicker(), calculator.getBoardId(foundBond.getTicker()), LocalDate.parse(purchaseDate));
+            if (history == null || history.getData() == null || history.getData().getRow().size() < 1) {
+                throw new NoTradesForUserDateException(ErrorCodes.ERR_O8);
+            } else {
+                return calculator.getHistory(foundBond.getTicker(), calculator.getBoardId(foundBond.getTicker()), LocalDate.parse(purchaseDate))
+                        .getData()
+                        .getRow()
+                        .stream()
+                        .filter(row -> LocalDate.parse(row.getTradeDate()).isEqual(LocalDate.parse(finalPurchaseDate)))
+                        .findFirst()
+                        .map(data -> CurrentPriceRs.builder()
+                                .currentPrice(Double.valueOf(data.getLegalClosePrice()))
+                                .date(LocalDate.parse(finalPurchaseDate))
+                                .currency(Currencies.search(data.getCurrencyId()))
+                                .ticker(data.getSecid())
+                                .build())
+                        .orElse(calculator.getRealTimeQuote(foundBond.getTicker()));
+            }
+        }
     }
 
     /**

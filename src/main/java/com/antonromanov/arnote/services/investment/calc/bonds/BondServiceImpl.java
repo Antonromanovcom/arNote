@@ -29,12 +29,10 @@ public class BondServiceImpl implements BondCalcService {
     private final List<String> BOARD_GROUP_LIST = Arrays.asList("58", "193", "7", "67", "207");
     private final RequestService httpClient;
     private final CacheService cacheService;
-  //  private final SharesCalcService sharesCalcService;
 
-    public BondServiceImpl(RequestService httpClient, CacheService cacheService/*, SharesCalcService sharesCalcService*/) {
+    public BondServiceImpl(RequestService httpClient, CacheService cacheService) {
         this.httpClient = httpClient;
         this.cacheService = cacheService;
-    //    this.sharesCalcService = sharesCalcService;
     }
 
     /**

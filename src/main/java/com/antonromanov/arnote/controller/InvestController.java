@@ -1,9 +1,13 @@
 package com.antonromanov.arnote.controller;
 
 
+import com.antonromanov.arnote.dto.rs.DateIsPossibleRs;
+import com.antonromanov.arnote.entity.common.CalendarEntity;
 import com.antonromanov.arnote.exceptions.BadTickerException;
+import com.antonromanov.arnote.exceptions.NoTradesForUserDateException;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.ArNoteUser;
+import com.antonromanov.arnote.model.common.enums.CalendarType;
 import com.antonromanov.arnote.model.investing.*;
 import com.antonromanov.arnote.model.investing.request.AddInstrumentRq;
 import com.antonromanov.arnote.model.investing.request.DeltaToggleRq;
@@ -13,20 +17,20 @@ import com.antonromanov.arnote.model.investing.response.enums.Targets;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.model.wish.enums.DeltaMode;
 import com.antonromanov.arnote.repositoty.BondsRepo;
+import com.antonromanov.arnote.repositoty.CalendarRepo;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.services.investment.calc.CommonService;
 import com.antonromanov.arnote.services.investment.calendar.CalendarService;
 import com.antonromanov.arnote.services.investment.returns.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.antonromanov.arnote.utils.ArNoteUtils.complexPredicate;
+import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 
 
 /**
@@ -43,15 +47,17 @@ public class InvestController {
     private final CalendarService calendarService;
     private final ReturnsService returnsService;
     private final CommonService commonService;
+    private final CalendarRepo calendarRepo;
 
 
     public InvestController(UsersRepo usersRepo, BondsRepo bondsRepo, ReturnsService returnsService,
-                            CalendarService calendarService, CommonService commonService) {
+                            CalendarService calendarService, CommonService commonService, CalendarRepo calendarRepo) {
         this.usersRepo = usersRepo;
         this.bondsRepo = bondsRepo;
         this.returnsService = returnsService;
         this.calendarService = calendarService;
         this.commonService = commonService;
+        this.calendarRepo = calendarRepo;
     }
 
     /**
@@ -251,9 +257,9 @@ public class InvestController {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/price-by-date")
-    public CurrentPriceRs getCurrentPriceByTicker(Principal principal,
-                                                  @RequestParam @NotNull String ticker,
-                                                  @RequestParam @NotNull String purchaseDate) throws UserNotFoundException {
+    public CurrentPriceWithStatusRs getCurrentPriceByTickerAndDate(Principal principal,
+                                                                   @RequestParam @NotNull String ticker,
+                                                                   @RequestParam @NotNull String purchaseDate) throws UserNotFoundException {
 
         log.info("============== GET CURRENT PRICE BY TICKER AND PURCHASE DATE ============== ");
         ArNoteUser user = getLocalUserFromPrincipal(principal);
@@ -265,9 +271,20 @@ public class InvestController {
                 .filter(fi -> ticker.equals(fi.getTicker()))
                 .findFirst().orElseThrow(() -> new BadTickerException(ticker));
 
-
-        return commonService.getCurrentPriceByTickerAndDate(foundBond, purchaseDate);
-
+        try {
+            CurrentPriceRs temp = commonService.getCurrentPriceByTickerAndDate(foundBond, purchaseDate);
+            return CurrentPriceWithStatusRs.builder()
+                    .currentPrice(temp.getCurrentPrice())
+                    .currency(temp.getCurrency())
+                    .date(temp.getDate())
+                    .ticker(temp.getTicker())
+                    .status("OK") // todo: заменить на константу или енум
+                    .build();
+        } catch (NoTradesForUserDateException e) { // todo: переделать!
+            return CurrentPriceWithStatusRs.builder()
+                    .status(e.getCode().getUiCode())
+                    .build();
+        }
     }
 
     /**
@@ -431,7 +448,7 @@ public class InvestController {
      * @param bond - данные по бумаге из БД.
      * @return
      */
-    private BondRs prepareBondRs(Bond bond) {
+    private BondRs prepareBondRs(Bond bond) { // todo: почему это вообще в контроллере?
 
         return BondRs.builder()
                 .id(bond.getId())
@@ -448,14 +465,12 @@ public class InvestController {
                 .description(commonService.getDescription(bond))
                 .build();
     }
-
-
     /**
      * Достать юзера из Принципала
      *
      * @return LocalUser
      */
-    public ArNoteUser getLocalUserFromPrincipal(Principal principal) throws UserNotFoundException {
+    public ArNoteUser getLocalUserFromPrincipal(Principal principal) throws UserNotFoundException { // todo: это можно запихать в аспект?
         return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
     }
 }

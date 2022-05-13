@@ -510,11 +510,11 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
     public MoexDocumentRs getHistory(String ticker, String boardId, LocalDate fromDate) {
 
             int start = 0; // начальная страница
-            int step = 100; // шаг перемещения
-            boolean isFinalPage = false; // проверочная переменная, определяющая, что дальше циклить не надо и мы достигли конца истории.
+          //  int step = 100; // шаг перемещения
+         //   boolean isFinalPage = false; // проверочная переменная, определяющая, что дальше циклить не надо и мы достигли конца истории.
             MoexDocumentRs resultDoc = new MoexDocumentRs(); // финальный документ с историей, заполненный всеми страницами
 
-            while (!isFinalPage) {
+         //   while (!isFinalPage) {
 
                 LocalDate requestDate;
 
@@ -526,16 +526,16 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
 
                 String reqDateAsString = requestDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 log.info("Запрашиваем историю на дату: {}", reqDateAsString);
-                log.info("Запрашиваем историю. start = {}", start);
+               // log.info("Запрашиваем историю. start = {}", start);
                 MoexDocumentRs localDoc = (MoexDocumentRs) httpClient.getHistory(MoexRestTemplateOperation.GET_DELTA,
                         ticker, boardId, reqDateAsString, LocalDate.now().toString(), start);
                 log.info("Запросили историю. Получили записей: {}", localDoc.getData().getRow().size());
 
                 if (localDoc.getData() == null || localDoc.getData().getRow().size() == 0) {
-                    log.warn("Для даты {} страница пустая, идем на следующую!", reqDateAsString);
-                    start = start + step;
+                    log.warn("Для даты {} страница пустая!", reqDateAsString);
+                //    start = start + step;
                 } else {
-                    isFinalPage = true;
+                  //  isFinalPage = true;
                     /*
                      * Подливаем строки из локального документа в итоговый.
                      */
@@ -565,7 +565,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
 
                     log.info("Получили записей: {}", resultDoc.getData().getRow().size());
                 }
-            }
+        //    }
             return resultDoc;
     }
 

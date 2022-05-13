@@ -4,7 +4,7 @@ public class NoDataYetException extends Exception {
 
 	private String message;
 
-	public NoDataYetException(Boolean switcher) {
+	public NoDataYetException(Boolean switcher) { //todo: переделать на енам
 		if (switcher){
 			this.message = "ERR-01";	// Еще нет желаний
 		} else {

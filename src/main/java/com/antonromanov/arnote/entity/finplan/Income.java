@@ -1,9 +1,7 @@
 package com.antonromanov.arnote.entity.finplan;
 
-import com.antonromanov.arnote.dto.rq.CreditRq;
 import com.antonromanov.arnote.dto.rq.IncomeRq;
 import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.repositoty.IncomeRepo;
 import lombok.*;
 import javax.persistence.*;
 import java.util.Date;

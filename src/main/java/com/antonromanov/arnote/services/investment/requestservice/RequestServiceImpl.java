@@ -94,7 +94,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public CommonMoexDoc getHistory(MoexRestTemplateOperation type, String ticker, String boardId, String dateFrom, String dateTill, int start) {
+    public CommonMoexDoc getHistory(MoexRestTemplateOperation type, String ticker, String boardId, String dateFrom,
+                                    String dateTill, int start) {
         try {
             log.info("Sending MOEX request for history. Url: {}",
                     prepareUrlForHistory(MOEX_URL, type, serializeObjectToMVMap(type.getRequestParams().convertByAdapter()),
