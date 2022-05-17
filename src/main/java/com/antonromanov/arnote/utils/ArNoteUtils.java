@@ -1050,4 +1050,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
             throw new MoexXmlResponseMarshalingException();
         }
     }
+
+
 }
