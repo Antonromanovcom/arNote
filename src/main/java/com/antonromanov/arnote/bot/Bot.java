@@ -1,17 +1,11 @@
 package com.antonromanov.arnote.bot;
 
 import com.antonromanov.arnote.bot.prettytable.PrettyTablePrinter;
-import com.antonromanov.arnote.controller.MainRestController;
-import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.wish.SortMode;
 import com.antonromanov.arnote.model.wish.Wish;
-import com.antonromanov.arnote.model.wish.enums.FilterMode;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.services.MainService;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.sk.PrettyTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -20,10 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import static com.antonromanov.arnote.utils.ArNoteUtils.createNullableGsonBuilder;
 
 
 @Slf4j
@@ -51,7 +42,12 @@ public class Bot extends TelegramLongPollingBot {
 
 
     public List<Wish> getWishes() {
-        ArNoteUser localUser = usersRepo.findByLogin("anton").get();
+        ArNoteUser localUser = usersRepo.findById(1L).get();
+        if (localUser==null){
+            log.error("Не удалось выцепить юзера!");
+        } else {
+            log.error("Юзера достали!");
+        }
         return new ArrayList<>(mainService.getAllWishesByUserId(localUser));
     }
 

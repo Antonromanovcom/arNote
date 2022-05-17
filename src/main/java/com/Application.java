@@ -54,7 +54,6 @@ public class Application {
             e.printStackTrace();
         }
 
-
         SpringApplication.run(Application.class, args);
     }
 
