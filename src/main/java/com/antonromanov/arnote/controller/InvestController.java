@@ -20,7 +20,6 @@ import com.antonromanov.arnote.services.investment.calc.CommonService;
 import com.antonromanov.arnote.services.investment.calendar.CalendarService;
 import com.antonromanov.arnote.services.investment.returns.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
-import org.sk.PrettyTable;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
@@ -421,21 +420,6 @@ public class InvestController {
 
         user.setDeltaMode(DeltaMode.valueOf(request.getDeltaType()));
         user = usersRepo.saveAndFlush(user);
-        return user;
-    }
-
-
-    @CrossOrigin(origins = "*")
-    @GetMapping("/testTable")
-    public ArNoteUser testTable(Principal principal) throws UserNotFoundException {
-
-        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-
-        PrettyTable table = new PrettyTable("Firstname", "Lastname", "Email", "Phone");
-        table.addRow("John", "Doe", "johndoe@nothing.com", "+2137999999");
-        table.addRow("Jane", "Doe", "janedoe@nothin.com", "+2137999999");
-        System.out.println(table);
-
         return user;
     }
 
