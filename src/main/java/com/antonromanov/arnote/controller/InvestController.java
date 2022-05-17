@@ -1,13 +1,10 @@
 package com.antonromanov.arnote.controller;
 
 
-import com.antonromanov.arnote.dto.rs.DateIsPossibleRs;
-import com.antonromanov.arnote.entity.common.CalendarEntity;
 import com.antonromanov.arnote.exceptions.BadTickerException;
 import com.antonromanov.arnote.exceptions.NoTradesForUserDateException;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.common.enums.CalendarType;
 import com.antonromanov.arnote.model.investing.*;
 import com.antonromanov.arnote.model.investing.request.AddInstrumentRq;
 import com.antonromanov.arnote.model.investing.request.DeltaToggleRq;
@@ -23,10 +20,10 @@ import com.antonromanov.arnote.services.investment.calc.CommonService;
 import com.antonromanov.arnote.services.investment.calendar.CalendarService;
 import com.antonromanov.arnote.services.investment.returns.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
+import org.sk.PrettyTable;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -427,6 +424,21 @@ public class InvestController {
         return user;
     }
 
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/testTable")
+    public ArNoteUser testTable(Principal principal) throws UserNotFoundException {
+
+        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+
+        PrettyTable table = new PrettyTable("Firstname", "Lastname", "Email", "Phone");
+        table.addRow("John", "Doe", "johndoe@nothing.com", "+2137999999");
+        table.addRow("Jane", "Doe", "janedoe@nothin.com", "+2137999999");
+        System.out.println(table);
+
+        return user;
+    }
+
     /**
      * Получить настройки пользователя // todo: возможно сделать отдельный контроллер по пользаку и все это запихать туда
      *
@@ -465,6 +477,7 @@ public class InvestController {
                 .description(commonService.getDescription(bond))
                 .build();
     }
+
     /**
      * Достать юзера из Принципала
      *
