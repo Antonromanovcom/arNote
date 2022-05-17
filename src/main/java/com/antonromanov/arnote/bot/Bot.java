@@ -19,9 +19,10 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class Bot extends TelegramLongPollingBot {
+//public class Bot extends TelegramLongPollingBot {
+public class Bot  {
 
-
+/*
     @Autowired
     private PrettyTablePrinter printerService; // todo: это все не в боте должно быть. Должен быть сервис отдающий такие данные, а контроллер или сервис бота просто их потребяляет. Он не должен быть завязан на эти сервисы и репы.
 
@@ -36,7 +37,7 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Message inMessage = getMessage(update);
         // fireMessage(inMessage.getChatId(), "<pre>" + prepareTable() + "</pre>");
-        fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(getWishes()) + "```");
+   //     fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(getWishes()) + "```");
 
     }
 
@@ -53,9 +54,9 @@ public class Bot extends TelegramLongPollingBot {
 
 
         private Message getMessage (Update update){
-       /* if(update.hasChannelPost() && update.getChannelPost().hasText())
+       *//* if(update.hasChannelPost() && update.getChannelPost().hasText())
             return update.getChannelPost();
-        if(update.hasMessage() && update.getMessage().hasText())*/
+        if(update.hasMessage() && update.getMessage().hasText())*//*
             return update.getMessage();
             //  return null;
         }
@@ -86,5 +87,5 @@ public class Bot extends TelegramLongPollingBot {
         @Override
         public String getBotToken () {
             return "649537355:AAHlbvfkZbqPHuNRUlRYCFsfIRPXuKXr0co";
-        }
+        }*/
     }

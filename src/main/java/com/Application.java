@@ -40,19 +40,13 @@ public class Application {
 
 
     public static void main(String[] args) {
-        //ApiContextInitializer.init();
 
-        try {
+       /* try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(new Bot());
-           /* telegramBotsApi.registerBot(new DirectionsHandlers());
-            telegramBotsApi.registerBot(new RaeHandlers());
-            telegramBotsApi.registerBot(new WeatherHandlers());
-            telegramBotsApi.registerBot(new TransifexHandlers());
-            telegramBotsApi.registerBot(new FilesHandlers());*/
         } catch (TelegramApiException e) {
             e.printStackTrace();
-        }
+        }*/
 
         SpringApplication.run(Application.class, args);
     }
