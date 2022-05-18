@@ -1,8 +1,9 @@
 package com.antonromanov.arnote.bot;
 
-
+import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.services.MainService;
 import com.sun.xml.internal.txw2.annotation.XmlAttribute;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.ExecutorService;
-
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -25,27 +25,17 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.concurrent.Executors;
 
 @Slf4j
-@Component
+@AllArgsConstructor
 public class Bot extends TelegramLongPollingBot {
 
-   // private ExecutorService pool = Executors.newCachedThreadPool();
-   // private static Logger logger = LoggerFactory.getLogger("console_logger");
-
-   // @Value("${bot.name}")
-   private final String botUsername = "arBOT";
-
-   //  @Value("${bot.token}")
-    private final String botToken = "649537355:AAHlbvfkZbqPHuNRUlRYCFsfIRPXuKXr0co";
-
-
-
+    private final MainService repo;
 
     @Override
     public void onUpdateReceived(Update update) {
-        log.warn("PIZDEC!!!!");
+       int s = repo.getWishById(1).get().getPrice();
+        log.warn("Size = {}", s);
         Message inMessage = getMessage(update);
-
-            fireMessage(inMessage.getChatId(), "PIZDEC");
+        fireMessage(inMessage.getChatId(), "PIZDEC");
 
     }
 
@@ -54,33 +44,35 @@ public class Bot extends TelegramLongPollingBot {
        /* if(update.hasChannelPost() && update.getChannelPost().hasText())
             return update.getChannelPost();
         if(update.hasMessage() && update.getMessage().hasText())*/
-            return update.getMessage();
-      //  return null;
+
+        return update.getMessage();
+        //  return null;
     }
 
 
     public void fireMessage(Long chanelId, String msg) {
 
-            try {
-                SendMessage outMessage = new SendMessage();
-                outMessage.enableHtml(true);
-                outMessage.setChatId(chanelId.toString());
-                outMessage.setText(msg);
-                execute(outMessage);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+        try {
+            SendMessage outMessage = new SendMessage();
+            outMessage.enableHtml(true);
+            outMessage.setChatId(chanelId.toString());
+            outMessage.setText(msg);
+            execute(outMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
 
     }
 
 
     @Override
     public String getBotUsername() {
-        return "arBOT";
+        return "arNote_bot";
     }
 
     @Override
     public String getBotToken() {
-        return "649537355:AAHlbvfkZbqPHuNRUlRYCFsfIRPXuKXr0co";
+      //  return "649537355:AAHlbvfkZbqPHuNRUlRYCFsfIRPXuKXr0co";
+        return "5363458470:AAF_Bfytk7p9VMUHEuORXOG6UiP0XLL7GGE";
     }
 }

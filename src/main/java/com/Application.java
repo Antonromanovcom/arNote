@@ -1,6 +1,9 @@
 package com;
 
 import com.antonromanov.arnote.bot.Bot;
+import com.antonromanov.arnote.repositoty.BondsRepo;
+import com.antonromanov.arnote.services.MainService;
+import com.antonromanov.arnote.services.MainServiceImpl;
 import com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl;
 import com.antonromanov.arnote.services.investment.calc.shares.moex.MoexCalculateServiceImpl;
 import com.antonromanov.arnote.services.investment.calc.shares.common.CalculateFactory;
@@ -16,46 +19,37 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
-import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
 import java.util.concurrent.TimeUnit;
-
-
 
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 @EnableCaching
 public class Application {
 
-
     public static void main(String[] args) {
-        //ApiContextInitializer.init();
+
+        ConfigurableApplicationContext appContext = SpringApplication.run(Application.class, args);
+        MainService repo = appContext.getBean(MainServiceImpl.class);
 
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(new Bot());
-           /* telegramBotsApi.registerBot(new DirectionsHandlers());
-            telegramBotsApi.registerBot(new RaeHandlers());
-            telegramBotsApi.registerBot(new WeatherHandlers());
-            telegramBotsApi.registerBot(new TransifexHandlers());
-            telegramBotsApi.registerBot(new FilesHandlers());*/
+            telegramBotsApi.registerBot(new Bot(repo));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
 
 
-        SpringApplication.run(Application.class, args);
+      //  SpringApplication.run(Application.class, args);
     }
 
     @Bean
