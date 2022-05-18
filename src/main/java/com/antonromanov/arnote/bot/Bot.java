@@ -1,14 +1,18 @@
 package com.antonromanov.arnote.bot;
 
-import com.antonromanov.arnote.bot.prettytable.PrettyTablePrinter;
-import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.wish.Wish;
-import com.antonromanov.arnote.repositoty.UsersRepo;
+import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.services.MainService;
+import com.sun.xml.internal.txw2.annotation.XmlAttribute;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.concurrent.ExecutorService;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -21,29 +25,17 @@ import java.util.List;
 
 
 @Slf4j
-@Service
-//@AllArgsConstructor
+@AllArgsConstructor
 public class Bot extends TelegramLongPollingBot {
-//public class Bot  {
 
-   // @Autowired
-   private PrettyTablePrinter printerService; // todo: это все не в боте должно быть. Должен быть сервис отдающий такие данные, а контроллер или сервис бота просто их потребяляет. Он не должен быть завязан на эти сервисы и репы.
-
-   // @Autowired
-   // UsersRepo usersRepo; // todo: это все не в боте должно быть. Должен быть сервис отдающий такие данные, а контроллер или сервис бота просто их потребяляет. Он не должен быть завязан на эти сервисы и репы.
-
-   // @Autowired
-   // MainService ms; // todo: это все не в боте должно быть. Должен быть сервис отдающий такие данные, а контроллер или сервис бота просто их потребяляет. Он не должен быть завязан на эти сервисы и репы.
-
+    private final MainService repo;
 
     @Override
     public void onUpdateReceived(Update update) {
+       int s = repo.getWishById(1).get().getPrice();
+        log.warn("Size = {}", s);
         Message inMessage = getMessage(update);
-        // fireMessage(inMessage.getChatId(), "<pre>" + prepareTable() + "</pre>");
-        fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(getWishes()) + "```");
-      //  getWishes();
-
-    }
+        fireMessage(inMessage.getChatId(), "PIZDEC");
 
 
     public List<Wish> getWishes() {
@@ -62,35 +54,35 @@ public class Bot extends TelegramLongPollingBot {
        /* if(update.hasChannelPost() && update.getChannelPost().hasText())
             return update.getChannelPost();
         if(update.hasMessage() && update.getMessage().hasText())*/
-            return update.getMessage();
-            //  return null;
-        }
+
+        return update.getMessage();
+        //  return null;
+    }
 
 
         public void fireMessage (Long chanelId, String msg){
 
-            try {
-                SendMessage outMessage = new SendMessage();
-                // outMessage.enableHtml(true);
-                // outMessage.setParseMode("html");
-                outMessage.enableMarkdownV2(true);
-                outMessage.setChatId(chanelId.toString());
-                outMessage.setText(msg);
-                execute(outMessage);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+        try {
+            SendMessage outMessage = new SendMessage();
+            outMessage.enableHtml(true);
+            outMessage.setChatId(chanelId.toString());
+            outMessage.setText(msg);
+            execute(outMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
 
         }
 
 
-        @Override
-        public String getBotUsername () {
-            return "arBOT";
-        }
-
-        @Override
-        public String getBotToken () {
-            return "649537355:AAHlbvfkZbqPHuNRUlRYCFsfIRPXuKXr0co";
-        }
+    @Override
+    public String getBotUsername() {
+        return "arNote_bot";
     }
+
+    @Override
+    public String getBotToken() {
+      //  return "649537355:AAHlbvfkZbqPHuNRUlRYCFsfIRPXuKXr0co";
+        return "5363458470:AAF_Bfytk7p9VMUHEuORXOG6UiP0XLL7GGE";
+    }
+}
