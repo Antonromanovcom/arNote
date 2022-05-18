@@ -39,6 +39,11 @@ public class MainServiceImpl implements MainService {
         return wishRepository.getAllWithPriority1(user);
     }
 
+    @Override
+    public List<Wish> getAl() {
+        return wishRepository.getAll();
+    }
+
     /**
      * Берем максимальный priorityGroup, добавляем +1 и возвращаем.
      *

@@ -1,12 +1,15 @@
 package com;
 
 import com.antonromanov.arnote.bot.Bot;
+import com.antonromanov.arnote.bot.prettytable.PrettyTablePrinter;
+import com.antonromanov.arnote.repositoty.UsersRepo;
+import com.antonromanov.arnote.services.MainService;
+import com.antonromanov.arnote.services.MainServiceImpl;
 import com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl;
 import com.antonromanov.arnote.services.investment.calc.shares.moex.MoexCalculateServiceImpl;
 import com.antonromanov.arnote.services.investment.calc.shares.common.CalculateFactory;
 import com.google.common.cache.CacheBuilder;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.boot.SpringApplication;
@@ -19,16 +22,12 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
-import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
 import java.util.concurrent.TimeUnit;
 
 
@@ -38,18 +37,19 @@ import java.util.concurrent.TimeUnit;
 @EnableCaching
 public class Application {
 
-
     public static void main(String[] args) {
 
-       /* try {
+        try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(new Bot());
+         //   telegramBotsApi.registerBot(new Bot(new PrettyTablePrinter(), new MainServiceImpl()));
+            telegramBotsApi.registerBot(new Bot(new UsersRepo()));
         } catch (TelegramApiException e) {
             e.printStackTrace();
-        }*/
+        }
 
         SpringApplication.run(Application.class, args);
     }
+
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {

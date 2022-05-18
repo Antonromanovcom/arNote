@@ -5,9 +5,12 @@ import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.model.wish.Wish;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.services.MainService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -18,45 +21,47 @@ import java.util.List;
 
 
 @Slf4j
-@Component
-//public class Bot extends TelegramLongPollingBot {
-public class Bot  {
+@Service
+//@AllArgsConstructor
+public class Bot extends TelegramLongPollingBot {
+//public class Bot  {
 
-/*
-    @Autowired
-    private PrettyTablePrinter printerService; // todo: это все не в боте должно быть. Должен быть сервис отдающий такие данные, а контроллер или сервис бота просто их потребяляет. Он не должен быть завязан на эти сервисы и репы.
+   // @Autowired
+   private PrettyTablePrinter printerService; // todo: это все не в боте должно быть. Должен быть сервис отдающий такие данные, а контроллер или сервис бота просто их потребяляет. Он не должен быть завязан на эти сервисы и репы.
 
-    @Autowired
-    UsersRepo usersRepo; // todo: это все не в боте должно быть. Должен быть сервис отдающий такие данные, а контроллер или сервис бота просто их потребяляет. Он не должен быть завязан на эти сервисы и репы.
+   // @Autowired
+   // UsersRepo usersRepo; // todo: это все не в боте должно быть. Должен быть сервис отдающий такие данные, а контроллер или сервис бота просто их потребяляет. Он не должен быть завязан на эти сервисы и репы.
 
-    @Autowired
-    MainService mainService; // todo: это все не в боте должно быть. Должен быть сервис отдающий такие данные, а контроллер или сервис бота просто их потребяляет. Он не должен быть завязан на эти сервисы и репы.
+   // @Autowired
+   // MainService ms; // todo: это все не в боте должно быть. Должен быть сервис отдающий такие данные, а контроллер или сервис бота просто их потребяляет. Он не должен быть завязан на эти сервисы и репы.
 
 
     @Override
     public void onUpdateReceived(Update update) {
         Message inMessage = getMessage(update);
         // fireMessage(inMessage.getChatId(), "<pre>" + prepareTable() + "</pre>");
-   //     fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(getWishes()) + "```");
+        fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(getWishes()) + "```");
+      //  getWishes();
 
     }
 
 
     public List<Wish> getWishes() {
-        ArNoteUser localUser = usersRepo.findById(1L).get();
+     /*   ArNoteUser localUser = usersRepo.findById(1L).get();
         if (localUser==null){
             log.error("Не удалось выцепить юзера!");
         } else {
             log.error("Юзера достали!");
-        }
-        return new ArrayList<>(mainService.getAllWishesByUserId(localUser));
+        }*/
+      //  return new ArrayList<>(ms.getAl());
+        return null;
     }
 
 
         private Message getMessage (Update update){
-       *//* if(update.hasChannelPost() && update.getChannelPost().hasText())
+       /* if(update.hasChannelPost() && update.getChannelPost().hasText())
             return update.getChannelPost();
-        if(update.hasMessage() && update.getMessage().hasText())*//*
+        if(update.hasMessage() && update.getMessage().hasText())*/
             return update.getMessage();
             //  return null;
         }
@@ -87,5 +92,5 @@ public class Bot  {
         @Override
         public String getBotToken () {
             return "649537355:AAHlbvfkZbqPHuNRUlRYCFsfIRPXuKXr0co";
-        }*/
+        }
     }

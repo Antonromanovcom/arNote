@@ -16,6 +16,7 @@ public interface MainService {
 	ResponseParseResult parseCsv(MultipartFile file, ArNoteUser localUser) throws Exception;
 
 	List<Wish> getAllWishesWithPriority1(ArNoteUser user);
+	List<Wish> getAl();
 
 	int getMaxPriority(ArNoteUser user);
 
