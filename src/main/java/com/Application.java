@@ -1,6 +1,7 @@
 package com;
 
 import com.antonromanov.arnote.bot.Bot;
+import com.antonromanov.arnote.bot.prettytable.PrettyTablePrinter;
 import com.antonromanov.arnote.services.MainService;
 import com.antonromanov.arnote.services.MainServiceImpl;
 import com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl;
@@ -40,7 +41,8 @@ public class Application {
 
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(new Bot(repo));
+            PrettyTablePrinter pt = new PrettyTablePrinter();
+            telegramBotsApi.registerBot(new Bot(repo, pt));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

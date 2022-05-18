@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.bot;
 
+import com.antonromanov.arnote.bot.prettytable.PrettyTablePrinter;
 import com.antonromanov.arnote.services.MainService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,15 +17,16 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class Bot extends TelegramLongPollingBot {
 
     private final MainService repo;
+    private PrettyTablePrinter printerService;
 
     @Override
     public void onUpdateReceived(Update update) {
         int s = repo.getWishById(1).get().getPrice();
         log.warn("Size = {}", s);
         Message inMessage = getMessage(update);
-        fireMessage(inMessage.getChatId(), "PIZDEC");
+       // fireMessage(inMessage.getChatId(), "PIZDEC");
+        fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(s) + "```");
     }
-
 
         private Message getMessage (Update update){
         return update.getMessage();
