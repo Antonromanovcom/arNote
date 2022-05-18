@@ -1,7 +1,6 @@
 package com;
 
 import com.antonromanov.arnote.bot.Bot;
-import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.services.MainService;
 import com.antonromanov.arnote.services.MainServiceImpl;
 import com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl;
@@ -45,9 +44,6 @@ public class Application {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-
-
-      //  SpringApplication.run(Application.class, args);
     }
 
 
@@ -91,39 +87,8 @@ public class Application {
                         CacheBuilder.newBuilder()
                                 .expireAfterWrite(15, TimeUnit.MINUTES)
                                 .build().asMap(),
-                        false);/*@Bean
-    @Autowired
-    Bot bot(Environment env) {
-        Bot bot = null;
-     //   if(env.getProperty("telegram.bot", Boolean.TYPE)) {
-            TelegramBotsApi botsApi = new TelegramBotsApi();
-            try {
-                DefaultBotOptions botOptions = ApiContext.getInstance(DefaultBotOptions.class);
-              //  if (env.getProperty("telegram.proxy.set", Boolean.TYPE)) {
-
-                  *//*  Authenticator.setDefault(new Authenticator() {
-                        @Override
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(env.getProperty("telegram.proxy.user"), env.getProperty("telegram.proxy.pass").toCharArray());
-                        }
-                    });
-
-                    botOptions.setProxyHost(env.getProperty("telegram.proxy.host"));
-                    botOptions.setProxyPort(env.getProperty("telegram.proxy.port", Integer.TYPE));
-                    botOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);*//*
-              //  }
-                botsApi.registerBot(bot = new Bot(botOptions));
-            } catch ( TelegramApiException e) {
-                e.printStackTrace();
-            }
-       // }
-        return bot;
-    }*/
+                        false);
             }
         };
     }
-
-
-
-
 }

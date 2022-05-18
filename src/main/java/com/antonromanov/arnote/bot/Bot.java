@@ -1,27 +1,14 @@
 package com.antonromanov.arnote.bot;
 
-import com.antonromanov.arnote.repositoty.BondsRepo;
 import com.antonromanov.arnote.services.MainService;
-import com.sun.xml.internal.txw2.annotation.XmlAttribute;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.concurrent.ExecutorService;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 @Slf4j
@@ -32,31 +19,15 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-       int s = repo.getWishById(1).get().getPrice();
+        int s = repo.getWishById(1).get().getPrice();
         log.warn("Size = {}", s);
         Message inMessage = getMessage(update);
         fireMessage(inMessage.getChatId(), "PIZDEC");
-
-
-    public List<Wish> getWishes() {
-     /*   ArNoteUser localUser = usersRepo.findById(1L).get();
-        if (localUser==null){
-            log.error("Не удалось выцепить юзера!");
-        } else {
-            log.error("Юзера достали!");
-        }*/
-      //  return new ArrayList<>(ms.getAl());
-        return null;
     }
 
 
         private Message getMessage (Update update){
-       /* if(update.hasChannelPost() && update.getChannelPost().hasText())
-            return update.getChannelPost();
-        if(update.hasMessage() && update.getMessage().hasText())*/
-
         return update.getMessage();
-        //  return null;
     }
 
 
