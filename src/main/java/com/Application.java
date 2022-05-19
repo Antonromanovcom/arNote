@@ -1,7 +1,7 @@
 package com;
 
 import com.antonromanov.arnote.bot.Bot;
-import com.antonromanov.arnote.bot.prettytable.PrettyTablePrinter;
+import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.services.MainService;
 import com.antonromanov.arnote.services.MainServiceImpl;
 import com.antonromanov.arnote.services.investment.calc.shares.foreign.ForeignCalcServiceImpl;
@@ -22,27 +22,30 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
-@EnableAspectJAutoProxy(proxyTargetClass=true)
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableCaching
 public class Application {
 
     public static void main(String[] args) {
 
         ConfigurableApplicationContext appContext = SpringApplication.run(Application.class, args);
-        MainService repo = appContext.getBean(MainServiceImpl.class);
+        MainService srv = appContext.getBean(MainServiceImpl.class);
+        UsersRepo repo = appContext.getBean(UsersRepo.class);
+        Environment env = appContext.getBean(Environment.class);
 
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            PrettyTablePrinter pt = new PrettyTablePrinter();
-            telegramBotsApi.registerBot(new Bot(repo, pt));
+            telegramBotsApi.registerBot(new Bot(srv, repo, env));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

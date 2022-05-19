@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.Signature;
 import org.joda.time.DateTime;
 import org.passay.CharacterRule;
@@ -124,17 +125,10 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
     public static Gson createNullableGsonBuilder() {
 
-        Gson gson = new GsonBuilder()
-                .setDateFormat("dd/MM/yyyy")
-                .create();
-
-        // Get the date adapter
+        Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
         TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
-
-        // Ensure the DateTypeAdapter is null safe
         TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
 
-        // Build the definitive safe Gson instance
         return new GsonBuilder()
                 .registerTypeAdapter(Date.class, safeDateTypeAdapter)
                 .create();
@@ -356,8 +350,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         colorClasses.put(11, "label label-purple");
         colorClasses.put(12, "label label-blue");
         colorClasses.put(13, "label label-danger");
-
-//		LOGGER.info("MONTH (getClassColorByMonth) => " + month);
 
         if (!overdraft) {
             if (month == 0) {
@@ -917,12 +909,12 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
     /**
      * Вариант метода getIncomeForAllPurchasesFromCandle, но считающий результат данного метода в процентах.
-     * <p>
+     *
      * Формула расчета:
-     * <p>
+     *
      * Сколько_процентов_составляет(Х от Y).
      * где:
-     * <p>
+     *
      * X - результат метода getIncomeForAllPurchasesFromCandle
      * Y - Sp[...]
      * Sp[...] - сумма покупок. То есть 10-апреля купили например 10 по цене 1.5, 11 мая купили 10 по цене 2.0,
@@ -990,16 +982,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     }
 
     /**
-     * Проверяем, что день выходной.
-     *
-     * @return
-     */
-    public static boolean checkIsHoliday(LocalDate purchaseDate) {
-        DayOfWeek day = DayOfWeek.of(purchaseDate.get(ChronoField.DAY_OF_WEEK));
-        return day == DayOfWeek.SUNDAY || day == DayOfWeek.SATURDAY;
-    }
-
-    /**
      * Грузим производственный календарь по ссылке.
      *
      * @return
@@ -1050,6 +1032,4 @@ public class ArNoteUtils { //todo: надо будет разнести отде
             throw new MoexXmlResponseMarshalingException();
         }
     }
-
-
 }

@@ -15,7 +15,7 @@ public interface MainService {
 
 	ResponseParseResult parseCsv(MultipartFile file, ArNoteUser localUser) throws Exception;
 
-	List<Wish> getAllWishesWithPriority1(ArNoteUser user);
+	List<Wish> getAllWishesWithPriority1(ArNoteUser user); // todo: проверить - если реально нигде не испльзуется - то убрать
 	List<Wish> getAl();
 
 	int getMaxPriority(ArNoteUser user);
@@ -34,9 +34,9 @@ public interface MainService {
 
 	Optional<Wish> getWishById(int id);
 
-	Integer getSumm4All(ArNoteUser user);
+	Integer getSumm4All(ArNoteUser user); // todo: переименовать
 
-	Integer getSumm4Prior(ArNoteUser user);
+	Integer getSumm4Prior(ArNoteUser user); // todo: переименовать
 
 	Optional<Integer> getImplementedSum(ArNoteUser user, int period);
 
