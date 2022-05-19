@@ -13,7 +13,12 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -37,7 +42,17 @@ public class Bot extends TelegramLongPollingBot {
             log.info("Удалось достать пользака. Id =  {}, Name =  {}", user.getId(), user.getFullname());
             List<Wish> wishes = dataService.getAllWishesWithPriority1(user);
             log.info("Кол-во приоритетных желаний:   {}", wishes.size());
-            fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(wishes) + "```");
+        //    fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(wishes) + "```");
+
+            // Создаем кнопку для начала игры
+            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+            List<InlineKeyboardButton> inlineKeyboardButtonsRowOne = Collections.singletonList(
+                    createInlineKeyboardButton("Start quiz", "1"));
+            inlineKeyboardMarkup.setKeyboard(Collections.singletonList(inlineKeyboardButtonsRowOne));
+
+            vbdk(createMessageTemplate(inMessage.getChatId().toString()), inlineKeyboardMarkup);
+
 
         } catch (Exception e) {
             log.error("Ошибка получения пользовательских данных: {}", e.getMessage());
@@ -47,6 +62,35 @@ public class Bot extends TelegramLongPollingBot {
 
     private Message getMessage(Update update) {
         return update.getMessage();
+    }
+
+    // Создаем шаблон SendMessage с включенным Markdown
+    public static SendMessage createMessageTemplate(String chatId) {
+
+            SendMessage outMessage = new SendMessage();
+            outMessage.enableMarkdownV2(true);
+            outMessage.setChatId(chatId);
+            return outMessage;
+    }
+
+    // Создаем кнопку
+    public static InlineKeyboardButton createInlineKeyboardButton(String text, String command) {
+        InlineKeyboardButton ib = new InlineKeyboardButton();
+        ib.setText("1");
+        ib.setCallbackData("2");
+        return ib;
+    }
+
+    private void vbdk(SendMessage msg, InlineKeyboardMarkup inlineKeyboardMarkup) {
+
+        try {
+            msg.setReplyMarkup(inlineKeyboardMarkup);
+            msg.setText("11");
+            execute(msg);
+        } catch (TelegramApiException e) {
+            log.error("Ошибка отправки сообщения пользователю: {}", e.getMessage());
+        }
+
     }
 
 
