@@ -42,6 +42,13 @@ public class Bot extends TelegramLongPollingBot {
             log.info("Удалось достать пользака. Id =  {}, Name =  {}", user.getId(), user.getFullname());
             List<Wish> wishes = dataService.getAllWishesWithPriority1(user);
             log.info("Кол-во приоритетных желаний:   {}", wishes.size());
+            log.info("hasCallbackQuery ?:   {}", update.hasCallbackQuery());
+            log.info("hasMessage ?:   {}", update.hasMessage());
+            log.info("getMessage().hasText() ?:   {}", update.getMessage().hasText());
+            log.info(".getMessage().getFrom().getUserName() ?:   {}", update.getMessage().getFrom().getUserName());
+
+
+
         //    fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(wishes) + "```");
 
             // Создаем кнопку для начала игры
