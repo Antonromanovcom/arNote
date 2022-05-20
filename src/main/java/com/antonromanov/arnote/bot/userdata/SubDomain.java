@@ -6,13 +6,13 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public enum UserDomainState {
-    WISHES("/wishes", "Работа с желаниями", null), FINPLANNING("/fp", "ФинПланы", null);
+public enum SubDomain {
 
+    WISH("/wish", "Желание", null), FINPLANNING("/fp", "ФинПланы", null);
 
     private final String command;
     private final String description;
-    private final List<SubDomain> subDomains;
+    private final List<Command> commands;
 
    /* public static CalendarType handle(String id){
         return Arrays.stream(CalendarType.values())

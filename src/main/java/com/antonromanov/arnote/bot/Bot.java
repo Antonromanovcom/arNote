@@ -1,9 +1,7 @@
 package com.antonromanov.arnote.bot;
 
 import com.antonromanov.arnote.bot.prettytable.PrettyTablePrinter;
-import com.antonromanov.arnote.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.wish.Wish;
+import com.antonromanov.arnote.bot.reciever.UpdateReceiver;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.services.MainService;
 import lombok.AllArgsConstructor;
@@ -17,7 +15,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,6 +26,7 @@ public class Bot extends TelegramLongPollingBot {
     private final MainService dataService;
     private final UsersRepo usersRepo;
     private final Environment env;
+    //private final UpdateReceiver updateReciever;
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -37,27 +35,27 @@ public class Bot extends TelegramLongPollingBot {
         try {
             String arUser = env.getProperty("ar.user");
             log.info("Логин пользователя из environment: {}", arUser);
-            ArNoteUser user = usersRepo.findByLogin(arUser).orElseThrow(UserNotFoundException::new);
-
+           /* ArNoteUser user = usersRepo.findByLogin(arUser).orElseThrow(UserNotFoundException::new);
             log.info("Удалось достать пользака. Id =  {}, Name =  {}", user.getId(), user.getFullname());
             List<Wish> wishes = dataService.getAllWishesWithPriority1(user);
             log.info("Кол-во приоритетных желаний:   {}", wishes.size());
             log.info("hasCallbackQuery ?:   {}", update.hasCallbackQuery());
             log.info("hasMessage ?:   {}", update.hasMessage());
             log.info("getMessage().hasText() ?:   {}", update.getMessage().hasText());
-            log.info(".getMessage().getFrom().getUserName() ?:   {}", update.getMessage().getFrom().getUserName());
+            log.info(".getMessage().getFrom().getUserName() ?:   {}", update.getMessage().getFrom().getUserName());*/
 
 
-
-        //    fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(wishes) + "```");
-
+            // fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(wishes) + "```");
             // Создаем кнопку для начала игры
+
+
+            UpdateReceiver updateReceiver = new UpdateReceiver();
+            updateReceiver.handle(update);
+
+
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-
-            List<InlineKeyboardButton> inlineKeyboardButtonsRowOne = Collections.singletonList(
-                    createInlineKeyboardButton("Start quiz", "1"));
+            List<InlineKeyboardButton> inlineKeyboardButtonsRowOne = Collections.singletonList(createInlineKeyboardButton("Start quiz", "1"));
             inlineKeyboardMarkup.setKeyboard(Collections.singletonList(inlineKeyboardButtonsRowOne));
-
             vbdk(createMessageTemplate(inMessage.getChatId().toString()), inlineKeyboardMarkup);
 
 
@@ -74,10 +72,10 @@ public class Bot extends TelegramLongPollingBot {
     // Создаем шаблон SendMessage с включенным Markdown
     public static SendMessage createMessageTemplate(String chatId) {
 
-            SendMessage outMessage = new SendMessage();
-            outMessage.enableMarkdownV2(true);
-            outMessage.setChatId(chatId);
-            return outMessage;
+        SendMessage outMessage = new SendMessage();
+        outMessage.enableMarkdownV2(true);
+        outMessage.setChatId(chatId);
+        return outMessage;
     }
 
     // Создаем кнопку
