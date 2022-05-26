@@ -2,15 +2,16 @@ package com.antonromanov.arnote.bot.reciever;
 
 import com.antonromanov.arnote.bot.BotHandler.BotHandler;
 import com.antonromanov.arnote.bot.BotHandler.FirstHandler;
+import com.antonromanov.arnote.bot.BotHandler.WishHandler;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import static com.antonromanov.arnote.bot.Bot.fvdvdrgvd;
+
 
 public class UpdateReceiver {
 
@@ -18,32 +19,22 @@ public class UpdateReceiver {
 
     public UpdateReceiver() {
         FirstHandler fh = new FirstHandler();
-        this.handlers = Arrays.asList(fh);
+        WishHandler wh = new WishHandler();
+        this.handlers = Arrays.asList(fh, wh);
     }
 
-    public List<PartialBotApiMethod<? extends Serializable>> handle(Update update) {
-        //   UserGlobalStateafdvsfdcvsedf hfvcbsk =  UserGlobalStateafdvsfdcvsedf.dfkjhvbdsf(update.getMessage().getText());
-
+    public List<PartialBotApiMethod<? extends Serializable>> handle(Update update) throws UnsupportedOperationException {
 
         if (isMessageWithText(update)) {
             final Message message = update.getMessage();
-            //final int chatId = message.getFrom().getId();
-            /*final User user = userRepository.getByChatId(chatId)
-                    .orElseGet(() -> userRepository.save(new User(chatId)));*/
-            // return getHandlerByState(user.getBotState()).handle(user, message.getText());
             return getHandlerByState(message.getText()).handleMessage(update);
 
         } else if (update.hasCallbackQuery()) {
             final CallbackQuery callbackQuery = update.getCallbackQuery();
-            // final int chatId = callbackQuery.getFrom().getId();
-            /*final User user = userRepository.getByChatId(chatId)
-                    .orElseGet(() -> userRepository.save(new User(chatId)));*/
-
-            //return getHandlerByCallBackQuery(callbackQuery.getData()).handle(user, callbackQuery.getData());
             BotHandler bh = getHandlerByCallBackQuery(callbackQuery.getData());
             return bh.handleCallback(update);
         }
-        return Collections.emptyList();
+        throw new UnsupportedOperationException();
     }
 
     private boolean isMessageWithText(Update update) {
@@ -51,11 +42,12 @@ public class UpdateReceiver {
     }
 
     private BotHandler getHandlerByCallBackQuery(String query) {
-        return handlers.stream()
-                .filter(h -> h.operatedBotState() != null)
+        BotHandler bh =  handlers.stream()
+                .filter(h -> h.operatedCallBackQuery() != null)
                 .filter(h -> fvdvdrgvd(h.operatedCallBackQuery(), query))
                 .findAny()
                 .orElseThrow(UnsupportedOperationException::new);
+        return bh;
     }
 
 

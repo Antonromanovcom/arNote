@@ -10,34 +10,26 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import static com.antonromanov.arnote.bot.Bot.*;
+import static com.antonromanov.arnote.bot.Bot.createInlineKeyboardButtonFromEnum;
+import static com.antonromanov.arnote.bot.Bot.createMessageTemplate;
 
-public class FirstHandler implements BotHandler {
+public class WishHandler implements BotHandler {
 
 
-    private final UserGlobalStateafdvsfdcvsedf MESSAGE_HANDLER_STATE = UserGlobalStateafdvsfdcvsedf.START;
-    private final UserGlobalStateafdvsfdcvsedf CALLBACK_STATE = UserGlobalStateafdvsfdcvsedf.DOMAIN_SELECT;
+    private final UserGlobalStateafdvsfdcvsedf MESSAGE_HANDLER_STATE = UserGlobalStateafdvsfdcvsedf.WISH_DOMAIN;
+    private final UserGlobalStateafdvsfdcvsedf CALLBACK_STATE = UserGlobalStateafdvsfdcvsedf.WISH_DOMAIN;
 
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handleMessage(Update update) {
 
-       /* SendMessage welcomeMessage = createMessageTemplate(update.getMessage().getChatId().toString());
-        welcomeMessage.setText("Hola\\. I am  here to help you learn Java");
-
-
-        SendMessage registrationMessage = createMessageTemplate(update.getMessage().getChatId().toString());
-        registrationMessage.setText("In order to start our journey tell me your name");*/
-
-      //  createInlineKeyboardButton()
-
-        // Создаем кнопку для начала игры
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+       /* InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(Arrays.asList(createInlineKeyboardButtonFromEnum(MESSAGE_HANDLER_STATE)));
         SendMessage messageToSend = createMessageTemplate(update.getMessage().getChatId().toString());
         messageToSend.setText(MESSAGE_HANDLER_STATE.getReplyMessageText());
         messageToSend.setReplyMarkup(inlineKeyboardMarkup);
 
-        return Arrays.asList(messageToSend);
+        return Arrays.asList(messageToSend);*/
+        return Collections.emptyList();
     }
 
     @Override
@@ -56,11 +48,11 @@ public class FirstHandler implements BotHandler {
 
     @Override
     public List<UserGlobalStateafdvsfdcvsedf> operatedBotState() {
-        return Collections.singletonList(MESSAGE_HANDLER_STATE);
+        return Collections.emptyList();
     }
 
     @Override
     public List<UserGlobalStateafdvsfdcvsedf> operatedCallBackQuery() {
-        return Collections.singletonList(CALLBACK_STATE);
+        return Collections.singletonList(MESSAGE_HANDLER_STATE);
     }
 }

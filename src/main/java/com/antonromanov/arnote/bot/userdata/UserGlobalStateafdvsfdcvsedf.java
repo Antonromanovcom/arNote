@@ -10,12 +10,16 @@ import java.util.List;
 public enum UserGlobalStateafdvsfdcvsedf {
 
     START("/start", "Начало сессии и выбор режима", 0, 1,
-            Arrays.asList(BotReply.builder().text("Мобильный").command("/start_mobile").build(),
-                    BotReply.builder().text("Десктоп").command("/start_desktop").build()), "Выберите тип устройства"),
+            Arrays.asList(BotReply.builder().text("Мобильный").command("/domain").build(),
+                    BotReply.builder().text("Десктоп").command("/domain").build()), "Выберите тип устройства"),
     DOMAIN_SELECT("/domain", "Выбор домена", 1, 2,
             Arrays.asList(BotReply.builder().text("Желания").command("/wishes_domain_select").build(),
             BotReply.builder().text("Фин.Планы").command("/fin_planning_domain_select").build()),
             "С какой сущностью будем работать?"),
+    WISH_DOMAIN("/wishes_domain_select", "Работа с желаниями", 2, 3,
+            Arrays.asList(BotReply.builder().text("Сосать хуй").command("/x").build(),
+                    BotReply.builder().text("Лизать пезду").command("/p").build()),
+            "Куни или минет?"),
     STOP("/stop", "Окончание сессии", 0, 3, null, null);
 
     private final String command;

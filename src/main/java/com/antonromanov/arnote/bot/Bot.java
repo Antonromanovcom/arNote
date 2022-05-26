@@ -20,11 +20,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
@@ -43,15 +40,16 @@ public class Bot extends TelegramLongPollingBot {
         Message inMessage = getMessage(update);
         try {
             String arUser = env.getProperty("ar.user");
-            log.info("Логин пользователя из environment: {}", arUser);
+          //  log.info("Логин пользователя из environment: {}", arUser);
             ArNoteUser user = usersRepo.findByLogin(arUser).orElseThrow(UserNotFoundException::new);
-            log.info("Удалось достать пользака. Id =  {}, Name =  {}", user.getId(), user.getFullname());
+          //  log.info("Удалось достать пользака. Id =  {}, Name =  {}", user.getId(), user.getFullname());
             List<Wish> wishes = dataService.getAllWishesWithPriority1(user);
-            log.info("Кол-во приоритетных желаний:   {}", wishes.size());
+          //  log.info("Кол-во приоритетных желаний:   {}", wishes.size());
             log.info("hasCallbackQuery ?:   {}", update.hasCallbackQuery());
+            log.info("=====================================================");
 
             if (update.hasCallbackQuery()) {
-             //   log.info("update.getCallbackQuery().getMessage() ?:   {}", update.getCallbackQuery().getMessage());
+                //   log.info("update.getCallbackQuery().getMessage() ?:   {}", update.getCallbackQuery().getMessage());
                 log.info("update.getCallbackQuery().getData() ?:   {}", update.getCallbackQuery().getData());
             }
 
@@ -59,23 +57,21 @@ public class Bot extends TelegramLongPollingBot {
 
             if (update.hasMessage()) {
                 log.info("getMessage().hasText() ?:   {}", update.getMessage().hasText());
-                log.info(".getMessage().getFrom().getUserName() ?:   {}", update.getMessage().getFrom().getUserName());
+             //   log.info(".getMessage().getFrom().getUserName() ?:   {}", update.getMessage().getFrom().getUserName());
             }
 
             UserData userData = UserData.getInstance();
             log.info("Текущий статус пользователя ?:   {}", userData.getState());
 
-            // fireMessage(inMessage.getChatId(), "```" + printerService.prepareWishTable(wishes) + "```");
-
             UpdateReceiver updateReceiver = new UpdateReceiver();
             List<PartialBotApiMethod<? extends Serializable>> messagesToSend = updateReceiver.handle(update);
 
-        //    log.info("Messages size: {}", messagesToSend.size());
+            //    log.info("Messages size: {}", messagesToSend.size());
 
             if (messagesToSend != null && !messagesToSend.isEmpty()) {
                 messagesToSend.forEach(response -> {
                     if (response instanceof SendMessage) {
-                    //    log.info("Message: {}", ((SendMessage) response).getText());
+                        //    log.info("Message: {}", ((SendMessage) response).getText());
                         vbdk((SendMessage) response, null);
                     }
                 });
@@ -91,9 +87,17 @@ public class Bot extends TelegramLongPollingBot {
             vbdk(createMessageTemplate(inMessage.getChatId().toString()), inlineKeyboardMarkup);*/
 
 
+        } catch (UnsupportedOperationException uoe) {
+            log.error("Вызвана операция, которая не предусмотрена для бота: {}", uoe.getMessage());
+            Long chatId = null;
+            if (inMessage == null || inMessage.getChat().getId() == null) {
+                chatId = update.getCallbackQuery().getMessage().getChatId();
+            } else {
+                chatId = inMessage.getChat().getId();
+            }
+            fireMessage(chatId, "Я не знаю такой команды");
         } catch (Exception e) {
             log.error("Ошибка получения пользовательских данных: {}", e.getMessage());
-            //   fireMessage(inMessage.getChatId(), "Не получилось получить данные пользователя!");
         }
     }
 
@@ -101,7 +105,6 @@ public class Bot extends TelegramLongPollingBot {
         return update.getMessage();
     }
 
-    // Создаем шаблон SendMessage с включенным Markdown
     public static SendMessage createMessageTemplate(String chatId) {
 
         SendMessage outMessage = new SendMessage();
@@ -111,16 +114,17 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public static Boolean fvdvdrgvd(List<UserGlobalStateafdvsfdcvsedf> statesList, String query) {
-        return statesList.stream().anyMatch(r-> r.getReply().stream().anyMatch(e->e.getCommand().startsWith(query)));
+      //  return statesList.stream().anyMatch(r -> r.getReply().stream().anyMatch(e -> e.getCommand().startsWith(query)));
+        return statesList.stream().anyMatch(r -> r.getCommand().startsWith(query));
     }
 
     public static List<InlineKeyboardButton> createInlineKeyboardButtonFromEnum(UserGlobalStateafdvsfdcvsedf state) {
         return state.getReply().stream()
-                .map(v->createInlineKeyboardButton(v.getText(), v.getCommand()))
+                .map(v -> createInlineKeyboardButton(v.getText(), v.getCommand()))
                 .collect(Collectors.toList());
     }
 
-    // Создаем кнопку
+
     public static InlineKeyboardButton createInlineKeyboardButton(String text, String command) {
         InlineKeyboardButton ib = new InlineKeyboardButton();
         ib.setText(text);
@@ -145,8 +149,6 @@ public class Bot extends TelegramLongPollingBot {
 
         try {
             SendMessage outMessage = new SendMessage();
-            // outMessage.enableHtml(true);
-            // outMessage.setParseMode("html");
             outMessage.enableMarkdownV2(true);
             outMessage.setChatId(chanelId.toString());
             outMessage.setText(msg);
