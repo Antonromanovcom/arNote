@@ -5,18 +5,15 @@ import com.antonromanov.arnote.bot.userdata.UserGlobalStateafdvsfdcvsedf;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import static com.antonromanov.arnote.bot.Bot.createInlineKeyboardButtonFromEnum;
 import static com.antonromanov.arnote.bot.Bot.createMessageTemplate;
 
 
-public class WishHandler implements BotHandler {
+public class WishLstHandler implements BotHandler {
 
-    private final UserGlobalStateafdvsfdcvsedf MESSAGE_HANDLER_STATE = UserGlobalStateafdvsfdcvsedf.WISH_DOMAIN;
-    private final UserGlobalStateafdvsfdcvsedf CALLBACK_STATE = UserGlobalStateafdvsfdcvsedf.WISH_DOMAIN;
+    private final UserGlobalStateafdvsfdcvsedf MESSAGE_HANDLER_STATE = UserGlobalStateafdvsfdcvsedf.WISH_LIST;
 
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handleMessage(Update update) {
@@ -25,14 +22,10 @@ public class WishHandler implements BotHandler {
 
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handleCallback(Update update) {
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         UserData userData = UserData.getInstance();
-        userData.setState(CALLBACK_STATE);
-
-        inlineKeyboardMarkup.setKeyboard(Collections.singletonList(createInlineKeyboardButtonFromEnum(CALLBACK_STATE)));
+        userData.setState(UserGlobalStateafdvsfdcvsedf.STOP);
         SendMessage messageToSend = createMessageTemplate(update.getCallbackQuery().getMessage().getChatId().toString());
-        messageToSend.setText(CALLBACK_STATE.getReplyMessageText());
-        messageToSend.setReplyMarkup(inlineKeyboardMarkup);
+        messageToSend.setText("ВАМ ВСЕМ ПИЗДА");
         return Collections.singletonList(messageToSend);
     }
 

@@ -61,8 +61,6 @@ public class Bot extends TelegramLongPollingBot {
             }
 
             UserData userData = UserData.getInstance();
-            log.info("Текущий статус пользователя ?:   {}", userData.getState());
-
             UpdateReceiver updateReceiver = new UpdateReceiver();
             List<PartialBotApiMethod<? extends Serializable>> messagesToSend = updateReceiver.handle(update);
 
@@ -71,15 +69,14 @@ public class Bot extends TelegramLongPollingBot {
             if (messagesToSend != null && !messagesToSend.isEmpty()) {
                 messagesToSend.forEach(response -> {
                     if (response instanceof SendMessage) {
-                        //    log.info("Message: {}", ((SendMessage) response).getText());
                         vbdk((SendMessage) response, null);
+                        log.info("Текущий статус пользователя ?:   {}", userData.getState());
                     }
                 });
             }
 
 
             //      vbdk(createMessageTemplate(inMessage.getChatId().toString()), inlineKeyboardMarkup);
-
 
            /* InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
             List<InlineKeyboardButton> inlineKeyboardButtonsRowOne = Collections.singletonList(createInlineKeyboardButton("Start quiz", "Add"));
@@ -89,7 +86,7 @@ public class Bot extends TelegramLongPollingBot {
 
         } catch (UnsupportedOperationException uoe) {
             log.error("Вызвана операция, которая не предусмотрена для бота: {}", uoe.getMessage());
-            Long chatId = null;
+            Long chatId;
             if (inMessage == null || inMessage.getChat().getId() == null) {
                 chatId = update.getCallbackQuery().getMessage().getChatId();
             } else {

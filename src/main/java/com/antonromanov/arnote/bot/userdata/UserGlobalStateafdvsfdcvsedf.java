@@ -17,9 +17,11 @@ public enum UserGlobalStateafdvsfdcvsedf {
             BotReply.builder().text("Фин.Планы").command("/fin_planning_domain_select").build()),
             "С какой сущностью будем работать?"),
     WISH_DOMAIN("/wishes_domain_select", "Работа с желаниями", 2, 3,
-            Arrays.asList(BotReply.builder().text("Сосать хуй").command("/x").build(),
-                    BotReply.builder().text("Лизать пезду").command("/p").build()),
-            "Куни или минет?"),
+            Arrays.asList(BotReply.builder().text("Список желаний").command("/wishlist").build(),
+                    BotReply.builder().text("Добавить желание").command("/addwish").build(),
+                    BotReply.builder().text("Редактировать желание").command("/editwish").build()),
+            "Работа с желаниями"),
+    WISH_LIST("/wishlist", "Список желаний", 3, 4, null, "Список желаний"),
     STOP("/stop", "Окончание сессии", 0, 3, null, null);
 
     private final String command;

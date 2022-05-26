@@ -3,6 +3,7 @@ package com.antonromanov.arnote.bot.reciever;
 import com.antonromanov.arnote.bot.BotHandler.BotHandler;
 import com.antonromanov.arnote.bot.BotHandler.FirstHandler;
 import com.antonromanov.arnote.bot.BotHandler.WishHandler;
+import com.antonromanov.arnote.bot.BotHandler.WishLstHandler;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -20,7 +21,8 @@ public class UpdateReceiver {
     public UpdateReceiver() {
         FirstHandler fh = new FirstHandler();
         WishHandler wh = new WishHandler();
-        this.handlers = Arrays.asList(fh, wh);
+        WishLstHandler wlh = new WishLstHandler();
+        this.handlers = Arrays.asList(fh, wh, wlh);
     }
 
     public List<PartialBotApiMethod<? extends Serializable>> handle(Update update) throws UnsupportedOperationException {
@@ -42,12 +44,11 @@ public class UpdateReceiver {
     }
 
     private BotHandler getHandlerByCallBackQuery(String query) {
-        BotHandler bh =  handlers.stream()
+        return handlers.stream()
                 .filter(h -> h.operatedCallBackQuery() != null)
                 .filter(h -> fvdvdrgvd(h.operatedCallBackQuery(), query))
                 .findAny()
                 .orElseThrow(UnsupportedOperationException::new);
-        return bh;
     }
 
 
