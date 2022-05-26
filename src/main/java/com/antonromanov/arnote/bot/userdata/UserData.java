@@ -6,6 +6,18 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserData {
-    private String state;
+
+public final class UserData {
+    private static UserData INSTANCE;
+    private UserGlobalStateafdvsfdcvsedf state;
+
+    private UserData() {
+    }
+
+    public static UserData getInstance() {
+        if(INSTANCE == null) {
+            INSTANCE = new UserData();
+        }
+        return INSTANCE;
+    }
 }
