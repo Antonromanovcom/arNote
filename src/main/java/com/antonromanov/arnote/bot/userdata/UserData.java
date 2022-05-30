@@ -1,23 +1,45 @@
 package com.antonromanov.arnote.bot.userdata;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.antonromanov.arnote.model.wish.Wish;
+import lombok.Getter;
+import lombok.Setter;
+import java.util.Date;
 
-
-@Data
-@AllArgsConstructor
 
 public final class UserData {
     private static UserData INSTANCE;
+
+    @Getter
+    @Setter
     private UserGlobalStateafdvsfdcvsedf state;
 
-    private UserData() {
-    }
+    @Getter
+    @Setter
+    private DisplayType displayType;
+
+    private Wish newWish;
+
+    private UserData() {}
 
     public static UserData getInstance() {
         if(INSTANCE == null) {
             INSTANCE = new UserData();
         }
         return INSTANCE;
+    }
+
+    public  Wish getWish() {
+        if(newWish == null) {
+            newWish = new Wish();
+            newWish.setAc(false);
+            newWish.setRealized(false);
+            newWish.setCreationDate(new Date());
+            newWish.setDescription("Создано с помощью Телеграмм-Бота");
+        }
+        return newWish;
+    }
+
+    public void clear() {
+        newWish = null;
     }
 }

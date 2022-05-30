@@ -1,7 +1,10 @@
 package com.antonromanov.arnote.bot.BotHandler;
 
+import com.antonromanov.arnote.bot.userdata.DisplayType;
 import com.antonromanov.arnote.bot.userdata.UserData;
 import com.antonromanov.arnote.bot.userdata.UserGlobalStateafdvsfdcvsedf;
+import com.antonromanov.arnote.model.ArNoteUser;
+import com.antonromanov.arnote.services.MainService;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -19,18 +22,8 @@ public class FirstHandler implements BotHandler {
     private final UserGlobalStateafdvsfdcvsedf CALLBACK_STATE = UserGlobalStateafdvsfdcvsedf.DOMAIN_SELECT;
 
     @Override
-    public List<PartialBotApiMethod<? extends Serializable>> handleMessage(Update update) {
+    public List<PartialBotApiMethod<? extends Serializable>> handleMessage(Update update, MainService dataService, ArNoteUser user) {
 
-       /* SendMessage welcomeMessage = createMessageTemplate(update.getMessage().getChatId().toString());
-        welcomeMessage.setText("Hola\\. I am  here to help you learn Java");
-
-
-        SendMessage registrationMessage = createMessageTemplate(update.getMessage().getChatId().toString());
-        registrationMessage.setText("In order to start our journey tell me your name");*/
-
-      //  createInlineKeyboardButton()
-
-        // Создаем кнопку для начала игры
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(Arrays.asList(createInlineKeyboardButtonFromEnum(MESSAGE_HANDLER_STATE)));
         SendMessage messageToSend = createMessageTemplate(update.getMessage().getChatId().toString());
@@ -41,10 +34,16 @@ public class FirstHandler implements BotHandler {
     }
 
     @Override
-    public List<PartialBotApiMethod<? extends Serializable>> handleCallback(Update update) {
+    public List<PartialBotApiMethod<? extends Serializable>> handleCallback(Update update, MainService dataService, ArNoteUser user) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         UserData userData = UserData.getInstance();
         userData.setState(CALLBACK_STATE);
+
+        if (UserGlobalStateafdvsfdcvsedf.START.getReply().get(0).getCommand().equals(update.getCallbackQuery().getData())){
+            userData.setDisplayType(DisplayType.MOBILE);
+        } else{
+            userData.setDisplayType(DisplayType.DESKTOP);
+        }
 
         inlineKeyboardMarkup.setKeyboard(Collections.singletonList(createInlineKeyboardButtonFromEnum(CALLBACK_STATE)));
         SendMessage messageToSend = createMessageTemplate(update.getCallbackQuery().getMessage().getChatId().toString());

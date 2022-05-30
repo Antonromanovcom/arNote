@@ -1,9 +1,9 @@
 package com.antonromanov.arnote.bot.reciever;
 
-import com.antonromanov.arnote.bot.BotHandler.BotHandler;
-import com.antonromanov.arnote.bot.BotHandler.FirstHandler;
-import com.antonromanov.arnote.bot.BotHandler.WishHandler;
-import com.antonromanov.arnote.bot.BotHandler.WishLstHandler;
+import com.antonromanov.arnote.bot.BotHandler.*;
+import com.antonromanov.arnote.bot.userdata.UserData;
+import com.antonromanov.arnote.model.ArNoteUser;
+import com.antonromanov.arnote.services.MainService;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -11,30 +11,35 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
 import static com.antonromanov.arnote.bot.Bot.fvdvdrgvd;
 
 
 public class UpdateReceiver {
 
     private final List<BotHandler> handlers;
+    UserData userData;
 
     public UpdateReceiver() {
         FirstHandler fh = new FirstHandler();
         WishHandler wh = new WishHandler();
         WishLstHandler wlh = new WishLstHandler();
-        this.handlers = Arrays.asList(fh, wh, wlh);
+        AddWishHandler awh = new AddWishHandler();
+         userData = UserData.getInstance();
+        this.handlers = Arrays.asList(fh, wh, wlh, awh);
     }
 
-    public List<PartialBotApiMethod<? extends Serializable>> handle(Update update) throws UnsupportedOperationException {
+    public List<PartialBotApiMethod<? extends Serializable>> handle(Update update, MainService dataService, ArNoteUser user)
+            throws UnsupportedOperationException { //todo: это не дело что мы сквозь все сервисы прокидываем MainService и ArNoteUser. Подумать как это разрешить?
 
         if (isMessageWithText(update)) {
             final Message message = update.getMessage();
-            return getHandlerByState(message.getText()).handleMessage(update);
-
+            return getHandlerByState(message.getText()).handleMessage(update, dataService, user);
         } else if (update.hasCallbackQuery()) {
             final CallbackQuery callbackQuery = update.getCallbackQuery();
             BotHandler bh = getHandlerByCallBackQuery(callbackQuery.getData());
-            return bh.handleCallback(update);
+            return bh.handleCallback(update, dataService, user);
         }
         throw new UnsupportedOperationException();
     }
@@ -53,11 +58,24 @@ public class UpdateReceiver {
 
 
     private BotHandler getHandlerByState(String messageText) {
-        return handlers.stream()
+
+        Optional<BotHandler> handler =  handlers.stream()
                 .filter(h -> h.operatedBotState() != null)
-                .filter(h -> h.operatedBotState().stream().anyMatch(f -> f.getCommand().startsWith(messageText)))
-                .findAny()
-                .orElseThrow(UnsupportedOperationException::new);
+                .filter(h -> h.operatedBotState().stream().anyMatch(r -> r.getCommand().stream().anyMatch(w -> w.startsWith(messageText))))
+                .findAny();
+
+        return handler.orElseGet(this::processTextMessages); // todo: нужно вынести поиск по введенному тексту в зависимости от статуса в отдельный хендлер
+    }
+
+    private BotHandler processTextMessages() {
+       if ( userData.getState()!=null) {
+           return handlers.stream()
+                   .filter(h -> h.operatedBotState().stream().anyMatch(r -> r == userData.getState()))
+                   .findAny()
+                   .orElseThrow(UnsupportedOperationException::new);
+       } else {
+           throw new UnsupportedOperationException();
+       }
     }
 }
 

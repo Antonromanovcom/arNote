@@ -12,7 +12,7 @@ public enum SubDomain {
 
     private final String command;
     private final String description;
-    private final List<Command> commands;
+    private final List<DisplayType> displayTypes;
 
    /* public static CalendarType handle(String id){
         return Arrays.stream(CalendarType.values())

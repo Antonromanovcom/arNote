@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.bot;
 
-import com.antonromanov.arnote.bot.prettytable.PrettyTablePrinter;
 import com.antonromanov.arnote.bot.reciever.UpdateReceiver;
 import com.antonromanov.arnote.bot.userdata.UserData;
 import com.antonromanov.arnote.bot.userdata.UserGlobalStateafdvsfdcvsedf;
@@ -32,39 +31,22 @@ public class Bot extends TelegramLongPollingBot {
     private final MainService dataService;
     private final UsersRepo usersRepo;
     private final Environment env;
-    //private final UpdateReceiver updateReciever;
 
     @Override
     public void onUpdateReceived(Update update) {
-        PrettyTablePrinter printerService = new PrettyTablePrinter();
+
         Message inMessage = getMessage(update);
         try {
             String arUser = env.getProperty("ar.user");
-          //  log.info("Логин пользователя из environment: {}", arUser);
             ArNoteUser user = usersRepo.findByLogin(arUser).orElseThrow(UserNotFoundException::new);
-          //  log.info("Удалось достать пользака. Id =  {}, Name =  {}", user.getId(), user.getFullname());
             List<Wish> wishes = dataService.getAllWishesWithPriority1(user);
           //  log.info("Кол-во приоритетных желаний:   {}", wishes.size());
             log.info("hasCallbackQuery ?:   {}", update.hasCallbackQuery());
             log.info("=====================================================");
 
-            if (update.hasCallbackQuery()) {
-                //   log.info("update.getCallbackQuery().getMessage() ?:   {}", update.getCallbackQuery().getMessage());
-                log.info("update.getCallbackQuery().getData() ?:   {}", update.getCallbackQuery().getData());
-            }
-
-            log.info("hasMessage ?:   {}", update.hasMessage());
-
-            if (update.hasMessage()) {
-                log.info("getMessage().hasText() ?:   {}", update.getMessage().hasText());
-             //   log.info(".getMessage().getFrom().getUserName() ?:   {}", update.getMessage().getFrom().getUserName());
-            }
-
             UserData userData = UserData.getInstance();
             UpdateReceiver updateReceiver = new UpdateReceiver();
-            List<PartialBotApiMethod<? extends Serializable>> messagesToSend = updateReceiver.handle(update);
-
-            //    log.info("Messages size: {}", messagesToSend.size());
+            List<PartialBotApiMethod<? extends Serializable>> messagesToSend = updateReceiver.handle(update, dataService, user);
 
             if (messagesToSend != null && !messagesToSend.isEmpty()) {
                 messagesToSend.forEach(response -> {
@@ -74,14 +56,6 @@ public class Bot extends TelegramLongPollingBot {
                     }
                 });
             }
-
-
-            //      vbdk(createMessageTemplate(inMessage.getChatId().toString()), inlineKeyboardMarkup);
-
-           /* InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-            List<InlineKeyboardButton> inlineKeyboardButtonsRowOne = Collections.singletonList(createInlineKeyboardButton("Start quiz", "Add"));
-            inlineKeyboardMarkup.setKeyboard(Collections.singletonList(inlineKeyboardButtonsRowOne));
-            vbdk(createMessageTemplate(inMessage.getChatId().toString()), inlineKeyboardMarkup);*/
 
 
         } catch (UnsupportedOperationException uoe) {
@@ -111,9 +85,9 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public static Boolean fvdvdrgvd(List<UserGlobalStateafdvsfdcvsedf> statesList, String query) {
-      //  return statesList.stream().anyMatch(r -> r.getReply().stream().anyMatch(e -> e.getCommand().startsWith(query)));
-        return statesList.stream().anyMatch(r -> r.getCommand().startsWith(query));
+        return statesList.stream().anyMatch(r -> r.getCommand().stream().anyMatch(w->w.startsWith(query)));
     }
+
 
     public static List<InlineKeyboardButton> createInlineKeyboardButtonFromEnum(UserGlobalStateafdvsfdcvsedf state) {
         return state.getReply().stream()
@@ -132,8 +106,6 @@ public class Bot extends TelegramLongPollingBot {
     private void vbdk(SendMessage msg, InlineKeyboardMarkup inlineKeyboardMarkup) {
 
         try {
-            //  msg.setReplyMarkup(inlineKeyboardMarkup);
-            //  msg.setText("11");
             execute(msg);
         } catch (TelegramApiException e) {
             log.error("Ошибка отправки сообщения пользователю: {}", e.getMessage());
@@ -143,7 +115,6 @@ public class Bot extends TelegramLongPollingBot {
 
 
     private void fireMessage(Long chanelId, String msg) {
-
         try {
             SendMessage outMessage = new SendMessage();
             outMessage.enableMarkdownV2(true);
@@ -155,7 +126,6 @@ public class Bot extends TelegramLongPollingBot {
         }
 
     }
-
 
     @Override
     public String getBotUsername() {

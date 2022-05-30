@@ -2,6 +2,8 @@ package com.antonromanov.arnote.bot.BotHandler;
 
 import com.antonromanov.arnote.bot.userdata.UserData;
 import com.antonromanov.arnote.bot.userdata.UserGlobalStateafdvsfdcvsedf;
+import com.antonromanov.arnote.model.ArNoteUser;
+import com.antonromanov.arnote.services.MainService;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -19,12 +21,12 @@ public class WishHandler implements BotHandler {
     private final UserGlobalStateafdvsfdcvsedf CALLBACK_STATE = UserGlobalStateafdvsfdcvsedf.WISH_DOMAIN;
 
     @Override
-    public List<PartialBotApiMethod<? extends Serializable>> handleMessage(Update update) {
+    public List<PartialBotApiMethod<? extends Serializable>> handleMessage(Update update, MainService dataService, ArNoteUser user) {
         return Collections.emptyList();
     }
 
     @Override
-    public List<PartialBotApiMethod<? extends Serializable>> handleCallback(Update update) {
+    public List<PartialBotApiMethod<? extends Serializable>> handleCallback(Update update, MainService dataService, ArNoteUser user) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         UserData userData = UserData.getInstance();
         userData.setState(CALLBACK_STATE);

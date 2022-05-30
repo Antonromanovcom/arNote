@@ -181,6 +181,11 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
+    public Wish saveWish(Wish wish) {
+        return wishRepository.saveAndFlush(wish);
+    }
+
+    @Override
     public void updateWish(Wish wish) {
         wishRepository.save(wish);
     }

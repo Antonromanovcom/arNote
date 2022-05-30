@@ -60,5 +60,6 @@ public interface MainService {
 	Optional<List<Wish>> getAllRealizedWishes(ArNoteUser user);
 
 	Wish updateMonthGroup(Wish wish) throws BadIncomeParameter;
+	Wish saveWish(Wish wish);
 
 }
