@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +27,9 @@ public class UpdateReceiver {
         WishHandler wh = new WishHandler();
         WishLstHandler wlh = new WishLstHandler();
         AddWishHandler awh = new AddWishHandler();
-         userData = UserData.getInstance();
-        this.handlers = Arrays.asList(fh, wh, wlh, awh);
+        EditWishHandler ewh = new EditWishHandler();
+        userData = UserData.getInstance();
+        this.handlers = Arrays.asList(fh, wh, wlh, awh, ewh);
     }
 
     public List<PartialBotApiMethod<? extends Serializable>> handle(Update update, MainService dataService, ArNoteUser user)
@@ -59,7 +61,7 @@ public class UpdateReceiver {
 
     private BotHandler getHandlerByState(String messageText) {
 
-        Optional<BotHandler> handler =  handlers.stream()
+        Optional<BotHandler> handler = handlers.stream()
                 .filter(h -> h.operatedBotState() != null)
                 .filter(h -> h.operatedBotState().stream().anyMatch(r -> r.getCommand().stream().anyMatch(w -> w.startsWith(messageText))))
                 .findAny();
@@ -68,14 +70,14 @@ public class UpdateReceiver {
     }
 
     private BotHandler processTextMessages() {
-       if ( userData.getState()!=null) {
-           return handlers.stream()
-                   .filter(h -> h.operatedBotState().stream().anyMatch(r -> r == userData.getState()))
-                   .findAny()
-                   .orElseThrow(UnsupportedOperationException::new);
-       } else {
-           throw new UnsupportedOperationException();
-       }
+        if (userData.getState() != null) {
+            return handlers.stream()
+                    .filter(h -> h.operatedBotState().stream().anyMatch(r -> r == userData.getState()))
+                    .findAny()
+                    .orElseThrow(UnsupportedOperationException::new);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 }
 

@@ -19,6 +19,10 @@ public final class UserData {
 
     private Wish newWish;
 
+    @Setter
+    @Getter
+    private Wish wishToEdit;
+
     private UserData() {}
 
     public static UserData getInstance() {

@@ -27,8 +27,19 @@ public enum UserGlobalStateafdvsfdcvsedf {
     WISH_ADD(Collections.singletonList("/addwish"), "Добавить желание", 3, 5,
             null,
             "Введите желание"),
+    WISH_EDIT(Collections.singletonList("/editwish"), "Редактировать желание", 3, 5,
+            null,
+            "Введите id желания"),
     WISH_ADD_PRICE(Collections.singletonList("/addwishprice"), "Добавить желание", 3, 6, null,
             "Цена желания"),
+    WISH_EDIT_PRICE(Collections.singletonList("/editwishprice"), "Редактировать желание", 3, 6, null,
+            "Цена желания"),
+    WISH_EDIT_PRIOR(Collections.singletonList("/editwishprior"), "Редактировать приоритет желания", 3, 6, null,
+            "Редактировать приоритет желания"),
+    WISH_EDIT_DELETE(Collections.singletonList("/editwishdelete"), "Редактировать желание", 3, 6, null,
+            "Удалить? [Y/N]"),
+    WISH_EDIT_DONE(Collections.singletonList("/editwishsetdone"), "Редактировать желание", 3, 6, null,
+            "Реализовано? [Y/N]"),
     WISH_ADD_URL(Collections.singletonList("/addwishurl"), "Добавить желание", 3, 7, null,
             "URL"),
     WISH_ADD_DESC(Collections.singletonList("/addwishdesc"), "Добавить желание", 3, 8, null,
@@ -40,7 +51,7 @@ public enum UserGlobalStateafdvsfdcvsedf {
 
     private final List<String> command;
     private final String description;
-    private final int parentCode;
+    private final int parentCode; // todo: удалить эти коды надо, только путают
     private final int code;
     private final List<BotReply> reply;
     private final String replyMessageText;
