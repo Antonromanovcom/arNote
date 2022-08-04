@@ -32,7 +32,7 @@ public interface MainService {
 
 	Wish addWish(Wish parseJsonToWish);
 
-	Optional<Wish> getWishById(int id);
+	Optional<Wish> getWishById(int id); //todo: почему int ?????
 
 	Integer getSumm4All(ArNoteUser user); // todo: переименовать
 
