@@ -21,6 +21,4 @@ public enum CalendarType {
                 .findFirst()
                 .orElse(null);
     }
-
-
 }

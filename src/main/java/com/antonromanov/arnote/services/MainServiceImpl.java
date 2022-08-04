@@ -39,6 +39,11 @@ public class MainServiceImpl implements MainService {
         return wishRepository.getAllWithPriority1(user);
     }
 
+    @Override
+    public List<Wish> getAl() {
+        return wishRepository.getAll();
+    }
+
     /**
      * Берем максимальный priorityGroup, добавляем +1 и возвращаем.
      *
@@ -173,6 +178,11 @@ public class MainServiceImpl implements MainService {
         Wish searchedWish = wishRepository.findById(wish.getId()).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
         wish.setPriorityGroup(searchedWish.getPriorityGroup());
         return wish;
+    }
+
+    @Override
+    public Wish saveWish(Wish wish) {
+        return wishRepository.saveAndFlush(wish);
     }
 
     @Override

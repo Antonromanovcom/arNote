@@ -39,7 +39,7 @@ public class Wish {
     @Column(name = "url", nullable = true, length = 1024)
     private String url;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private ArNoteUser user;
 
     @Column
