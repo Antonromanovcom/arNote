@@ -1,11 +1,11 @@
 package com.antonromanov.arnote;
 
-import com.antonromanov.arnote.model.investing.cache.enums.CacheDictType;
-import com.antonromanov.arnote.repositoty.BondsRepo;
-import com.antonromanov.arnote.repositoty.UsersRepo;
-import com.antonromanov.arnote.services.investment.cache.CacheService;
-import com.antonromanov.arnote.services.investment.calc.shares.SharesCalcService;
-import com.antonromanov.arnote.services.investment.requestservice.RequestService;
+import com.antonromanov.arnote.domain.investing.dto.cache.enums.CacheDictType;
+import com.antonromanov.arnote.domain.wish.repositoty.BondsRepo;
+import com.antonromanov.arnote.domain.wish.repositoty.UsersRepo;
+import com.antonromanov.arnote.domain.investing.service.cache.CacheService;
+import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
+import com.antonromanov.arnote.domain.investing.service.requestservice.RequestService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

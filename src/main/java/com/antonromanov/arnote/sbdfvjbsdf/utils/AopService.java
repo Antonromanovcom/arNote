@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.utils;
 
-import com.antonromanov.arnote.model.LocalUser;
-import com.antonromanov.arnote.repositoty.UsersRepo;
+import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
+import com.antonromanov.arnote.domain.user.repository.UsersRepo;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -18,7 +18,7 @@ public class AopService {
 	@Autowired
 	UsersRepo usersRepo;
 
-	@Before("execution(* com.antonromanov.arnote.controller.MainRestController.*(..)) && args(principal,..)")
+	@Before("execution(* com.antonromanov.arnote.domain.wish.api.MainRestController.*(..)) && args(principal,..)")
 	public void beforeAdvice(JoinPoint joinPoint, Principal principal) {
 
 		if (principal != null) {
