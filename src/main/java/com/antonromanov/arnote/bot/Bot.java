@@ -39,9 +39,6 @@ public class Bot extends TelegramLongPollingBot {
         try {
             String arUser = env.getProperty("ar.user");
             ArNoteUser user = usersRepo.findByLogin(arUser).orElseThrow(UserNotFoundException::new);
-            List<Wish> wishes = dataService.getAllWishesWithPriority1(user);
-          //  log.info("Кол-во приоритетных желаний:   {}", wishes.size());
-          //  log.info("hasCallbackQuery ?:   {}", update.hasCallbackQuery());
             log.info("=====================================================");
 
             UserData userData = UserData.getInstance();
