@@ -1,6 +1,5 @@
-package com.antonromanov.arnote.dto.response.monthgroupping;
+package com.antonromanov.arnote.sbdfvjbsdf.dto.response.monthgroupping;
 
-import com.antonromanov.arnote.dto.response.monthgroupping.GroupOfWishesForOneMonth;
 import lombok.Builder;
 import lombok.Data;
 import java.util.List;

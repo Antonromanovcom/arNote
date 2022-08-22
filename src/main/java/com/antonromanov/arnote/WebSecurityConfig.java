@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.sbdfvjbsdf;
+package com.antonromanov.arnote;
 
 import com.antonromanov.arnote.security.JWTAuthenticationFilter;
 import com.antonromanov.arnote.security.JWTLoginFilter;

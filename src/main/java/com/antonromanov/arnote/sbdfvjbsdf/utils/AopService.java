@@ -1,7 +1,7 @@
-package com.antonromanov.arnote.utils;
+package com.antonromanov.arnote.sbdfvjbsdf.utils;
 
-import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
-import com.antonromanov.arnote.domain.user.repository.UsersRepo;
+import com.antonromanov.arnote.model.LocalUser;
+import com.antonromanov.arnote.repositoty.UsersRepo;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import static com.antonromanov.arnote.utils.ArNoteUtils.defineUserActionByMethodSignature;
+import static com.antonromanov.arnote.sbdfvjbsdf.utils.ArNoteUtils.defineUserActionByMethodSignature;
 
 @Aspect
 @Component
@@ -18,7 +18,7 @@ public class AopService {
 	@Autowired
 	UsersRepo usersRepo;
 
-	@Before("execution(* com.antonromanov.arnote.domain.wish.api.MainRestController.*(..)) && args(principal,..)")
+	@Before("execution(* com.antonromanov.arnote.sbdfvjbsdf.controller.MainRestController.*(..)) && args(principal,..)")
 	public void beforeAdvice(JoinPoint joinPoint, Principal principal) {
 
 		if (principal != null) {

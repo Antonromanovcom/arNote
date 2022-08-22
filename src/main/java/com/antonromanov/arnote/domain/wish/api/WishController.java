@@ -1,8 +1,7 @@
 package com.antonromanov.arnote.domain.wish.api;
 
 import com.antonromanov.arnote.domain.wish.dto.*;
-import com.antonromanov.arnote.domain.email.EmailSender;
-import com.antonromanov.arnote.domain.email.EmailStatus;
+import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.exceptions.enums.ErrorCodes;
@@ -19,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -28,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -50,9 +47,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RestController
 @RequestMapping("/rest/wishes") //todo: поменять все урлы на нормальные
 @Slf4j
-public class MainRestController extends ControllerBase {
+public class WishController {
 
-    @Data
+    // todo: убрать на хер эти ДТО-хи
+    /*@Data
     private static class DTO {
         private List<Wish> list = new ArrayList<>();
     }
@@ -60,19 +58,12 @@ public class MainRestController extends ControllerBase {
     @Data
     private static class DtoWithOrder {
         private List<WishDTOList> list = new ArrayList<>();
-    }
+    }*/
 
-    @Autowired
-    MainService mainService; //todo: переехать на связывание через конструктор
+    private final MainService mainService;
+    private final Utils utils;
 
-    @Autowired
-    BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    UsersRepo usersRepo;
-
-    @Autowired
-    private EmailSender emailSender;
 
 
     /**
@@ -83,13 +74,14 @@ public class MainRestController extends ControllerBase {
      */
     @CrossOrigin(origins = "*")
     @PostMapping("/filter")
-    public DTO findAll(Principal principal, @RequestBody SearchRq request) throws UserNotFoundException {
-        log.info("============== FILTER/SEARCH WISHES ============== ");
+    public WishListRs findAll(Principal principal, @RequestBody SearchRq request) throws UserNotFoundException {
+        log.info("============== FILTER/SEARCH WISHES ============== "); // todo: в перехватчик и логгер-фильтр
         log.info("SEARCH KEYWORD: " + request.getWishName());
-        List<Wish> wishes = mainService.findAllWishesByWishName(request, getUserFromPrincipal(principal));
-        DTO dto = new DTO(); //todo: добавить билдеры
-        dto.list.addAll(wishes);
-        return dto;
+        return WishListRs.builder()
+                .list(mainService
+                        .findAllWishesByWish(wish, utils.getUserFromPrincipal(principal))
+                        .orElseGet(ArrayList::new))
+                .build();
     }
 
     /**

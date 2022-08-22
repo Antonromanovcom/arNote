@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.dto.rq;
+package com.antonromanov.arnote.sbdfvjbsdf.dto.rq;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

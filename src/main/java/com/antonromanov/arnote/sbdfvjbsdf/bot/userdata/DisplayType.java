@@ -1,9 +1,7 @@
-package com.antonromanov.arnote.bot.userdata;
+package com.antonromanov.arnote.sbdfvjbsdf.bot.userdata;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.List;
 
 @AllArgsConstructor
 @Getter

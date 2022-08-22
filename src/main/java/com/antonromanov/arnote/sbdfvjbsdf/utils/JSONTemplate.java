@@ -1,7 +1,6 @@
-package com.antonromanov.arnote.utils;
+package com.antonromanov.arnote.sbdfvjbsdf.utils;
 
 import java.util.Arrays;
-import java.util.List;
 
 import com.google.gson.*;
 

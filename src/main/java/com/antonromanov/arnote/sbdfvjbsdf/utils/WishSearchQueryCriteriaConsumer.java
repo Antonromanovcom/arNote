@@ -1,6 +1,6 @@
-package com.antonromanov.arnote.utils;
+package com.antonromanov.arnote.sbdfvjbsdf.utils;
 
-import com.antonromanov.arnote.domain.wish.dto.SearchCriteria;
+import com.antonromanov.arnote.model.wish.SearchCriteria;
 import lombok.Getter;
 import javax.persistence.criteria.*;
 import java.util.function.Consumer;

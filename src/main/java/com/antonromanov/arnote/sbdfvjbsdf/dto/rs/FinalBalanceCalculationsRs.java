@@ -1,6 +1,5 @@
-package com.antonromanov.arnote.dto.rs;
+package com.antonromanov.arnote.sbdfvjbsdf.dto.rs;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

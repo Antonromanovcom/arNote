@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.utils;
+package com.antonromanov.arnote.sbdfvjbsdf.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

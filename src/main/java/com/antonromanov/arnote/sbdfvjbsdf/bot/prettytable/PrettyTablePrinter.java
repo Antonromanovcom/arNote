@@ -1,6 +1,6 @@
-package com.antonromanov.arnote.bot.prettytable;
+package com.antonromanov.arnote.sbdfvjbsdf.bot.prettytable;
 
-import com.antonromanov.arnote.bot.userdata.UserData;
+import com.antonromanov.arnote.sbdfvjbsdf.bot.userdata.UserData;
 import com.antonromanov.arnote.model.wish.Wish;
 import org.apache.commons.lang3.StringUtils;
 import org.sk.PrettyTable;

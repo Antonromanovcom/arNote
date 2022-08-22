@@ -1,7 +1,7 @@
-package com.antonromanov.arnote.bot.reciever;
+package com.antonromanov.arnote.sbdfvjbsdf.bot.reciever;
 
-import com.antonromanov.arnote.bot.BotHandler.*;
-import com.antonromanov.arnote.bot.userdata.UserData;
+import com.antonromanov.arnote.sbdfvjbsdf.bot.BotHandler.*;
+import com.antonromanov.arnote.sbdfvjbsdf.bot.userdata.UserData;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.services.MainService;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import static com.antonromanov.arnote.bot.Bot.fvdvdrgvd;
+import static com.antonromanov.arnote.sbdfvjbsdf.bot.Bot.fvdvdrgvd;
 
 
 public class UpdateReceiver {

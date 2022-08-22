@@ -1,11 +1,10 @@
-package com.antonromanov.arnote.bot;
+package com.antonromanov.arnote.sbdfvjbsdf.bot;
 
-import com.antonromanov.arnote.bot.reciever.UpdateReceiver;
-import com.antonromanov.arnote.bot.userdata.UserData;
-import com.antonromanov.arnote.bot.userdata.UserGlobalStateafdvsfdcvsedf;
+import com.antonromanov.arnote.sbdfvjbsdf.bot.reciever.UpdateReceiver;
+import com.antonromanov.arnote.sbdfvjbsdf.bot.userdata.UserData;
+import com.antonromanov.arnote.sbdfvjbsdf.bot.userdata.UserGlobalStateafdvsfdcvsedf;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.model.ArNoteUser;
-import com.antonromanov.arnote.model.wish.Wish;
 import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.services.MainService;
 import lombok.AllArgsConstructor;

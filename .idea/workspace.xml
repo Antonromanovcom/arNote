@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fabba517-c714-487d-a718-36b4792538ff" name="Changes" comment="Все слил и начал рефакторинг">
+      <change afterPath="$PROJECT_DIR$/dump/script.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/Application.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/common/CommonMoexDoc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/calc/CommonService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/rs/WishListRs.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/repositoty/SalaryRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/InvestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/InvestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/MainRestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/MainRestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/MonthPriorityController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/SalaryController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/StatisticController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/UploadController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/UserController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/WebController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/WebController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/controller/WishController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/dto/request/MoveWishDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/dto/request/NewSalaryRq.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/dto/request/UserDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/email/EmailSender.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/email/EmailStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/entity/LocalUser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/entity/Salary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/Salary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/entity/Wish.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/entity/WishGroup.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/entity/common/CalendarEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/entity/common/Salary.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/entity/finplan/Credit.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/entity/finplan/Freeze.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/entity/finplan/Goal.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/entity/finplan/Income.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/enums/ArnoteOperation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/enums/FilterMode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/enums/ListOfAllType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/enums/ServiceProfile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/enums/SortMode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/enums/StepType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/AddNewCreditException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/BadIncomeParameter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/BadTickerException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/FinPlanningException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/JsonNullException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/JsonParseException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/MoexRequestException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/MoexXmlResponseMappingException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/MoexXmlResponseMarshalingException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/NoDataYetException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/NoTradesForUserDateException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/SaveNewWishException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/UserNotFoundException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/exceptions/enums/ErrorCodes.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/ArNoteUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/user/dto/ArNoteUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/ResponseParseResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/ResponseParseResult.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/ResponseStatusDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/ResponseStatusDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/SortMode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/common/Calendar.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/common/DayOfRest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/common/Holiday.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/common/enums/CalendarType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/common/enums/WorkCalendarSources.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/Bond.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/common/Bond.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/BondType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/common/BondType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/CalendarRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/common/CalendarRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/InvestingFilterMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/common/InvestingFilterMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/InvestingSortMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/common/InvestingSortMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/Purchase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/common/Purchase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/cache/CachedStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/cache/CachedStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/cache/CurrentQuoteCached.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/cache/CurrentQuoteCached.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/cache/enums/CacheDictType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/cache/enums/CacheDictType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/external/requests/ForeignRequests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/external/requests/ForeignRequests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/external/requests/ForeignRequestsApiType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/external/requests/ForeignRequestsApiType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/external/requests/ForeignUrlRequestParams.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/external/requests/ForeignUrlRequestParams.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/external/requests/MoexRestTemplateOperation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/external/requests/MoexRestTemplateOperation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/external/requests/Schemas.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/external/requests/Schemas.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/external/requests/UrlRequestParams.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/external/requests/UrlRequestParams.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/external/requests/UrlRequestParamsAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/external/requests/UrlRequestParamsAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/request/AddInstrumentRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/request/AddInstrumentRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/request/DeltaToggleRq.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/BondRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/BondRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/ConsolidatedDividendsRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/ConsolidatedDividendsRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/ConsolidatedInvestmentDataRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/ConsolidatedInvestmentDataRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/ConsolidatedReturnsRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/ConsolidatedReturnsRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/CurrentPriceRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/CurrentPriceRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/CurrentPriceWithStatusRs.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/DeltaRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/DeltaRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/DividendRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/DividendRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/DivsDebug.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/DivsDebug.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/DivsDetailsRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/DivsDetailsRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/FoundInstrumentRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/FoundInstrumentRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/MonthDetailRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/MonthDetailRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/ReturnsPerMonthRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/ReturnsPerMonthRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/SearchResultsRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/SearchResultsRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/enums/Currencies.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/enums/Currencies.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/enums/Months.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/enums/Months.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/enums/StockExchange.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/enums/StockExchange.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/enums/Targets.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/enums/Targets.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/enums/TinkoffDeltaFinalValuesType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/enums/TinkoffDeltaFinalValuesType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/foreignstocks/AlphavantageSearchListRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/foreignstocks/AlphavantageSearchListRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/foreignstocks/AlphavantageSearchRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/foreignstocks/AlphavantageSearchRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/foreignstocks/alphaadvantage/CompanyOverviewRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/foreignstocks/alphaadvantage/CompanyOverviewRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/foreignstocks/yahoo/YahooDivRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/foreignstocks/yahoo/YahooDivRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/foreignstocks/yahoo/YahooQuotePriceInfoRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/foreignstocks/yahoo/YahooQuotePriceInfoRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/foreignstocks/yahoo/YahooQuoteSummeryElementRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/foreignstocks/yahoo/YahooQuoteSummeryElementRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/foreignstocks/yahoo/YahooQuoteSummeryRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/foreignstocks/yahoo/YahooQuoteSummeryRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/foreignstocks/yahoo/YahooRealTimeQuoteRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/foreignstocks/yahoo/YahooRealTimeQuoteRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/foreignstocks/yahoo/YahooRegularMarketPriceRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/foreignstocks/yahoo/YahooRegularMarketPriceRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/serializers/DoubleSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/serializers/DoubleSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/serializers/IssMetaSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/serializers/IssMetaSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/UrlQueryParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/UrlQueryParameters.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/boardid/BooleanAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/boardid/BooleanAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/boardid/MoexDataForBoardIdRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/boardid/MoexDataForBoardIdRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/boardid/MoexDocumentForBoardIdRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/boardid/MoexDocumentForBoardIdRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/boardid/MoexRowsForBoardIdRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/boardid/MoexRowsForBoardIdRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/common/CommonMoexDoc.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/currentquote/MoexDataRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/currentquote/MoexDataRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/currentquote/MoexDocumentRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/currentquote/MoexDocumentRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/currentquote/MoexRowsRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/currentquote/MoexRowsRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/currentquote/MoexStockCurrentPriceRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/currentquote/MoexStockCurrentPriceRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/enums/BoardsColumns.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/enums/BoardsColumns.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/enums/DataBlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/enums/DataBlock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/enums/MarketData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/enums/MarketData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/enums/SecuritiesColumns.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/enums/SecuritiesColumns.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/instrumentinfo/MoexDetailInfoRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/instrumentinfo/MoexDetailInfoRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/instrumentinfo/MoexInstrumentDetailDataRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/instrumentinfo/MoexInstrumentDetailDataRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/investing/response/xmlpart/instrumentinfo/MoexInstrumentDetailRowsRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/dto/response/xmlpart/instrumentinfo/MoexInstrumentDetailRowsRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/Salary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/Salary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/SearchCriteria.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/SearchCriteria.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/SearchRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/SearchRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/SortMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/SortMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/SummEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/SummEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/Wish.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/Wish.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/WishDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/WishDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/WishDTOList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/WishDTOList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/WishGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/WishGroup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/enums/DeltaMode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/model/wish/enums/FilterMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/FilterMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/BondsRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/repository/BondsRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/CalendarRepo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/CreditRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/FreezeRepo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/GoalsRepo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/IUserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/user/repository/IUserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/IncomeRepo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/PurchasesRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/repository/PurchasesRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/SalaryRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/UsersRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/user/repository/UsersRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/WishDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/repositoty/WishDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/repositoty/WishRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/repositoty/WishRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/Application.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/WebConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/WebSecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/Bot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/AddWishHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/AddWishHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/BotHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/BotHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/EditWishHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/EditWishHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/FirstHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/FirstHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/WishHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/WishHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/WishLstHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/BotHandler/WishLstHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/prettytable/PrettyTablePrinter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/prettytable/PrettyTablePrinter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/reciever/UpdateReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/reciever/UpdateReceiver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/BotReply.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/BotReply.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/DisplayType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/DisplayType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/SubDomain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/SubDomain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/UserData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/UserData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/UserDomainState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/UserDomainState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/UserGlobalState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/UserGlobalState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/UserGlobalStateafdvsfdcvsedf.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/bot/userdata/UserGlobalStateafdvsfdcvsedf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/controller/FinPlanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/controller/FinPlanController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/controller/InvestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/api/InvestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/controller/MainRestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/api/WishController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/controller/WebController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/web/WebController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/response/ResponseParseResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/ResponseParseResult.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/response/ResponseStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/ResponseStatusDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/response/WishListResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/response/WishListResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/response/WishResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/dto/rs/WishRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/response/monthgroupping/GroupOfWishesForOneMonth.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/response/monthgroupping/GroupOfWishesForOneMonth.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/response/monthgroupping/ListOfMonthsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/response/monthgroupping/ListOfMonthsResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/CreditRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/CreditRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/FreezeRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/FreezeRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/GetRemainsDetailInfoRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/GetRemainsDetailInfoRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/GoalRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/GoalRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/IdListRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/IdListRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/IncomeRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/IncomeRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/IncomesForDeleteRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/IncomesForDeleteRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/LoanByDateRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/LoanByDateRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/SalaryRq.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rq/SalaryRq.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/AddCreditRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/AddCreditRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/ConsolidatedPurchasesRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/ConsolidatedPurchasesRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/CreditDict.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/CreditDict.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/CreditListRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/CreditListRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/CreditRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/CreditRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/CurrentIncomeRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/CurrentIncomeRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/DateIsPossibleRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/DateIsPossibleRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FinPlanListRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FinPlanListRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FinPlanRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FinPlanRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FinalBalanceCalculationsRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FinalBalanceCalculationsRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FreeLoanSlotsRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FreeLoanSlotsRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FullLoanRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FullLoanRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FullLoansListRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/FullLoansListRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/IncomeRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/IncomeRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/PurchasesRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/PurchasesRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/ResponseStatusRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/ResponseStatusRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/SalaryListRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/SalaryListRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/SalaryRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/SalaryRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/SingleOperationRs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/rs/SingleOperationRs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/transfer/CalculatedLoansTableTr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/transfer/CalculatedLoansTableTr.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/transfer/ClosedLoanTr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/transfer/ClosedLoanTr.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/transfer/LoanListTr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/transfer/LoanListTr.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/transfer/LoanTr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/dto/transfer/LoanTr.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/AopService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/AopService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/ArNoteUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/ArNoteUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/ControllerBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/ControllerBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/JSONTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/JSONTemplate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/MyPair.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/MyPair.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/TimeSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/TimeSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/WishSearchQueryCriteriaConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/sbdfvjbsdf/utils/WishSearchQueryCriteriaConsumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/security/JWTAuthenticationFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/security/JWTLoginFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/security/TokenAuthenticationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/security/UserDetailsServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/security/UserPrinciple.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/MainService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/MainServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/MainServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/cache/CacheObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/cache/CacheObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/cache/CacheService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/cache/CacheService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/cache/CacheServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/cache/CacheServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/CommonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/CommonService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/bonds/BondCalcService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/bonds/BondCalcService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/bonds/BondServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/bonds/BondServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/shares/SharesCalcService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/shares/SharesCalcService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/shares/common/CalculateFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/shares/common/CalculateFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/shares/foreign/ForeignCalcServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/shares/foreign/ForeignCalcServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/shares/moex/MoexCalculateServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calc/shares/moex/MoexCalculateServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calendar/CalendarService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calendar/CalendarService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calendar/CalendarServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/calendar/CalendarServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/requestservice/RequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/requestservice/RequestService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/requestservice/RequestServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/requestservice/RequestServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/returns/ReturnsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/returns/ReturnsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/returns/ReturnsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/returns/ReturnsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/xmlparse/XmlHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/xmlparse/XmlHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/xmlparse/XmlHandlerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/service/investment/xmlparse/XmlHandlerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/FinPlanService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/FinPlanServiceImp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/MainService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/service/MainService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/MainServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/wish/service/MainServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/MultiThreadConsolidatedCalculation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/cache/CacheObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/cache/CacheObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/cache/CacheService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/cache/CacheService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/cache/CacheServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/cache/CacheServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/calc/CommonService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/calc/bonds/BondCalcService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/calc/bonds/BondCalcService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/calc/bonds/BondServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/calc/bonds/BondServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/calc/shares/SharesCalcService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/calc/shares/SharesCalcService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/calc/shares/common/CalculateFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/calc/shares/common/CalculateFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/calc/shares/foreign/ForeignCalcServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/calc/shares/foreign/ForeignCalcServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/calc/shares/moex/MoexCalculateServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/calc/shares/moex/MoexCalculateServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/calendar/CalendarService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/calendar/CalendarService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/calendar/CalendarServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/calendar/CalendarServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/requestservice/RequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/requestservice/RequestService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/requestservice/RequestServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/requestservice/RequestServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/returns/ReturnsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/returns/ReturnsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/returns/ReturnsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/returns/ReturnsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/xmlparse/XmlHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/xmlparse/XmlHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/services/investment/xmlparse/XmlHandlerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/antonromanov/arnote/domain/investing/service/xmlparse/XmlHandlerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/vendor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/vendor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/com/antonromanov/arnote/ArNoteUtilsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/com/antonromanov/arnote/ArNoteUtilsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/com/antonromanov/arnote/CacheTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/com/antonromanov/arnote/CacheTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectId" id="2DhsYKI6TStfP8qxN45lqog0W3g" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="http.certificates" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.antonromanov.arnote.domain.wish.dto.rs" />
+      <recent name="com.antonromanov.arnote" />
+      <recent name="com.antonromanov.arnote.domain" />
+      <recent name="com" />
+      <recent name="com.antonromanov.arnote.sbdfvjbsdf" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.Application (1)">
+    <configuration name="Application (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="arnote" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="arnote" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.antonromanov.arnote.new1.Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="arnote" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.antonromanov.arnote.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.antonromanov.arnote.Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.Application (1)" />
+        <item itemvalue="Spring Boot.Application (1)" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fabba517-c714-487d-a718-36b4792538ff" name="Changes" comment="" />
+      <created>1661162704420</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1661162704420</updated>
+      <workItem from="1661162706984" duration="2045000" />
+      <workItem from="1661164789981" duration="4484000" />
+    </task>
+    <task id="LOCAL-00001" summary="Готовимся к Рефакторингу 3_0">
+      <created>1661163376090</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1661163376090</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Готовимся к Рефакторингу 3_0">
+      <created>1661165343649</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1661165343650</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Готовимся к Рефакторингу 3_0" />
+    <MESSAGE value="Все слил и начал рефакторинг" />
+    <option name="LAST_COMMIT_MESSAGE" value="Все слил и начал рефакторинг" />
+  </component>
+</project>

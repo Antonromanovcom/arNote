@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.domain.web;
+package com.antonromanov.arnote.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;

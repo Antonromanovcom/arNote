@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.dto.transfer;
+package com.antonromanov.arnote.sbdfvjbsdf.dto.transfer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

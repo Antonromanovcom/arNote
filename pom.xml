@@ -186,6 +186,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!--MAPSTRUCT-->
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.4.2.Final</version>
+        </dependency>
+
         <!--TEST -->
 
         <!--<dependency>

@@ -1,24 +1,25 @@
-package com.antonromanov.arnote.sbdfvjbsdf.dto.response;
+package com.antonromanov.arnote.domain.wish.dto.rs;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 
+@Data
 @Builder
-public class WishResponse {
+@AllArgsConstructor
+public class WishRs {
 
-    @Getter
-    private final long id;
-    @Getter
-    private final String wish;
-    @Getter
-    private final Integer price;
-    private final Integer priority;
-    private final Boolean ac;
-    private final String description;
-    private final String url;
-    private final Integer priorityGroup;
-    private final Integer priorityGroupOrder;
-    private final String month;
+    private  long id;
+    private  String wish;
+    private  Integer price;
+    private  Integer priority;
+    private  Boolean ac;
+    private  String description;
+    private  String url;
+    private  Integer priorityGroup;
+    private  Integer priorityGroupOrder;
+    private  String month;
 
 }
 

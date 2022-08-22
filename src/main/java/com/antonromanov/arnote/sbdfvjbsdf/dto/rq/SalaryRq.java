@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.dto.rq;
+package com.antonromanov.arnote.sbdfvjbsdf.dto.rq;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;

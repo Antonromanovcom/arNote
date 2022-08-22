@@ -1,28 +1,21 @@
 package com.antonromanov.arnote;
 
 import com.antonromanov.arnote.model.investing.Bond;
-import com.antonromanov.arnote.domain.investing.dto.external.requests.ForeignRequests;
-import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTemplateOperation;
-import com.antonromanov.arnote.model.investing.response.BondRs;
-import com.antonromanov.arnote.model.investing.response.ConsolidatedInvestmentDataRs;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
-import com.antonromanov.arnote.domain.wish.repositoty.BondsRepo;
-import com.antonromanov.arnote.domain.wish.repositoty.UsersRepo;
-import com.antonromanov.arnote.domain.investing.service.calc.CommonService;
-import com.antonromanov.arnote.domain.investing.service.requestservice.RequestService;
+import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
+import com.antonromanov.arnote.repositoty.BondsRepo;
+import com.antonromanov.arnote.repositoty.UsersRepo;
+import com.antonromanov.arnote.services.investment.calc.CommonService;
+import com.antonromanov.arnote.services.investment.requestservice.RequestService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import static com.antonromanov.arnote.utils.ArNoteUtils.*;
+import static com.antonromanov.arnote.sbdfvjbsdf.utils.ArNoteUtils.prepareUrl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -72,26 +65,4 @@ public class ArNoteUtilsTest {
                 "only=securities&securities.columns=SECID,PREVADMITTEDQUOTE,COUPONPERIOD", urlToCheck);
 
     }
-
-    /**
-     * Тест правильности составления предикатов для фильтров
-     */
-    /*@Test
-    public void filterPredicateTest() {
-
-        Map<String, String> investingFilterMode = new HashMap<>();
-        investingFilterMode.put("BOND_TYPE", "TYPE_SHARE");
-        Predicate<BondRs> predicate = complexPredicate(investingFilterMode);
-
-        BondRs b1 = BondRs.builder().type("SHARE").ticker("TICKER1").build();
-        BondRs b2 = BondRs.builder().type("SHARE").ticker("TICKER2").build();
-        BondRs b3 = BondRs.builder().type("BOND").ticker("TICKER3").build();
-        ConsolidatedInvestmentDataRs mockObject = ConsolidatedInvestmentDataRs.builder().bonds(Arrays.asList(b1, b2, b3)).build();
-        List<BondRs> mockListFilteredWithOne = mockObject.getBonds().stream().filter(predicate).collect(Collectors.toList());
-        assertEquals(2, mockListFilteredWithOne.size());
-        investingFilterMode.clear();
-        Predicate<BondRs> predicateAfterClear = complexPredicate(investingFilterMode);
-        List<BondRs> mockListFilteredWithEmpty = mockObject.getBonds().stream().filter(predicateAfterClear).collect(Collectors.toList());
-        assertEquals(3, mockListFilteredWithEmpty.size());
-    }*/
 }

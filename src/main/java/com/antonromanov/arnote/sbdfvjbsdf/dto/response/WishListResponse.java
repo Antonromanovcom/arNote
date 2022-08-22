@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.dto.response;
+package com.antonromanov.arnote.sbdfvjbsdf.dto.response;
 
 import com.antonromanov.arnote.entity.Wish;
 import lombok.Builder;

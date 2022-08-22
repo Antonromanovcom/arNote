@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.bot.userdata;
+package com.antonromanov.arnote.sbdfvjbsdf.bot.userdata;
 
 import com.antonromanov.arnote.model.wish.Wish;
 import lombok.Getter;

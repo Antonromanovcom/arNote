@@ -1,7 +1,7 @@
-package com.antonromanov.arnote.bot.BotHandler;
+package com.antonromanov.arnote.sbdfvjbsdf.bot.BotHandler;
 
-import com.antonromanov.arnote.bot.userdata.UserData;
-import com.antonromanov.arnote.bot.userdata.UserGlobalStateafdvsfdcvsedf;
+import com.antonromanov.arnote.sbdfvjbsdf.bot.userdata.UserData;
+import com.antonromanov.arnote.sbdfvjbsdf.bot.userdata.UserGlobalStateafdvsfdcvsedf;
 import com.antonromanov.arnote.model.ArNoteUser;
 import com.antonromanov.arnote.services.MainService;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.antonromanov.arnote.bot.Bot.createMessageTemplate;
+import static com.antonromanov.arnote.sbdfvjbsdf.bot.Bot.createMessageTemplate;
 
 
 public class EditWishHandler implements BotHandler {

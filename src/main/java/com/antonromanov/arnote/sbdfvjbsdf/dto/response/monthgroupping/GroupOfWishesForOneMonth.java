@@ -1,6 +1,6 @@
-package com.antonromanov.arnote.dto.response.monthgroupping;
+package com.antonromanov.arnote.sbdfvjbsdf.dto.response.monthgroupping;
 
-import com.antonromanov.arnote.dto.response.WishResponse;
+import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
 import lombok.Builder;
 import lombok.Data;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class GroupOfWishesForOneMonth {
 
-    private List<WishResponse> wishList;
+    private List<WishRs> wishList;
     private String monthName;
     private String year;
     private int monthNumber;

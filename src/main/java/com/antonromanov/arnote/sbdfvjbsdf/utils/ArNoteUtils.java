@@ -1,40 +1,40 @@
-package com.antonromanov.arnote.utils;
+package com.antonromanov.arnote.sbdfvjbsdf.utils;
 
-import com.antonromanov.arnote.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.exceptions.JsonNullException;
-import com.antonromanov.arnote.exceptions.JsonParseException;
-import com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException;
-import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
-import com.antonromanov.arnote.domain.investing.dto.common.BondType;
-import com.antonromanov.arnote.domain.investing.dto.common.InvestingFilterMode;
-import com.antonromanov.arnote.domain.investing.dto.common.Purchase;
-import com.antonromanov.arnote.domain.investing.dto.external.requests.ForeignRequests;
-import com.antonromanov.arnote.domain.investing.dto.response.BondRs;
-import com.antonromanov.arnote.domain.investing.dto.response.FoundInstrumentRs;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
-import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTemplateOperation;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.TinkoffDeltaFinalValuesType;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.common.CommonMoexDoc;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
-import com.antonromanov.arnote.domain.wish.dto.Salary;
-import com.antonromanov.arnote.domain.wish.dto.Wish;
-import com.antonromanov.arnote.domain.wish.dto.WishDTO;
+import com.antonromanov.arnote.entity.common.Salary;
+import com.antonromanov.arnote.exceptions.*;
+import com.antonromanov.arnote.model.ArNoteUser;
+import com.antonromanov.arnote.model.investing.BondType;
+import com.antonromanov.arnote.model.investing.InvestingFilterMode;
+import com.antonromanov.arnote.model.investing.Purchase;
+import com.antonromanov.arnote.model.investing.external.requests.ForeignRequests;
+import com.antonromanov.arnote.model.investing.external.requests.MoexRestTemplateOperation;
+import com.antonromanov.arnote.model.investing.response.BondRs;
+import com.antonromanov.arnote.model.investing.response.FoundInstrumentRs;
+import com.antonromanov.arnote.model.investing.response.enums.Currencies;
+import com.antonromanov.arnote.model.investing.response.enums.StockExchange;
+import com.antonromanov.arnote.model.investing.response.enums.TinkoffDeltaFinalValuesType;
+import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
+import com.antonromanov.arnote.model.wish.Wish;
+import com.antonromanov.arnote.model.wish.WishDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
+import org.joda.time.DateTime;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
+import java.io.*;
+import java.net.URL;
 import java.time.*;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -42,7 +42,11 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -51,6 +55,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  */
 @Slf4j
 public class ArNoteUtils { //todo: надо будет разнести отдельно wish-утилиты и инвест-утилиты
+
+
+    private final static String DIGITAL_PATTERN = "([0-9]+)";
+    private final static String XML_SPECIAL_DATE_PATTERN = "^(0[1-9]|1[0-2]).(0[1-9]|[12][0-9]|3[01])$";
+    private final static String WORK_CALENDAR_URL = "http://xmlcalendar.ru/data/ru/%s/calendar.xml";
 
     public enum ParseType {ADD, EDIT}
 
@@ -73,6 +82,19 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      */
     public static boolean isBetween(LocalTime candidate, LocalTime start, LocalTime end) {
         return !candidate.isBefore(start) && !candidate.isAfter(end);
+    }
+
+    /**
+     * Преобразование ключа для последующего поиска минимальной или максимальной даты.
+     *
+     * @param v
+     * @return
+     */
+    private static AbstractMap.SimpleEntry<DateTime, Double> mapKeyToFindMinOrMax(MoexRowsRs v) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        DateTime convertedDateTime = DateTime.parse(v.getEnd(), dateTimeFormatter);
+
+        return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
     }
 
     /**
@@ -101,24 +123,20 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
     public static Gson createNullableGsonBuilder() {
 
-        // Trick to get the DefaultDateTypeAdapter instance
-        // Create a first instance a Gson
-        Gson gson = new GsonBuilder()
-                .setDateFormat("dd/MM/yyyy")
-                .create();
-
-        // Get the date adapter
+        Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
         TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
-
-        // Ensure the DateTypeAdapter is null safe
         TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
 
-        // Build the definitive safe Gson instance
         return new GsonBuilder()
                 .registerTypeAdapter(Date.class, safeDateTypeAdapter)
                 .create();
+    }
 
-        //	return gson;
+    public static int getCurrentYear(Integer priority) {
+        Date date = new Date();
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        int month = localDate.getMonthValue();
+        return (month + (priority - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
     }
 
 
@@ -201,6 +219,18 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return salary;
     }
 
+    /**
+     * Конвертим пришедший json в новую Salary
+     */
+    public static Date localDateToDate(LocalDate date) {
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+        return Date.from(date.atStartOfDay(defaultZoneId).toInstant());
+    }
+
+    public static java.sql.Date localDateToSqlDate(LocalDate date) {
+        return java.sql.Date.valueOf(date);
+    }
+
 
     /**
      * Конвертим пришедший json в новый WISH
@@ -270,7 +300,14 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         int month = localDate.getMonthValue();
 
         Locale currentLocale = Locale.getDefault();
-        return Month.of((month + (proirity - 1)) > 12 ? (month + (proirity - 1)) - 12 : (month + (proirity - 1))).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
+        return Month.of((month + (proirity - 1)) > 12 ?
+                (month + (proirity - 1)) - 12 :
+                (month + (proirity - 1))).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
+    }
+
+    public static String getMonthByNumber(Integer montNumber) {
+        Locale currentLocale = Locale.getDefault();
+        return Month.of((montNumber)).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale);
     }
 
     public static int computerMonthNumber(Integer priority) {
@@ -280,18 +317,9 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return Month.of((month + (priority - 1)) > 12 ? (month + (priority - 1)) - 12 : (month + (priority - 1))).getValue();
     }
 
-
-    public static int getCurrentYear(Integer proirity) {
-        Date date = new Date();
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        int month = localDate.getMonthValue();
-        return (month + (proirity - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
-    }
-
     public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
         return WishDTO.builder()
                 .id(w.getId())
-//				.wish(w.getWish().length()<50 ? w.getWish() : w.getWish().substring(0, 50) + "...")
                 .wish(w.getWish())
                 .price(w.getPrice())
                 .priority(w.getPriority())
@@ -320,8 +348,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         colorClasses.put(11, "label label-purple");
         colorClasses.put(12, "label label-blue");
         colorClasses.put(13, "label label-danger");
-
-//		LOGGER.info("MONTH (getClassColorByMonth) => " + month);
 
         if (!overdraft) {
             if (month == 0) {
@@ -454,8 +480,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return result;
     }
 
-    private static Pattern getDigitsPattern() {
-        return Pattern.compile("([0-9]+)", Pattern.MULTILINE);
+    private static Pattern getPattern(String regex) {
+        return Pattern.compile(regex, Pattern.MULTILINE);
     }
 
     private static Matcher getMatcher(Pattern pattern, String stringToMatch) {
@@ -464,7 +490,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
 
     private static MyPair getYearAndMonth(String monthAndYear) {
-        final Matcher matcher = getMatcher(getDigitsPattern(), monthAndYear);
+        final Matcher matcher = getMatcher(getPattern(DIGITAL_PATTERN), monthAndYear);
         String year = "";
         String month = "";
 
@@ -491,17 +517,10 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 log.error("Ошибка парсинга даты: {}", monthAndYear);
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
             } else {
-                int minMonth = (YearMonth.now().getMonthValue()); // приоритет = 1
-                log.info("Текущий Месяц: {}", minMonth);
-                if ((Calendar.getInstance().get(Calendar.YEAR)) == Integer.parseInt(year)) {
-                    log.info("Перемещаем желание в рамках текущего года");
-                    log.info("Разница между приоритетами: {}", monthNameToNumber(month) - minMonth + 1);
-                    return monthNameToNumber(month) - minMonth + 1; // разница между приоритетами;
-                } else {
-                    log.info("Указан НЕ текущий год");
-                    log.info("Разница между приоритетами: {}", (12 - minMonth) + 1 + monthNameToNumber(month));
-                    return (12 - minMonth) + 1 + monthNameToNumber(month); // разница между приоритетами;
-                }
+
+
+                return 1 + Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
+                        monthNameToNumber(month), 1))));
             }
         } else if (Pattern.compile("[A-Za-z]+ [0-9]+").matcher(monthAndYear).find()) {
 
@@ -516,17 +535,9 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 log.error("Ошибка парсинга даты: {}", monthAndYear);
                 throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
             } else {
-                int minMonth = (YearMonth.now().getMonthValue()); // приоритет = 1
-                log.info("Текущий Месяц: {}", minMonth);
-                if ((Calendar.getInstance().get(Calendar.YEAR)) == Integer.parseInt(year)) {
-                    log.info("Перемещаем желание в рамках текущего года");
-                    log.info("Разница между приоритетами: {}", monthNameToNumber(month) - minMonth + 1);
-                    return monthNameToNumber(convertEnglishNames(month)) - minMonth + 1; // разница между приоритетами;
-                } else {
-                    log.info("Указан НЕ текущий год");
-                    log.info("Разница между приоритетами: {}", (12 - minMonth) + 1 + monthNameToNumber(convertEnglishNames(month)));
-                    return (12 - minMonth) + 1 + monthNameToNumber(convertEnglishNames(month)); // разница между приоритетами;
-                }
+                // log.info("Ставим. Текущая дата + 1 мес: {}", month);
+                return 1 + Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
+                        monthNameToNumber(convertEnglishNames(month)), 1))));
             }
 
         } else {
@@ -586,11 +597,12 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      * @return
      */
     public static String prepareUrlForHistory(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
-                                              Map<String, String> pathParams, String dateFrom, String dateTill, int start) {
+                                              Map<String, String> pathParams, String dateFrom, String dateTill, int start) { //todo: почему тут пустой dateFrom ???? Зачем он тогда?
 
 
         queryParameters.put("start", Collections.singletonList(String.valueOf(start)));
         queryParameters.put("till", Collections.singletonList(dateTill));
+        queryParameters.put("from", Collections.singletonList(dateFrom));
 
         UriComponents uriComponents = UriComponentsBuilder
                 .newInstance()
@@ -603,6 +615,32 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
         return uriComponents.toString();
     }
+
+    /**
+     * Сформировать специальный URL для запроса истории.
+     *
+     * @return
+     */
+    public static String prepareUrlForCandles(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+                                              Map<String, String> pathParams, String dateFrom, String dateTill, int start) { //todo: объединить с prepareUrlForHistory
+
+
+        queryParameters.put("start", Collections.singletonList(String.valueOf(start)));
+        queryParameters.put("till", Collections.singletonList(dateTill));
+        queryParameters.put("from", Collections.singletonList(dateFrom));
+
+        UriComponents uriComponents = UriComponentsBuilder
+                .newInstance()
+                .scheme("http")
+                .host(urlBase)
+                .path(operation.getUrl())
+                .queryParams(queryParameters)
+                .buildAndExpand(pathParams);
+
+
+        return uriComponents.toString();
+    }
+
 
     /**
      * Предикат distinctBy для выкидывания одинаковых тикеров (дублей) при поиске.
@@ -746,11 +784,175 @@ public class ArNoteUtils { //todo: надо будет разнести отде
             double tcsDeltaFinal = tinkoffSameLotButNewPrice - tkcAveragePurchasePrice;
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_FINAL, tcsDeltaFinal);
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_PERCENT, ((tcsDeltaFinal * 100) / tinkoffSameLotButNewPrice));
-        } else{
+        } else {
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_FINAL, 0.0D);
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_PERCENT, 0.0D);
         }
         return resultMap;
+    }
+
+    /**
+     * Вытаскиваем позицию (цену) закрытия бумаги за вчерашний день.
+     *
+     * @param doc
+     * @return
+     */
+    public static Double getClosePositionForTomorrow(MoexDocumentRs doc) {
+        if (doc.getData() != null && doc.getData().getRow().size() > 0) {
+
+            return doc.getData().getRow().stream()
+                    .map(v -> {
+
+                        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                        DateTime convertedDateTime = DateTime.parse(v.getEnd(), dateTimeFormatter);
+
+                        return new AbstractMap.SimpleEntry<>(convertedDateTime, Double.parseDouble(v.getClose()));
+                    })
+                    .filter(d -> jodaToJavaLocalDateTime(d.getKey()).toLocalDate().isBefore(LocalDate.now()))
+                    .max(Map.Entry.comparingByKey())
+                    .map(AbstractMap.SimpleEntry::getValue)
+                    .orElse(0D);
+
+        } else {
+            return (0d);
+        }
+    }
+
+    /**
+     * Рассчитываем дневную дельту из Свечей.
+     *
+     * @return
+     */
+    public static Double getDayDeltaFromCandle(MoexDocumentRs doc) {
+        if (doc.getData() != null && doc.getData().getRow().size() > 0) {
+
+            Double currentDayValue = doc.getData().getRow().stream()
+                    .map(ArNoteUtils::mapKeyToFindMinOrMax)
+                    .max(Map.Entry.comparingByKey())
+                    .map(AbstractMap.SimpleEntry::getValue)
+                    .orElse(0D);
+
+            return currentDayValue - getClosePositionForTomorrow(doc);
+        } else {
+            return (0d);
+        }
+    }
+
+    /**
+     * JodaTime to Java LocalDateTime.
+     *
+     * @param dateTime
+     * @return
+     */
+    public static LocalDateTime jodaToJavaLocalDateTime(DateTime dateTime) {
+        return Instant.ofEpochMilli(dateTime.getMillis())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+
+    }
+
+    /**
+     * Взять покупки, кол-во купленных акций перемножить на стоимость и все это просуммировать.
+     *
+     * @param
+     * @return
+     */
+    public static Double getCostOfAllPurchasesOfSecurityInPortfolio(List<Purchase> purchaseList) {
+        return purchaseList.stream()
+                .map(v -> v.getLot() * v.getPrice())
+                .reduce(Double::sum)
+                .orElse(0.0D);
+
+
+    }
+
+
+    /**
+     * Рассчитываем  доход из Свечей по всем купленным бумагам.
+     * <p>
+     * Формула расчета ((Сt*CP)-(Sp[...]))
+     * где:
+     * <p>
+     * Ct - кол-во купленных бумаг (акций)
+     * CP - текущая цена
+     * Sp[...] - сумма покупок. То есть 10-апреля купили например 10 по цене 1.5, 11 мая купили 10 по цене 2.0,
+     * значит получаем: (10 * 1.5) + (10 * 2.0) = ....
+     *
+     * @return
+     */
+    public static Double getIncomeForAllPurchasesFromCandle(MoexDocumentRs candles, MoexDocumentRs history,
+                                                            Double currentStockPrice,
+                                                            List<Purchase> purchaseList) {
+        if (history.getData() != null && history.getData().getRow().size() > 0) {
+
+            Double currentDayValue = (candles.getData() == null || candles.getData().getRow() == null ||
+                    candles.getData().getRow().size() < 1) ? 0.0D : (candles.getData().getRow().stream()
+                    .map(ArNoteUtils::mapKeyToFindMinOrMax)
+                    .max(Map.Entry.comparingByKey())
+                    .map(AbstractMap.SimpleEntry::getValue)
+                    .orElse(currentStockPrice));
+
+            Integer instrumentsCount = purchaseList.stream()
+                    .map(Purchase::getLot)
+                    .reduce(Integer::sum)
+                    .orElse(0); // считаем кол-во бумаг в портфеле //todo: в отдельный метод в Утилс
+
+
+            return (currentDayValue * instrumentsCount) - getCostOfAllPurchasesOfSecurityInPortfolio(purchaseList);
+        } else {
+            return (0d);
+        }
+    }
+
+    /**
+     * Вариант метода getIncomeForAllPurchasesFromCandle, но считающий результат данного метода в процентах.
+     *
+     * Формула расчета:
+     *
+     * Сколько_процентов_составляет(Х от Y).
+     * где:
+     *
+     * X - результат метода getIncomeForAllPurchasesFromCandle
+     * Y - Sp[...]
+     * Sp[...] - сумма покупок. То есть 10-апреля купили например 10 по цене 1.5, 11 мая купили 10 по цене 2.0,
+     * значит получаем: (10 * 1.5) + (10 * 2.0) = ....
+     *
+     * @return
+     */
+    public static Double getIncomeForAllPurchasesInPercents(Double income, List<Purchase> purchaseList) {
+        if (income != 0) {
+
+            double coef = getCostOfAllPurchasesOfSecurityInPortfolio(purchaseList) / income;
+
+            return coef == 0 ? 0.0D : 100 / coef;
+        } else {
+            return 0.0D;
+        }
+    }
+
+
+    /**
+     * Достать ближайшую дату к заданной.
+     *
+     * @param dates
+     * @param currentDate
+     * @return
+     */
+    public static Long getNearestDate(Map<Long, LocalDate> dates, LocalDate currentDate) {
+
+        NavigableSet<LocalDate> datesInSet = new TreeSet<>(dates.values());
+        LocalDate minDate = datesInSet.lower(currentDate);
+
+        if (minDate != null) {
+            return dates.entrySet()
+                    .stream()
+                    .filter(w -> w.getValue().isEqual(minDate))
+                    .findFirst()
+                    .map(Map.Entry::getKey).orElse(0L);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -774,6 +976,58 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                     .map(MoexRowsRs::getRate)
                     .map(Double::valueOf)
                     .orElse(Double.valueOf("1"));
+        }
+    }
+
+    /**
+     * Грузим производственный календарь по ссылке.
+     *
+     * @return
+     */
+    public static Optional<com.antonromanov.arnote.model.common.Calendar> getWorkCalendar(Integer year) {
+
+        String path = String.format(WORK_CALENDAR_URL, year);
+
+        try (BufferedInputStream in = new BufferedInputStream(new URL(path).openStream())) {
+            return Optional.of(unmarshall(in));
+        } catch (IOException e) {
+            log.error("Не удалось, найти файл xml производственного календаря или спарсить его!");
+            return Optional.empty();
+        }
+    }
+
+
+    /**
+     * Грузим производственный календарь по ссылке.
+     *
+     * @return
+     */
+    public static java.sql.Date getSqlDateFromXmlCalendar(String year, String xmlDate) {
+        if (isBlank(year) || isBlank(xmlDate)) {
+            return null;
+        } else {
+
+            Matcher matcher = getMatcher(getPattern(XML_SPECIAL_DATE_PATTERN), xmlDate);
+            LocalDate tempDate = null;
+            while (matcher.find()) {
+                 tempDate = LocalDate.of(Integer.parseInt(year),
+                        Integer.parseInt(matcher.group(1)),
+                        Integer.parseInt(matcher.group(2)));
+
+            }
+
+            return localDateToSqlDate(tempDate);
+        }
+    }
+
+    public static com.antonromanov.arnote.model.common.Calendar unmarshall(InputStream response) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(com.antonromanov.arnote.model.common.Calendar.class);
+            Unmarshaller un = jaxbContext.createUnmarshaller();
+            return (com.antonromanov.arnote.model.common.Calendar) un.unmarshal(response);
+        } catch (JAXBException e) {
+            log.error("Ошибка анмаршелинга: {}", e.getMessage());
+            throw new MoexXmlResponseMarshalingException();
         }
     }
 }

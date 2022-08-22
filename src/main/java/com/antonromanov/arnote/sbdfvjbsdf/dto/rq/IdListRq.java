@@ -1,11 +1,9 @@
-package com.antonromanov.arnote.dto.rq;
+package com.antonromanov.arnote.sbdfvjbsdf.dto.rq;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 
 @Data
