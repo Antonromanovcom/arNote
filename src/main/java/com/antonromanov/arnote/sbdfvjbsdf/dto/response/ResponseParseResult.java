@@ -1,10 +1,11 @@
-package com.antonromanov.arnote.model;
+package com.antonromanov.arnote.dto.response;
 
 import lombok.Builder;
 
 @Builder
-public class ResponseStatusDTO {
+public class ResponseParseResult {
 	private String status;
 	private String errorMessage;
 	private String okMessage;
+	private Integer itemsAdded;
 }

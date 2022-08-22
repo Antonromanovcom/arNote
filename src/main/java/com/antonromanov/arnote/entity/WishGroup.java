@@ -1,10 +1,12 @@
-package com.antonromanov.arnote.model.wish;
+package com.antonromanov.arnote.entity;
 
 import lombok.*;
-
 import javax.persistence.*;
-import java.util.List;
 
+
+/**
+ * Группа желаний (одежда, еда, ...).
+ */
 @Entity
 @Data
 @NoArgsConstructor
@@ -19,9 +21,6 @@ public class WishGroup {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_seq_gen")
     @SequenceGenerator(name = "group_seq_gen", sequenceName ="group_id_seq", allocationSize = 1)
     private long id;
-
-    //@OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
-    //private List<Wish> groupName;
     private String groupName;
 }
 

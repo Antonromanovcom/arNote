@@ -2,10 +2,19 @@ package com.antonromanov.arnote.services;
 
 import au.com.bytecode.opencsv.CSVReader;
 import com.antonromanov.arnote.entity.common.Salary;
+import com.antonromanov.arnote.dto.response.ResponseParseResult;
+import com.antonromanov.arnote.dto.response.WishResponse;
+import com.antonromanov.arnote.dto.response.monthgroupping.GroupOfWishesForOneMonth;
+import com.antonromanov.arnote.entity.LocalUser;
+import com.antonromanov.arnote.entity.Salary;
+import com.antonromanov.arnote.entity.Wish;
+import com.antonromanov.arnote.enums.FilterMode;
+import com.antonromanov.arnote.enums.SortMode;
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.model.*;
 import com.antonromanov.arnote.model.wish.*;
 import com.antonromanov.arnote.repositoty.SalaryRepository;
+import com.antonromanov.arnote.repositoty.UsersRepo;
 import com.antonromanov.arnote.repositoty.WishRepository;
 import org.apache.commons.math3.util.ArithmeticUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +31,6 @@ import java.util.stream.Collectors;
 
 import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 
-
 @Service
 public class MainServiceImpl implements MainService {
 
@@ -32,7 +40,38 @@ public class MainServiceImpl implements MainService {
     @Autowired
     private SalaryRepository salaryRepository;
 
-    Integer addCount = 0; // Количество добавлений
+    @Autowired
+    private UsersRepo usersRepo;
+
+
+    Integer addCount = 0;  //todo: почему это здесь???? (// Количество добавлений)
+
+    @Override
+    public List<Wish> getAllWishesWithPriority(LocalUser user) {
+        return wishRepository.getAllWithPriority1(user); //todo: переименовать
+    }
+
+    @Override
+    public List<Wish> getAllWishesAndUpdateUser(LocalUser user, FilterMode filterType, SortMode sortType)  {
+
+        if (filterType == FilterMode.DEFAULT) {
+            filterType = (user.getFilterMode() != null) ? user.getFilterMode() : FilterMode.ALL;
+        }
+
+        if ((sortType == SortMode.DEFAULT)) {
+            sortType = (user.getTableSortMode() != null) ? user.getTableSortMode() : SortMode.ALL;
+        }
+
+        user.setTableSortMode(sortType);
+        user.setFilterMode(filterType);
+        usersRepo.saveAndFlush(user);
+
+        return  wishRepository.findAllByIdSorted(user)
+                .stream()
+                .filter(filterType.getFilterPredicate())
+                .sorted(sortType.getWishComparator())
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<Wish> getAllWishesWithPriority1(ArNoteUser user) {
@@ -62,8 +101,8 @@ public class MainServiceImpl implements MainService {
 
     }
 
-    private void addItemInWishDTOListForNullPriorityWishes(List<WishDTOList> wishDTOListGlobal,
-                                                           List<WishDTO> wishDTOListFiltered,
+    private void addItemInWishDTOListForNullPriorityWishes(List<GroupOfWishesForOneMonth> wishDTOListGlobal,
+                                                           List<WishResponse> wishDTOListFiltered,
                                                            int maxPrior,
                                                            ArNoteUser user) {
         wishDTOListGlobal.add(WishDTOList.builder()
@@ -72,10 +111,10 @@ public class MainServiceImpl implements MainService {
                 .monthName(computerMonth(maxPrior))
                 .year(String.valueOf(getCurrentYear(maxPrior)))
                 .colspan(2)
-                .sum(wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck))
-                .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice)
+                .sum(wishDTOListFiltered.stream().map(WishResponse::getPrice).reduce(0, ArithmeticUtils::addAndCheck))
+                .overflow((wishDTOListFiltered.stream().map(WishResponse::getPrice)
                         .reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary())
-                .colorClass(getClassColorByMonth(0, (wishDTOListFiltered.stream().map(WishDTO::getPrice)
+                .colorClass(getClassColorByMonth(0, (wishDTOListFiltered.stream().map(WishResponse::getPrice)
                         .reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary()))
                 .expanded(true)
                 .build());
@@ -87,8 +126,9 @@ public class MainServiceImpl implements MainService {
     @Override
     public List<WishDTOList> getAllWishesWithGroupPriority(ArNoteUser user) {
 
-        int maxPrior = getMaxPriority(user);
-        List<WishDTOList> wishDTOListGlobal = new ArrayList<>();
+        if (!wishRepository.getAllWithGroupOrder(user).isEmpty()) {
+            int maxPrior = getMaxPriority(user);
+            List<GroupOfWishesForOneMonth> wishDTOListGlobal = new ArrayList<>();
 
         if (maxPrior - 1 > 0) { // есть задачи с приоритетами
             int currentMonth = 1;
@@ -96,55 +136,77 @@ public class MainServiceImpl implements MainService {
 
             while (currentMonth < maxPrior) {
 
-                int finalCurrentMonth = currentMonth;
-                List<WishDTO> wishDTOListFiltered = wishRepository.getAllWithGroupOrder(user)
-                        .stream()
-                        .filter(wish -> wish.getPriorityGroup() != null)
-                        .filter(wish -> wish.getPriorityGroup() == finalCurrentMonth)
-                        .map(w -> prepareWishDTO(w, maxPrior))
-                        .collect(Collectors.toList());
+                    int finalCurrentMonth = currentMonth;
+                    List<WishResponse> wishDTOListFiltered = wishRepository.getAllWithGroupOrder(user)
+                            .stream()
+                            .filter(wish -> wish.getPriorityGroup() != null)
+                            .filter(wish -> wish.getPriorityGroup() == finalCurrentMonth)
+                            .map(w -> prepareWishDTO(w, maxPrior))
+                            .collect(Collectors.toList());
 
                 Integer sum = wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
                 amountForAllMonths = (getLastSalary(user).getResidualSalary() - sum) + amountForAllMonths; //считаем набегающий баланс
 
-                wishDTOListGlobal.add(WishDTOList.builder()
-                        .wishList(wishDTOListFiltered)
-                        .monthNumber(computerMonthNumber(currentMonth))
-                        .monthName(computerMonth(currentMonth))
-                        .year(String.valueOf(getCurrentYear(currentMonth)))
-                        .colspan(2)
-                        .sum(sum)
-                        .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice)
-                                .reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary())
-                        .colorClass(getClassColorByMonth(computerMonthNumber(currentMonth), (wishDTOListFiltered.stream()
-                                .map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user)
-                                .getResidualSalary()))
-                        .expanded(true)
-                        .balance(amountForAllMonths)
-                        .build());
+                    wishDTOListGlobal.add(GroupOfWishesForOneMonth.builder()
+                            .wishList(wishDTOListFiltered)
+                            .monthNumber(computerMonthNumber(currentMonth))
+                            .monthName(computerMonth(currentMonth))
+                            .year(String.valueOf(getCurrentYear(currentMonth)))
+                            .colspan(2)
+                            .sum(sum)
+                            .overflow((wishDTOListFiltered.stream().map(WishResponse::getPrice)
+                                    .reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary())
+                            .colorClass(getClassColorByMonth(computerMonthNumber(currentMonth), (wishDTOListFiltered.stream()
+                                    .map(WishResponse::getPrice).reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user)
+                                    .getResidualSalary()))
+                            .expanded(true)
+                            .balance(amountForAllMonths)
+                            .build());
 
-                currentMonth++;
+                    currentMonth++;
+                }
+
+                List<WishResponse> wishDTOListFiltered = wishRepository.getAllWithGroupOrder(user)
+                        .stream()
+                        .filter(wish -> wish.getPriorityGroup() == null)
+                        .map(w -> prepareWishDTO(w, maxPrior))
+                        .collect(Collectors.toList());
+
+                addItemInWishDTOListForNullPriorityWishes(wishDTOListGlobal, wishDTOListFiltered, maxPrior, user);
+
+            } else {
+
+                List<WishResponse> wishDTOListFiltered = wishRepository.getAllWithGroupOrder(user)
+                        .stream()
+                        .map(w -> prepareWishDTO(w, maxPrior))
+                        .collect(Collectors.toList());
+
+                addItemInWishDTOListForNullPriorityWishes(wishDTOListGlobal, wishDTOListFiltered, maxPrior, user);
             }
 
-            List<WishDTO> wishDTOListFiltered = wishRepository.getAllWithGroupOrder(user)
-                    .stream()
-                    .filter(wish -> wish.getPriorityGroup() == null)
-                    .map(w -> prepareWishDTO(w, maxPrior))
-                    .collect(Collectors.toList());
-
-            addItemInWishDTOListForNullPriorityWishes(wishDTOListGlobal, wishDTOListFiltered, maxPrior, user);
-
+            wishDTOListGlobal.forEach(wl -> wl.getWishList().sort(checkTreeViewModeForUpdate(user,  sortType))); // сортируем
+            return Optional.of(wishDTOListGlobal);
         } else {
-
-            List<WishDTO> wishDTOListFiltered = wishRepository.getAllWithGroupOrder(user)
-                    .stream()
-                    .map(w -> prepareWishDTO(w, maxPrior))
-                    .collect(Collectors.toList());
-
-            addItemInWishDTOListForNullPriorityWishes(wishDTOListGlobal, wishDTOListFiltered, maxPrior, user);
+            return Optional.empty();
         }
+    }
 
-        return wishDTOListGlobal;
+    /**
+     * Проверить нужно ли менять тип сортировки для древовидного представления данных и если не нужно (sortType = DEFAULT),
+     * то проверяется, что выставлено у пользователя в качестве предыдущего типа сортировки.
+     *
+     * @param user
+     * @param sortType
+     * @return
+     */
+    private Comparator<WishResponse> checkTreeViewModeForUpdate(LocalUser user, SortMode sortType) {
+        if ((sortType == SortMode.DEFAULT)) {
+            sortType = (user.getTableSortMode() != null) ? user.getTreeSortMode() : SortMode.ALL;
+        } else {
+            user.setTreeSortMode(sortType);
+            usersRepo.saveAndFlush(user);
+        }
+        return sortType.getWishResponseComparator();
     }
 
     @Override
@@ -186,8 +248,8 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public void updateWish(Wish wish) {
-        wishRepository.save(wish);
+    public Wish updateWish(Wish wish) {
+        return wishRepository.saveAndFlush(wish);
     }
 
     @Override
@@ -201,17 +263,19 @@ public class MainServiceImpl implements MainService {
     }
 
     @Override
-    public Optional<Wish> getWishById(int id) {
-        return wishRepository.findById(Long.valueOf(id));
+    public Optional<Wish> getWishById(long id) {
+        return wishRepository.findById(id);
     }
 
     @Override
+    public Integer getSumForAllWishes(LocalUser user) {
     public Integer getSumm4All(ArNoteUser user) {
         return wishRepository.findAllByIdSorted(user).stream().map(Wish::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
     @Override
     public Integer getSumm4Prior(ArNoteUser user) {
+    public Integer getSumForPriorityWishes(LocalUser user) {
         return wishRepository.getAllWithPriority1(user).stream().map(Wish::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
     }
 

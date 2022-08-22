@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 import java.security.Principal;
 
 @Slf4j
-public class ControllerBase {
+public class ControllerBase { //todo: Юзера то лучше здесь один раз определить
 
     protected <T, E> T $do(SomeProcess<T, E> process, E s, Principal user, ArNoteUtils.OperationType operationType, HttpServletResponse response) {
         try {
@@ -43,19 +43,31 @@ public class ControllerBase {
         return responseEntity;
     }
 
-    protected ResponseEntity<String> $prepareNoDataYetErrorResponse(ErrorCodes errorCode) { //todo: данную лютую хуету конечно же надо переделать!
+    protected ResponseEntity<String> $prepareNoDataYetErrorResponse(Boolean switcher) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setCacheControl("no-cache");
-        return new ResponseEntity<>(errorCode.getUiCode(), headers, HttpStatus.BAD_REQUEST);
+
+        ResponseEntity<String> responseEntity;
+
+        if (switcher) {
+            responseEntity = new ResponseEntity<String>("ERR-01", headers, HttpStatus.BAD_REQUEST);
+        } else {
+            responseEntity = new ResponseEntity<String>("ERR-02", headers, HttpStatus.BAD_REQUEST);
+        }
+        //	LOGGER.info("RESPONSE: " + responseEntity.toString());
+        return responseEntity;
     }
+
 
     public static void prepareError(Exception ex, HttpOutputMessage outputMessage) {
         prepareError(ex, ((ServletServerHttpResponse) outputMessage).getServletResponse());
     }
 
     private static void prepareError(Exception ex, HttpServletResponse response) {
+        //	LOGGER.error(ex.getMessage(),ex);
         response.setStatus(520);
+
         if (ex instanceof SaveNewWishException)
             response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
         if (ex instanceof JsonParseException || ex instanceof JsonNullException)
@@ -66,6 +78,7 @@ public class ControllerBase {
         try (PrintWriter pw = response.getWriter()) {
             pw.write(ex.getMessage() == null ? "Ошибка сохранения нового желания! " : ex.getMessage());
         } catch (IOException ioe) {
+            //		LOGGER.error("Не могу записать ошибку в Response", ex);
         }
     }
 

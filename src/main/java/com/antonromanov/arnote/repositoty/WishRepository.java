@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface WishRepository extends JpaRepository<Wish, Integer>{
+public interface WishRepository extends JpaRepository<Wish, Integer>{ //todo: почему Integer ????
 
 	@Query(value="select w from Wish w where w.ac = false and (w.realized = false or w.realized is null) and w.user = :user order by w.priorityGroup, w.priorityGroupOrder ASC ")
 	List<Wish> getAllWithGroupOrder(@Param("user") ArNoteUser user);
