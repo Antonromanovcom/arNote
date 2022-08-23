@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import java.util.HashMap;
 import java.util.Map;
-import static com.antonromanov.arnote.sbdfvjbsdf.utils.ArNoteUtils.prepareUrl;
+import static com.antonromanov.arnote.sex.utils.ArNoteUtils.prepareUrl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 

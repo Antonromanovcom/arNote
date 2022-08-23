@@ -1,33 +1,10 @@
 package com.antonromanov.arnote.domain.investing.service.xmlparse;
 
-import com.antonromanov.arnote.exceptions.MoexXmlResponseMarshalingException;
-import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
-import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.common.CommonMoexDoc;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+/*@Service
+@Slf4j*/
+public class XmlHandlerImpl /*implements XmlHandler*/ {
 
-@Service
-@Slf4j
-public class XmlHandlerImpl implements XmlHandler {
-
-    @Override
+ /*   @Override
     public Optional<ConsolidatedDividendsRs> parse(ResponseEntity<String> response) {
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -79,5 +56,5 @@ public class XmlHandlerImpl implements XmlHandler {
                 throw new MoexXmlResponseMarshalingException();
             }
         }
-    }
+    }*/
 }

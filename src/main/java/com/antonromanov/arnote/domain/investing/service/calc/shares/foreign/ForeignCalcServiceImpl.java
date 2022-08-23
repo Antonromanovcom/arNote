@@ -38,16 +38,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Имплементация расчетного сервиса для работы с иностранными бумагами.
  */
-public class ForeignCalcServiceImpl implements SharesCalcService {
+public class ForeignCalcServiceImpl /*implements SharesCalcService*/ {
 
-    @Autowired
+ /*   @Autowired
     private RequestService httpClient;
 
     @Autowired
@@ -64,14 +62,14 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
     @Override
     public Optional<Double> getCurrentQuoteByTicker(String ticker) {
         return Optional.empty();
-    }
+    }*/
 
     /**
      * Запросить текущую цену акции по тикеру. Та, что обновляется раз в 15 минут с торгов.
      *
      * @return
      */
-    @Override
+  /*  @Override
     public CurrentPriceRs getRealTimeQuote(String ticker) {
 
         if (cacheService.checkDict(CacheDictType.REALTIME_QUOTES, ticker)) {
@@ -79,12 +77,12 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
         } else {
 
             YahooRealTimeQuoteRs response = httpClient.sendAndMarshallForeignRequest(ForeignRequests.GET_REALTIME_QUOTE,
-                    new LinkedList<>(Collections.singletonList(ticker)), YahooRealTimeQuoteRs.class);
+                    new LinkedList<>(Collections.singletonList(ticker)), YahooRealTimeQuoteRs.class);*/
 
             /*
              * Все ценники все же переводим в рубли.
              */
-            String currency = response.getQuoteSummary().getResult().get(0).getPrice().getCurrency();
+        /*    String currency = response.getQuoteSummary().getResult().get(0).getPrice().getCurrency();
             Double currentPrice = getCurrencyMultiplier(currency) *
                     response.getQuoteSummary().getResult().get(0).getPrice().getRegularMarketPrice().getRaw();
             Double priceChange = getCurrencyMultiplier(currency) *
@@ -133,7 +131,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
     @Override
     public String getBoardId(String ticker) {
         return null;
-    }
+    }*/
 
     /**
      * Запросить имя инструмента.
@@ -141,7 +139,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
      * @param ticker - тикер.
      * @return
      */
-    @Override
+   /* @Override
     public String getInstrumentName(String boardId, String ticker) {
         if (cacheService.checkDict(CacheDictType.INSTRUMENT_NAME, ticker)) {
             return cacheService.getDict(CacheDictType.INSTRUMENT_NAME, ticker);
@@ -153,7 +151,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
             cacheService.putToCache(CacheDictType.INSTRUMENT_NAME, ticker, companyInfo.getName(), String.class);
             return companyInfo.getName();
         }
-    }
+    }*/
 
     /**
      * Запросить и посчитать дельту.
@@ -163,11 +161,11 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
      * @param purchaseList      - список покупок (цен) пользователя
      * @return
      */
-    @Override
+  /*  @Override
     public DeltaRs calculateDelta(String boardId, String ticker, Double currentStockPrice, List<Purchase> purchaseList) {
         if (!isBlank(ticker) && (currentStockPrice != null && currentStockPrice > 0)) {
 
-            MoexDocumentRs doc = getHistory(ticker, null, null);
+            MoexDocumentRs doc = getHistory(ticker, null, null);*/
 
             /*
              * Как считаем:
@@ -177,7 +175,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
              * tinkoffDelta = (сумма покупок * текущую цену рынка) - (Сумма(лот * цену по каждой покупке))
              */
 
-            return DeltaRs.builder()
+         /*   return DeltaRs.builder()
                     .tinkoffDelta(getTcsDeltaValues(purchaseList, currentStockPrice)
                             .get(TinkoffDeltaFinalValuesType.DELTA_FINAL))
                     .tinkoffDeltaPercent(getTcsDeltaValues(purchaseList, currentStockPrice)
@@ -211,9 +209,9 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
         } else {
             return null;
         }
-    }
+    }*/
 
-    @Override
+   /* @Override
     public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
         if (bond.getIsBought()) { // если это ФАКТ
             return bond.getPurchaseList().stream()
@@ -223,14 +221,14 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
             return (int) Math.round(((getRealTimeQuote(bond.getTicker()
             )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user));
         }
-    }
+    }*/
 
     /**
      * Подготовить дивиденды.
      *
      * @return
      */
-    @Override
+  /*  @Override
     public ConsolidatedDividendsRs getDividends(Bond bond, ArNoteUser user) {
 
         if (cacheService.checkDict(CacheDictType.DIVS_BY_TICKER, bond.getTicker())) {
@@ -290,14 +288,14 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
             cacheService.putToCache(CacheDictType.DIVS_BY_TICKER, bond.getTicker(), resultDivs, ConsolidatedDividendsRs.class);
             return resultDivs;
         }
-    }
+    }*/
 
     /**
      * Подготовить данные по валюте.
      *
      * @return
      */
-    @Override
+  /*  @Override
     public String getCurrencyOfShare(String ticker) {
         if (cacheService.checkDict(CacheDictType.CURRENCY, ticker)) {
             return cacheService.getDict(CacheDictType.CURRENCY, ticker);
@@ -313,14 +311,14 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
     @Override
     public Integer getMinimalLot(String ticker, ArNoteUser user) {
         return 1;
-    }
+    }*/
 
     /**
      * Запросить исторические данные.
      *
      * @return
      */
-    @Override
+   /* @Override
     public MoexDocumentRs getHistory(String ticker, String boardId, LocalDate forDate) {
 
         if (cacheService.checkDict(CacheDictType.HISTORY, ticker + FOREIGN_KEY_FOR_CACHE)) {
@@ -396,7 +394,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
     @Override
     public List<String> getTradeModes() {
         return null;
-    }
+    }*/
 
     /**
      * Найти буржуйскую бумагу по ключевому слову. Возвращает только акции.
@@ -404,7 +402,7 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
      * @param keyword
      * @return
      */
-    @Override
+  /*  @Override
     public MoexDocumentRs findInstrumentsByName(String keyword) {
         AlphavantageSearchListRs response = httpClient.sendAndMarshallForeignRequest(ForeignRequests.FIND_INSTRUMENT,
                 new LinkedList<>(Arrays.asList(keyword, "SYMBOL_SEARCH", ALFA_ADVANTAGE_API_KEY)), AlphavantageSearchListRs.class);
@@ -431,5 +429,5 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
         document.setData(documentData);
         return document;
 
-    }
+    }*/
 }

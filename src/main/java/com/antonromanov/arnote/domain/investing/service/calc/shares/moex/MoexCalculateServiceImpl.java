@@ -26,28 +26,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-@Service
-@Slf4j
-public class MoexCalculateServiceImpl implements SharesCalcService {
+/*@Service
+@Slf4j*/
+public class MoexCalculateServiceImpl /*implements SharesCalcService*/ {
 
-    @Autowired
+  /*  @Autowired
     private RequestService httpClient;
     @Autowired
     private CacheService cacheService;
 
     private Long lastQuote = 0L;
-    private Long getAllSharesCount = 0L;
+    private Long getAllSharesCount = 0L;*/
 
 
     /**
@@ -55,7 +52,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      *
      * @return
      */
-    @Override
+ /*   @Override
     public ConsolidatedDividendsRs getDivsByTicker(String ticker) {
 
         if (cacheService.checkDict(CacheDictType.DIVS_BY_TICKER, ticker)) {
@@ -70,14 +67,14 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                 return null;
             }
         }
-    }
+    }*/
 
     /**
      * Запросить текущую цену (ставку) бумаги.
      *
      * @return
      */
-    @Override
+  /*  @Override
     public Optional<Double> getCurrentQuoteByTicker(String ticker) {
         if (!isBlank(ticker)) {
             return Optional.of(getCurrentQuoteByBoardId(getBoardId(ticker)))
@@ -92,14 +89,14 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
         } else {
             return Optional.empty();
         }
-    }
+    }*/
 
     /**
      * Запросить текущую цену акции по тикеру. Та, что обновляется раз в 15 минут с торгов.
      *
      * @return
      */
-    @Override
+  /*  @Override
     public CurrentPriceRs getRealTimeQuote(String ticker) {
 
         if (LocalTime.now().isBefore(LocalTime.of(10, 30))) {
@@ -122,13 +119,13 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                             .lastChange(null)
                             .lastChangePrcnt(null)
                             .build());
-        } else {
+        } else {*/
 
             /*
              * В общем решили, что ставки все же стоит кешировать, ибо в противном случае, получаем просто какую-то
              * бомбардировку запросами и все это довольно долго отвечает. Поэтому ставки будем хранить пока час.
              */
-            if (cacheService.checkDictWithRetention(CacheDictType.REALTIME_QUOTES_WITH_RETENTION, ticker)) {
+           /* if (cacheService.checkDictWithRetention(CacheDictType.REALTIME_QUOTES_WITH_RETENTION, ticker)) {
                 return cacheService.getDictWithRetention(CacheDictType.REALTIME_QUOTES_WITH_RETENTION, ticker);
             } else {
 
@@ -194,7 +191,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
 
             }
         }
-    }
+    }*/
 
     /**
      * Запросить текущую цену бумаги по board_id.
@@ -202,7 +199,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @param
      * @return
      */
-    @Override
+  /*  @Override
     public MoexDocumentRs getCurrentQuoteByBoardId(String boardId) {
 
         if (cacheService.checkDict(CacheDictType.LAST_QUOTES_BY_BOARD_ID, boardId)) {
@@ -215,14 +212,14 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             cacheService.putToCache(CacheDictType.LAST_QUOTES_BY_BOARD_ID, boardId, doc, MoexDocumentRs.class);
             return doc;
         }
-    }
+    }*/
 
     /**
      * Запросить детальную информацию по бумаге (инструменту).
      *
      * @return
      */
-    @Override
+  /*  @Override
     public Optional<MoexDetailInfoRs> getDetailInfo(String ticker) {
         if (!isBlank(ticker)) {
             return Optional.ofNullable((MoexDetailInfoRs) (httpClient.sendAndMarshall(MoexRestTemplateOperation.
@@ -230,7 +227,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
         } else {
             return Optional.empty();
         }
-    }
+    }*/
 
     /**
      * Запросить board_id.
@@ -238,7 +235,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @param ticker - тикер.
      * @return
      */
-    @Override
+  /*  @Override
     public String getBoardId(String ticker) {
 
         if (cacheService.checkDict(CacheDictType.BOARD_ID_BY_TICKER, ticker)) {
@@ -257,7 +254,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             cacheService.putToCache(CacheDictType.BOARD_ID_BY_TICKER, ticker, boardId, String.class);
             return boardId;
         }
-    }
+    }*/
 
     /**
      * Запросить имя инструмента.
@@ -265,7 +262,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @param ticker - тикер.
      * @return
      */
-    @Override
+   /* @Override
     public String getInstrumentName(String boardId, String ticker) {
 
         if (cacheService.checkDict(CacheDictType.INSTRUMENT_NAME, ticker)) {
@@ -283,7 +280,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             cacheService.putToCache(CacheDictType.INSTRUMENT_NAME, ticker, instrumentName, String.class);
             return instrumentName;
         }
-    }
+    }*/
 
     /**
      * Запросить и посчитать дельту.
@@ -293,12 +290,12 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @param purchaseList      - список покупок пользователя.
      * @return
      */
-    @Override
+    /*@Override
     public DeltaRs calculateDelta(String boardId, String ticker, Double currentStockPrice, List<Purchase> purchaseList) {
 
         if (!isBlank(ticker) && !isBlank(boardId) && (currentStockPrice != null && currentStockPrice > 0)) {
 
-            MoexDocumentRs doc = getHistory(ticker, boardId, null);
+            MoexDocumentRs doc = getHistory(ticker, boardId, null);*/
 
             /*
              * Как считаем:
@@ -307,7 +304,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
              * deltaPeriod = Миллисекунды от (текущая дата - (самая ранняя дата истории))
              * tinkoffDelta = (сумма покупок * текущую цену рынка) - (Сумма(лот * цену по каждой покупке))
              */
-            return DeltaRs.builder()
+       /*     return DeltaRs.builder()
                     .tinkoffDelta(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_FINAL))
                     .tinkoffDeltaPercent(getTcsDeltaValues(purchaseList, currentStockPrice).get(TinkoffDeltaFinalValuesType.DELTA_PERCENT))
                     .deltaInRubles(doc.getData()
@@ -341,7 +338,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
         } else {
             return null;
         }
-    }
+    }*/
 
     /**
      * Подготовить финальную цену (цена * лот).
@@ -350,7 +347,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @param user
      * @return
      */
-    @Override
+ /*   @Override
     public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
         if (bond.getIsBought()) { // если это ФАКТ
             return bond.getPurchaseList().stream()
@@ -360,14 +357,14 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             return (int) Math.round(((getRealTimeQuote(bond.getTicker()
             )).getCurrentPrice()) * getMinimalLot(bond.getTicker(), user));
         }
-    }
+    }*/
 
     /**
      * Подготовить дивиденды.
      *
      * @return
      */
-    @Override
+  /*  @Override
     public ConsolidatedDividendsRs getDividends(Bond bond, ArNoteUser user) {
         return Optional.of(getDivsByTicker(bond.getTicker()))
                 .orElse(ConsolidatedDividendsRs.builder()
@@ -375,14 +372,14 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                         .percent(0D)
                         .divSum(0D)
                         .build());
-    }
+    }*/
 
     /**
      * Подготовить данные по валюте.
      *
      * @return
      */
-    @Override
+  /*  @Override
     public String getCurrencyOfShare(String ticker) {
         if (cacheService.checkDict(CacheDictType.CURRENCY, ticker)) {
             return cacheService.getDict(CacheDictType.CURRENCY, ticker);
@@ -404,14 +401,14 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             cacheService.putToCache(CacheDictType.CURRENCY, ticker, cur, String.class);
             return cur;
         }
-    }
+    }*/
 
     /**
      * Достать минимальный лот.
      *
      * @return
      */
-    @Override
+  /*  @Override
     @Cacheable(cacheNames = "minimalLotsCache", key = "#user.id")
     public Integer getMinimalLot(String ticker, ArNoteUser user) {
         return getDetailInfo(ticker)
@@ -425,7 +422,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                                 .orElse(1))
                         .orElse(1))
                 .orElse(1);
-    }
+    }*/
 
     /**
      * Запросить исторические данные по котировкам с биржи.
@@ -435,7 +432,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @param forDate -на какую  дату запрашиваем.
      * @return - MoexDocumentRs
      */
-    @Override
+  /*  @Override
     public MoexDocumentRs getHistory(String ticker, String boardId, LocalDate forDate) {
 
         if (cacheService.checkDict(CacheDictType.HISTORY, ticker + boardId)) {
@@ -468,9 +465,9 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
                     start = start + step;
                 } else {
                     isFinalPage = true;
-                    /*
+                    *//*
                      * Подливаем строки из локального документа в итоговый.
-                     */
+                     *//*
                     if (resultDoc.getData() == null) {
                         MoexDataRs dataRs = new MoexDataRs();
                         resultDoc.setData(dataRs);
@@ -501,7 +498,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             cacheService.putToCache(CacheDictType.HISTORY, ticker + boardId, resultDoc, MoexDocumentRs.class);
             return resultDoc;
         }
-    }
+    }*/
 
     /**
      * Определить валюту и курсовой-множитель для рубля.
@@ -509,21 +506,21 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @param currency - валютный идентификатор
      * @return
      */
-    @Override
+  /*  @Override
     public Double getCurrencyMultiplier(String currency) {
 
         CommonMoexDoc doc = httpClient.sendAndMarshall(MoexRestTemplateOperation.GET_CURRENCY_CHANGE_COURSES,
                 null, null);
 
         return calculateCurrencyMultiplier(doc, currency);
-    }
+    }*/
 
     /**
      * Поиск акций по boardId.
      *
      * @return
      */
-    @Override
+   /* @Override
     public MoexDocumentRs findSharesByBoardId(String boardId) {
 
         if (cacheService.checkDict(CacheDictType.FIND_SHARES_BY_BOARD_ID, boardId)) {
@@ -536,14 +533,14 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             return doc;
         }
 
-    }
+    }*/
 
     /**
      * Выкачать и закэшировать режимы торгов.
      *
      * @return
      */
-    @Override
+  /*  @Override
     public List<String> getTradeModes() {
         if (cacheService.getTradeModes() != null && cacheService.getTradeModes().size() > 0) {
             return cacheService.getTradeModes();
@@ -557,7 +554,7 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
             cacheService.putTradeModes(res);
             return res;
         }
-    }
+    }*/
 
     /**
      * Найти бумагу по ключевому слову. Возвращает только акции.
@@ -565,8 +562,8 @@ public class MoexCalculateServiceImpl implements SharesCalcService {
      * @param keyword
      * @return
      */
-    @Override
+   /* @Override
     public MoexDocumentRs findInstrumentsByName(String keyword) {
         return null; // не используется для MOEX.
-    }
+    }*/
 }

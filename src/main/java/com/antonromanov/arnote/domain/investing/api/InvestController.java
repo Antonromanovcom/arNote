@@ -15,26 +15,24 @@ import com.antonromanov.arnote.domain.investing.service.calendar.CalendarService
 import com.antonromanov.arnote.domain.investing.service.returns.ReturnsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.antonromanov.arnote.utils.ArNoteUtils.complexPredicate;
 
 
 /**
  * API для управления инвестициями.
  */
-@CrossOrigin()
+/*@CrossOrigin()
 @RestController
 @RequestMapping("/investing")
-@Slf4j
+@Slf4j*/
 public class InvestController {
 
-    private final UsersRepo usersRepo;
+   /* private final UsersRepo usersRepo;
     private final BondsRepo bondsRepo;
     private final CalendarService calendarService;
     private final ReturnsService returnsService;
@@ -48,7 +46,7 @@ public class InvestController {
         this.returnsService = returnsService;
         this.calendarService = calendarService;
         this.commonService = commonService;
-    }
+    }*/
 
     /**
      * Консолидированные данные по бумагам.
@@ -56,7 +54,7 @@ public class InvestController {
      * @param principal - пользователь.
      * @return ConsolidatedInvestmentDataRs.
      */
-    @CrossOrigin(origins = "*")
+   /* @CrossOrigin(origins = "*")
     @GetMapping("/consolidated")
     public ConsolidatedInvestmentDataRs consolidatedBondsInfo(Principal principal,
                                                               @RequestParam(required = false) String filter,
@@ -69,7 +67,7 @@ public class InvestController {
         log.info("SORT: " + sort);
 
         ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-
+*/
         /*
          * Логика такая:
          *
@@ -78,7 +76,7 @@ public class InvestController {
          * - если filter пришел пустой - выдаем то, что есть с той фильтрацией, что сохранена.
          *
          */
-        if (filter != null) {
+     /*   if (filter != null) {
             if (InvestingFilterMode.valueOf(filter) == InvestingFilterMode.NONE) {
                 user.setInvestingFilterMode(null);
             } else {
@@ -117,7 +115,7 @@ public class InvestController {
                                 user.getInvestingSortMode().getComparator())
                         .collect(Collectors.toList()))
                 .build();
-    }
+    }*/
 
     /**
      * Консолидированные данные по доходности.
@@ -125,7 +123,7 @@ public class InvestController {
      * @param principal - пользователь.
      * @return - ConsolidatedReturnsRs
      */
-    @CrossOrigin(origins = "*")
+  /*  @CrossOrigin(origins = "*")
     @GetMapping("/returns")
     public ConsolidatedReturnsRs returnsConsolidated(Principal principal) throws UserNotFoundException {
 
@@ -148,7 +146,7 @@ public class InvestController {
                         {Targets.SIXTY_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.SIXTY_THOUSANDS_ROUBLES)},
                 }).collect(Collectors.toMap(data -> (Targets) data[0], data -> (Long) data[1])))
                 .build();
-    }
+    }*/
 
     /**
      * Тестовый контроллер для отладки дивов. А то какие-то странные цифры стали приходить.
@@ -156,7 +154,7 @@ public class InvestController {
      * @param principal - пользователь.
      * @return - ConsolidatedReturnsRs
      */
-    @CrossOrigin(origins = "*")
+  /*  @CrossOrigin(origins = "*")
     @GetMapping("/divs")
     public DivsDetailsRs getDivsDetails(Principal principal) throws UserNotFoundException {
 
@@ -176,7 +174,7 @@ public class InvestController {
                                 .reduce((double) 0, Double::sum))
                         .reduce((double) 0, Double::sum))
                 .build();
-    }
+    }*/
 
     /**
      * Найти инструменты по имени / тикеру или их куску.
@@ -185,7 +183,7 @@ public class InvestController {
      * @param keyword   - искомое слово или часть его
      * @return
      */
-    @CrossOrigin(origins = "*")
+  /*  @CrossOrigin(origins = "*")
     @GetMapping("/search")
     public SearchResultsRs findInstrumentByName(Principal principal, @RequestParam @NotNull String keyword) throws UserNotFoundException {
         log.info("============== FIND INSTRUMENT ============== ");
@@ -193,7 +191,7 @@ public class InvestController {
         log.info("USER ID: " + user.getId());
         log.info("keyword: " + keyword);
         return commonService.findInstrument(keyword);
-    }
+    }*/
 
     /**
      * Получить текущую цену по тикеру
@@ -202,7 +200,7 @@ public class InvestController {
      * @param ticker    - тикер.
      * @return
      */
-    @CrossOrigin(origins = "*")
+   /* @CrossOrigin(origins = "*")
     @GetMapping("/price")
     public CurrentPriceRs getCurrentPriceByTickerAndStockExchange(Principal principal,
                                                                   @RequestParam @NotNull String ticker,
@@ -216,7 +214,7 @@ public class InvestController {
 
 
         return commonService.getCurrentPriceByTicker(ticker, StockExchange.valueOf(stockExchange), user);
-    }
+    }*/
 
     /**
      * Получить текущую цену по тикеру на конкретную дату
@@ -226,7 +224,7 @@ public class InvestController {
      * @param purchaseDate - дата покупки.
      * @return
      */
-    @CrossOrigin(origins = "*")
+  /*  @CrossOrigin(origins = "*")
     @GetMapping("/price-by-date")
     public CurrentPriceRs getCurrentPriceByTicker(Principal principal,
                                                   @RequestParam @NotNull String ticker,
@@ -246,7 +244,7 @@ public class InvestController {
 
         return commonService.getCurrentPriceByTickerAndDate(foundBond, purchaseDate);
 
-    }
+    }*/
 
     /**
      * Удалить бумагу
@@ -255,7 +253,7 @@ public class InvestController {
      * @param ticker    - тикер удаляемой бумаги
      * @return
      */
-    @CrossOrigin(origins = "*")
+  /*  @CrossOrigin(origins = "*")
     @DeleteMapping()
     public ConsolidatedInvestmentDataRs deleteInstrument(Principal principal, @RequestParam @NotNull String ticker) throws UserNotFoundException {
 
@@ -273,9 +271,9 @@ public class InvestController {
                         .map(b -> prepareBondRs(b, user))
                         .collect(Collectors.toList()))
                 .build();
-    }
+    }*/
 
-    @CrossOrigin(origins = "*")
+  /*  @CrossOrigin(origins = "*")
     @GetMapping("/calendar")
     public CalendarRs getCalendar(Principal principal) throws UserNotFoundException {
         ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
@@ -285,7 +283,7 @@ public class InvestController {
                         .map(bond -> prepareBondRs(bond, user))
                         .collect(Collectors.toList()))
                 .build());
-    }
+    }*/
 
     /**
      * Добавить бумагу (с покупкой или в качестве плана).
@@ -294,7 +292,7 @@ public class InvestController {
      * @param request   - реквест, содержащий даты и тикер.
      * @return
      */
-    @CrossOrigin(origins = "*")
+ /*   @CrossOrigin(origins = "*")
     @PostMapping()
     public BondRs addInstrument(Principal principal, @RequestBody AddInstrumentRq request) throws UserNotFoundException {
 
@@ -302,12 +300,12 @@ public class InvestController {
         ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
         log.info("USER ID: " + user.getId());
         log.info("ticker: " + request.getTicker());
-        Bond newOrUpdatedBond;
+        Bond newOrUpdatedBond;*/
 
         /**
          * Проверяем что хотя бы один такой инструмент нашелся, иначе кидаем эксепшн.
          */
-        FoundInstrumentRs foundInstrument = commonService.findInstrument(request.getTicker())
+      /*  FoundInstrumentRs foundInstrument = commonService.findInstrument(request.getTicker())
                 .getInstruments().stream()
                 .filter(fi -> request.getTicker().equals(fi.getTicker()))
                 .findFirst().orElseThrow(() -> new BadTickerException(request.getTicker()));
@@ -356,7 +354,7 @@ public class InvestController {
                 .type(newOrUpdatedBond.getType().name())
                 .stockExchange(newOrUpdatedBond.getStockExchange().name())
                 .build();
-    }
+    }*/
 
     /**
      * Подготовить респонс бумаги.
@@ -364,7 +362,7 @@ public class InvestController {
      * @param bond - данные по бумаге из БД.
      * @return
      */
-    private BondRs prepareBondRs(Bond bond, ArNoteUser user) {
+    /*private BondRs prepareBondRs(Bond bond, ArNoteUser user) {
 
         return BondRs.builder()
                 .id(bond.getId())
@@ -380,14 +378,14 @@ public class InvestController {
                 .delta(commonService.prepareDelta(bond))
                 .description(commonService.getDescription(bond))
                 .build();
-    }
+    }*/
 
     /**
      * Достать юзера из Принципала
      *
      * @return LocalUser
      */
-    public ArNoteUser getLocalUserFromPrincipal(Principal principal) throws UserNotFoundException {
+  /*  public ArNoteUser getLocalUserFromPrincipal(Principal principal) throws UserNotFoundException {
         return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-    }
+    }*/
 }

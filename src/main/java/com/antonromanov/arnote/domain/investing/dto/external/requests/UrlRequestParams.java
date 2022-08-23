@@ -1,26 +1,14 @@
 package com.antonromanov.arnote.domain.investing.dto.external.requests;
 
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.enums.BoardsColumns;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.enums.DataBlock;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.enums.MarketData;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.enums.SecuritiesColumns;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.UrlQueryParameters;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import java.util.EnumSet;
-import java.util.stream.Collectors;
-
 /**
  * Параметры URL (которые после ? идут)
  */
-@Data
+/*@Data
 @AllArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)*/
 public class UrlRequestParams {
-    private Boolean issMeta;
+ /*   private Boolean issMeta;
     private String issDp;
     private EnumSet<DataBlock> issOnly;
     private EnumSet<SecuritiesColumns> securitiesColumns;
@@ -50,5 +38,5 @@ public class UrlRequestParams {
         return set==null? null : set.stream()
                 .map((T n) -> func.castIt((UrlQueryParameters) n))
                 .collect(Collectors.joining(","));
-    }
+    }*/
 }

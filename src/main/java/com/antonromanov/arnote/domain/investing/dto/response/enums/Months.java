@@ -6,10 +6,10 @@ import lombok.Getter;
 /**
  * Месяца.
  */
-@AllArgsConstructor
-@Getter
+/*@AllArgsConstructor
+@Getter*/
 public enum Months {
-    JAN("January", "Январь", 1),
+   /* JAN("January", "Январь", 1),
     FEB("February", "Февраль", 2),
     MAR("March", "Март", 3),
     APR("April", "Апрель", 4),
@@ -24,5 +24,5 @@ public enum Months {
 
     private final String englishName;
     private final String russianName;
-    private final Integer number;
+    private final Integer number;*/
 }

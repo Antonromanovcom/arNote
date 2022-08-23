@@ -1,20 +1,13 @@
 package com.antonromanov.arnote.domain.investing.dto.response;
 
-import com.antonromanov.arnote.domain.investing.dto.response.serializers.DoubleSerializer;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-
 /**
  * Респонс по ценной бумаге
  */
-@Data
+/*@Data
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor*/
 public class BondRs {
-    @JsonIgnore
+   /* @JsonIgnore
     private final Long id;
     private final String ticker;
     @JsonSerialize(using = DoubleSerializer.class)
@@ -27,5 +20,5 @@ public class BondRs {
     private final String description; // описание бумаги
     private final DeltaRs delta; // доступный в истории биржи период дельты
     private final String stockExchange; // биржа
-    private Boolean isBought; // факт / План
+    private Boolean isBought; // факт / План*/
 }

@@ -1,18 +1,12 @@
 package com.antonromanov.arnote.domain.investing.dto.common;
 
-import com.antonromanov.arnote.domain.investing.dto.response.BondRs;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-import java.util.Comparator;
-
 /**
  * Режим сортировки.
  */
-@AllArgsConstructor
-@Getter
+/*@AllArgsConstructor
+@Getter*/
 public enum InvestingSortMode {
-    TICKER_ASC("Сортировка по тикеру", Comparator.comparing(BondRs::getTicker)),
+ /*   TICKER_ASC("Сортировка по тикеру", Comparator.comparing(BondRs::getTicker)),
     TICKER_DESC("Сортировка по тикеру обратная", Comparator.comparing(BondRs::getTicker).reversed()),
     DIV_RUB_ASC("Сортировка по дивиденду в рублях", Comparator.comparing(bondRs->{
         return bondRs.getDividends().getDivSum();
@@ -47,5 +41,5 @@ public enum InvestingSortMode {
 
 
     private final String description;
-    private final Comparator<BondRs> comparator;
+    private final Comparator<BondRs> comparator;*/
 }

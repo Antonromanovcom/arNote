@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import java.util.Arrays;
 
-@AllArgsConstructor
-@Getter
+/*@AllArgsConstructor
+@Getter*/
 public enum Currencies {
-    RUB("SUR", "RUB", null),
+   /* RUB("SUR", "RUB", null),
     USD("USD", null,"USD/RUB"),
     GBP("GBP", null,null),
     EUR("EUR", null,"EUR/RUB");
@@ -25,5 +25,5 @@ public enum Currencies {
                 .filter(e->e.code.equals(name) || (e.secondName!=null && e.secondName.equals(name)))
                 .findFirst()
                 .orElse(null);
-    }
+    }*/
 }

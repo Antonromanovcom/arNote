@@ -1,35 +1,27 @@
 package com.antonromanov.arnote.domain.investing.dto.response;
 
-import com.antonromanov.arnote.domain.investing.dto.response.serializers.DoubleSerializer;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Консолидированная инвест-таблица.
  */
-@Data
+/*@Data
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor*/
 public class ConsolidatedDividendsRs {
-    private final List<DividendRs> dividendList;
+   /* private final List<DividendRs> dividendList;
 
     @JsonSerialize(using = DoubleSerializer.class)
     private Double divSum; // Сумма дивидендов за прошлый год
     @JsonSerialize(using = DoubleSerializer.class)
-    private Double percent;
+    private Double percent;*/
 
     /**
      * Подсчитать сумму дивидендов.
      */
-    public void calculateSum() {
+   /* public void calculateSum() {
         if (this.getDividendList() != null && this.getDividendList().size() > 0) {
             this.divSum = dividendList.stream()
                     .filter(div -> (LocalDate.parse(div.getRegistryCloseDate())).getYear() == LocalDate.now().getYear() - 1)
@@ -38,7 +30,7 @@ public class ConsolidatedDividendsRs {
         } else {
             this.divSum = 0D;
         }
-    }
+    }*/
 
     /**
      * Подсчитать проценты. То есть процент у нас это:
@@ -47,7 +39,7 @@ public class ConsolidatedDividendsRs {
      *
      * @param history - выборка по ставкам
      */
-    public void calculatePercent(MoexDocumentRs history) {
+   /* public void calculatePercent(MoexDocumentRs history) {
         if (this.getDividendList() != null && this.getDividendList().size() > 0 && !Double.isNaN(divSum)) {
 
             Double v1 = dividendList.stream()
@@ -61,7 +53,7 @@ public class ConsolidatedDividendsRs {
         } else {
             this.percent = 0D;
         }
-    }
+    }*/
 
 
     /**
@@ -69,10 +61,10 @@ public class ConsolidatedDividendsRs {
      *
      * @param history - выборка по ставкам с биржи.
      */
-    private Double calculatePrice(MoexDocumentRs history) {
-        /*
+   /* private Double calculatePrice(MoexDocumentRs history) {
+        *//*
          * Берем список дивов и выбираем любую дату из прошлого года.
-         */
+         *//*
         Optional<LocalDate> dateOfDid = dividendList.stream()
                 .filter(div -> LocalDate.parse(div.getRegistryCloseDate()).getYear() == LocalDate.now().getYear() - 1)
                 .findFirst()
@@ -85,6 +77,6 @@ public class ConsolidatedDividendsRs {
                 .orElse("0.0"))
                 .map(Double::valueOf)
                 .orElse(0D);
-    }
+    }*/
 
 }

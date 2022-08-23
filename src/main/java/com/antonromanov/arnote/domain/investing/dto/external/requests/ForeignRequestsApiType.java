@@ -1,8 +1,5 @@
 package com.antonromanov.arnote.domain.investing.dto.external.requests;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 /**
  * Так как для буржуйских бумаг пришлось использовать разные API, решил:
  *
@@ -12,12 +9,12 @@ import lombok.Getter;
  * 2. Разные типы API и соответственно разные типы урлов к ним (как минимум - хостов) решил хранить в енумах.
  */
 
-@Getter
-@AllArgsConstructor
+/*@Getter
+@AllArgsConstructor*/
 public enum ForeignRequestsApiType {
-    ALFA_ADVANTAGE("www.alphavantage.co"),
+   /* ALFA_ADVANTAGE("www.alphavantage.co"),
     MARKETSTACK("api.marketstack.com/v1"),
     YAHOO_FINANCE("query1.finance.yahoo.com");
 
-    private final String url;
+    private final String url;*/
 }

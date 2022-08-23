@@ -12,30 +12,27 @@ import com.antonromanov.arnote.domain.investing.service.calc.bonds.BondCalcServi
 import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.domain.investing.service.calc.shares.common.CalculateFactory;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.antonromanov.arnote.utils.ArNoteUtils.filterByKeyword;
-import static com.antonromanov.arnote.utils.ArNoteUtils.prepareInstruments;
 
 /**
  * Сервис обрабатывающий операции, например, выдачи текущей цены бумаги, общие для разных типов (акция / облигация)
  * и работающий как фабрика.
  */
-@Service
+// @Service
 public class CommonService {
 
-    private final BondCalcService bondCalcService;
+   /* private final BondCalcService bondCalcService;
     private final CalculateFactory calcFactory;
 
     public CommonService(CalculateFactory calcFactory, BondCalcService bondCalcService) {
         this.calcFactory = calcFactory;
         this.bondCalcService = bondCalcService;
-    }
+    }*/
 
     /**
      * Посчитать текущую стоимость бумаги.
@@ -43,13 +40,13 @@ public class CommonService {
      * @param bond
      * @return
      */
-    public Double prepareCurrentPrice(Bond bond) {
+  /*  public Double prepareCurrentPrice(Bond bond) {
         return bond.getType() == BondType.SHARE ?
                 ((calcFactory.getCalculator(bond.getStockExchange()))
                         .getRealTimeQuote(bond.getTicker())
                         .getCurrentPrice()) :
                 bondCalcService.getCurrentBondPrice(bond.getTicker());
-    }
+    }*/
 
     /**
      * Получить валюту бумаги.
@@ -57,11 +54,11 @@ public class CommonService {
      * @param bond
      * @return
      */
-    public String getCurrency(Bond bond, ArNoteUser user) {
+  /*  public String getCurrency(Bond bond, ArNoteUser user) {
         return bond.getType() == BondType.SHARE ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).getCurrencyOfShare(bond.getTicker())) :
                 bondCalcService.getBondCurrency(bond.getTicker()).name();
-    }
+    }*/
 
     /**
      * Получить дивы или купоны в формате дивов.
@@ -69,11 +66,11 @@ public class CommonService {
      * @param bond
      * @return
      */
-    public ConsolidatedDividendsRs getDivsOrCoupons(Bond bond, ArNoteUser user) {
+    /*public ConsolidatedDividendsRs getDivsOrCoupons(Bond bond, ArNoteUser user) {
         return bond.getType() == BondType.SHARE ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).getDividends(bond, user)) :
                 bondCalcService.getCoupons(bond, user);
-    }
+    }*/
 
 
     /**
@@ -82,11 +79,11 @@ public class CommonService {
      * @param bond
      * @return
      */
-    public Integer getLot(Bond bond, ArNoteUser user) {
+   /* public Integer getLot(Bond bond, ArNoteUser user) {
         return bond.getType() == BondType.SHARE ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).getMinimalLot(bond.getTicker(), user)) :
                 bondCalcService.getBondLot(bond, user, bond.getPurchaseList());
-    }
+    }*/
 
 
     /**
@@ -95,11 +92,11 @@ public class CommonService {
      * @param bond
      * @return
      */
-    public Integer getFinalPrice(Bond bond, ArNoteUser user) {
+   /* public Integer getFinalPrice(Bond bond, ArNoteUser user) {
         return bond.getType() == BondType.SHARE ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).calculateFinalPrice(bond, user)) :
                 bondCalcService.calculateFinalPrice(bond, user);
-    }
+    }*/
 
 
     /**
@@ -108,14 +105,14 @@ public class CommonService {
      * @param bond
      * @return
      */
-    public String getDescription(Bond bond) {
+   /* public String getDescription(Bond bond) {
 
         SharesCalcService service = calcFactory.getCalculator(bond.getStockExchange());
 
         return bond.getType() == BondType.SHARE ?
                 (service.getInstrumentName(service.getBoardId(bond.getTicker()), bond.getTicker())) :
                 (bondCalcService.getBondName(bond.getTicker()).orElse("-"));
-    }
+    }*/
 
 
     /**
@@ -124,7 +121,7 @@ public class CommonService {
      * @param bond
      * @return
      */
-    public DeltaRs prepareDelta(Bond bond) {
+   /* public DeltaRs prepareDelta(Bond bond) {
         SharesCalcService service = calcFactory.getCalculator(bond.getStockExchange());
 
         DeltaRs localDelta =  bond.getType() == BondType.SHARE ?
@@ -144,7 +141,7 @@ public class CommonService {
                 .deltaPeriod(0L)
                 .tinkoffDelta(0D)
                 .build();
-    }
+    }*/
 
 
     /**
@@ -153,15 +150,15 @@ public class CommonService {
      * @param keyword - ключ, по которому ищем.
      * @return
      */
-    public SearchResultsRs findInstrument(String keyword) {
+  /*  public SearchResultsRs findInstrument(String keyword) {
         SharesCalcService moexService = calcFactory.getCalculator(StockExchange.MOEX);
         SharesCalcService foreignService = calcFactory.getCalculator(StockExchange.SPB);
         Iterator<String> it = moexService.getTradeModes().iterator();
         MoexDocumentRs allShares = new MoexDocumentRs();
 
-        /*
+        *//*
          * ============= Московская биржа: только российские акции и облигации ====================
-         */
+         *//*
         while (it.hasNext()) {
             String boardId = it.next();
             MoexDocumentRs halfWayResult = moexService.findSharesByBoardId(boardId);
@@ -182,9 +179,9 @@ public class CommonService {
                 .filter(filterByKeyword(keyword))
                 .collect(Collectors.toList());
 
-        /*
+        *//*
          * ============= Иностранные акции ====================
-         */
+         *//*
         List<MoexRowsRs> foreignShares = (foreignService.findInstrumentsByName(keyword)).getData().getRow();
 
         SearchResultsRs searchResults = new SearchResultsRs();
@@ -193,7 +190,7 @@ public class CommonService {
         searchResults.getInstruments().addAll(prepareInstruments(foreignShares, BondType.SHARE, StockExchange.SPB));
 
         return searchResults;
-    }
+    }*/
 
     /**
      * Получить текущую цену бумаги.
@@ -202,12 +199,12 @@ public class CommonService {
      * @param user - текущий пользак.
      * @return - CurrentPriceRs.
      */
-    public CurrentPriceRs getCurrentPriceByTicker(String ticker, StockExchange se, ArNoteUser user) {
+   /* public CurrentPriceRs getCurrentPriceByTicker(String ticker, StockExchange se, ArNoteUser user) {
         SharesCalcService calculator = calcFactory.getCalculator(se);
         CurrentPriceRs resp = calculator.getRealTimeQuote(ticker);
         resp.setMinLot(calculator.getMinimalLot(ticker, user));
         return resp;
-    }
+    }*/
 
     /**
      * Получить ставку по тикеру и дате.
@@ -217,7 +214,7 @@ public class CommonService {
      * @param purchaseDate
      * @return
      */
-    public CurrentPriceRs getCurrentPriceByTickerAndDate(FoundInstrumentRs foundBond, String purchaseDate) {
+   /* public CurrentPriceRs getCurrentPriceByTickerAndDate(FoundInstrumentRs foundBond, String purchaseDate) {
 
         SharesCalcService calculator = calcFactory.getCalculator(foundBond.getStockExchange());
 
@@ -239,7 +236,7 @@ public class CommonService {
                         .ticker(data.getSecid())
                         .build())
                 .orElse(calculator.getRealTimeQuote(foundBond.getTicker()));
-    }
+    }*/
 
     /**
      * Достаем Биржу по тикеру.
@@ -247,11 +244,11 @@ public class CommonService {
      * @param ticker
      * @return
      */
-    public StockExchange getInstrumentStockExchange(String ticker) {
+  /*  public StockExchange getInstrumentStockExchange(String ticker) {
         return findInstrument(ticker).getInstruments().stream()
                 .filter(i->ticker.equals(i.getTicker()))
                 .findFirst()
                 .map(FoundInstrumentRs::getStockExchange)
                 .orElse(StockExchange.MOEX); //todo: спорный момент. Тут по хорошему надо эксепшн бросать.
-    }
+    }*/
 }

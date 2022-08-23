@@ -14,17 +14,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import static com.antonromanov.arnote.utils.ArNoteUtils.monthNameToNumber;
 
-@Service
-public class CalendarServiceImpl implements CalendarService {
+
+//@Service
+public class CalendarServiceImpl /*implements CalendarService*/ {
 
     /**
      * Отдать календарь выплат
      *
      * @return
      */
-    @Override
+   /* @Override
     public CalendarRs getCalendar(ConsolidatedInvestmentDataRs data) {
 
         LinkedHashMap<Months, List<ReturnsPerMonthRs>> map = Stream.of(Months.values())
@@ -44,14 +44,14 @@ public class CalendarServiceImpl implements CalendarService {
                                 .build())
                         .collect(Collectors.toCollection(LinkedList::new)))
                 .build();
-    }
+    }*/
 
     /**
      * Собрать дивы / купоны упорядоченно.
      *
      * @return
      */
-    @Override
+  /*  @Override
     public List<ReturnsPerMonthRs> collectReturns(ConsolidatedInvestmentDataRs data, String month) {
 
         return data.getBonds()
@@ -68,5 +68,5 @@ public class CalendarServiceImpl implements CalendarService {
                                 .registryCloseDate(d.getRegistryCloseDate())
                                 .build()))
                 .collect(Collectors.toList());
-    }
+    }*/
 }

@@ -15,21 +15,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.antonromanov.arnote.utils.ArNoteUtils.*;
 
-@Service
-@Slf4j
-public class RequestServiceImpl implements RequestService {
+/*@Service
+@Slf4j*/
+public class RequestServiceImpl /*implements RequestService*/ {
 
     /**
      * url на получение токена
      */
-    @Value("${moexUrl}")
+    /*@Value("${moexUrl}")
     public String MOEX_URL;
 
     private final XmlHandler xmlParser;
@@ -41,7 +39,7 @@ public class RequestServiceImpl implements RequestService {
         this.xmlParser = xmlParser;
         this.rt = rt;
         this.objectMapper = objectMapper;
-    }
+    }*/
 
 
     /**
@@ -50,7 +48,7 @@ public class RequestServiceImpl implements RequestService {
      * @param ticker
      * @return
      */
-    @Override
+  /*  @Override
     public Optional<ConsolidatedDividendsRs> sendAndParse(String ticker) {
         try {
             counter = +1;
@@ -62,14 +60,14 @@ public class RequestServiceImpl implements RequestService {
             return Optional.empty();
         }
     }
-
+*/
     /**
      * Сделать запрос и смаршелить результат.
      *
      * @param type
      * @return
      */
-    @Override
+  /*  @Override
     public CommonMoexDoc sendAndMarshall(MoexRestTemplateOperation type, String ticker, String boardId) {
         if (type != MoexRestTemplateOperation.GET_DIVS_MOEX) {
             try {
@@ -91,9 +89,9 @@ public class RequestServiceImpl implements RequestService {
         } else {
             throw new MoexRequestException();
         }
-    }
+    }*/
 
-    @Override
+ /*   @Override
     public CommonMoexDoc getHistory(MoexRestTemplateOperation type, String ticker, String boardId, String dateFrom, String dateTill, int start) {
         try {
             log.info("Sending MOEX request for history. Url: {}",
@@ -107,7 +105,7 @@ public class RequestServiceImpl implements RequestService {
             throw new MoexRequestException();
         }
     }
-
+*/
     /**
      * Подготовить мапу параметров.
      *
@@ -115,25 +113,25 @@ public class RequestServiceImpl implements RequestService {
      * @param param2 - для MOEX как правило boardId.
      * @return
      */
-    private Map<String, String> prepareParametersMap(String param1, String param2) {
+ /*   private Map<String, String> prepareParametersMap(String param1, String param2) {
         Map<String, String> m = new HashMap<>();
         m.put("p1", param1);
         m.put("p2", param2);
         return m;
-    }
+    }*/
 
     /**
      * Подготовить  мапу нумерованных параметров для URLа
      *
      * @return
      */
-    private Map<String, String> prepareParametersMapFromList(LinkedList<String> paramList) {
+  /*  private Map<String, String> prepareParametersMapFromList(LinkedList<String> paramList) {
         List<Integer> indexList = new LinkedList<>();
         for (int i = 0; i < paramList.size(); i++) {
             indexList.add(i);
         }
         return indexList.stream().collect(Collectors.toMap(i -> "p"+(i+1), paramList::get));
-    }
+    }*/
 
     /**
      * Сериализовать параметры запроса в MultiValueMap.
@@ -141,24 +139,24 @@ public class RequestServiceImpl implements RequestService {
      * @param type
      * @return
      */
-    @Override
+  /*  @Override
     public MultiValueMap<String, String> serializeObjectToMVMap(Object type) {
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
         Map<String, String> maps = objectMapper.convertValue(type, new TypeReference<Map<String, String>>() {
         });
         parameters.setAll(maps);
         return parameters;
-    }
+    }*/
 
     /**
      * Нужно исключительно для тестирования.
      *
      * @return
      */
-    @Override
+  /*  @Override
     public int getCounter() {
         return counter;
-    }
+    }*/
 
     /**
      * Отправить запрос в буржуйское API.
@@ -169,7 +167,7 @@ public class RequestServiceImpl implements RequestService {
      * @param clazz       - класс респонса.
      * @return
      */
-    @Override
+  /*  @Override
     public <T> T sendAndMarshallForeignRequest(ForeignRequests requestType, LinkedList<String> ticker, Class<T> clazz) {
 
         String url = prepareForeignUrl(requestType,
@@ -183,7 +181,7 @@ public class RequestServiceImpl implements RequestService {
             log.error("Произошла ошибка парсинга результата по запросу: {}. Ошибка: {}", requestType, e.getMessage());
             return null;
         }
-    }
+    }*/
 
     /**
      * Отправить запрос в буржуйское API без сериализации (вернуть сразу респонс назад).
@@ -194,7 +192,7 @@ public class RequestServiceImpl implements RequestService {
      *
      * @return
      */
-    @Override
+  /*  @Override
     public Optional<String> sendForeignRequest(ForeignRequests requestType, LinkedList<String> ticker) {
         String url = prepareForeignUrl(requestType,
                 serializeObjectToMVMap(requestType.getRequestParams()), prepareParametersMapFromList(ticker));
@@ -205,5 +203,5 @@ public class RequestServiceImpl implements RequestService {
         } catch (Exception e){
             return Optional.empty();
         }
-    }
+    }*/
 }

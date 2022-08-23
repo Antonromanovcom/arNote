@@ -1,10 +1,5 @@
 package com.antonromanov.arnote.domain.investing.dto.cache;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import java.time.LocalTime;
-import java.util.UUID;
-
 /**
  * Сущность, хранящая в кэше все нужные нам данные, полученные с биржи.
  *
@@ -19,10 +14,10 @@ import java.util.UUID;
  * - calculateService.prepareBoardId - board_id - String
  * - calculateService.getInstrumentName - Имя инструмента - Optional<String>
  */
-@AllArgsConstructor
-@Data
+/*@AllArgsConstructor
+@Data*/
 public class CachedStorage {
-    private final UUID uuid; // уникальной идентификатор записи
+   /* private final UUID uuid; // уникальной идентификатор записи
     private final int count; // попробуем использовать для сохранения статистики
-    private final LocalTime creationTime;
+    private final LocalTime creationTime;*/
 }

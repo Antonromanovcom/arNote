@@ -1,26 +1,19 @@
 package com.antonromanov.arnote.domain.investing.dto.response;
 
-import com.antonromanov.arnote.domain.investing.dto.response.serializers.DoubleSerializer;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-
 /**
  * Дельта изменения цены бумаги за период истории доступный на бирже.
  */
-@Data
+/*@Data
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor*/
 public class DeltaRs {
 
     /**
      * Дельта изменения бумаги в рублях. Берутся данные с биржи за максимально доступный диапазон, берется самая
      * ранняя ранняя бумага и ее цена. Потом считаем текущая цена минус самая ранняя
      */
-    @JsonSerialize(using = DoubleSerializer.class)
-    private final Double deltaInRubles; //todo: переименовать в более внятное на беке и фронте
+  /*  @JsonSerialize(using = DoubleSerializer.class)
+    private final Double deltaInRubles; //todo: переименовать в более внятное на беке и фронте*/
 
     /**
      * Два варианта расчета в зависимости от переключателя deltaToggle у ArNoteUser:
@@ -40,26 +33,26 @@ public class DeltaRs {
      * Формула расчета = (цена текущая - цена закрытия вчера) * кол-во акций в портфеле
      *
      */
-    @JsonSerialize(using = DoubleSerializer.class)
-    private final Double tinkoffDelta; //todo: переименовать в более внятное на беке и фронте
+  /*  @JsonSerialize(using = DoubleSerializer.class)
+    private final Double tinkoffDelta; //todo: переименовать в более внятное на беке и фронте*/
 
     /**
      * tinkoffDelta в процентах от текущей цены.
      */
-    @JsonProperty("percent")
+   /* @JsonProperty("percent")
     @JsonSerialize(using = DoubleSerializer.class)
-    private final Double tinkoffDeltaPercent; //todo: переименовать в более внятное на беке и фронте
+    private final Double tinkoffDeltaPercent; //todo: переименовать в более внятное на беке и фронте*/
 
     /**
      * Дельта изменения бумаги в рублях. Берутся данные с биржи за максимально доступный диапазон, берется самая
      * ранняя ранняя бумага. Далее - количество дней в миллисекундах от текущей даты до найденной.
      */
-    private final Long deltaPeriod; // todo: тоже путаешься с названием - это оказывается про время а не про деньги
+//    private final Long deltaPeriod; // todo: тоже путаешься с названием - это оказывается про время а не про деньги
 
 
     /**
      * Общий процент. То есть на сколько процентов произошло изменение с начала истории.
      */
-    @JsonSerialize(using = DoubleSerializer.class)
-    private final Double totalPercent;
+//    @JsonSerialize(using = DoubleSerializer.class)
+//    private final Double totalPercent;
 }

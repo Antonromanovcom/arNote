@@ -1,33 +1,16 @@
 package com.antonromanov.arnote.domain.wish.api;
 
-import com.antonromanov.arnote.domain.wish.dto.*;
+import com.antonromanov.arnote.domain.user.service.UserService;
+import com.antonromanov.arnote.domain.wish.dto.rq.SearchWishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
-import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.domain.wish.mapper.WishRsMapper;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.exceptions.enums.ErrorCodes;
-import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
-import com.antonromanov.arnote.domain.wish.dto.ResponseStatusDTO;
-import com.antonromanov.arnote.domain.user.repository.UsersRepo;
-import com.antonromanov.arnote.domain.wish.service.MainService;
-import com.antonromanov.arnote.utils.ControllerBase;
-import lombok.Data;
+import com.antonromanov.arnote.sex.services.MainService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import static com.antonromanov.arnote.utils.ArNoteUtils.*;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import java.util.Collections;
 
 
 //todo: надо нормально поименовать ендпоинты
@@ -41,29 +24,18 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 // SELECT sum(w.price) from arnote.wishes w WHERE w.user_id = 8 AND w.realized AND NOT w.archive - запрос реализованных желаний
 
 /**
- * Основной REST-контроллер приложения.
+ *  REST-контроллер для Желаний.
  */
 @CrossOrigin()
 @RestController
 @RequestMapping("/rest/wishes") //todo: поменять все урлы на нормальные
 @Slf4j
+@AllArgsConstructor
 public class WishController {
 
-    // todo: убрать на хер эти ДТО-хи
-    /*@Data
-    private static class DTO {
-        private List<Wish> list = new ArrayList<>();
-    }
-
-    @Data
-    private static class DtoWithOrder {
-        private List<WishDTOList> list = new ArrayList<>();
-    }*/
-
-    private final MainService mainService;
-    private final Utils utils;
-
-
+  /*  private final MainService mainService;
+    private final UserService userService;
+    private final WishRsMapper rsMapper;*/
 
 
     /**
@@ -73,16 +45,21 @@ public class WishController {
      * @return
      */
     @CrossOrigin(origins = "*")
-    @PostMapping("/filter")
-    public WishListRs findAll(Principal principal, @RequestBody SearchRq request) throws UserNotFoundException {
-        log.info("============== FILTER/SEARCH WISHES ============== "); // todo: в перехватчик и логгер-фильтр
-        log.info("SEARCH KEYWORD: " + request.getWishName());
-        return WishListRs.builder()
-                .list(mainService
-                        .findAllWishesByWish(wish, utils.getUserFromPrincipal(principal))
-                        .orElseGet(ArrayList::new))
-                .build();
+    @PostMapping("/filter") // todo: почему фильтр-то? Это постоянно вводит в заблуждение. Это фильтр все-таки или поиск???
+    public WishListRs findAll(Principal principal, @RequestBody SearchWishRq request) throws UserNotFoundException {
+       /* log.info("============== FILTER/SEARCH WISHES ============== "); // todo: в перехватчик и логгер-фильтр
+        log.info("SEARCH KEYWORD: " + request.getWishName());*/
+       /* return WishListRs.builder()
+             //   .list(rsMapper.mapWishList(mainService.findWishesByName(request.getWishName(), userService.getUserFromPrincipal(principal))))
+                .build();*/
+
+
+        WishListRs list = new WishListRs(Collections.emptyList());
+        return list;
     }
+
+
+
 
     /**
      * Получить все желания с группировкой по месяцам.
@@ -92,7 +69,7 @@ public class WishController {
      * @param resp
      * @return
      */
-    @CrossOrigin(origins = "*")
+   /* @CrossOrigin(origins = "*")
     @GetMapping("/groups") // todo: переименовать
     public ResponseEntity<String> getAllWishesWithMonthGrouping(Principal principal,
                                                                 @RequestParam String sortType,
@@ -150,9 +127,9 @@ public class WishController {
                 return $prepareNoDataYetErrorResponse(ErrorCodes.ERR_O1);
             }
         }, null, null, null, resp);
-    }
+    }*/
 
-    @CrossOrigin(origins = "*")
+  /*  @CrossOrigin(origins = "*")
     @GetMapping("/transferwish")
     public ResponseEntity<String> changeMonthOrder(Principal principal, @RequestParam String id, @RequestParam String month, HttpServletResponse resp) {
         return $do(s -> {
@@ -171,7 +148,7 @@ public class WishController {
             return $prepareResponse(result);
 
         }, null, null, OperationType.EDIT_WISH, resp);
-    }
+    }*/
 
     /**
      * Получить все желания.
@@ -182,7 +159,7 @@ public class WishController {
      * @param resp
      * @return
      */
-    @CrossOrigin(origins = "*")
+   /* @CrossOrigin(origins = "*")
     @GetMapping
     public ResponseEntity<String> getAllWishes(Principal principal,
                                                @RequestParam(required = false) String filter,
@@ -200,14 +177,14 @@ public class WishController {
 
             ArNoteUser localUser = getUserFromPrincipal(principal);
 
-            /*
+            *//*
              * Логика такая:
              *
              * - если фильтр приходит не пустой - задаем и сохраняем новый фильтр.
              * - если фильтр приходит не пустой, но он NONE, просто удаляем сохраненный фильтр из записи пользака.
              * - если filter пришел пустой - выдаем то, что есть с той фильтрацией, что сохранена.
              *
-             */
+             *//*
             if (filter != null) {
                 localUser.setFilterMode(FilterMode.valueOf(filter));
                 localUser = usersRepo.saveAndFlush(localUser);
@@ -610,7 +587,7 @@ public class WishController {
             fixNullUserFields(localUser);
             return $prepareResponse(createGsonBuilder().toJson(localUser));
         }, null, null, OperationType.GET_CURRENT_USER, resp);
-    }
+    }*/
 
 
     /**
@@ -620,7 +597,7 @@ public class WishController {
      * @param resp
      * @return
      */
-    @CrossOrigin(origins = "*")
+   /* @CrossOrigin(origins = "*")
     @PostMapping(value = "/users/forget", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> returnUserPassword(Principal principal, @RequestParam(name = "email") String email, HttpServletResponse resp) {
 
@@ -634,7 +611,7 @@ public class WishController {
                 return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
             }
         }, null, null, null, resp);
-    }
+    }*/
 
     /**
      * Сброс юзерского пароля админом.
@@ -643,7 +620,7 @@ public class WishController {
      * @param resp
      * @return
      */
-    @CrossOrigin(origins = "*")
+  /*  @CrossOrigin(origins = "*")
     @GetMapping("/users/reset/{id}")
     public ResponseEntity<String> resetUserPasswordByAdmin(Principal principal, @PathVariable String id, HttpServletResponse resp) {
 
@@ -655,7 +632,7 @@ public class WishController {
                 return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
             }
         }, null, null, null, resp);
-    }
+    }*/
 
 
     /**
@@ -665,22 +642,14 @@ public class WishController {
      * @param email
      * @return
      */
-    private EmailStatus changePwd(ArNoteUser user, String email) {
+  /*  private EmailStatus changePwd(ArNoteUser user, String email) {
 
         String pwd = generateRandomPassword();
         user.setPwd(passwordEncoder.encode(pwd));
         ArNoteUser updatedUser = usersRepo.saveAndFlush(user);
         return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd +
                 " [email - " + email + " ]");
-    }
+    }*/
 
-    /**
-     * Вытаскиваем юзера из Принципала
-     *
-     * @param principal
-     * @return
-     */
-    private ArNoteUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
-        return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-    }
+
 }
