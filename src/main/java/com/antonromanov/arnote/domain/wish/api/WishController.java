@@ -1,11 +1,8 @@
 package com.antonromanov.arnote.domain.wish.api;
 
-import com.antonromanov.arnote.domain.user.service.UserService;
 import com.antonromanov.arnote.domain.wish.dto.rq.SearchWishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
-import com.antonromanov.arnote.domain.wish.mapper.WishRsMapper;
 import com.antonromanov.arnote.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.sex.services.MainService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -47,8 +44,8 @@ public class WishController {
     @CrossOrigin(origins = "*")
     @PostMapping("/filter") // todo: почему фильтр-то? Это постоянно вводит в заблуждение. Это фильтр все-таки или поиск???
     public WishListRs findAll(Principal principal, @RequestBody SearchWishRq request) throws UserNotFoundException {
-       /* log.info("============== FILTER/SEARCH WISHES ============== "); // todo: в перехватчик и логгер-фильтр
-        log.info("SEARCH KEYWORD: " + request.getWishName());*/
+        log.info("============== FILTER/SEARCH WISHES ============== "); // todo: в перехватчик и логгер-фильтр
+      //  log.info("SEARCH KEYWORD: " + request.getWishName());
        /* return WishListRs.builder()
              //   .list(rsMapper.mapWishList(mainService.findWishesByName(request.getWishName(), userService.getUserFromPrincipal(principal))))
                 .build();*/

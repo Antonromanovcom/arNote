@@ -1,10 +1,7 @@
 package com.antonromanov.arnote.sex.utils;
 
 
-import com.antonromanov.arnote.entity.Wish;
-import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.exceptions.JsonNullException;
-import com.antonromanov.arnote.exceptions.JsonParseException;
 import com.antonromanov.arnote.sex.entity.Salary;
 import com.antonromanov.arnote.sex.enums.SortMode;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
@@ -13,19 +10,16 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
-import org.passay.CharacterRule;
-import org.passay.EnglishCharacterData;
-import org.passay.PasswordGenerator;
 import org.springframework.stereotype.Service;
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Time;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.ZoneId;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
@@ -275,7 +269,7 @@ public class Utils {
         return wishAfterParse;
     }*/
 
-    public static String generateRandomPassword() {
+    /*public static String generateRandomPassword() {
 
         List rules = Arrays.asList(new CharacterRule(EnglishCharacterData.UpperCase, 1),
                 new CharacterRule(EnglishCharacterData.LowerCase, 1), new CharacterRule(EnglishCharacterData.Digit, 1), new CharacterRule(EnglishCharacterData.Special, 1));
@@ -283,7 +277,7 @@ public class Utils {
         PasswordGenerator generator = new PasswordGenerator();
         String password = generator.generatePassword(8, rules);
         return password;
-    }
+    }*/
 
     public static String computerMonth(Integer proirity) {
         Date date = new Date();

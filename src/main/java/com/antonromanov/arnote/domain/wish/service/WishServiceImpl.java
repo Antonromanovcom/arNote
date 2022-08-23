@@ -1,25 +1,5 @@
 package com.antonromanov.arnote.domain.wish.service;
 
-import au.com.bytecode.opencsv.CSVReader;
-import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
-import com.antonromanov.arnote.domain.wish.dto.*;
-import com.antonromanov.arnote.domain.wish.dto.rq.SearchWishRq;
-import com.antonromanov.arnote.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.domain.wish.repositoty.SalaryRepository;
-import com.antonromanov.arnote.domain.wish.repositoty.WishRepository;
-import org.apache.commons.math3.util.ArithmeticUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-
-
 /*@Service*/
 public class WishServiceImpl /*implements WishService*/ {
 

@@ -7,10 +7,9 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString(exclude = "id")
 @EqualsAndHashCode
+@NoArgsConstructor
 @Table(name = "wishes")
 public class Wish {
 

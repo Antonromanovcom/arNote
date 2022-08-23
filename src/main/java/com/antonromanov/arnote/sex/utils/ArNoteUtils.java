@@ -1,43 +1,24 @@
 package com.antonromanov.arnote.sex.utils;
 
 import com.antonromanov.arnote.model.investing.Purchase;
-import com.antonromanov.arnote.model.investing.response.enums.TinkoffDeltaFinalValuesType;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexRowsRs;
-import com.antonromanov.arnote.model.wish.WishDTO;
 import com.antonromanov.arnote.sex.entity.common.Salary;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
-import com.antonromanov.arnote.sex.model.wish.Wish;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.passay.CharacterRule;
-import org.passay.EnglishCharacterData;
-import org.passay.PasswordGenerator;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.time.*;
 import java.time.format.TextStyle;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -276,7 +257,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return wishAfterParse;
     }*/
 
-    public static String generateRandomPassword() {
+  /*  public static String generateRandomPassword() {
 
         List rules = Arrays.asList(new CharacterRule(EnglishCharacterData.UpperCase, 1),
                 new CharacterRule(EnglishCharacterData.LowerCase, 1), new CharacterRule(EnglishCharacterData.Digit, 1), new CharacterRule(EnglishCharacterData.Special, 1));
@@ -284,7 +265,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         PasswordGenerator generator = new PasswordGenerator();
         String password = generator.generatePassword(8, rules);
         return password;
-    }
+    }*/
 
     public static String computerMonth(Integer proirity) {
         Date date = new Date();
