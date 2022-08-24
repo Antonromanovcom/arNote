@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.model.wish.enums;
+package com.antonromanov.arnote.sex.model.wish.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

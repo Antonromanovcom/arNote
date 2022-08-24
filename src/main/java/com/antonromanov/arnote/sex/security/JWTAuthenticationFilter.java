@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.security;
+package com.antonromanov.arnote.sex.security;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;

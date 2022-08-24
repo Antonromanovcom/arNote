@@ -1,27 +1,21 @@
-package com.antonromanov.arnote.model.wish;
+package com.antonromanov.arnote.sex.model.wish;
 
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "id")
-@EqualsAndHashCode
 @Table
 public class WishGroup {
 
     @Id
-    @Column(name="id", nullable = true)
+    @Column(name="id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_seq_gen")
     @SequenceGenerator(name = "group_seq_gen", sequenceName ="group_id_seq", allocationSize = 1)
     private long id;
 
-    //@OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
-    //private List<Wish> groupName;
     private String groupName;
 }
 

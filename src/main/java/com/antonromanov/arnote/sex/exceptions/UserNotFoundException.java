@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.exceptions;
+package com.antonromanov.arnote.sex.exceptions;
 
 public class UserNotFoundException extends Exception {
 

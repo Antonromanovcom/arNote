@@ -1,7 +1,8 @@
 package com.antonromanov.arnote.sex.service;
 
 
-import com.antonromanov.arnote.entity.Wish;
+import com.antonromanov.arnote.sex.model.wish.Wish;
+
 import java.util.List;
 import java.util.Optional;
 

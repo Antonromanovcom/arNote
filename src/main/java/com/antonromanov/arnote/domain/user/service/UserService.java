@@ -1,5 +1,7 @@
 package com.antonromanov.arnote.domain.user.service;
 
+import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.sex.model.ArNoteUser;
 import java.security.Principal;
 
 /**
@@ -13,8 +15,7 @@ public interface UserService {
      * @param principal
      * @return
      */
-    com.antonromanov.arnote.sex.model.ArNoteUser getUserFromPrincipal(Principal principal) throws
-            com.antonromanov.arnote.exceptions.UserNotFoundException;
+    ArNoteUser getUserFromPrincipal(Principal principal) throws UserNotFoundException;
 
 
     /**

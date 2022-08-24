@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.sex.services;
 
-import com.antonromanov.arnote.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
 
 
 /*@Service

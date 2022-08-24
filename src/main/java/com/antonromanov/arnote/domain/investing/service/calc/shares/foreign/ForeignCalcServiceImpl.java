@@ -1,45 +1,5 @@
 package com.antonromanov.arnote.domain.investing.service.calc.shares.foreign;
 
-import com.antonromanov.arnote.exceptions.MoexRequestException;
-import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
-import com.antonromanov.arnote.domain.investing.dto.common.Bond;
-import com.antonromanov.arnote.domain.investing.dto.common.Purchase;
-import com.antonromanov.arnote.domain.investing.dto.cache.enums.CacheDictType;
-import com.antonromanov.arnote.domain.investing.dto.external.requests.ForeignRequests;
-import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTemplateOperation;
-import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
-import com.antonromanov.arnote.domain.investing.dto.response.CurrentPriceRs;
-import com.antonromanov.arnote.domain.investing.dto.response.DeltaRs;
-import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.TinkoffDeltaFinalValuesType;
-import com.antonromanov.arnote.domain.investing.dto.response.foreignstocks.AlphavantageSearchListRs;
-import com.antonromanov.arnote.domain.investing.dto.response.foreignstocks.AlphavantageSearchRs;
-import com.antonromanov.arnote.domain.investing.dto.response.foreignstocks.alphaadvantage.CompanyOverviewRs;
-import com.antonromanov.arnote.domain.investing.dto.response.foreignstocks.yahoo.YahooDivRs;
-import com.antonromanov.arnote.domain.investing.dto.response.foreignstocks.yahoo.YahooRealTimeQuoteRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.common.CommonMoexDoc;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDataRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
-import com.antonromanov.arnote.domain.investing.service.cache.CacheService;
-import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
-import com.antonromanov.arnote.domain.investing.service.requestservice.RequestService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 /**
  * Имплементация расчетного сервиса для работы с иностранными бумагами.
  */

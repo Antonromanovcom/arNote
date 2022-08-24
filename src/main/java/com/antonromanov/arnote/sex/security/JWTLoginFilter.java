@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.security;
+package com.antonromanov.arnote.sex.security;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -20,7 +20,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		setAuthenticationManager(authManager);
 	}
 
-	@Override
+	@Override //todo: убрать получение токена через GET и прямую передачу логопаса. Нужен ПОСТ и шифрование
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
 

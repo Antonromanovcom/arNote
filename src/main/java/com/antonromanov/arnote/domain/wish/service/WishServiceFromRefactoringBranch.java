@@ -1,22 +1,24 @@
 package com.antonromanov.arnote.domain.wish.service;
 
-import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
+import com.antonromanov.arnote.domain.wish.dto.*;
+import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
 import com.antonromanov.arnote.sex.model.wish.Wish;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface WishService {
 
-	/*List<Wish> getAllWishesWithPriority1(ArNoteUser user); // todo: проверить - если реально нигде не испльзуется - то убрать
-	List<Wish> getAl();
+public interface WishServiceFromRefactoringBranch {
+
+	List<Wish> getAllWishesWithPriority1(ArNoteUser user);
 
 	int getMaxPriority(ArNoteUser user);
 
-	*//**
+	/**
 	 * Получить все желания с помесячной группировкой и детализованным наполнением.
 	 *
-	 *//*
+	 */
 	List<WishDTOList> getAllWishesWithGroupPriority(ArNoteUser user);
 
 	void updateWish(Wish log);
@@ -25,11 +27,11 @@ public interface WishService {
 
 	Wish addWish(Wish parseJsonToWish);
 
-	Optional<Wish> getWishById(int id); //todo: почему int ?????
+	Optional<Wish> getWishById(int id);
 
-	Integer getSumm4All(ArNoteUser user); // todo: переименовать
+	Integer getSumm4All(ArNoteUser user);
 
-	Integer getSumm4Prior(ArNoteUser user); // todo: переименовать
+	Integer getSumm4Prior(ArNoteUser user);
 
 	Optional<Integer> getImplementedSum(ArNoteUser user, int period);
 
@@ -39,20 +41,19 @@ public interface WishService {
 
 	Integer calculateImplementationPeriod(Integer summ, ArNoteUser localUser);
 
-	List<Wish> getAllWishesByUserId(ArNoteUser user);*/
+	List<Wish> getAllWishesByUserId(ArNoteUser user);
 
 	/**
 	 * Поиск желаний по имени.
 	 *
-	 * @param name
+	 * @param wishName - желание
 	 * @param user
 	 * @return
 	 */
-	WishListRs findWishesByName(String name, ArNoteUser user);
+	List<Wish> findAllWishesByWishName(String wishName, ArNoteUser user);
 
-	/*Optional<List<Wish>> getAllRealizedWishes(ArNoteUser user);
+	Optional<List<Wish>> getAllRealizedWishes(ArNoteUser user);
 
 	Wish updateMonthGroup(Wish wish) throws BadIncomeParameter;
-	Wish saveWish(Wish wish);*/
 
 }

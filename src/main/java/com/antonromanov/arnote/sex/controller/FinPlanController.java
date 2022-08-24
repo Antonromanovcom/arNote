@@ -1,7 +1,5 @@
 package com.antonromanov.arnote.sex.controller;
 
-import com.antonromanov.arnote.exceptions.UserNotFoundException;
-
 
 /**
  * API для фин-планами.

@@ -1,16 +1,5 @@
 package com.antonromanov.arnote.sex.controller;
 
-import com.antonromanov.arnote.domain.user.service.UserService;
-import com.antonromanov.arnote.entity.Wish;
-import com.antonromanov.arnote.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.exceptions.NoDataYetException;
-import com.antonromanov.arnote.exceptions.UserNotFoundException;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Date;
 
 
 //todo: заменить логи на интерцепторы

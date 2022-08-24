@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class UserPrinciple implements UserDetails {
+public class UserPrinciple implements UserDetails { //todo: разобраться с этим классом
 
 	private static final long serialVersionUID = 1L;
 
@@ -44,26 +44,14 @@ public class UserPrinciple implements UserDetails {
 				new SimpleGrantedAuthority(role.name())
 		).collect(Collectors.toList());
 
-		/*return new UserPrinciple(
-				usr.getId()
-				user.getId(),
-				user.getFullname(),
-				user.getLogin(),
-				user.getEmail(),
-				user.getPwd(),
+		return new UserPrinciple(
+				usr.getId(),
+				usr.getFullname(),
+				usr.getLogin(),
+				usr.getEmail(),
+				usr.getPwd(),
 				authorities
-		);*/
-
-		/*return new UserPrinciple(
-				*//*usr.getId(),
-				null,
-				null,
-				null,
-				null,
-				authorities*//*
-		);*/
-
-		return null;
+		);
 	}
 
 	public Long getId() {

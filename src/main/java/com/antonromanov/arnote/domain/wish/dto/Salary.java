@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.domain.wish.dto;
 
-import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
+import com.antonromanov.arnote.sex.model.ArNoteUser;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;

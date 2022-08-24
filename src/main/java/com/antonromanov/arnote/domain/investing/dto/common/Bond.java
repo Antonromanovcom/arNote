@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.domain.investing.dto.common;
 
-import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
+import com.antonromanov.arnote.sex.model.ArNoteUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
-package com.antonromanov.arnote.domain.wish.service;
+package com.antonromanov.arnote.domain.wish.service.impl;
 
 /*@Service*/
-public class WishServiceImpl /*implements WishService*/ {
+public class WishServiceFromRefactoringBranchImpl /*implements WishService*/ {
 
 /*
     @Autowired

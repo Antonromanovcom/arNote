@@ -1,23 +1,5 @@
 package com.antonromanov.arnote.domain.investing.service.calc;
 
-import com.antonromanov.arnote.domain.investing.dto.response.*;
-import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
-import com.antonromanov.arnote.domain.investing.dto.common.Bond;
-import com.antonromanov.arnote.domain.investing.dto.common.BondType;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
-import com.antonromanov.arnote.domain.investing.service.calc.bonds.BondCalcService;
-import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
-import com.antonromanov.arnote.domain.investing.service.calc.shares.common.CalculateFactory;
-import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 
 /**
  * Сервис обрабатывающий операции, например, выдачи текущей цены бумаги, общие для разных типов (акция / облигация)

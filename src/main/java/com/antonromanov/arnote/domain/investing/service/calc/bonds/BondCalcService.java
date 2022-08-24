@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.domain.investing.service.calc.bonds;
 
-import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
 import com.antonromanov.arnote.domain.investing.dto.common.Bond;
 import com.antonromanov.arnote.domain.investing.dto.common.Purchase;
 import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
@@ -8,6 +7,8 @@ import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
+import com.antonromanov.arnote.sex.model.ArNoteUser;
+
 import java.util.List;
 import java.util.Optional;
 

@@ -6,7 +6,7 @@ package com.antonromanov.arnote.sex.model.investing;
 /*@AllArgsConstructor
 @Getter*/
 public enum InvestingSortMode {
-   /* TICKER_ASC("Сортировка по тикеру", Comparator.comparing(BondRs::getTicker)),
+ /*   TICKER_ASC("Сортировка по тикеру", Comparator.comparing(BondRs::getTicker)),
     TICKER_DESC("Сортировка по тикеру обратная", Comparator.comparing(BondRs::getTicker).reversed()),
     DIV_RUB_ASC("Сортировка по дивиденду в рублях", Comparator.comparing(bondRs->{
         return bondRs.getDividends().getDivSum();

@@ -9,8 +9,6 @@ public interface UsersRepo extends JpaRepository<ArNoteUser, Integer> {
 
 	Optional<ArNoteUser> findByLogin(String login);
 
-	Optional<ArNoteUser> findByEmail(String email);
-
 	Optional<ArNoteUser> findById(Long id);
 
 	@Transactional

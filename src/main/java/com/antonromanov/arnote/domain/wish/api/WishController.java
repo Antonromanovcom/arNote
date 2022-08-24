@@ -1,13 +1,19 @@
 package com.antonromanov.arnote.domain.wish.api;
 
+import com.antonromanov.arnote.domain.user.service.UserService;
 import com.antonromanov.arnote.domain.wish.dto.rq.SearchWishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
-import com.antonromanov.arnote.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.domain.wish.mapper.WishRsMapper;
+import com.antonromanov.arnote.domain.wish.service.WishService;
+import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.sex.model.wish.Wish;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.util.Collections;
+import java.util.List;
 
 
 //todo: надо нормально поименовать ендпоинты
@@ -18,10 +24,10 @@ import java.util.Collections;
 //todo: избавиться от $do
 //todo: добавить тесты
 // todo: Надо убрать РеспонсЭнтити и возвращать налормальные ДТО-объекты а не этот пиздец
-// SELECT sum(w.price) from arnote.wishes w WHERE w.user_id = 8 AND w.realized AND NOT w.archive - запрос реализованных желаний
+
 
 /**
- *  REST-контроллер для Желаний.
+ * REST-контроллер для Желаний.
  */
 @CrossOrigin()
 @RestController
@@ -30,10 +36,9 @@ import java.util.Collections;
 @AllArgsConstructor
 public class WishController {
 
-  /*  private final MainService mainService;
+    private final WishService wishService;
     private final UserService userService;
-    private final WishRsMapper rsMapper;*/
-
+    private final WishRsMapper rsMapper;
 
     /**
      * Поиск желаний.
@@ -42,20 +47,15 @@ public class WishController {
      * @return
      */
     @CrossOrigin(origins = "*")
-    @PostMapping("/filter") // todo: почему фильтр-то? Это постоянно вводит в заблуждение. Это фильтр все-таки или поиск???
+    @PostMapping("/filter")
+    // todo: почему фильтр-то? Это постоянно вводит в заблуждение. Это фильтр все-таки или поиск???
     public WishListRs findAll(Principal principal, @RequestBody SearchWishRq request) throws UserNotFoundException {
         log.info("============== FILTER/SEARCH WISHES ============== "); // todo: в перехватчик и логгер-фильтр
-      //  log.info("SEARCH KEYWORD: " + request.getWishName());
-       /* return WishListRs.builder()
-             //   .list(rsMapper.mapWishList(mainService.findWishesByName(request.getWishName(), userService.getUserFromPrincipal(principal))))
-                .build();*/
+        log.info("SEARCH KEYWORD: " + request.getWishName());
+       // return wishService.findWishesByName(request.getWishName(), userService.getUserFromPrincipal(principal));
+        throw  new UserNotFoundException();
 
-
-        WishListRs list = new WishListRs(Collections.emptyList());
-        return list;
     }
-
-
 
 
     /**
@@ -175,13 +175,13 @@ public class WishController {
             ArNoteUser localUser = getUserFromPrincipal(principal);
 
             *//*
-             * Логика такая:
-             *
-             * - если фильтр приходит не пустой - задаем и сохраняем новый фильтр.
-             * - если фильтр приходит не пустой, но он NONE, просто удаляем сохраненный фильтр из записи пользака.
-             * - если filter пришел пустой - выдаем то, что есть с той фильтрацией, что сохранена.
-             *
-             *//*
+     * Логика такая:
+     *
+     * - если фильтр приходит не пустой - задаем и сохраняем новый фильтр.
+     * - если фильтр приходит не пустой, но он NONE, просто удаляем сохраненный фильтр из записи пользака.
+     * - если filter пришел пустой - выдаем то, что есть с той фильтрацией, что сохранена.
+     *
+     *//*
             if (filter != null) {
                 localUser.setFilterMode(FilterMode.valueOf(filter));
                 localUser = usersRepo.saveAndFlush(localUser);

@@ -1,9 +1,10 @@
-package com.antonromanov.arnote.services;
+package com.antonromanov.arnote.sex.services;
 
 import com.antonromanov.arnote.sex.dto.rq.*;
 import com.antonromanov.arnote.sex.dto.rs.*;
 import com.antonromanov.arnote.sex.dto.rs.FinalBalanceCalculationsRs;
-import com.antonromanov.arnote.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
+
 import java.security.Principal;
 
 public interface FinPlanService {

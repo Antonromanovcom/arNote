@@ -1,7 +1,6 @@
 package com.antonromanov.arnote.sex.controller;
 
 import com.antonromanov.arnote.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.exceptions.UserNotFoundException;
 
 /**
  * REST-контроллер управления пользователями.

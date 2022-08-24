@@ -1,39 +1,5 @@
 package com.antonromanov.arnote.domain.investing.service.calc.shares.moex;
 
-import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
-import com.antonromanov.arnote.domain.investing.dto.common.Bond;
-import com.antonromanov.arnote.domain.investing.dto.common.Purchase;
-import com.antonromanov.arnote.domain.investing.dto.cache.enums.CacheDictType;
-import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
-import com.antonromanov.arnote.domain.investing.dto.response.CurrentPriceRs;
-import com.antonromanov.arnote.domain.investing.dto.response.DeltaRs;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
-import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTemplateOperation;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.TinkoffDeltaFinalValuesType;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.boardid.MoexRowsForBoardIdRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.common.CommonMoexDoc;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDataRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.enums.DataBlock;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
-import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.instrumentinfo.MoexInstrumentDetailRowsRs;
-import com.antonromanov.arnote.domain.investing.service.cache.CacheService;
-import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
-import com.antonromanov.arnote.domain.investing.service.requestservice.RequestService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 /*@Service
 @Slf4j*/
 public class MoexCalculateServiceImpl /*implements SharesCalcService*/ {

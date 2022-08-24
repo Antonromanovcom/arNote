@@ -1,26 +1,5 @@
 package com.antonromanov.arnote.domain.investing.api;
 
-import com.antonromanov.arnote.domain.investing.dto.common.*;
-import com.antonromanov.arnote.domain.investing.dto.response.*;
-import com.antonromanov.arnote.exceptions.BadTickerException;
-import com.antonromanov.arnote.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.domain.user.dto.ArNoteUser;
-import com.antonromanov.arnote.domain.investing.dto.request.AddInstrumentRq;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
-import com.antonromanov.arnote.domain.investing.dto.response.enums.Targets;
-import com.antonromanov.arnote.domain.investing.repository.BondsRepo;
-import com.antonromanov.arnote.domain.user.repository.UsersRepo;
-import com.antonromanov.arnote.domain.investing.service.calc.CommonService;
-import com.antonromanov.arnote.domain.investing.service.calendar.CalendarService;
-import com.antonromanov.arnote.domain.investing.service.returns.ReturnsService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-import javax.validation.constraints.NotNull;
-import java.security.Principal;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 
 
 /**

@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.enums;
 
-import com.antonromanov.arnote.entity.Wish;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

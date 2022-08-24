@@ -1,8 +1,8 @@
 package com.antonromanov.arnote.sex.enums;
 
-import com.antonromanov.arnote.entity.Wish;
-import com.antonromanov.arnote.sex.services.MainService;
+import com.antonromanov.arnote.domain.wish.service.WishService;
+import com.antonromanov.arnote.sex.model.wish.Wish;
 
 public interface ArnoteOperation {
-     Wish move(Wish wish, MainService ms);
+     Wish move(Wish wish, WishService ms);
 }

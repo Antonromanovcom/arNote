@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.security;
+package com.antonromanov.arnote.sex.security;
 
 import com.antonromanov.arnote.sex.model.ArNoteUser;
 import com.antonromanov.arnote.sex.repositoty.UsersRepo;

@@ -1,18 +1,24 @@
-package com.antonromanov.arnote.sex.services;
+package com.antonromanov.arnote.domain.wish.service.impl;
 
-import com.antonromanov.arnote.sex.repositoty.WishRepository;
+import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
+import com.antonromanov.arnote.domain.wish.mapper.WishRsMapper;
+import com.antonromanov.arnote.domain.wish.service.WishService;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.antonromanov.arnote.sex.model.wish.Wish;
+import com.antonromanov.arnote.sex.repositoty.WishRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class MainServiceImpl implements MainService {
+@AllArgsConstructor
+public class WishServiceImpl implements WishService {
 
-    @Autowired
-    private WishRepository wishRepository;
+
+    private final WishRepository wishRepository;
+    private final WishRsMapper rsMapper;
 
    /*
     @Autowired
@@ -200,15 +206,16 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public List<com.antonromanov.arnote.sex.model.wish.Wish> findWishesByName(String name, ArNoteUser user) {
+    public WishListRs findWishesByName(String name, ArNoteUser user) {
 
-       /* List<com.antonromanov.arnote.sex.model.wish.Wish> resultList = wishRepository.findAllByUser(user).stream()
-                .filter(w -> ((w.getRealized() == null || !w.getRealized()) && (w.getAc() == null || !w.getAc())))
-                .filter(notArchivedWish -> notArchivedWish.getWish().toLowerCase().contains(name.toLowerCase()))
+        List<Wish> resultList = wishRepository.findAllByUser(user).stream()
+                .filter(w -> ((w.getRealized() == null || !w.getRealized()) && (w.getArchive() == null || !w.getArchive())))
+                .filter(notArchivedWish -> notArchivedWish.getWishName().toLowerCase().contains(name.toLowerCase()))
                 .collect(Collectors.toList());
 
-        return resultList.size() < 1 ? Collections.emptyList() : resultList;*/
-        return  Collections.emptyList();
+        return WishListRs.builder()
+                .list(rsMapper.mapWishList(resultList))
+                .build();
     }
 
     /*

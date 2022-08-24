@@ -1,48 +1,56 @@
 package com.antonromanov.arnote.sex.model.wish;
 
 import javax.persistence.*;
+
+import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
 import java.util.Date;
 
 @Entity
-@Getter
-@Setter
-@ToString(exclude = "id")
-@EqualsAndHashCode
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "wishes")
 public class Wish {
 
     @Id
-    @Column(name="id", nullable = false)
+    @Getter
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wishes_seq_gen")
-    @SequenceGenerator(name = "wishes_seq_gen", sequenceName ="wishes_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "wishes_seq_gen", sequenceName = "wishes_id_seq", allocationSize = 1)
     private long id;
 
-    @Column(name = "wish")
-    private String wish;
+    @Column(name = "wish", length = 255)
+    @Getter
+    private String wishName;
 
-    @Column(name = "price", nullable = true)
+    @Column(name = "price")
+    @Getter
     private Integer price;
 
-    @Column(name = "priority", nullable = true)
+    @Column(name = "priority")
+    @Getter
     private Integer priority;
 
-    @Column(name = "archive", nullable = true)
-    private Boolean ac;
+    @Column(name = "archive")
+    @Getter
+    private Boolean archive;
 
-    @Column(name = "description", nullable = true, length = 1024)
+    @Column(name = "description", length = 1024)
     private String description;
 
-    @Column(name = "url", nullable = true, length = 1024)
+    @Column(name = "url", length = 1024)
     private String url;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.MERGE)
-    private com.antonromanov.arnote.sex.model.ArNoteUser user;
+    private ArNoteUser user;
 
     @Column
     private Integer priorityGroup;
 
+    @JsonIgnore
     @Column
     private Integer priorityGroupOrder;
 
@@ -55,50 +63,15 @@ public class Wish {
     private Date realizationDate;
 
     @Column
+    @Getter
     private Boolean realized;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private com.antonromanov.arnote.model.wish.WishGroup wishGroup;
+    private WishGroup wishGroup;
 
-
-    public Wish(String wish, Integer price, Integer priority, Integer priorityGroup, Boolean ac, String description,
-                String url, com.antonromanov.arnote.sex.model.ArNoteUser user, Date creationDate) {
-        this.wish = wish;
-        this.price = price;
+    public Wish setPriorityAndReturnWish(Integer priority) {
         this.priority = priority;
-        this.priorityGroup = priorityGroup;
-        this.ac = ac;
-        this.description = description;
-        this.url = url;
-        this.user = user;
-        this.creationDate = creationDate;
-    }
-
-    public Wish(long id, String wish, int price, int priority, boolean ac, String description, String url,
-                com.antonromanov.arnote.sex.model.ArNoteUser user) {
-
-        this.wish = wish;
-        this.price = price;
-        this.priority = priority;
-        this.ac = ac;
-        this.description = description;
-        this.url = url;
-        this.user = user;
-        this.id = id;
-
-    }
-
-    //Todo: с таким большим количеством конструкторов явно надо что-то делать. Может быть добавить билдер в класс или добавить метод конвертации
-    public Wish(String wish, int price, int priority, boolean archive, String description, String url,
-                com.antonromanov.arnote.sex.model.ArNoteUser user) {
-        this.wish = wish;
-        this.price = price;
-        this.priority = priority;
-        this.priorityGroup = null;
-        this.ac = archive;
-        this.description = description;
-        this.url = url;
-        this.user = user;
+        return this;
     }
 }
 
