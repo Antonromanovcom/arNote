@@ -1,23 +1,10 @@
 package com.antonromanov.arnote.sex.exceptions;
 
-public class UserNotFoundException extends Exception {
+import static com.antonromanov.arnote.sex.exceptions.enums.ErrorCodes.ERR_O9;
 
-	private String message;
-
-	public UserNotFoundException(String email) {
-		this.message = "Пользователь с email - " + email + "не найден! ";
-	}
-
-	public UserNotFoundException(Throwable cause, String message) {
-		super(cause);
-		this.message = message;
-	}
+public class UserNotFoundException extends RuntimeException {
 
 	public UserNotFoundException() {
-		super();
-	}
-
-	public String getMessage() {
-		return message;
+		super(ERR_O9.getUiCode() + " | "+ERR_O9.getDescription());
 	}
 }

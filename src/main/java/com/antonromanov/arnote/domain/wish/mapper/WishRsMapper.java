@@ -8,7 +8,10 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface WishRsMapper {
-    WishRs mapWish (com.antonromanov.arnote.sex.model.wish.Wish source);
+
+
+    WishRs mapWish (Wish source);
+
     default List<WishRs> mapWishList (List<Wish> wishList){
         return wishList.stream()
                 //.filter(Objects::nonNull)

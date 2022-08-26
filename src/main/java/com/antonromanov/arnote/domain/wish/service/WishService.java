@@ -4,6 +4,7 @@ import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
 import com.antonromanov.arnote.sex.model.wish.Wish;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface WishService {
@@ -45,10 +46,10 @@ public interface WishService {
 	 * Поиск желаний по имени.
 	 *
 	 * @param name
-	 * @param user
+	 * @param principal
 	 * @return
 	 */
-	WishListRs findWishesByName(String name, ArNoteUser user);
+	WishListRs findWishesByName(String name, Principal principal);
 
 	/*Optional<List<Wish>> getAllRealizedWishes(ArNoteUser user);
 

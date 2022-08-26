@@ -1,16 +1,17 @@
 package com.antonromanov.arnote.domain.wish.dto.rs;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class WishRs {
 
     private  long id;
-   /* private  String wish;
-    private  Integer price;
+    private  String wishName;
+   /* private  Integer price;
     private  Integer priority;
     private  Boolean ac;
     private  String description;

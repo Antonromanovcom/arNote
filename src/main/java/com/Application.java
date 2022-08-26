@@ -1,12 +1,15 @@
 package com;
 
 //todo: Почему в пакете com, а не в пакете com.antonromanov.arnote ??? Исправить !!!!!!
+import com.antonromanov.arnote.LoggerFilter;
 import com.google.common.cache.CacheBuilder;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -44,6 +47,20 @@ public class Application {
         }*/
     }
 
+    @Autowired
+    LoggerFilter loggerFilter;
+
+
+
+    @Bean
+    public FilterRegistrationBean<LoggerFilter> registerLoggerFilter() {
+        FilterRegistrationBean<LoggerFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(loggerFilter);
+        registrationBean.addUrlPatterns("/rest/wishes/*");
+      ///  registrationBean.addUrlPatterns("/activity/*");
+     //   registrationBean.addUrlPatterns("/organization/*");
+        return registrationBean;
+    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {

@@ -1,6 +1,8 @@
 package com.antonromanov.arnote.domain.wish.service.impl;
 
+import com.antonromanov.arnote.domain.user.service.UserService;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
+import com.antonromanov.arnote.domain.wish.dto.rs.WishRs1;
 import com.antonromanov.arnote.domain.wish.mapper.WishRsMapper;
 import com.antonromanov.arnote.domain.wish.service.WishService;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
@@ -8,7 +10,8 @@ import com.antonromanov.arnote.sex.model.wish.Wish;
 import com.antonromanov.arnote.sex.repositoty.WishRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.Collections;
+
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +22,7 @@ public class WishServiceImpl implements WishService {
 
     private final WishRepository wishRepository;
     private final WishRsMapper rsMapper;
+    private final UserService userService;
 
    /*
     @Autowired
@@ -202,16 +206,21 @@ public class WishServiceImpl implements WishService {
      * Поиск желаний по имени.
      *
      * @param name
-     * @param user
+     * @param principal
      * @return
      */
     @Override
-    public WishListRs findWishesByName(String name, ArNoteUser user) {
+    public WishListRs findWishesByName(String name, Principal principal) {
 
+        ArNoteUser user = userService.getUserFromPrincipal(principal);
         List<Wish> resultList = wishRepository.findAllByUser(user).stream()
-                .filter(w -> ((w.getRealized() == null || !w.getRealized()) && (w.getArchive() == null || !w.getArchive())))
-                .filter(notArchivedWish -> notArchivedWish.getWishName().toLowerCase().contains(name.toLowerCase()))
+               // .filter(w -> ((w.getRealized() == null || !w.getRealized()) && (w.getArchive() == null || !w.getArchive())))
+               // .filter(notArchivedWish -> notArchivedWish.getWishName().toLowerCase().contains(name.toLowerCase()))
                 .collect(Collectors.toList());
+
+        WishRs1 rs1 = new WishRs1();
+        rs1.setId(111L);
+     //   rsMapper.mapWish1(rs1);
 
         return WishListRs.builder()
                 .list(rsMapper.mapWishList(resultList))

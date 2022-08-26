@@ -1,19 +1,13 @@
 package com.antonromanov.arnote.domain.wish.api;
 
-import com.antonromanov.arnote.domain.user.service.UserService;
 import com.antonromanov.arnote.domain.wish.dto.rq.SearchWishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
-import com.antonromanov.arnote.domain.wish.mapper.WishRsMapper;
 import com.antonromanov.arnote.domain.wish.service.WishService;
 import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.sex.model.wish.Wish;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
-import java.util.Collections;
-import java.util.List;
 
 
 //todo: надо нормально поименовать ендпоинты
@@ -37,8 +31,6 @@ import java.util.List;
 public class WishController {
 
     private final WishService wishService;
-    private final UserService userService;
-    private final WishRsMapper rsMapper;
 
     /**
      * Поиск желаний.
@@ -50,11 +42,7 @@ public class WishController {
     @PostMapping("/filter")
     // todo: почему фильтр-то? Это постоянно вводит в заблуждение. Это фильтр все-таки или поиск???
     public WishListRs findAll(Principal principal, @RequestBody SearchWishRq request) throws UserNotFoundException {
-        log.info("============== FILTER/SEARCH WISHES ============== "); // todo: в перехватчик и логгер-фильтр
-        log.info("SEARCH KEYWORD: " + request.getWishName());
-       // return wishService.findWishesByName(request.getWishName(), userService.getUserFromPrincipal(principal));
-        throw  new UserNotFoundException();
-
+        return wishService.findWishesByName(request.getWishName(), principal);
     }
 
 
