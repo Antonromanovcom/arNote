@@ -1,4 +1,4 @@
-package com.antonromanov.arnote;
+package com.antonromanov.arnote.common.logging;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServletServerHttpRequest;

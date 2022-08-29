@@ -1,9 +1,5 @@
 package com.antonromanov.arnote.domain.wish.api;
 
-import com.antonromanov.arnote.EnableResponseWrapper;
-import com.antonromanov.arnote.GlobalResponse;
-import com.antonromanov.arnote.ResponseStatus;
-import com.antonromanov.arnote.Wrapper;
 import com.antonromanov.arnote.domain.wish.dto.rq.SearchWishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
 import com.antonromanov.arnote.domain.wish.service.WishService;
@@ -11,6 +7,8 @@ import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.security.Principal;
 
 
@@ -32,7 +30,6 @@ import java.security.Principal;
 @RequestMapping("/rest/wishes") //todo: поменять все урлы на нормальные
 @Slf4j
 @AllArgsConstructor
-@EnableResponseWrapper(wrapperClass = Wrapper.class)
 public class WishController {
 
     private final WishService wishService;
@@ -46,24 +43,8 @@ public class WishController {
     @CrossOrigin(origins = "*")
     @PostMapping("/filter")
     // todo: почему фильтр-то? Это постоянно вводит в заблуждение. Это фильтр все-таки или поиск???
-    public WishListRs findWishes(Principal principal, @RequestBody SearchWishRq request) throws UserNotFoundException {
-
-
-      //  GlobalResponse<String> s = new GlobalResponse<>();
-       // s.setBody("1");
-
-     //   return wishService.findWishesByName(request.getWishName(), principal);
-        throw new UserNotFoundException();
-
-       /* return GlobalResponse.builder()
-               // .body(wishService.findWishesByName(request.getWishName(), principal))
-               // .body(WishListRs.builder().build())
-                .body(WishListRs.builder().build())
-               // .withBody(WishListRs.builder().build())
-              //  .body("WishListRs.builder().build()")
-              //  .status(ResponseStatus.builder().build())
-                .build();*/
-     //  return s;
+    public WishListRs findWishes(Principal principal, @Valid @RequestBody SearchWishRq request) throws UserNotFoundException {
+          return wishService.findWishesByName(request.getWishName(), principal);
     }
 
 

@@ -1,4 +1,4 @@
-package com.antonromanov.arnote;
+package com.antonromanov.arnote.common.wrapper;
 
 import lombok.Builder;
 import lombok.Data;

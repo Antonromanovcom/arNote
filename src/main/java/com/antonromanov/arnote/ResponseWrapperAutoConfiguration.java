@@ -1,5 +1,6 @@
 package com.antonromanov.arnote;
 
+import com.antonromanov.arnote.common.wrapper.ResponseWrapperAdvice;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -11,11 +12,10 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfigureAfter(WebMvcAutoConfiguration.class)
 @AllArgsConstructor
 public class ResponseWrapperAutoConfiguration {
-    private final IWrapperService wrapperService;
 
     @Bean
     @ConditionalOnMissingBean
     public ResponseWrapperAdvice responseWrapperAdvice() {
-        return new ResponseWrapperAdvice(wrapperService);
+        return new ResponseWrapperAdvice();
     }
 }
