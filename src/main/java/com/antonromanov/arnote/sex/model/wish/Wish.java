@@ -38,9 +38,11 @@ public class Wish {
     private Boolean archive;
 
     @Column(name = "description", length = 1024)
+    @Getter
     private String description;
 
     @Column(name = "url", length = 1024)
+    @Getter
     private String url;
 
     @JsonIgnore
@@ -48,10 +50,12 @@ public class Wish {
     private ArNoteUser user;
 
     @Column
+    @Getter
     private Integer priorityGroup;
 
     @JsonIgnore
     @Column
+    @Getter
     private Integer priorityGroupOrder;
 
     @Column

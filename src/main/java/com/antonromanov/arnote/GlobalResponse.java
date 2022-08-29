@@ -1,9 +1,12 @@
 package com.antonromanov.arnote;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Builder
+
+@NoArgsConstructor
+@AllArgsConstructor
 public class GlobalResponse<T> implements GlobalResponseWrapper<T>{
 
     private T body;
@@ -22,4 +25,8 @@ public class GlobalResponse<T> implements GlobalResponseWrapper<T>{
         return this.body;
     }
 
+    @Override
+    public void setBody(T body) {
+        this.body = body;
+    }
 }
