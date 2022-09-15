@@ -1,5 +1,6 @@
-package com.antonromanov.arnote.sex.model.wish;
+package com.antonromanov.arnote.domain.wish.enums;
 
+import com.antonromanov.arnote.sex.model.wish.Wish;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import java.util.Comparator;
@@ -18,5 +19,5 @@ public enum SortMode {
 
     private final String description;
     private final String uiValue;
-    private final Comparator<Wish> compareInstrument;
+    private final Comparator<Wish> wishComparator;
 }

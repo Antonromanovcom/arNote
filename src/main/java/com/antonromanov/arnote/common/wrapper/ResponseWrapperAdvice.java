@@ -1,11 +1,10 @@
 package com.antonromanov.arnote.common.wrapper;
 
-import com.antonromanov.arnote.common.wrapper.GlobalWrapper;
-import com.antonromanov.arnote.common.wrapper.ResponseStatus;
-import com.antonromanov.arnote.common.wrapper.WrapperModel;
+import com.antonromanov.arnote.sex.exceptions.enums.ErrorCodes;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,18 +13,20 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.lang.Nullable;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @ControllerAdvice
 public class ResponseWrapperAdvice implements ResponseBodyAdvice<Object> {
+
+    private final String SUCCESS_STATUS = "SUCCESS";
 
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass) {
@@ -43,18 +44,19 @@ public class ResponseWrapperAdvice implements ResponseBodyAdvice<Object> {
 
         if (body == null) {
             return null;
-        } else if (checkBody(body)){
+        } else if (checkBody(body)) {
             return body;
         }
 
         return generateResponseWrapper(body, GlobalWrapper.class, ResponseStatus.builder()
                 .success(true)
+                .description(SUCCESS_STATUS)
                 .build());
     }
 
-    private Boolean checkBody(Object body){
+    private Boolean checkBody(Object body) {
         try {
-           return  ((GlobalWrapper) body).getStatus() != null;
+            return ((GlobalWrapper) body).getStatus() != null;
         } catch (ClassCastException e) {
             return false;
         }
@@ -79,28 +81,38 @@ public class ResponseWrapperAdvice implements ResponseBodyAdvice<Object> {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<WrapperModel> handleAllExceptions(RuntimeException e) {
 
-        WrapperModel exceptionResponse =  generateResponseWrapper(null, GlobalWrapper.class,
-                ResponseStatus.builder()
-                        .success(false)
-                        .description(e.getMessage())
-                        .build());
+        ResponseStatus status;
+        if (StringUtils.isNotBlank(e.getMessage())) {
+            status = Arrays.stream(ErrorCodes.values()).filter(v -> v.getUiCode().equals(e.getMessage()))
+                    .findFirst()
+                    .map(w -> ResponseStatus.builder()
+                            .success(false)
+                            .errorCode(w.getUiCode())
+                            .description(w.getDescription())
+                            .build())
+                    .orElse(ResponseStatus.builder()
+                            .success(false)
+                            .description(e.getMessage())
+                            .build());
+        } else {
+            status = ResponseStatus.builder()
+                    .success(false)
+                    .description("Неизвестная ошибка!")
+                    .build();
+        }
+
+        WrapperModel exceptionResponse = generateResponseWrapper(null, GlobalWrapper.class, status);
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<WrapperModel> handleSpringValidatorException(MethodArgumentNotValidException e) {
 
-        Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-
-        WrapperModel exceptionResponse =  generateResponseWrapper(errors, GlobalWrapper.class,
+        WrapperModel exceptionResponse = generateResponseWrapper(null, GlobalWrapper.class,
                 ResponseStatus.builder()
                         .success(false)
                         .description(e.getMessage())
+                        .errorCode(ErrorCodes.ERR_10.getUiCode())
                         .build());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }

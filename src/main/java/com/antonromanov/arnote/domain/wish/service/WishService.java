@@ -1,11 +1,11 @@
 package com.antonromanov.arnote.domain.wish.service;
 
+import com.antonromanov.arnote.domain.wish.dto.rq.WishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
 import com.antonromanov.arnote.sex.model.wish.Wish;
-
 import java.security.Principal;
-import java.util.List;
+import java.util.Optional;
 
 public interface WishService {
 
@@ -26,8 +26,6 @@ public interface WishService {
 
 	Wish addWish(Wish parseJsonToWish);
 
-	Optional<Wish> getWishById(int id); //todo: почему int ?????
-
 	Integer getSumm4All(ArNoteUser user); // todo: переименовать
 
 	Integer getSumm4Prior(ArNoteUser user); // todo: переименовать
@@ -38,9 +36,15 @@ public interface WishService {
 
 	Salary getLastSalary(ArNoteUser localUser);
 
-	Integer calculateImplementationPeriod(Integer summ, ArNoteUser localUser);
+	Integer calculateImplementationPeriod(Integer summ, ArNoteUser localUser);*/
 
-	List<Wish> getAllWishesByUserId(ArNoteUser user);*/
+	/**
+	 * Список желаний.
+	 *
+	 * @param principal - пользак.
+	 * @return
+	 */
+	WishListRs getAllWishesByUserId(Principal principal, String filter, String sort);
 
 	/**
 	 * Поиск желаний по имени.
@@ -49,7 +53,15 @@ public interface WishService {
 	 * @param principal
 	 * @return
 	 */
-	WishListRs findWishesByName(String name, Principal principal);
+	/*WishListRs findWishesByName(String name, Principal principal);*/
+
+    WishRs addWish(WishRq requestParam, Principal principal);
+
+	/*Optional<Wish> getWishById(long id);
+
+	void updateWish(Wish wish);
+
+	WishRs deleteWish(String id);*/
 
 	/*Optional<List<Wish>> getAllRealizedWishes(ArNoteUser user);
 

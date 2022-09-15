@@ -7,24 +7,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+/*import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;*/
+/*import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;*/
+/*import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;*/
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 
-@Configuration
+/*@Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
+@EnableGlobalMethodSecurity(prePostEnabled = true)*/
+public class WebSecurityConfig /*extends WebSecurityConfigurerAdapter */{
+/*
 	@Autowired
 	UserDetailsServiceImpl userDetailsService;
 
@@ -36,7 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/").permitAll()
 				.antMatchers("/*.js").permitAll()
 				.antMatchers(HttpMethod.POST, "/login", "/rest/wishes/users").permitAll()
-				.antMatchers(HttpMethod.GET, "/login", "/favicon.ico", "/investing", "/401", "/months").permitAll()
+				.antMatchers(HttpMethod.GET, "/h2-console", "/login", "/favicon.ico",
+						"/401").permitAll()
 				// Need authentication.
 				.anyRequest().authenticated()
 				.and()
@@ -70,5 +71,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-	}
+	}*/
 }

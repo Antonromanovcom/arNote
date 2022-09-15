@@ -1,12 +1,18 @@
 package com.antonromanov.arnote.domain.user.service.impl;
 
 import com.antonromanov.arnote.domain.user.service.UserService;
+import com.antonromanov.arnote.domain.wish.enums.FilterMode;
+import com.antonromanov.arnote.domain.wish.enums.SortMode;
+import com.antonromanov.arnote.domain.wish.enums.UserSettingType;
 import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.sex.model.ArNoteUser;
 import com.antonromanov.arnote.sex.repositoty.UsersRepo;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.security.Principal;
+import java.util.Map;
 
 /**
  * Тут собраны методы необходимые для работы с пользователями и авторизацией.
@@ -23,8 +29,45 @@ public class UserServiceImp implements UserService {
 
 
     @Override
-    public com.antonromanov.arnote.sex.model.ArNoteUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
-        return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+    public ArNoteUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
+     //   return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+        return null;
+    }
+
+    @Override
+    public ArNoteUser saveUser(ArNoteUser user) {
+        try {
+            return usersRepo.saveAndFlush(user);
+        } catch (Exception e) {
+            return user;
+        }
+    }
+
+    @Override
+    public ArNoteUser checkAndSaveUserSettings(ArNoteUser user, Map<UserSettingType, String> settings) {
+
+        if (settings != null && settings.size()>0) {
+            settings.entrySet().forEach(e -> {
+
+                if (StringUtils.isNotBlank(e.getValue())) {
+                    switch (e.getKey()) {
+                        case FILTER:
+                            user.setFilterMode(FilterMode.valueOf(e.getValue()));
+                            break;
+                        case SORT:
+                            user.setSortMode(SortMode.valueOf(e.getValue()));
+                            break;
+                    }
+                }
+            });
+        }
+
+        return saveUser(user);
+    }
+
+    @Override
+    public ArNoteUser getFirst() {
+        return usersRepo.findAll().stream().findFirst().get();
     }
 
    /* @Override

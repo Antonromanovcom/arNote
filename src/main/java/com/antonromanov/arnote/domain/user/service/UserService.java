@@ -1,8 +1,10 @@
 package com.antonromanov.arnote.domain.user.service;
 
+import com.antonromanov.arnote.domain.wish.enums.UserSettingType;
 import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
 import java.security.Principal;
+import java.util.Map;
 
 /**
  * Методы, необходимые для работы с пользователями и авторизацией.
@@ -16,6 +18,19 @@ public interface UserService {
      * @return
      */
     ArNoteUser getUserFromPrincipal(Principal principal) throws UserNotFoundException;
+
+    /**
+     * Сохраняет пользака в БД.
+     *
+     * @param user
+     * @return
+     */
+    ArNoteUser saveUser(ArNoteUser user);
+
+    ArNoteUser checkAndSaveUserSettings(ArNoteUser user, Map<UserSettingType, String> settings);
+    ArNoteUser getFirst();
+
+
 
 
     /**

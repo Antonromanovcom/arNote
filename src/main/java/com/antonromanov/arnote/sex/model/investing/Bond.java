@@ -10,15 +10,15 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+/*@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "bond")
+@Table(name = "bond")*/
 public class Bond {
 
-    @Id
+    /*@Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bonds_seq_gen")
     @SequenceGenerator(name = "bonds_seq_gen", sequenceName = "bonds_id_seq", allocationSize = 1)
@@ -43,6 +43,6 @@ public class Bond {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "post_id")
-    private List<com.antonromanov.arnote.model.investing.Purchase> purchaseList = new ArrayList<>();
+    private List<com.antonromanov.arnote.model.investing.Purchase> purchaseList = new ArrayList<>();*/
 }
 

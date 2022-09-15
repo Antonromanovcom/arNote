@@ -19,47 +19,58 @@ public class Wish {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wishes_seq_gen")
     @SequenceGenerator(name = "wishes_seq_gen", sequenceName = "wishes_id_seq", allocationSize = 1)
     @Getter
+    @Setter
     private long id;
 
     @Column(name = "wish", length = 255)
     @Getter
+    @Setter
     private String wishName;
 
     @Column(name = "price")
     @Getter
+    @Setter
     private Integer price;
 
     @Column(name = "priority")
     @Getter
+    @Setter
     private Integer priority;
 
     @Column(name = "archive")
     @Getter
-    private Boolean archive;
+    @Setter
+    private Boolean archive = false;
 
     @Column(name = "description", length = 1024)
     @Getter
+    @Setter
     private String description;
 
     @Column(name = "url", length = 1024)
     @Getter
+    @Setter
     private String url;
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.MERGE)
+    @Setter
     private ArNoteUser user;
 
     @Column
     @Getter
+    @Setter
     private Integer priorityGroup;
 
     @JsonIgnore
     @Column
     @Getter
+    @Setter
     private Integer priorityGroupOrder;
 
     @Column
     @Temporal(TemporalType.DATE)
+    @Setter
     private Date creationDate;
 
     @Column
@@ -68,7 +79,8 @@ public class Wish {
 
     @Column
     @Getter
-    private Boolean realized;
+    @Setter
+    private Boolean realized = false;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private WishGroup wishGroup;

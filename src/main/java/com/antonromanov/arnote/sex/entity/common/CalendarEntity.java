@@ -4,24 +4,24 @@ import lombok.*;
 import javax.persistence.*;
 import java.sql.Date;
 
-@Entity
+/*@Entity
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "id")
 @EqualsAndHashCode
-@Table(name = "calendar")
+@Table(name = "calendar")*/
 public class CalendarEntity { //todo: нужно что-то решать, у нас есть DTO, есть модели под парсинг JSON-а, есть транспортные ДТОшки, ДТОшки реквеста-респонса, Энтити. Нужно навЕСТЬ ПОРЯДОК В ЭТОМ !!!!!!!
 
 
-    @Id
+  /*  @Id
     @Column(name="id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cal_entity_seq_gen")
     @SequenceGenerator(name = "cal_entity_seq_gen", sequenceName ="cal_entity_id_seq", allocationSize = 1)
     private Long id;
 
-    @Column
+    @Column*/
   //  @Temporal(TemporalType.DATE)
     Date date;
 

@@ -33,8 +33,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     private final static String XML_SPECIAL_DATE_PATTERN = "^(0[1-9]|1[0-2]).(0[1-9]|[12][0-9]|3[01])$";
     private final static String WORK_CALENDAR_URL = "http://xmlcalendar.ru/data/ru/%s/calendar.xml";
 
-    public enum ParseType {ADD, EDIT}
-
     public enum OperationType {
         ADD_WISH, EDIT_WISH, DELETE_WISH, ADD_SALARY, GET_SUMS, GET_ALL_WISHES, GET_GROUP_WISHES,
         UP_PRIORITY, DOWN_PRIORITY, UP_MONTH, DOWN_MONTH, LOGIN, TOGGLE_MODE, GET_USER_INFO,
@@ -203,59 +201,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     public static java.sql.Date localDateToSqlDate(LocalDate date) {
         return java.sql.Date.valueOf(date);
     }
-
-
-    /**
-     * Конвертим пришедший json в новый WISH
-     */
-   /* public static Wish parseJsonToWish(ParseType parseType, String json, ArNoteUser user) throws Exception {
-
-        if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
-            throw new com.antonromanov.arnote.exceptions.JsonNullException("JSON - пустой");
-        }
-
-        Wish wishAfterParse;
-        Date currentDate = new Date();
-
-        try {
-
-            if (parseType == ParseType.EDIT) {
-                wishAfterParse = new Wish(
-                        JSONTemplate.fromString(json).get("id").getAsLong(),
-                        JSONTemplate.fromString(json).get("wish").getAsString(),
-                        JSONTemplate.fromString(json).get("price").getAsInt(),
-                        JSONTemplate.fromString(json).get("priority").getAsInt(),
-                        JSONTemplate.fromString(json).get("archive").getAsBoolean(),
-                        JSONTemplate.fromString(json).get("description").getAsString(),
-                        JSONTemplate.fromString(json).get("url").getAsString(),
-                        user);
-
-                boolean realizedWish = JSONTemplate.fromString(json).get("realized").getAsBoolean();
-                if (realizedWish) {
-                    wishAfterParse.setRealized(true);
-                    wishAfterParse.setRealizationDate(new Date());
-                }
-
-            } else {
-                wishAfterParse = new Wish(
-                        JSONTemplate.fromString(json).get("wish").getAsString(),
-                        JSONTemplate.fromString(json).get("price").getAsInt(),
-                        JSONTemplate.fromString(json).get("priority").getAsInt(),
-                        JSONTemplate.fromString(json).get("archive").getAsBoolean(),
-                        JSONTemplate.fromString(json).get("description").getAsString(),
-                        JSONTemplate.fromString(json).get("url").getAsString(),
-                        user
-                );
-
-                wishAfterParse.setCreationDate(currentDate);
-
-            }
-        } catch (Exception e) {
-            throw new JsonParseException(json);
-        }
-
-        return wishAfterParse;
-    }*/
 
   /*  public static String generateRandomPassword() {
 

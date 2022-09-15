@@ -1,17 +1,14 @@
-package com.antonromanov.arnote.exceptions;
+package com.antonromanov.arnote.sex.exceptions;
 
 
-import static com.antonromanov.arnote.exceptions.BadIncomeParameter.ParameterKind.*;
+import com.antonromanov.arnote.sex.exceptions.enums.ErrorCodes;
 
-public class BadIncomeParameter extends Exception {
+public class BadIncomeParameter extends RuntimeException {
 
-	private String message;
+	/*public enum ParameterKind {PRIORITYCHANGE, WISH_ID_SEARCH, WRONG_ID, SUCH_USER_EXIST, SUCH_USER_NO_EXIST,
+		NOTHING_FOUND, WRONG_MONTH, WRONG_SORT_TYPE, WRONG_PARAMETER} //todo: вынести в отдельный класс и типа ответных сообщений засунуть сюда.*/
 
-	public enum ParameterKind {PRIORITYCHANGE, WISH_ID_SEARCH, WRONG_ID, SUCH_USER_EXIST, SUCH_USER_NO_EXIST,
-		NOTHING_FOUND, WRONG_MONTH, WRONG_SORT_TYPE, WRONG_PARAMETER} //todo: вынести в отдельный класс и типа ответных сообщений засунуть сюда.
-	// public enum ParameterKind {PRIORITYCHANGE, WISH_ID_SEARCH, WRONG_ID, SUCH_USER_EXIST, SUCH_USER_NO_EXIST, NOTHING_FOUND, WRONG_MONTH, WRONG_PARAMETER}
-
-	public BadIncomeParameter(ParameterKind parameter) {
+	/*public BadIncomeParameter(ParameterKind parameter) {
 
 		if (parameter == PRIORITYCHANGE) { //todo: вот этот весь пиздец конечно поменять надо!!!!
 			this.message = "Ошибка изменения приоритета: тип повышения может быть только 'up' или 'down'";
@@ -32,9 +29,9 @@ public class BadIncomeParameter extends Exception {
 		} else {
 			this.message = "Ошибочный входной параметр";
 		}
-	}
+	}*/
 
-	public String getMessage() {
-		return message;
+	public BadIncomeParameter(ErrorCodes code) {
+		super(code.getUiCode());
 	}
 }

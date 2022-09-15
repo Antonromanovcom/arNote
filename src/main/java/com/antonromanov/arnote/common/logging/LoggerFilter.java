@@ -35,10 +35,11 @@ public class LoggerFilter implements Filter {
 
 
     private void performRequestAudit(ContentCachingRequestWrapper requestWrapper) {
-        if (requestWrapper != null && requestWrapper.getContentAsByteArray() != null && requestWrapper.getContentAsByteArray().length > 0) {
+        if (requestWrapper != null && requestWrapper.getContentAsByteArray() != null) {
             ServletServerHttpRequest req = new ServletServerHttpRequest((HttpServletRequest) requestWrapper.getRequest());
             log.info("==== Request Logger ===== ");
-            log.info("METHOD:: {} \n URL:: {} \n Request Body:: {}", req.getMethod(), req.getURI(), getPayLoadFromByteArray(requestWrapper.getContentAsByteArray(), requestWrapper.getCharacterEncoding()));
+            log.info("METHOD:: {} \n URL:: {} \n Request Body:: {}", req.getMethod(), req.getURI(),
+                    getPayLoadFromByteArray(requestWrapper.getContentAsByteArray(), requestWrapper.getCharacterEncoding()));
         }
     }
 
@@ -57,10 +58,12 @@ public class LoggerFilter implements Filter {
 
     private String getPayLoadFromByteArray(byte[] requestBuffer, String charEncoding) {
         String payLoad = "";
-        try {
-            payLoad = new String(requestBuffer, charEncoding);
-        } catch (UnsupportedEncodingException unex) {
-            payLoad = "Unsupported-Encoding";
+        if (requestBuffer.length > 0) {
+            try {
+                payLoad = new String(requestBuffer, charEncoding);
+            } catch (UnsupportedEncodingException unex) {
+                payLoad = "Unsupported-Encoding";
+            }
         }
         return payLoad;
     }

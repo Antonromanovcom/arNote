@@ -3,7 +3,7 @@ package com.antonromanov.arnote.sex.utils;
 
 import com.antonromanov.arnote.exceptions.JsonNullException;
 import com.antonromanov.arnote.sex.entity.Salary;
-import com.antonromanov.arnote.sex.enums.SortMode;
+import com.antonromanov.arnote.domain.wish.enums.SortMode_SOLVE;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -216,58 +216,6 @@ public class Utils {
     //    return salary;
         return null;
     }
-
-    /**
-     * Конвертим пришедший json в новый WISH
-     */
-   /* public static Wish parseJsonToWish(ParseType parseType, String json, ArNoteUser user) throws Exception {
-
-        if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
-            throw new JsonNullException("JSON - пустой");
-        }
-
-        Wish wishAfterParse;
-        Date currentDate = new Date();
-
-        try {
-
-            if (parseType == ParseType.EDIT) {
-                wishAfterParse = new Wish(
-                        JSONTemplate.fromString(json).get("id").getAsLong(),
-                        JSONTemplate.fromString(json).get("wish").getAsString(),
-                        JSONTemplate.fromString(json).get("price").getAsInt(),
-                        JSONTemplate.fromString(json).get("priority").getAsInt(),
-                        JSONTemplate.fromString(json).get("archive").getAsBoolean(),
-                        JSONTemplate.fromString(json).get("description").getAsString(),
-                        JSONTemplate.fromString(json).get("url").getAsString(),
-                        user);
-
-                boolean realizedWish = JSONTemplate.fromString(json).get("realized").getAsBoolean();
-                if (realizedWish) {
-                    wishAfterParse.setRealized(true);
-                    wishAfterParse.setRealizationDate(new Date());
-                }
-
-            } else {
-                wishAfterParse = new Wish(
-                        JSONTemplate.fromString(json).get("wish").getAsString(),
-                        JSONTemplate.fromString(json).get("price").getAsInt(),
-                        JSONTemplate.fromString(json).get("priority").getAsInt(),
-                        JSONTemplate.fromString(json).get("archive").getAsBoolean(),
-                        JSONTemplate.fromString(json).get("description").getAsString(),
-                        JSONTemplate.fromString(json).get("url").getAsString(),
-                        user
-                );
-
-                wishAfterParse.setCreationDate(currentDate);
-
-            }
-        } catch (Exception e) {
-            throw new JsonParseException(json);
-        }
-
-        return wishAfterParse;
-    }*/
 
     /*public static String generateRandomPassword() {
 
@@ -556,8 +504,8 @@ public class Utils {
      * @param name
      * @return
      */
-    public static Optional<SortMode> lookUpSortType(String name) { // поиск в Енуме
-        for (SortMode mode : SortMode.values()) {
+    public static Optional<SortMode_SOLVE> lookUpSortType(String name) { // поиск в Енуме
+        for (SortMode_SOLVE mode : SortMode_SOLVE.values()) {
             //   if (mode.getUiValue().equals(name)) return Optional.of(mode);
         }
         return null; // если не нашли

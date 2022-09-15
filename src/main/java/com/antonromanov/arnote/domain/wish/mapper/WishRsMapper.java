@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.domain.wish.mapper;
 
+import com.antonromanov.arnote.domain.wish.dto.rq.WishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
 import com.antonromanov.arnote.sex.model.wish.Wish;
 import org.mapstruct.Mapper;
@@ -14,9 +15,9 @@ public interface WishRsMapper {
 
     default List<WishRs> mapWishList (List<Wish> wishList){
         return wishList.stream()
-                //.filter(Objects::nonNull)
                 .map(this::mapWish)
                 .collect(Collectors.toList());
     }
 
+    Wish map(WishRq wish);
 }

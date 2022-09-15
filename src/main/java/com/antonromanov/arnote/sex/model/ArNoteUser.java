@@ -1,9 +1,9 @@
 package com.antonromanov.arnote.sex.model;
 
+import com.antonromanov.arnote.domain.wish.enums.SortMode;
 import com.antonromanov.arnote.sex.model.investing.InvestingSortMode;
-import com.antonromanov.arnote.sex.model.wish.SortMode;
 import com.antonromanov.arnote.sex.model.wish.enums.DeltaMode;
-import com.antonromanov.arnote.sex.model.wish.enums.FilterMode;
+import com.antonromanov.arnote.domain.wish.enums.FilterMode;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -71,7 +71,7 @@ public class ArNoteUser {
 	 * Полное имя пользователя.
 	 */
 	@Column
-	private String fullname; //todo: нормально переименовать
+	private String fullname; //todo: нормально переименовать*/
 
 	/**
 	 * Режим отображения - таблица или помесячная группировка.
@@ -94,13 +94,14 @@ public class ArNoteUser {
 	 * Режим сортировки
 	 */
 	@Enumerated(EnumType.STRING)
-	private SortMode sortMode;
+	@Column()
+	private SortMode sortMode = SortMode.ALL;
 
 	/**
 	 * Режим фильтрации.
 	 */
 	@Enumerated(EnumType.STRING)
-	private FilterMode filterMode;
+	private FilterMode filterMode = FilterMode.NONE;
 
 
 	@Column

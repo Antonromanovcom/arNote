@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BondsRepo extends JpaRepository<Bond, Long>{
+public interface BondsRepo /*extends JpaRepository<Bond, Long>*/{
 
-	List<Bond> findAllByUser(ArNoteUser user);
-	Optional<Bond> findBondByUserAndTicker(ArNoteUser user, String ticker);
+	/*List<Bond> findAllByUser(ArNoteUser user);
+	Optional<Bond> findBondByUserAndTicker(ArNoteUser user, String ticker);*/
 
 }

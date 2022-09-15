@@ -6,17 +6,17 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Entity
+/*@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "id")
 @EqualsAndHashCode
-@Table(name = "salary")
+@Table(name = "salary")*/
 public class Salary {
 
-	@Id
+	/*@Id
 	@Column(name="id", nullable = false)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "salary_seq_gen")
 	@SequenceGenerator(name = "salary_seq_gen", sequenceName ="salary_id_seq", allocationSize = 1)
@@ -42,5 +42,5 @@ public class Salary {
 	public Salary(Integer fullSlary, Integer residualSalary) {
 		this.fullSlary = fullSlary;
 		this.residualSalary = residualSalary;
-	}
+	}*/
 }

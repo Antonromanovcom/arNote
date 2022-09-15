@@ -3,7 +3,6 @@ package com.antonromanov.arnote.domain.wish.dto.rs;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
 import java.util.List;
 
 /**

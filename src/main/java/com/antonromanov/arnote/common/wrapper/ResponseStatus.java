@@ -9,5 +9,6 @@ public class ResponseStatus {
 
     private Boolean success;
     private String description;
+    private String errorCode;
 
 }

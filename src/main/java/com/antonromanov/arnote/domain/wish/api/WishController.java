@@ -1,15 +1,13 @@
 package com.antonromanov.arnote.domain.wish.api;
 
-import com.antonromanov.arnote.domain.wish.dto.rq.SearchWishRq;
+import com.antonromanov.arnote.domain.wish.dto.rq.WishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
+import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
 import com.antonromanov.arnote.domain.wish.service.WishService;
-import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-import java.security.Principal;
 
 
 //todo: надо нормально поименовать ендпоинты
@@ -19,7 +17,7 @@ import java.security.Principal;
 //todo: надо уходить от json-билдеров и всего-такого
 //todo: избавиться от $do
 //todo: добавить тесты
-// todo: Надо убрать РеспонсЭнтити и возвращать налормальные ДТО-объекты а не этот пиздец
+// todo: Надо убрать РеспонсЭнтити и возвращать нрмальные ДТО-объекты а не этот пиздец
 
 
 /**
@@ -35,18 +33,44 @@ public class WishController {
     private final WishService wishService;
 
     /**
+     * Получить все желания.
+     *
+     * @param principal - JWT-токена пользователя
+     * @param filter    - тип фильтраци: все или только приоритетные
+     * @param sort      - собственно сортировка
+     * @return
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping
+    public WishListRs getAllWishes(/*Principal principal,*/ @RequestParam(required = false) String filter,
+                                                            @RequestParam(required = false) String sort) {
+        return wishService.getAllWishesByUserId(null, filter, sort);
+    }
+
+    /**
      * Поиск желаний.
      *
      * @param principal
      * @return
      */
-    @CrossOrigin(origins = "*")
+   /* @CrossOrigin(origins = "*")
     @PostMapping("/filter")
     // todo: почему фильтр-то? Это постоянно вводит в заблуждение. Это фильтр все-таки или поиск???
     public WishListRs findWishes(Principal principal, @Valid @RequestBody SearchWishRq request) throws UserNotFoundException {
-          return wishService.findWishesByName(request.getWishName(), principal);
+        return wishService.findWishesByName(request.getWishName(), principal);
+    }*/
+
+    @CrossOrigin(origins = "*")
+    @PostMapping
+    public WishRs addWish(/*Principal principal,*/ @Valid @RequestBody WishRq requestParam) {
+        return wishService.addWish(requestParam, principal);
     }
 
+   /* @CrossOrigin(origins = "*")
+    @DeleteMapping()
+    public WishRs deleteWish(Principal principal, @RequestParam String id) {
+        return wishService.deleteWish(id);
+    }*/
 
     /**
      * Получить все желания с группировкой по месяцам.
@@ -137,87 +161,7 @@ public class WishController {
         }, null, null, OperationType.EDIT_WISH, resp);
     }*/
 
-    /**
-     * Получить все желания.
-     *
-     * @param principal
-     * @param filter    - тип фильтраци: все или только приоритетные
-     * @param sort      - собственно сортировка
-     * @param resp
-     * @return
-     */
-   /* @CrossOrigin(origins = "*")
-    @GetMapping
-    public ResponseEntity<String> getAllWishes(Principal principal,
-                                               @RequestParam(required = false) String filter,
-                                               @RequestParam(required = false) String sort,
-                                               HttpServletResponse resp) {
-
-        return $do(s -> {
-            List<Wish> wishList;
-
-            log.info("==================== GET WISHES ======================== ");
-            log.info("filter: " + filter);
-            log.info("sort: " + sort);
-            log.info("PRINCIPAL: " + principal.getName());
-            log.info("======================================================== ");
-
-            ArNoteUser localUser = getUserFromPrincipal(principal);
-
-            *//*
-     * Логика такая:
-     *
-     * - если фильтр приходит не пустой - задаем и сохраняем новый фильтр.
-     * - если фильтр приходит не пустой, но он NONE, просто удаляем сохраненный фильтр из записи пользака.
-     * - если filter пришел пустой - выдаем то, что есть с той фильтрацией, что сохранена.
-     *
-     *//*
-            if (filter != null) {
-                localUser.setFilterMode(FilterMode.valueOf(filter));
-                localUser = usersRepo.saveAndFlush(localUser);
-            }
-            if (localUser.getFilterMode() == null) {
-                localUser.setFilterMode(FilterMode.NONE);
-                localUser = usersRepo.saveAndFlush(localUser);
-            }
-
-            if (sort != null) {
-                localUser.setSortMode(SortMode.valueOf(sort));
-                localUser = usersRepo.saveAndFlush(localUser);
-            }
-
-            if (localUser.getSortMode() == null) {
-                localUser.setSortMode(SortMode.ALL);
-                localUser = usersRepo.saveAndFlush(localUser);
-            }
-
-            if (mainService.getAllWishesByUserId(localUser).size() > 0) {
-
-                DTO dto = new DTO();
-                String result = "";
-                wishList = mainService.getAllWishesByUserId(localUser).stream()
-                        .filter(localUser.getFilterMode().getFilterPredicate())
-                        .sorted(localUser.getSortMode().getCompareInstrument())
-                        .collect(Collectors.toList());
-
-                // Предотвращение вываливания на пустых датах
-                wishList.forEach(w -> {
-                    if (w.getCreationDate() == null) w.setCreationDate(new Date());
-                    if (w.getRealized() == null) w.setRealized(false);
-                });
-
-                dto.list.addAll(wishList);
-                result = createNullableGsonBuilder().toJson(dto);
-
-
-                return $prepareResponse(result);
-            } else {
-                return $prepareNoDataYetErrorResponse(ErrorCodes.ERR_O1);
-            }
-        }, null, null, OperationType.GET_ALL_WISHES, resp);
-    }
-
-    @CrossOrigin(origins = "*")
+  /*  @CrossOrigin(origins = "*")
     @PutMapping
     public ResponseEntity<String> updateWish(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
 
@@ -236,17 +180,6 @@ public class WishController {
             return $prepareResponse(result);
 
         }, requestParam, null, OperationType.EDIT_WISH, resp);
-    }
-
-    @CrossOrigin(origins = "*")
-    @PostMapping
-    public Wish addWish(Principal principal, @RequestBody String requestParam) throws Exception {
-
-        log.info("==================== ADD WISHES ======================== ");
-        log.info("PAYLOAD: {}", requestParam);
-        log.info("PRINCIPAL: {}", principal.getName());
-        log.info("======================================================== ");
-        return mainService.addWish(parseJsonToWish(ParseType.ADD, requestParam, getUserFromPrincipal(principal)));
     }
 
     @CrossOrigin(origins = "*")
@@ -294,24 +227,6 @@ public class WishController {
         }, null, principal, OperationType.GET_SUMS, resp);
     }
 
-
-    @CrossOrigin(origins = "*")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteWish(Principal principal, @PathVariable String id, HttpServletResponse resp) {
-
-        return $do(s -> {
-
-            log.info("==================== DELETE WISH ======================== ");
-            log.info("ID: " + id);
-            log.info("PRINCIPAL: " + principal.getName());
-            log.info("===================================================== ");
-
-            Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID));
-            wish.setAc(true);
-            mainService.updateWish(wish);
-            return $prepareResponse(createGsonBuilder().toJson(ResponseStatusDTO.builder().okMessage("OK").status("OK").build()));
-        }, null, null, null, resp);
-    }
 
 
     @CrossOrigin(origins = "*")
@@ -561,9 +476,9 @@ public class WishController {
         if (localUser.getEmail() == null) localUser.setEmail("antonr0manov@yndex.ru");
         if (localUser.getFullname() == null) localUser.setFullname("Имя неизвестно");
         if (localUser.getViewMode() == null) localUser.setViewMode("TABLE");
-    }
+    }*/
 
-    @CrossOrigin(origins = "*")
+   /* @CrossOrigin(origins = "*")
     @GetMapping("/users/getcurrent")
     public ResponseEntity<String> getCurrentUser(Principal principal, HttpServletResponse resp) {
 

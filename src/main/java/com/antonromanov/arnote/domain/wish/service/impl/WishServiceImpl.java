@@ -1,22 +1,28 @@
 package com.antonromanov.arnote.domain.wish.service.impl;
 
 import com.antonromanov.arnote.domain.user.service.UserService;
+import com.antonromanov.arnote.domain.wish.dto.rq.WishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
+import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
+import com.antonromanov.arnote.domain.wish.enums.UserSettingType;
 import com.antonromanov.arnote.domain.wish.mapper.WishRsMapper;
 import com.antonromanov.arnote.domain.wish.service.WishService;
+import com.antonromanov.arnote.sex.exceptions.NoDataYetException;
+import com.antonromanov.arnote.sex.exceptions.enums.ErrorCodes;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
 import com.antonromanov.arnote.sex.model.wish.Wish;
 import com.antonromanov.arnote.sex.repositoty.WishRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.security.Principal;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class WishServiceImpl implements WishService {
-
+public class WishServiceImpl implements  WishService {
 
     private final WishRepository wishRepository;
     private final WishRsMapper rsMapper;
@@ -69,7 +75,9 @@ public class WishServiceImpl implements WishService {
         return wishRepository.getAll();
     }
 
-    *//**
+    */
+
+    /**
      * Берем максимальный priorityGroup, добавляем +1 и возвращаем.
      *
      * @param user
@@ -177,7 +185,9 @@ public class WishServiceImpl implements WishService {
         }
     }
 
-    *//**
+    */
+
+    /**
      * Проверить нужно ли менять тип сортировки для древовидного представления данных и если не нужно (sortType = DEFAULT),
      * то проверяется, что выставлено у пользователя в качестве предыдущего типа сортировки.
      *
@@ -193,12 +203,38 @@ public class WishServiceImpl implements WishService {
             usersRepo.saveAndFlush(user);
         }
         return sortType.getWishResponseComparator();
-    }
-
-    @Override
-    public List<Wish> getAllWishesByUserId(ArNoteUser user) {
-        return wishRepository.findAllByIdSorted(user);
     }*/
+
+    /**
+     * Список желаний.
+     *
+     * @param principal - пользак.
+     * @return
+     */
+    @Override
+    public WishListRs getAllWishesByUserId(Principal principal, String filter, String sort) {
+
+       // ArNoteUser user = userService.getUserFromPrincipal(principal);
+        ArNoteUser user = userService.getFirst();
+
+        user = userService.checkAndSaveUserSettings(user, new HashMap<UserSettingType, String>() {{
+            put(UserSettingType.FILTER, filter);
+            put(UserSettingType.SORT, sort);
+        }});
+
+      List<Wish> resultList = wishRepository.findAllByIdSorted(user).stream()
+                .filter(user.getFilterMode().getFilterPredicate())
+                .sorted(user.getSortMode().getWishComparator())
+                .collect(Collectors.toList());
+
+        if (resultList.size() < 1) {
+            throw new NoDataYetException(ErrorCodes.ERR_O1);
+        }
+
+        return WishListRs.builder()
+               .list(rsMapper.mapWishList(resultList))
+                .build();
+    }
 
     /**
      * Поиск желаний по имени.
@@ -207,19 +243,48 @@ public class WishServiceImpl implements WishService {
      * @param principal
      * @return
      */
-    @Override
+   /* @Override
     public WishListRs findWishesByName(String name, Principal principal) {
 
         ArNoteUser user = userService.getUserFromPrincipal(principal);
-        List<Wish> resultList = wishRepository.findAllByUser(user).stream()
-                .filter(w -> ((w.getRealized() == null || !w.getRealized()) && (w.getArchive() == null || !w.getArchive())))
-                .filter(notArchivedWish -> notArchivedWish.getWishName().toLowerCase().contains(name.toLowerCase()))
-                .collect(Collectors.toList());
+      *//*  List<Wish> resultList = wishRepository.findAllByUser(user).stream()
+                *//**//*.filter(w -> ((w.getRealized() == null || !w.getRealized()) && (w.getArchive() == null || !w.getArchive())))
+                .filter(notArchivedWish -> notArchivedWish.getWishName().toLowerCase().contains(name.toLowerCase()))*//**//*
+                .collect(Collectors.toList());*//*
 
         return WishListRs.builder()
-                .list(rsMapper.mapWishList(resultList))
+              //  .list(rsMapper.mapWishList(resultList))
                 .build();
+    }*/
+
+    @Override
+    public WishRs addWish(WishRq wish, Principal principal) {
+        ArNoteUser user = userService.getUserFromPrincipal(principal);
+        Wish wishAsDBEntity = rsMapper.map(wish);
+        wishAsDBEntity.setUser(user);
+        wishAsDBEntity.setCreationDate(new Date());
+        return rsMapper.mapWish(wishRepository.saveAndFlush(wishAsDBEntity));
     }
+
+   /* @Override
+    public Optional<Wish> getWishById(long id) {
+         //   return wishRepository.findById(id);
+            return Optional.empty();
+    }
+
+    @Override
+    public void updateWish(Wish wish) {
+     //   wishRepository.saveAndFlush(wish);
+    }*/
+
+   /* @Override
+    public WishRs deleteWish(String id) {
+        Wish wish = getWishById(Long.parseLong(id))
+                .orElseThrow(() -> new BadIncomeParameter(ErrorCodes.ERR_10));
+       // wish.setArchive(true);
+        updateWish(wish);
+        return rsMapper.mapWish(wish);
+    }*/
 
     /*
 
@@ -241,23 +306,8 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public Wish updateWish(Wish wish) {
-        return wishRepository.saveAndFlush(wish);
-    }
-
-    @Override
     public Wish updateAndFlushWish(Wish wish) {
         return wishRepository.saveAndFlush(wish);
-    }
-
-    @Override
-    public Wish addWish(Wish wish) {
-        return wishRepository.saveAndFlush(wish);
-    }
-
-    @Override
-    public Optional<Wish> getWishById(long id) {
-        return wishRepository.findById(id);
     }
 
     @Override

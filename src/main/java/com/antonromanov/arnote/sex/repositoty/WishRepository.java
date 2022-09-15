@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+//@Repository
 public interface WishRepository extends JpaRepository<Wish, Integer>{ //todo: почему Integer ????
 
 	/*@Query(value="select w from Wish w where w.archive = false and (w.realized = false or w.realized is null) and w.user = :user order by w.priorityGroup, w.priorityGroupOrder ASC ")
@@ -24,8 +24,8 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{ //todo: п
 			" w.priority = 1 and  w.user = :user order by w.wishName ASC ")
 	List<Wish> getAllWithPriority1(@Param("user") ArNoteUser user);*/
 
-	@Query(value="select w from Wish w")
-	List<Wish> getAll();
+	/*@Query(value="select w from Wish w")
+	List<Wish> getAll();*/
 
 	/**
 	 * Найти все желания по пользаку.
@@ -33,7 +33,7 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{ //todo: п
 	 * @param user
 	 * @return
 	 */
-	List<Wish> findAllByUser(ArNoteUser user);
+//	List<Wish> findAllByUser(ArNoteUser user);
 
 
 	/**
@@ -50,7 +50,7 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{ //todo: п
 	@Query(value="select w from Wish w where w.wishName = ?1")
 	Optional<List<Wish>> getWishesByName(@Param("wish") String wish);*/
 
-	Optional<Wish> findById(long l);
+//	Optional<Wish> findById(long id);
 
 
 	/**

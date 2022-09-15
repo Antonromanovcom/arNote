@@ -1,10 +1,9 @@
 package com.antonromanov.arnote.domain.wish.service;
 
 import com.antonromanov.arnote.domain.wish.dto.*;
-import com.antonromanov.arnote.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.sex.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
 import com.antonromanov.arnote.sex.model.wish.Wish;
-
 import java.util.List;
 import java.util.Optional;
 

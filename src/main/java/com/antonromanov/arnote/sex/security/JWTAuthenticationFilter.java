@@ -7,15 +7,15 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import io.jsonwebtoken.ExpiredJwtException;
+/*import io.jsonwebtoken.ExpiredJwtException;*/
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
+/*import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.GenericFilterBean;*/
 
-public class JWTAuthenticationFilter extends GenericFilterBean {
+public class JWTAuthenticationFilter /*extends GenericFilterBean*/ {
 
-	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
+	/*private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger("console_logger");
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
@@ -30,5 +30,5 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 			((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			LOGGER.debug("Exception " + eje.getMessage(), eje);
 		}
-	}
+	}*/
 }

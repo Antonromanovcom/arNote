@@ -1,27 +1,10 @@
-package com.antonromanov.arnote.exceptions;
+package com.antonromanov.arnote.sex.exceptions;
 
-public class NoDataYetException extends Exception {
+import com.antonromanov.arnote.sex.exceptions.enums.ErrorCodes;
 
-	private String message;
+public class NoDataYetException extends RuntimeException {
 
-	public NoDataYetException(Boolean switcher) { //todo: переделать на енам
-		if (switcher){
-			this.message = "ERR-01";	// Еще нет желаний
-		} else {
-			this.message = "ERR-02"; // Еще нет зарплаты
-		}
-	}
-
-	public NoDataYetException(Throwable cause, String message) {
-		super(cause);
-		this.message = message;
-	}
-
-	public NoDataYetException() {
-		super();
-	}
-
-	public String getMessage() {
-		return message;
+	public NoDataYetException(ErrorCodes code) {
+		super(code.getUiCode());
 	}
 }

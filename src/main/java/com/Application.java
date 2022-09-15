@@ -15,7 +15,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+/*import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;*/
 import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.TimeUnit;
@@ -50,15 +50,13 @@ public class Application {
         FilterRegistrationBean<LoggerFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(loggerFilter);
         registrationBean.addUrlPatterns("/rest/wishes/*");
-      ///  registrationBean.addUrlPatterns("/activity/*");
-     //   registrationBean.addUrlPatterns("/organization/*");
         return registrationBean;
     }
 
-    @Bean
+   /* @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+    }*/
 
     @Bean
     RestTemplate SimpleRestTemplate() {

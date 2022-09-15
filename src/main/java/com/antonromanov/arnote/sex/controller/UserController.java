@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.sex.controller;
 
-import com.antonromanov.arnote.exceptions.BadIncomeParameter;
 
 /**
  * REST-контроллер управления пользователями.

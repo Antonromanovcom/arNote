@@ -2,18 +2,18 @@ package com.antonromanov.arnote.sex.security;
 
 import com.antonromanov.arnote.sex.model.ArNoteUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.security.core.GrantedAuthority;
+/*import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetails;*/
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class UserPrinciple implements UserDetails { //todo: разобраться с этим классом
+public class UserPrinciple /*implements UserDetails*/ { //todo: разобраться с этим классом
 
-	private static final long serialVersionUID = 1L;
+/*	private static final long serialVersionUID = 1L;
 
 	private Long id;
 
@@ -37,9 +37,9 @@ public class UserPrinciple implements UserDetails { //todo: разобратьс
 		this.email = email;
 		this.password = password;
 		this.authorities = authorities;
-	}
+	}*/
 
-	public static UserPrinciple build(ArNoteUser usr) {
+	/*public static UserPrinciple build(ArNoteUser usr) {
 		List<GrantedAuthority> authorities = Stream.of(ArNoteUser.Role.values()).map(role ->
 				new SimpleGrantedAuthority(role.name())
 		).collect(Collectors.toList());
@@ -52,9 +52,9 @@ public class UserPrinciple implements UserDetails { //todo: разобратьс
 				usr.getPwd(),
 				authorities
 		);
-	}
+	}*/
 
-	public Long getId() {
+	/*public Long getId() {
 		return id;
 	}
 
@@ -108,6 +108,6 @@ public class UserPrinciple implements UserDetails { //todo: разобратьс
 
 		UserPrinciple user = (UserPrinciple) o;
 		return Objects.equals(id, user.id);
-	}
+	}*/
 
 }
