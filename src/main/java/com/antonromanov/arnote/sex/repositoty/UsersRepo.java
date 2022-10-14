@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface UsersRepo extends JpaRepository<ArNoteUser, Integer> {
 
-	// Optional<ArNoteUser> findByLogin(String login);
+	 Optional<ArNoteUser> findByLogin(String login);
 
 	Optional<ArNoteUser> findById(Long id);
 

@@ -1,19 +1,16 @@
-package com.antonromanov.arnote.domain.wish.dto;
+package com.antonromanov.arnote.domain.wish.dto.rs;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Builder
-public class WishDTO {
+@Data
+public class GroupedWishRs {
 
     private long id;
-    @Getter
     private String wish;
-    @Getter
     private Integer price;
     private Integer priority;
     private Boolean ac;

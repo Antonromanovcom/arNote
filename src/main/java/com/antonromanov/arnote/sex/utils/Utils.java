@@ -1,23 +1,17 @@
 package com.antonromanov.arnote.sex.utils;
 
 
-import com.antonromanov.arnote.exceptions.JsonNullException;
-import com.antonromanov.arnote.sex.entity.Salary;
 import com.antonromanov.arnote.domain.wish.enums.SortMode_SOLVE;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
 import org.springframework.stereotype.Service;
 import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.TextStyle;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +49,29 @@ public class Utils {
     }
 
     /**
+     * Определяет количество дней между двумя датами (создания желания и его реализации).
+     *
+     * @param creation - дата создания желания.
+     * @param realization - дата реализации желания.
+     * @return
+     */
+    public static long wishLifeTime(Date creation, Date realization) {
+
+        return Duration.between(convertDateToLocalDate(realization).atStartOfDay(),
+                convertDateToLocalDate(creation).atStartOfDay()).toDays();
+    }
+
+    /**
+     * Java Util Date в LocalDate.
+     *
+     * @param userDate
+     * @return
+     */
+    public static LocalDate convertDateToLocalDate(Date userDate) {
+        return userDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    /**
      * Конвертим SQL-TIME в LOCALTIME
      *
      * @param time
@@ -81,141 +98,6 @@ public class Utils {
     }
 
 
-    /**
-     * Проверяем ip
-     */
-   /* public static String getIp(HttpServletRequest request) {
-
-        String remoteAddr = "";
-
-        // Пытаемся взять ip
-        if (request != null) {
-            remoteAddr = request.getHeader("X-FORWARDED-FOR");
-            if (remoteAddr == null || "".equals(remoteAddr)) {
-                remoteAddr = request.getRemoteAddr();
-                log.info("GETTING REQUEST FROM:  " + remoteAddr);
-            }
-        }
-        return remoteAddr;
-    }*/
-
-    /**
-     * Создаем gson builder
-     */
-    public static Gson createGsonBuilder() {
-
-      /*  Gson gson = new GsonBuilder()
-                .serializeNulls()
-                .setDateFormat("dd/MM/yyyy")
-                .registerTypeAdapter(java.sql.Time.class, new TimeSerializer())
-                .create();*/
-
-       // return gson;
-        return null;
-    }
-
-    public static Gson createNullableGsonBuilder() {
-
-        // Trick to get the DefaultDateTypeAdapter instance
-        // Create a first instance a Gson
-        Gson gson = new GsonBuilder()
-                .setDateFormat("dd/MM/yyyy")
-                .create();
-
-        // Get the date adapter
-        TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
-
-        // Ensure the DateTypeAdapter is null safe
-        TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
-
-        // Build the definitive safe Gson instance
-        return new GsonBuilder()
-                .registerTypeAdapter(Date.class, safeDateTypeAdapter)
-                .create();
-
-        //	return gson;
-    }
-
-
-    /**
-     * Конвертим пришедший json в нового пользака и валидируем
-     */
-   /* public static ArNoteUser parseJsonToUserAndValidate(String json) throws Exception {
-
-        if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
-            throw new JsonNullException("JSON - пустой");
-        }
-
-        ArNoteUser localUser;
-        Date currentDate = new Date();
-
-
-        try {
-            // ------------------ Валидация -------------------------
-
-            if (isBlank(JSONTemplate.fromString(json).get("login").getAsString())) throw new JsonParseException(json);
-
-            ArNoteUser.Role userRole;
-
-            if (("USER".equals(JSONTemplate.fromString(json).get("userRole").getAsString())) ||
-                    ("ADMIN".equals(JSONTemplate.fromString(json).get("userRole").getAsString()))) {
-                userRole = ArNoteUser.Role.valueOf(JSONTemplate.fromString(json).get("userRole").getAsString());
-            } else {
-                userRole = ArNoteUser.Role.USER;
-            }
-
-            if (JSONTemplate.fromString(json).get("userCryptoMode") == null) throw new JsonParseException(json);
-            if (JSONTemplate.fromString(json).get("pwd") == null) throw new JsonParseException(json);
-            if (JSONTemplate.fromString(json).get("email") == null) throw new JsonParseException(json);
-            if (JSONTemplate.fromString(json).get("fullname") == null) throw new JsonParseException(json);
-
-
-            localUser = new ArNoteUser(
-                    JSONTemplate.fromString(json).get("login").getAsString(),
-                    userRole,
-                    JSONTemplate.fromString(json).get("pwd").getAsString(),
-                    JSONTemplate.fromString(json).get("userCryptoMode").getAsBoolean(),
-                    JSONTemplate.fromString(json).get("email").getAsString(),
-                    JSONTemplate.fromString(json).get("fullname").getAsString()
-            );
-
-            localUser.setCreationDate(currentDate);
-
-        } catch (Exception e) {
-            throw new JsonParseException(json);
-        }
-        return localUser;
-    }*/
-
-
-    /**
-     * Конвертим пришедший json в новую Salary
-     */
-    public static Salary parseJsonToSalary(String json, ArNoteUser user) throws Exception {
-
-        if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
-            throw new JsonNullException("JSON - пустой");
-        }
-
-        Salary salary;
-        Date currentDate = new Date();
-
-      /*  try {
-            salary = new Salary(
-                    JSONTemplate.fromString(json).get("fullsalary").getAsInt(),
-                    JSONTemplate.fromString(json).get("residualSalary").getAsInt()
-            );
-            salary.setSalarydate(currentDate);
-            LocalDateTime currentTimestamp = LocalDateTime.now();
-            salary.setSalaryTimeStamp(currentTimestamp);
-
-            salary.setUser(user);
-        } catch (Exception e) {
-            throw new JsonParseException(json);
-        }*/
-    //    return salary;
-        return null;
-    }
 
     /*public static String generateRandomPassword() {
 

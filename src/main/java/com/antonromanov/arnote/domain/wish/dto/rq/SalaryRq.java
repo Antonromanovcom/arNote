@@ -1,10 +1,11 @@
-package com.antonromanov.arnote.sex.dto.rs;
+package com.antonromanov.arnote.domain.wish.dto.rq;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+
 import java.util.Date;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SalaryRs {
+public class SalaryRq {
     private Long id;
     private Integer fullSalary; // полная зарплата
     private Integer residualSalary; // зарплата после трат различных

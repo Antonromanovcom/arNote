@@ -1,24 +1,29 @@
 package com.antonromanov.arnote.sex.entity.common;
 
-/*@Entity
+import com.antonromanov.arnote.sex.model.ArNoteUser;
+import lombok.*;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Date;
+
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = "id")
-@EqualsAndHashCode
-@Table(name = "salary")*/
+@Table(name = "salary")
 public class Salary {
 
-	/*@Id
-	@Column(name="id", nullable = false)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "salary_seq_gen")
-	@SequenceGenerator(name = "salary_seq_gen", sequenceName ="salary_id_seq", allocationSize = 1)
+	@Id
+	@Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Getter
+	@Setter
 	private long id;
 
 	@Column(name = "fullslary", nullable = true)
-	private Integer fullSalary; // полная зарплата
+	private Integer fullSalary; // полная зарплата //todo: переименовать
 
 	@Column(name = "residualsalary", nullable = true)
 	private Integer residualSalary; // зарплата после трат различных
@@ -28,7 +33,7 @@ public class Salary {
 
 	@Column(name = "date", nullable = true)
 	@Temporal(TemporalType.DATE)
-	private Date salarydate;
+	private Date salarydate; //todo: переименовать
 
 	@Column
 	private LocalDateTime salaryTimeStamp;
@@ -36,12 +41,7 @@ public class Salary {
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	private ArNoteUser user;
 
-	public Salary(Integer fullSalary, Integer residualSalary) {
-		this.fullSalary = fullSalary;
-		this.residualSalary = residualSalary;
-	}
-
-	public static Salary $toDbEntityWithCheck(SalaryRq payload, Salary salaryFromDb, ArNoteUser arNoteUser) {
+	/*public static Salary $toDbEntityWithCheck(SalaryRq payload, Salary salaryFromDb, ArNoteUser arNoteUser) { //todo: все это закаменченное в маппер и убрать отседова
 
 		return Salary.builder()
 				.fullSalary(payload.getFullSalary() == null ? salaryFromDb.getFullSalary() : payload.getFullSalary())

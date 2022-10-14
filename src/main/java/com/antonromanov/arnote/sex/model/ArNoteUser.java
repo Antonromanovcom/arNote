@@ -22,7 +22,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class ArNoteUser {
 
-	public enum Role { USER, ADMIN }
+	public enum Role { USER, ADMIN } //todo: во внешний енум!
 
 	@Id
 	@Column(name="id", nullable = false)
@@ -52,7 +52,7 @@ public class ArNoteUser {
 	 * Режим шифрования на фронте.
 	 */
 	@Column(nullable = false, columnDefinition = "boolean default false")
-	private Boolean userCryptoMode;
+	private Boolean userCryptoMode; //todo: удалить
 
 	/**
 	 * Дата создания пользователя.
@@ -77,7 +77,7 @@ public class ArNoteUser {
 	 * Режим отображения - таблица или помесячная группировка.
 	 */
 	@Column
-	private String viewMode;
+	private String viewMode; // todo: поменять на com.antonromanov.arnote.domain.wish.dto.rq.ToggleUserModeRq.class
 
 	/**
 	 * Какую дельту отдаем пользователю. Варианта два:

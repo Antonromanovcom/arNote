@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Тут собраны методы необходимые для работы с пользователями и авторизацией.
@@ -30,8 +31,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public ArNoteUser getUserFromPrincipal(Principal principal) throws UserNotFoundException {
-     //   return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-        return null;
+        return usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
@@ -66,8 +66,8 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public ArNoteUser getFirst() {
-        return usersRepo.findAll().stream().findFirst().get();
+    public Optional<ArNoteUser> findByLogin(String login) {
+        return usersRepo.findByLogin(login);
     }
 
    /* @Override

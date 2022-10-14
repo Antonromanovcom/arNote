@@ -9,7 +9,7 @@
     <changeSet author="admin" id="3">
         <createTable tableName="wishes">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints primaryKey="true"/>
+                <constraints primaryKey="true" primaryKeyName="wishes_pkey"/>
             </column>
             <column name="WISH" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -30,8 +30,5 @@
             <column name="INVESTING_SORT_MODE" type="VARCHAR(255)"/>
             <column name="INVESTING_FILTER_MODE" type="VARCHAR(1000)"/>
         </createTable>
-        <rollback>
-            <dropTable tableName="users"/>
-        </rollback>
     </changeSet>
 </databaseChangeLog>

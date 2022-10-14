@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="admin" id="5">
+        <createTable tableName="salary">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="salary_pkey"/>
+            </column>
+            <column name="fullslary" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="residualsalary" type="INT"/>
+            <column name="living_expenses" type="INT"/>
+            <column name="date" type="DATE"/>
+            <column name="SALARY_TIME_STAMP" type="TIMESTAMP"/>
+            <column name="USER_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

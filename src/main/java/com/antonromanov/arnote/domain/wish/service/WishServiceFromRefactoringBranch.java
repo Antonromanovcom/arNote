@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.domain.wish.service;
 
-import com.antonromanov.arnote.domain.wish.dto.*;
+import com.antonromanov.arnote.domain.wish.dto.rs.ListOfGroupedWishesRs;
 import com.antonromanov.arnote.sex.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
 import com.antonromanov.arnote.sex.model.wish.Wish;
@@ -18,7 +18,7 @@ public interface WishServiceFromRefactoringBranch {
 	 * Получить все желания с помесячной группировкой и детализованным наполнением.
 	 *
 	 */
-	List<WishDTOList> getAllWishesWithGroupPriority(ArNoteUser user);
+	List<ListOfGroupedWishesRs> getAllWishesWithGroupPriority(ArNoteUser user);
 
 	void updateWish(Wish log);
 
@@ -34,9 +34,9 @@ public interface WishServiceFromRefactoringBranch {
 
 	Optional<Integer> getImplementedSum(ArNoteUser user, int period);
 
-	Salary saveSalary(Salary salary);
+	/*Salary saveSalary(Salary salary);
 
-	Salary getLastSalary(ArNoteUser localUser);
+	Salary getLastSalary(ArNoteUser localUser);*/
 
 	Integer calculateImplementationPeriod(Integer summ, ArNoteUser localUser);
 

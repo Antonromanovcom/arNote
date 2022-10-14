@@ -15,30 +15,14 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-/*import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;*/
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableCaching
 public class Application {
-
-    public static void main(String[] args) {
-
-        ConfigurableApplicationContext appContext = SpringApplication.run(Application.class, args);
-        /*MainService srv = appContext.getBean(MainServiceImpl.class);
-        UsersRepo repo = appContext.getBean(UsersRepo.class);
-        Environment env = appContext.getBean(Environment.class);
-
-        try {
-            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(new Bot(srv, repo, env));
-        } catch (TelegramApiException e) {
-            e.printStackTrace(); // todo: это наверное как-то исправить надо, да?
-        }*/
-    }
 
     @Autowired
     LoggerFilter loggerFilter;
@@ -53,10 +37,10 @@ public class Application {
         return registrationBean;
     }
 
-   /* @Bean
+    @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
-    }*/
+    }
 
     @Bean
     RestTemplate SimpleRestTemplate() {
@@ -96,5 +80,20 @@ public class Application {
                         false);
             }
         };
+    }
+
+    public static void main(String[] args) {
+
+        ConfigurableApplicationContext appContext = SpringApplication.run(Application.class, args);
+        /*MainService srv = appContext.getBean(MainServiceImpl.class);
+        UsersRepo repo = appContext.getBean(UsersRepo.class);
+        Environment env = appContext.getBean(Environment.class);
+
+        try {
+            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+            telegramBotsApi.registerBot(new Bot(srv, repo, env));
+        } catch (TelegramApiException e) {
+            e.printStackTrace(); // todo: это наверное как-то исправить надо, да?
+        }*/
     }
 }

@@ -1,13 +1,15 @@
 package com.antonromanov.arnote.domain.wish.api;
 
-import com.antonromanov.arnote.domain.wish.dto.rq.WishRq;
-import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
-import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
+import com.antonromanov.arnote.domain.wish.dto.WishAnalyticsRs;
+import com.antonromanov.arnote.domain.wish.dto.rs.*;
+import com.antonromanov.arnote.domain.wish.dto.rq.*;
 import com.antonromanov.arnote.domain.wish.service.WishService;
+import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.security.Principal;
 
 
 //todo: надо нормально поименовать ендпоинты
@@ -36,109 +38,53 @@ public class WishController {
      * Получить все желания.
      *
      * @param principal - JWT-токена пользователя
-     * @param filter    - тип фильтраци: все или только приоритетные
+     * @param filter    - тип фильтрации: все или только приоритетные
      * @param sort      - собственно сортировка
      * @return
      */
     @CrossOrigin(origins = "*")
     @GetMapping
-    public WishListRs getAllWishes(/*Principal principal,*/ @RequestParam(required = false) String filter,
-                                                            @RequestParam(required = false) String sort) {
-        return wishService.getAllWishesByUserId(null, filter, sort);
+    public WishListRs getAllWishes(Principal principal, @RequestParam(required = false) String filter,
+                                   @RequestParam(required = false) String sort) {
+        return wishService.getAllWishesByUserId(principal, filter, sort);
     }
 
     /**
      * Поиск желаний.
      *
-     * @param principal
+     * @param principal - пользователь.
      * @return
      */
-   /* @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @PostMapping("/filter")
     // todo: почему фильтр-то? Это постоянно вводит в заблуждение. Это фильтр все-таки или поиск???
     public WishListRs findWishes(Principal principal, @Valid @RequestBody SearchWishRq request) throws UserNotFoundException {
         return wishService.findWishesByName(request.getWishName(), principal);
-    }*/
+    }
 
     @CrossOrigin(origins = "*")
     @PostMapping
-    public WishRs addWish(/*Principal principal,*/ @Valid @RequestBody WishRq requestParam) {
-        return wishService.addWish(requestParam, principal);
+    public WishRs addWish(Principal principal, @Valid @RequestBody WishRq request) {
+        return wishService.addWish(request, principal);
     }
 
-   /* @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @DeleteMapping()
-    public WishRs deleteWish(Principal principal, @RequestParam String id) {
+    public WishRs deleteWish(@RequestParam String id) {
         return wishService.deleteWish(id);
-    }*/
+    }
 
     /**
      * Получить все желания с группировкой по месяцам.
      *
      * @param principal
-     * @param sortType
-     * @param resp
      * @return
      */
-   /* @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @GetMapping("/groups") // todo: переименовать
-    public ResponseEntity<String> getAllWishesWithMonthGrouping(Principal principal,
-                                                                @RequestParam String sortType,
-                                                                HttpServletResponse resp) {
-
-        return $do(s -> {
-            List<WishDTOList> wishListWithMonthOrder;
-
-            log.info("============== GET ALL WISHES WITH MONTH GROUPING ============== ");
-            log.info("SORT TYPE: " + sortType);
-            log.info("PRINCIPAL: " + principal.getName());
-
-            ArNoteUser localUser = getUserFromPrincipal(principal);
-
-            if (mainService.getAllWishesByUserId(localUser).size() > 0) {
-
-                DtoWithOrder dtOwithOrder = new DtoWithOrder(); //todo: билдер
-                String result = "";
-                String finalSortType = sortType; //todo: очень не красивое решение - надо что-то с этим делать.
-                wishListWithMonthOrder = mainService.getAllWishesWithGroupPriority(localUser);
-
-                dtOwithOrder.list.addAll(wishListWithMonthOrder); //todo: почему .list, а не getlist() ????
-
-                if (("all".equalsIgnoreCase(finalSortType))
-                        && (localUser.getSortMode() != SortMode.ALL)
-                        && (localUser.getSortMode() != null)) { //todo: проверяем не сохранен ли до этого режим отображения и если сохранен - выбираем его. Но  вообще это костылище и код не красивый - надо разбираться с этим
-                    finalSortType = localUser.getSortMode().getUiValue();
-                }
-
-                if ("name".equalsIgnoreCase(finalSortType)) { // todo: обработать какой-нить мапой ИФы и сделать все в функциональном стиле
-                    dtOwithOrder.list.forEach(wl -> wl.getWishList().sort(Comparator.comparing(WishDTO::getWish))); //todo: почему .list, а не getlist() ????
-                    localUser.setSortMode(SortMode.NAME);
-                    usersRepo.saveAndFlush(localUser);
-                } else if ("price-asc".equalsIgnoreCase(finalSortType)) {
-                    dtOwithOrder.list.forEach(wl -> wl.getWishList().sort(Comparator.comparing(WishDTO::getPrice)));
-                    localUser.setSortMode(SortMode.PRICE_ASC);
-                    usersRepo.saveAndFlush(localUser);
-                } else if ("all".equalsIgnoreCase(finalSortType)) {
-                    localUser.setSortMode(SortMode.ALL);
-                    usersRepo.saveAndFlush(localUser);
-                } else if ("price-desc".equalsIgnoreCase(finalSortType)) {
-                    Comparator<WishDTO> comparator = Comparator.comparing(WishDTO::getPrice);
-                    dtOwithOrder.list.forEach(wl -> wl.getWishList().sort(comparator.reversed()));
-                    localUser.setSortMode(SortMode.PRICE_DESC);
-                    usersRepo.saveAndFlush(localUser);
-                }
-
-                log.info("Данные по пользователю после запроса. Тип отображения: {}, Групповая сортировка: {}",
-                        localUser.getViewMode() == null ? "N/A" : localUser.getViewMode(),
-                        localUser.getSortMode() == null ? "N/A" : localUser.getSortMode().getUiValue());
-                result = createNullableGsonBuilder().toJson(dtOwithOrder);
-
-                return $prepareResponse(result);
-            } else {
-                return $prepareNoDataYetErrorResponse(ErrorCodes.ERR_O1);
-            }
-        }, null, null, null, resp);
-    }*/
+    public GroupedMonthListRs getAllWishesWithMonthGrouping(Principal principal, @RequestParam String sortType) {
+        return wishService.getAllWishesWithMonthGrouping(principal, sortType);
+    }
 
   /*  @CrossOrigin(origins = "*")
     @GetMapping("/transferwish")
@@ -160,124 +106,32 @@ public class WishController {
 
         }, null, null, OperationType.EDIT_WISH, resp);
     }*/
-
-  /*  @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @PutMapping
-    public ResponseEntity<String> updateWish(Principal principal, @RequestBody String requestParam, HttpServletResponse resp) {
-
-        return $do(s -> {
-
-            log.info("==================== UPDATE WISHES ======================== ");
-            log.info("PAYLOAD: " + requestParam);
-            log.info("PRINCIPAL: " + principal.getName());
-            log.info("=========================================================== ");
-
-            ArNoteUser localUser = getUserFromPrincipal(principal);
-            Wish wish = parseJsonToWish(ParseType.EDIT, requestParam, localUser);
-            mainService.updateWish(mainService.updateMonthGroup(wish));
-
-            String result = "";
-            return $prepareResponse(result);
-
-        }, requestParam, null, OperationType.EDIT_WISH, resp);
+    public WishRs updateWish(Principal principal, @Valid @RequestBody WishRq request) {
+        return wishService.updateWish(principal, request);
     }
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/summ")
-    public ResponseEntity<String> getSum(Principal principal, HttpServletResponse resp) {
-
-        return $do(s -> {
-            int days = 0;
-            int implementedSumAllTime = 0;
-            int implementedSumMonth = 0;
-
-            ArNoteUser localUser = getUserFromPrincipal(principal);
-
-            if (mainService.getAllRealizedWishes(localUser).isPresent()) {
-
-                List<Long> realizedWishes = mainService.getAllRealizedWishes(localUser).get().stream()
-                        .filter(wf -> wf.getRealizationDate() != null && wf.getCreationDate() != null)
-                        .map(w -> (w.getRealizationDate().getTime() - w.getCreationDate().getTime())).collect(Collectors.toList());
-
-                days = (realizedWishes.size() == 0) ? 0 : (30 / realizedWishes.size());
-                implementedSumAllTime = mainService.getImplementedSum(localUser, 1).orElseGet(() -> 0);
-                implementedSumMonth = mainService.getImplementedSum(localUser, 2).orElseGet(() -> 0);
-            }
-
-            if (mainService.getLastSalary(localUser) != null) {
-                String result = createGsonBuilder().toJson(SummEntity.builder()
-                        .all(mainService.getSumm4All(localUser))
-                        .allPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4All(localUser), localUser))
-                        .priorityPeriodForImplementation(mainService.calculateImplementationPeriod(mainService.getSumm4Prior(localUser), localUser))
-                        .lastSalary(mainService.getLastSalary(localUser).getResidualSalary())
-                        .averageImplementationTime(days)
-                        .implemetedSummAllTime(implementedSumAllTime)
-                        .implemetedSummMonth(implementedSumMonth)
-                        .priority(mainService.getSumm4Prior(localUser)).build());
-
-                log.info("==================== GET SUM ======================== ");
-                log.info("PAYLOAD: " + result);
-                log.info("PRINCIPAL: " + principal.getName());
-                log.info("===================================================== ");
-
-                return $prepareResponse(result);
-            } else {
-                return $prepareNoDataYetErrorResponse(ErrorCodes.ERR_O2);
-            }
-        }, null, principal, OperationType.GET_SUMS, resp);
-    }
-
-
-
-    @CrossOrigin(origins = "*")
-    @GetMapping("/last")
-    public ResponseEntity<String> getLastSalary(Principal principal, HttpServletResponse resp) {
-
-        return $do(s -> {
-
-            ArNoteUser localUser = getUserFromPrincipal(principal);
-            String result = createGsonBuilder().toJson(mainService.getLastSalary(localUser).getResidualSalary());
-            log.info("==================== GET LAST SALARY ======================== ");
-            log.info("PAYLOAD: " + result);
-            log.info("PRINCIPAL: " + principal.getName());
-            log.info("============================================================= ");
-            return $prepareResponse(result);
-        }, null, null, null, resp);
+    @GetMapping("/summ") //todo: поменять УРЛ
+    //todo: посмотреть, можно ли как-то использовать security holder contex чтобы не таскать везде принципала.
+    public WishAnalyticsRs getAnalytics(Principal principal) {
+        return wishService.getWishAnalytics(principal);
     }
 
     @CrossOrigin(origins = "*")
-    @PostMapping("/salary")
-    public Salary addSalary(Principal principal, @RequestBody String requestParam) throws Exception {
-
-        log.info("==================== ADD SALARY ======================== ");
-        log.info("PAYLOAD: " + requestParam);
-        log.info("PRINCIPAL: " + principal.getName());
-        ArNoteUser localUser = getUserFromPrincipal(principal);
-        return mainService.saveSalary(parseJsonToSalary(requestParam, localUser));
-    }
-
-
-    @CrossOrigin(origins = "*")
-    @PostMapping("/parsecsv")
-    public ResponseEntity<String> parseCsv(Principal principal,
-                                           @RequestParam(required = false, value = "csvfile") MultipartFile csvFile,
-                                           HttpServletResponse resp) {
-
-        return $do(s -> {
-            ArNoteUser localUser = getUserFromPrincipal(principal);
-            String result = createGsonBuilder().toJson(mainService.parseCsv(csvFile, localUser));
-            return $prepareResponse(result);
-
-        }, null, null, null, resp);
+    @PostMapping("/salary") //todo: вынести в отдельный контроллер.
+    public SalaryRs addSalary(Principal principal, @RequestBody SalaryRq request) {
+        return wishService.addSalary(request, principal);
     }
 
     //todo: надо понять какой метод нужен то - этот или changeMonth и какой что выполняет
-    @CrossOrigin(origins = "*")
+   /* @CrossOrigin(origins = "*")
     @GetMapping("/changepriority/{id}/{move}")
     public ResponseEntity<String> changePriority(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
 
         return $do(s -> {
-
+  01-
             log.info("==================== MOVE WISH (CHANGE PRIORITY) ======================== ");
             log.info("ID: " + id);
             log.info("PRINCIPAL: " + principal.getName());
@@ -372,186 +226,27 @@ public class WishController {
             return $prepareResponse(result);
 
         }, null, null, null, resp);
-    }
+    }*/
+
+        @CrossOrigin(origins = "*")
+        @PostMapping("/users") //todo: вынести в отдельный контроллер
+        public LocalUserRs addUser(@RequestBody LocalUserRq user) {
+            return wishService.addUser(user); //todo: вынести в отдельный сервис
+        }
 
 
-    @CrossOrigin(origins = "*")
-    @PostMapping("/users")
-    public ResponseEntity<String> addUser(@RequestBody String user, HttpServletResponse resp) {
-
-
-        return $do(s -> {
-
-            ArNoteUser newUser = parseJsonToUserAndValidate(user);
-            newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
-            newUser.setViewMode("TABLE");
-
-            if (usersRepo.findByLogin(newUser.getLogin()).isPresent()) {
-                throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
-            }
-            usersRepo.save(newUser);
-            return $prepareResponse(createGsonBuilder().toJson(newUser));
-
-        }, null, null, null, resp);
-    }
-
-    @CrossOrigin(origins = "*")
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(Principal principal, @PathVariable String id, HttpServletResponse resp) {
-        return $do(s -> {
-            if (!usersRepo.findById(Long.valueOf(id)).isPresent()) {
-                throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_NO_EXIST);
-            }
-            usersRepo.deleteById(Long.valueOf(id));
-            return $prepareResponse(createGsonBuilder().toJson(id));
-
-        }, id, null, null, resp);
-    }
-
-    @CrossOrigin(origins = "*")
-    @PutMapping("/users/{id}")
-    public ResponseEntity<String> editUser(Principal principal, @RequestBody String user, @PathVariable String id, HttpServletResponse resp) {
-
-        return $do(s -> {
-            ArNoteUser newUser = parseJsonToUserAndValidate(user);
-            ArNoteUser localuser = getUserFromPrincipal(principal);
-            newUser.setCreationDate(localuser.getCreationDate());
-
-            if ((usersRepo.findByLogin(newUser.getLogin()).isPresent()) && (!localuser.getLogin().equals(newUser.getLogin()))) {
-                throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.SUCH_USER_EXIST);
-            }
-
-            newUser.setPwd(passwordEncoder.encode(newUser.getPwd()));
-            localuser.setPwd(newUser.getPwd());
-            localuser.setLogin(newUser.getLogin());
-            localuser.setEmail(newUser.getEmail());
-            localuser.setFullname(newUser.getFullname());
-
-            fixNullUserFields(localuser);
-
-            return $prepareResponse(createGsonBuilder().toJson(usersRepo.saveAndFlush(localuser)));
-
-        }, user, null, OperationType.UPDATE_USER, resp);
-    }
 
     //todo: АААААА! Это полная пизда вообще!!!!!! Должен быть отдельный контроллер для юзерских действий и там два метода отдельных! Один для получения, другой для добавления!
     @CrossOrigin(origins = "*")
-    @GetMapping("/users/toggle/{mode}")
-    public ArNoteUser toggleUserMode(Principal principal, @PathVariable String mode) throws UserNotFoundException {
+    @PostMapping("/users/toggle")
+    public LocalUserRs toggleUserMode(Principal principal, @RequestBody ToggleUserModeRq mode) {
+        return wishService.toggleUserMode(principal, mode); //todo: вынести в отдельный сервис
 
-        log.info("========= TOGGLE / GET USER MODE ============== ");
-        log.info("MODE: " + mode);
-
-        ArNoteUser localuser = getUserFromPrincipal(principal);
-
-        if (("TABLE".equals(mode)) || ("TREE".equals(mode))) {
-            localuser.setViewMode(mode);
-            return usersRepo.saveAndFlush(localuser);
-        } else {
-            return localuser;
-        }
     }
 
-    @CrossOrigin(origins = "*")
-    @GetMapping("/users/list")
-    public ResponseEntity<String> getAllUsers(Principal principal, HttpServletResponse resp) {
-
-        return $do(s -> {
-            log.info("========= GET ALL USERS  ============== ");
-
-            List<ArNoteUser> userList = usersRepo.findAll().stream().map(u -> {
-                if (u.getCreationDate() == null) u.setCreationDate(new Date());
-                return u;
-            }).collect(Collectors.toList());
-
-            return $prepareResponse(createGsonBuilder().toJson(userList));
-        }, null, null, null, resp);
+    @CrossOrigin(origins = "*") //todo: getcurrent переименовать в /current
+    @GetMapping("/users/getcurrent") //todo: вынести в отдельный контроллер
+    public LocalUserRs getCurrentUser(Principal principal) {
+        return wishService.getCurrentUser(principal); //todo: вынести в отдельный сервис
     }
-
-    private void fixNullUserFields(ArNoteUser localUser) {
-        // Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
-        if (localUser.getUserRole() == null) localUser.setUserRole(ArNoteUser.Role.USER);
-        if (localUser.getUserCryptoMode() == null) localUser.setUserCryptoMode(false);
-        if (localUser.getCreationDate() == null) localUser.setCreationDate(new Date());
-        if (localUser.getEmail() == null) localUser.setEmail("antonr0manov@yndex.ru");
-        if (localUser.getFullname() == null) localUser.setFullname("Имя неизвестно");
-        if (localUser.getViewMode() == null) localUser.setViewMode("TABLE");
-    }*/
-
-   /* @CrossOrigin(origins = "*")
-    @GetMapping("/users/getcurrent")
-    public ResponseEntity<String> getCurrentUser(Principal principal, HttpServletResponse resp) {
-
-        return $do(s -> {
-
-            ArNoteUser localUser = getUserFromPrincipal(principal);
-            // Проверяем на заполненность пользовательских данных, чтобы не отваливались эксепшены:
-            fixNullUserFields(localUser);
-            return $prepareResponse(createGsonBuilder().toJson(localUser));
-        }, null, null, OperationType.GET_CURRENT_USER, resp);
-    }*/
-
-
-    /**
-     * Метод, который дергается, если пользователь забыл пароль.
-     *
-     * @param email
-     * @param resp
-     * @return
-     */
-   /* @CrossOrigin(origins = "*")
-    @PostMapping(value = "/users/forget", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> returnUserPassword(Principal principal, @RequestParam(name = "email") String email, HttpServletResponse resp) {
-
-        return $do(s -> {
-            log.info("========= FORGET PWD METHOD =============== ");
-            log.info("USER EMAIL - " + email);
-            try {
-                ArNoteUser localUser = usersRepo.findByEmail(email).orElseThrow(UserNotFoundException::new);
-                return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, email).getStatus()));
-            } catch (UserNotFoundException e) {
-                return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
-            }
-        }, null, null, null, resp);
-    }*/
-
-    /**
-     * Сброс юзерского пароля админом.
-     *
-     * @param id
-     * @param resp
-     * @return
-     */
-  /*  @CrossOrigin(origins = "*")
-    @GetMapping("/users/reset/{id}")
-    public ResponseEntity<String> resetUserPasswordByAdmin(Principal principal, @PathVariable String id, HttpServletResponse resp) {
-
-        return $do(s -> {
-            try {
-                ArNoteUser localUser = usersRepo.findById(Long.parseLong(id)).orElseThrow(UserNotFoundException::new);
-                return $prepareResponse(createGsonBuilder().toJson(changePwd(localUser, localUser.getEmail()).getStatus()));
-            } catch (UserNotFoundException e) {
-                return $prepareBadResponse(createGsonBuilder().toJson("No such user!"));
-            }
-        }, null, null, null, resp);
-    }*/
-
-
-    /**
-     * Смена pwd и отправка уведомления на почту.
-     *
-     * @param user
-     * @param email
-     * @return
-     */
-  /*  private EmailStatus changePwd(ArNoteUser user, String email) {
-
-        String pwd = generateRandomPassword();
-        user.setPwd(passwordEncoder.encode(pwd));
-        ArNoteUser updatedUser = usersRepo.saveAndFlush(user);
-        return emailSender.sendPlainText(email, "Ваши данные для доступа к arNote", "Ваш пароль - " + pwd +
-                " [email - " + email + " ]");
-    }*/
-
-
 }

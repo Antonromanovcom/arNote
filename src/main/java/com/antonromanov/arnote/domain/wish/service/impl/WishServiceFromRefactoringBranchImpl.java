@@ -29,24 +29,7 @@ public class WishServiceFromRefactoringBranchImpl /*implements WishService*/ {
         }
     }
 
-    private void addItemInWishDTOListForNullPriorityWishes(List<WishDTOList> wishDTOListGlobal,
-                                                           List<WishDTO> wishDTOListFiltered,
-                                                           int maxPrior,
-                                                           ArNoteUser user) {
-        wishDTOListGlobal.add(WishDTOList.builder()
-                .wishList(wishDTOListFiltered)
-                .monthNumber(computerMonthNumber(maxPrior + 1 > 12 ? (maxPrior + 1 - 12) : maxPrior + 1))
-                .monthName(computerMonth(maxPrior))
-                .year(String.valueOf(getCurrentYear(maxPrior)))
-                .colspan(2)
-                .sum(wishDTOListFiltered.stream().map(WishDTO::getPrice).reduce(0, ArithmeticUtils::addAndCheck))
-                .overflow((wishDTOListFiltered.stream().map(WishDTO::getPrice)
-                        .reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary())
-                .colorClass(getClassColorByMonth(0, (wishDTOListFiltered.stream().map(WishDTO::getPrice)
-                        .reduce(0, ArithmeticUtils::addAndCheck)) > getLastSalary(user).getResidualSalary()))
-                .expanded(true)
-                .build());
-    }*/
+    */
 
     /**
      * Получить все желания с помесячной группировкой и детализованным наполнением.
@@ -179,10 +162,7 @@ public class WishServiceFromRefactoringBranchImpl /*implements WishService*/ {
         return wishRepository.findAllByIdSorted(user).stream().map(Wish::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
     }
 
-    @Override
-    public Integer getSumm4Prior(ArNoteUser user) {
-        return wishRepository.getAllWithPriority1(user).stream().map(Wish::getPrice).reduce(0, ArithmeticUtils::addAndCheck);
-    }
+
 
     @Override
     public Optional<Integer> getImplementedSum(ArNoteUser user, int period) {

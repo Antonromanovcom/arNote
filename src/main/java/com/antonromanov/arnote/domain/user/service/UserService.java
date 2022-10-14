@@ -5,6 +5,7 @@ import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
 import java.security.Principal;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Методы, необходимые для работы с пользователями и авторизацией.
@@ -28,7 +29,7 @@ public interface UserService {
     ArNoteUser saveUser(ArNoteUser user);
 
     ArNoteUser checkAndSaveUserSettings(ArNoteUser user, Map<UserSettingType, String> settings);
-    ArNoteUser getFirst();
+    Optional<ArNoteUser> findByLogin(String login);
 
 
 

@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.sex.services;
 
+import com.antonromanov.arnote.domain.wish.dto.rq.SalaryRq;
 import com.antonromanov.arnote.sex.dto.rq.*;
 import com.antonromanov.arnote.sex.dto.rs.*;
 import com.antonromanov.arnote.sex.dto.rs.FinalBalanceCalculationsRs;

@@ -1,5 +1,6 @@
 package com.antonromanov.arnote.sex.dto.rs;
 
+import com.antonromanov.arnote.domain.wish.dto.rs.SalaryRs;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

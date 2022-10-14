@@ -3,8 +3,6 @@ package com.antonromanov.arnote.sex.utils;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
-import com.antonromanov.arnote.sex.entity.common.Salary;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -160,36 +158,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return localUser;
     }*/
 
-
-    /**
-     * Конвертим пришедший json в новую Salary
-     */
-    public static Salary parseJsonToSalary(String json, ArNoteUser user) throws Exception {
-
-        if (JSONTemplate.fromString(json).getAsJsonObject().size() == 0) {
-            throw new com.antonromanov.arnote.exceptions.JsonNullException("JSON - пустой");
-        }
-
-        Salary salary;
-        Date currentDate = new Date();
-
-       /* try {
-            salary = new Salary(
-                    JSONTemplate.fromString(json).get("fullsalary").getAsInt(),
-                    JSONTemplate.fromString(json).get("residualSalary").getAsInt()
-            );
-            salary.setSalarydate(currentDate);
-            LocalDateTime currentTimestamp = LocalDateTime.now();
-            salary.setSalaryTimeStamp(currentTimestamp);
-
-            salary.setUser(user);
-        } catch (Exception e) {
-            throw new JsonParseException(json);
-        }*/
-       // return salary;
-        return null;
-    }
-
     /**
      * Конвертим пришедший json в новую Salary
      */
@@ -212,7 +180,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return password;
     }*/
 
-    public static String computerMonth(Integer proirity) {
+    public static String computerMonthName(Integer proirity) {
         Date date = new Date();
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         int month = localDate.getMonthValue();
@@ -234,21 +202,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         int month = localDate.getMonthValue();
         return Month.of((month + (priority - 1)) > 12 ? (month + (priority - 1)) - 12 : (month + (priority - 1))).getValue();
     }
-
-    /*public static WishDTO prepareWishDTO(Wish w, int maxPrior) {
-        return WishDTO.builder()
-                .id(w.getId())
-                .wish(w.getWish())
-                .price(w.getPrice())
-                .priority(w.getPriority())
-                .ac(w.getAc())
-                .description(w.getDescription())
-                .url(w.getUrl())
-                .priorityGroup(w.getPriorityGroup())
-                .priorityGroupOrder(w.getPriorityGroupOrder())
-                .month(computerMonth(w.getPriorityGroup() == null ? maxPrior : w.getPriorityGroup()))
-                .build();
-    }*/
 
     public static String getClassColorByMonth(int month, boolean overdraft) {
 

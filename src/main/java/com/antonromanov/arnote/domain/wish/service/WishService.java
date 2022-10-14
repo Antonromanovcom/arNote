@@ -1,11 +1,13 @@
 package com.antonromanov.arnote.domain.wish.service;
 
+import com.antonromanov.arnote.domain.wish.dto.WishAnalyticsRs;
+import com.antonromanov.arnote.domain.wish.dto.rq.LocalUserRq;
+import com.antonromanov.arnote.domain.wish.dto.rq.SalaryRq;
+import com.antonromanov.arnote.domain.wish.dto.rq.ToggleUserModeRq;
 import com.antonromanov.arnote.domain.wish.dto.rq.WishRq;
-import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
-import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
-import com.antonromanov.arnote.sex.model.wish.Wish;
+import com.antonromanov.arnote.domain.wish.dto.rs.*;
+
 import java.security.Principal;
-import java.util.Optional;
 
 public interface WishService {
 
@@ -15,9 +17,9 @@ public interface WishService {
 	int getMaxPriority(ArNoteUser user);
 
 	*//**
-	 * Получить все желания с помесячной группировкой и детализованным наполнением.
-	 *
-	 *//*
+     * Получить все желания с помесячной группировкой и детализованным наполнением.
+     *
+     *//*
 	List<WishDTOList> getAllWishesWithGroupPriority(ArNoteUser user);
 
 	void updateWish(Wish log);
@@ -26,46 +28,51 @@ public interface WishService {
 
 	Wish addWish(Wish parseJsonToWish);
 
-	Integer getSumm4All(ArNoteUser user); // todo: переименовать
-
 	Integer getSumm4Prior(ArNoteUser user); // todo: переименовать
 
 	Optional<Integer> getImplementedSum(ArNoteUser user, int period);
 
-	Salary saveSalary(Salary salary);
-
-	Salary getLastSalary(ArNoteUser localUser);
-
-	Integer calculateImplementationPeriod(Integer summ, ArNoteUser localUser);*/
-
-	/**
-	 * Список желаний.
-	 *
-	 * @param principal - пользак.
-	 * @return
 	 */
-	WishListRs getAllWishesByUserId(Principal principal, String filter, String sort);
 
-	/**
-	 * Поиск желаний по имени.
-	 *
-	 * @param name
-	 * @param principal
-	 * @return
-	 */
-	/*WishListRs findWishesByName(String name, Principal principal);*/
+    SalaryRs addSalary(SalaryRq request, Principal principal);
+
+//	Salary getLastSalary(ArNoteUser localUser);
+
+
+    /**
+     * Список желаний.
+     *
+     * @param principal - пользак.
+     * @return
+     */
+    WishListRs getAllWishesByUserId(Principal principal, String filter, String sort);
+
+    /**
+     * Поиск желаний по имени.
+     *
+     * @param name
+     * @param principal
+     * @return
+     */
+    WishListRs findWishesByName(String name, Principal principal);
 
     WishRs addWish(WishRq requestParam, Principal principal);
 
-	/*Optional<Wish> getWishById(long id);
+    WishRs updateWish(Principal principal, WishRq newWish);
 
-	void updateWish(Wish wish);
+	WishRs deleteWish(String id);
 
-	WishRs deleteWish(String id);*/
+    WishAnalyticsRs getWishAnalytics(Principal principal);
 
-	/*Optional<List<Wish>> getAllRealizedWishes(ArNoteUser user);
+    LocalUserRs getCurrentUser(Principal principal);
 
-	Wish updateMonthGroup(Wish wish) throws BadIncomeParameter;
+    LocalUserRs toggleUserMode(Principal principal, ToggleUserModeRq mode);
+
+    LocalUserRs addUser(LocalUserRq user);
+
+    GroupedMonthListRs getAllWishesWithMonthGrouping(Principal principal, String sortType);
+
+	/*Wish updateMonthGroup(Wish wish) throws BadIncomeParameter;
 	Wish saveWish(Wish wish);*/
 
 }
