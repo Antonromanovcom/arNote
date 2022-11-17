@@ -18,6 +18,18 @@
             <column name="USER_ID" valueNumeric="1"/>
             <column name="realized" value="FALSE"/>
         </insert>
+        <insert tableName="wishes">
+            <column name="id" valueNumeric="2"/>
+            <column name="WISH" value="Много счастья"/>
+            <column name="price" valueNumeric="1"/>
+            <column name="priority" valueNumeric="1"/>
+            <column name="PRIORITY_GROUP" valueNumeric="1"/>
+            <column name="archive" value="FALSE"/>
+            <column name="description" value="Просто так 2"/>
+            <column name="url" value="localhost"/>
+            <column name="USER_ID" valueNumeric="1"/>
+            <column name="realized" value="FALSE"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>
 

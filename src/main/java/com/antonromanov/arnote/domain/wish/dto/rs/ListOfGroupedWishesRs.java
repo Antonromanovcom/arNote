@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class ListOfGroupedWishesRs {
 
-    private List<GroupedWishRs> wishList;
+    private List<GroupedWishRs> wishes;
     private String monthName;
     private String year;
     private int monthNumber;

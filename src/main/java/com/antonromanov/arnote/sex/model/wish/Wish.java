@@ -54,6 +54,7 @@ public class Wish {
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.MERGE)
     @Setter
+    @Getter
     private ArNoteUser user;
 
     @Column

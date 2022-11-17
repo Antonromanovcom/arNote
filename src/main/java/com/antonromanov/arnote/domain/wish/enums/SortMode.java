@@ -3,6 +3,8 @@ package com.antonromanov.arnote.domain.wish.enums;
 import com.antonromanov.arnote.sex.model.wish.Wish;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.Arrays;
 import java.util.Comparator;
 
 /**
@@ -20,4 +22,12 @@ public enum SortMode {
     private final String description;
     private final String uiValue;
     private final Comparator<Wish> wishComparator;
+
+    public static SortMode searchByUiValue(String uiValue){
+        return Arrays.stream(SortMode.values())
+                .filter(e->e.getUiValue().equals(uiValue))
+                .findFirst()
+                .orElse(SortMode.ALL);
+    }
+
 }

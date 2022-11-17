@@ -34,7 +34,6 @@ public interface WishMapper {
 
     Wish map(WishRq wish);
 
-
     @Mapping(target = "salarydate", expression = "java(setDateNow())")
     @Mapping(target = "id", source = "request.id")
     Salary mapSalaryRq(SalaryRq request, ArNoteUser user);
@@ -62,7 +61,7 @@ public interface WishMapper {
     ArNoteUser mapLocalUserRq(LocalUserRq request, String pwd);
 
     @Mapping(target = "wish", source = "wish.wishName")
-    GroupedWishRs mapWishForGroupedList(Wish wish, int maxPrior);
+    GroupedWishRs mapWishForGroupedList(Wish wish);
 
 
     @AfterMapping

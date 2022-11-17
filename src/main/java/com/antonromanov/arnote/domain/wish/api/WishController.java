@@ -82,30 +82,18 @@ public class WishController {
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/groups") // todo: переименовать
-    public GroupedMonthListRs getAllWishesWithMonthGrouping(Principal principal, @RequestParam String sortType) {
+    public GroupedMonthListRs getAllWishesWithMonthGrouping(Principal principal, @RequestParam(required = false) String sortType) {
         return wishService.getAllWishesWithMonthGrouping(principal, sortType);
     }
 
-  /*  @CrossOrigin(origins = "*")
-    @GetMapping("/transferwish")
-    public ResponseEntity<String> changeMonthOrder(Principal principal, @RequestParam String id, @RequestParam String month, HttpServletResponse resp) {
-        return $do(s -> {
 
-            log.info("========= MOVE WISH (CHANGE MONTH PRIORITY) ============== ");
-            log.info("id: " + id);
-            log.info("month: " + month);
-            log.info("PRINCIPAL: " + principal.getName());
-            log.info("=========================================================== ");
+    @CrossOrigin(origins = "*")
+    @PutMapping("/transfer") //todo: переименовать + дока
+    public WishRs changeMonthOrder(Principal principal, @Valid @RequestBody WishTransferRq request) {
+         return wishService.transferWish(request);
+    }
 
-            Wish wish = mainService.getWishById(Integer.parseInt(id)).orElseThrow(() ->
-                    new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
-            wish.setPriorityGroup(parseMonthAndCalculatePriority(month));
-            String result = createNullableGsonBuilder().toJson(mainService.updateAndFlushWish(wish));
-            log.info("ОТВЕТ: {}", result); // todo: если prepareResponse отдает нормальный ответ - эту строчку удалим. Ну или надо сделать, чтобы он отдавал нормальный ответ
-            return $prepareResponse(result);
 
-        }, null, null, OperationType.EDIT_WISH, resp);
-    }*/
     @CrossOrigin(origins = "*")
     @PutMapping
     public WishRs updateWish(Principal principal, @Valid @RequestBody WishRq request) {
@@ -126,107 +114,17 @@ public class WishController {
     }
 
     //todo: надо понять какой метод нужен то - этот или changeMonth и какой что выполняет
-   /* @CrossOrigin(origins = "*")
-    @GetMapping("/changepriority/{id}/{move}")
-    public ResponseEntity<String> changePriority(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
-
-        return $do(s -> {
-  01-
-            log.info("==================== MOVE WISH (CHANGE PRIORITY) ======================== ");
-            log.info("ID: " + id);
-            log.info("PRINCIPAL: " + principal.getName());
-            log.info("========================================================================= ");
-
-            Wish wish = checkParametersAndGetWish(id, move);
-
-            switch (move) {
-                case "down":
-                    if (wish.getPriority() > 1) wish.setPriority(wish.getPriority() - 1);
-                    mainService.updateWish(wish);
-                    break;
-
-                case "up":
-                    wish.setPriority(wish.getPriority() + 1);
-                    mainService.updateWish(wish);
-                    break;
-            }
-
-            String result = createNullableGsonBuilder().toJson(wish);
-
-            return $prepareResponse(result);
-
-        }, null, null, null, resp);
+    @CrossOrigin(origins = "*")
+    @PutMapping("/change-priority")
+    public WishRs changePriority(Principal principal, @Valid @RequestBody ChangePriorityRq payload) {
+        return wishService.oneStepChangePriority(payload);
     }
-
-    private Wish checkParametersAndGetWish(String id, String move) throws BadIncomeParameter {
-
-        if ((!"up".equals(move)) && (!"down".equals(move)))
-            throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.PRIORITYCHANGE);
-        if ((isBlank(id)) || (!Pattern.compile("^\\d*$").matcher(id).matches()))
-            throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_ID);
-        return mainService.getWishById(Integer.parseInt(id)).orElseThrow(() -> new BadIncomeParameter(BadIncomeParameter.ParameterKind.WISH_ID_SEARCH));
-    }
-
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/changemonth/{id}/{move}")
-    public ResponseEntity<String> changeMonth(Principal principal, @PathVariable String id, @PathVariable String move, HttpServletResponse resp) {
-
-        return $do(s -> {
-            ArNoteUser localUser = getUserFromPrincipal(principal);
-            log.info("==================== MOVE WISH (CHANGE MONTH) ======================== ");
-            log.info("ID: " + id);
-            log.info("MOVE: " + move);
-            log.info("PRINCIPAL: " + principal.getName());
-
-
-            Wish wish = checkParametersAndGetWish(id, move);
-            int maxPrior = (mainService.getMaxPriority(localUser)) - 1;
-            log.info("MAX PRIORITY: " + maxPrior);
-
-
-            switch (move) {
-                case "down":
-
-                    if (maxPrior != 0) {
-                        if (wish.getPriorityGroup() < maxPrior + 1) {
-                            wish.setPriorityGroup(wish.getPriorityGroup() + 1);
-                        }
-                        log.info("MOVE SUM: " + (wish.getPriorityGroup() + 1));
-                        mainService.updateWish(wish);
-                        break;
-                    }
-
-                case "up":
-
-                    if (maxPrior == 0) {
-                        log.info("MAX PRIORITY = 0. MOVE SUM: 1");
-                        wish.setPriorityGroup(1);
-                    } else {
-                        if (wish.getPriorityGroup() == null) {
-                            log.info("MOVE SUM: " + maxPrior);
-                            wish.setPriorityGroup(maxPrior);
-                        } else if (wish.getPriorityGroup() > 1) {
-                            log.info("MOVE SUM: " + (wish.getPriorityGroup() - 1));
-                            wish.setPriorityGroup(wish.getPriorityGroup() - 1);
-                        }
-                    }
-
-                    mainService.updateWish(wish);
-                    break;
-            }
-
-            Date currentDate = new Date();
-            if (wish.getCreationDate() == null) wish.setCreationDate(currentDate);
-            if (wish.getPriorityGroupOrder() == null) wish.setPriorityGroupOrder(1);
-
-            String result = createNullableGsonBuilder().toJson(wish);
-            log.info("RESULT: {}", result);
-            log.info("====================================================================== ");
-            return $prepareResponse(result);
-
-        }, null, null, null, resp);
-    }*/
+    @PutMapping("/change-month")
+    public WishRs changeMonth(Principal principal, @Valid @RequestBody  ChangeTargetMonthRq payload) {
+        return wishService.oneStepChangeTargetMonth(payload);
+    }
 
         @CrossOrigin(origins = "*")
         @PostMapping("/users") //todo: вынести в отдельный контроллер

@@ -13,12 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 public class UserServiceTest {
 
-    @Autowired
-    private UserService userService;
+   /* @Autowired
+    private UserService userService;*/
 
 
 

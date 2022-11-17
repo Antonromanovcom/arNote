@@ -1,13 +1,19 @@
-package com.antonromanov.arnote.sex.enums;
+package com.antonromanov.arnote.domain.wish.enums;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Типы одношагового перемещения.
  */
-/*@AllArgsConstructor
-@Getter*/
-public enum StepType /*implements ArnoteOperation*/{
+@AllArgsConstructor
+@Getter
+public enum StepType_Temp /*implements ArnoteOperation*/{
 
-   /* UP(((wish, ms) -> ms.updateWish(wish.setPriorityAndReturnWish(wish.getPriority() + 1))),
+
+/*
+
+    UP(((wish, ms) -> ms.updateWish(wish.setPriorityAndReturnWish(wish.getPriority() + 1))),
             ((wish, ms) -> {
                 int maxPrior = (ms.getMaxPriority(wish.getUser())) - 1;
                 if (maxPrior != 0) {
@@ -34,9 +40,12 @@ public enum StepType /*implements ArnoteOperation*/{
             }));
 
     private final ArnoteOperation changePriority;
-    private final ArnoteOperation changeMonthOrder;
+    private final ArnoteOperation changeMonthOrder;*/
+ //   private final Runnable q;
 
-    @Override
+
+
+    /*@Override
     public Wish move(Wish wish, MainService ms) {
         return changePriority.move(wish, ms);
     }*/

@@ -3,20 +3,22 @@ package com.antonromanov.arnote.sex.utils;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
+import com.antonromanov.arnote.sex.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.sex.exceptions.enums.ErrorCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
 import org.joda.time.DateTime;
+
 import java.time.*;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -28,6 +30,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
 
     private final static String DIGITAL_PATTERN = "([0-9]+)";
+    private final static String CYRILLIC_SYMBOLS_PATTERN = "[А-Яа-я]+ [0-9]+";
+    private final static String LATIN_SYMBOLS_PATTERN = "[A-Za-z]+ [0-9]+";
     private final static String XML_SPECIAL_DATE_PATTERN = "^(0[1-9]|1[0-2]).(0[1-9]|[12][0-9]|3[01])$";
     private final static String WORK_CALENDAR_URL = "http://xmlcalendar.ru/data/ru/%s/calendar.xml";
 
@@ -75,36 +79,19 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         return time.toLocalTime();
     }
 
-    /**
-     * Создаем gson builder
-     */
-    public static Gson createGsonBuilder() {
-
-        Gson gson = new GsonBuilder()
-                .serializeNulls()
-                .setDateFormat("dd/MM/yyyy")
-                .registerTypeAdapter(java.sql.Time.class, new TimeSerializer())
-                .create();
-
-        return gson;
-    }
-
-    public static Gson createNullableGsonBuilder() {
-
-        Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
-        TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
-        TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
-
-        return new GsonBuilder()
-                .registerTypeAdapter(Date.class, safeDateTypeAdapter)
-                .create();
-    }
 
     public static int getCurrentYear(Integer priority) {
+        LocalDate localDate = getCurrentLocalDate();
+        return (getCurrentMonth() + (priority - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
+    }
+
+    public static int getCurrentMonth() {
+        return (getCurrentLocalDate()).getMonthValue();
+    }
+
+    private static LocalDate getCurrentLocalDate() {
         Date date = new Date();
-        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        int month = localDate.getMonthValue();
-        return (month + (priority - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
 
@@ -157,10 +144,6 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         }
         return localUser;
     }*/
-
-    /**
-     * Конвертим пришедший json в новую Salary
-     */
     public static Date localDateToDate(LocalDate date) {
         ZoneId defaultZoneId = ZoneId.systemDefault();
         return Date.from(date.atStartOfDay(defaultZoneId).toInstant());
@@ -360,7 +343,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     }
 
 
-   /* private static MyPair getYearAndMonth(String monthAndYear) {
+    private static MyPair getYearAndMonth(String monthAndYear) {
         final Matcher matcher = getMatcher(getPattern(DIGITAL_PATTERN), monthAndYear);
         String year = "";
         String month = "";
@@ -371,53 +354,29 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         }
 
         return new MyPair(year, month);
-    }*/
+    }
 
-  /*  public static int parseMonthAndCalculatePriority(String monthAndYear) throws com.antonromanov.arnote.exceptions.BadIncomeParameter {
+    private static boolean checkMonthEncoding(String month) {
+        return Pattern.compile(CYRILLIC_SYMBOLS_PATTERN).matcher(month).find();
+    }
 
-        if (Pattern.compile("[А-Яа-я]+ [0-9]+").matcher(monthAndYear).find()) {
+    public static int parseMonthAndCalculatePriority(String monthAndYear) {
 
-            String year = getYearAndMonth(monthAndYear).getYear();
-            String month = getYearAndMonth(monthAndYear).getMonth();
+        MyPair pair = getYearAndMonth(monthAndYear);
+        String year = pair.getYear();
+        String month = pair.getMonth();
 
-            log.info("Обнаружена дата в русской раскладке");
-            log.info("Год: {}", year);
-            log.info("Месяц: {}", month);
-
-            if (isBlank(year) && isInteger(year)) {
-                log.error("Ошибка парсинга даты: {}", monthAndYear);
-                throw new com.antonromanov.arnote.exceptions.BadIncomeParameter(com.antonromanov.arnote.exceptions.BadIncomeParameter.ParameterKind.WRONG_MONTH);
-            } else {
-
-
-                return 1 + Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
-                        monthNameToNumber(month), 1))));
-            }
-        } else if (Pattern.compile("[A-Za-z]+ [0-9]+").matcher(monthAndYear).find()) {
-
-            String year = getYearAndMonth(monthAndYear).getYear();
-            String month = getYearAndMonth(monthAndYear).getMonth();
-
-            log.info("Обнаружена дата в английской раскладке");
-            log.info("Год: {}", year);
-            log.info("Месяц: {}", month);
-
-            if (isBlank(year) && isInteger(year)) {
-                log.error("Ошибка парсинга даты: {}", monthAndYear);
-                throw new com.antonromanov.arnote.exceptions.BadIncomeParameter(com.antonromanov.arnote.exceptions.BadIncomeParameter.ParameterKind.WRONG_MONTH);
-            } else {
-                // log.info("Ставим. Текущая дата + 1 мес: {}", month);
-                return 1 + Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
-                        monthNameToNumber(convertEnglishNames(month)), 1))));
-            }
-
+        if (isBlank(year) && isInteger(year)) {
+            throw new BadIncomeParameter(ErrorCodes.ERR_10);
         } else {
-            throw new com.antonromanov.arnote.exceptions.BadIncomeParameter(com.antonromanov.arnote.exceptions.BadIncomeParameter.ParameterKind.WRONG_MONTH);
-        }
-    }*/
 
-   /* private static String convertEnglishNames(String monthAndYear) throws com.antonromanov.arnote.exceptions.BadIncomeParameter {
-        String returnMonth = monthAndYear;
+            return Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
+                    monthNameToNumber(checkMonthEncoding(monthAndYear)? month : convertEnglishNames(month)), 1)))) + 1;
+        }
+    }
+
+    private static String convertEnglishNames(String monthAndYear) {
+        String returnMonth;
         switch (monthAndYear) {
             case "January":
                 returnMonth = "Январь";
@@ -456,11 +415,10 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 returnMonth = "Декабрь";
                 break;
             default:
-                throw new com.antonromanov.arnote.exceptions.BadIncomeParameter(com.antonromanov.arnote.exceptions.BadIncomeParameter.ParameterKind.WRONG_MONTH);
+                throw new BadIncomeParameter(ErrorCodes.ERR_10);
         }
-        log.info("Перевели месяц на русский язык: {}", returnMonth);
         return returnMonth;
-    }*/
+    }
 
     /**
      * Сформировать специальный URL для запроса истории.
@@ -643,8 +601,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         Map<TinkoffDeltaFinalValuesType, Double> resultMap = new HashMap<>();
         if (purchaseList != null && purchaseList.size() > 0) {
             *//*
-             * Считаем среднюю цену покупки (сумма цена * лот)
-             *//*
+     * Считаем среднюю цену покупки (сумма цена * лот)
+     *//*
             Double tkcAveragePurchasePrice = purchaseList.stream()
                     .map(p -> p.getPrice() * p.getLot())
                     .reduce((double) 0, Double::sum);
@@ -686,8 +644,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                     .orElse(0D);
 
         } else {*/
-            return (0d);
-   //     }
+        return (0d);
+        //     }
     }
 
     /**
@@ -706,8 +664,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
             return currentDayValue - getClosePositionForTomorrow(doc);
         } else {*/
-            return (0d);
-      //  }
+        return (0d);
+        //  }
     }
 
     /**
@@ -773,8 +731,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
             return (currentDayValue * instrumentsCount) - getCostOfAllPurchasesOfSecurityInPortfolio(purchaseList);
         } else {*/
-            return (0d);
-      //  }
+        return (0d);
+        //  }
     }
 
     /**
@@ -835,7 +793,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
     public static double calculateCurrencyMultiplier(CommonMoexDoc doc, String currency) {
 
         /*if (Currencies.getTransferByCodes(currency) == null) {*/
-            return (1d);
+        return (1d);
     /*    } else {
             return Optional.ofNullable(doc)
                     .map(MoexDocumentRs.class::cast)
@@ -882,7 +840,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
             Matcher matcher = getMatcher(getPattern(XML_SPECIAL_DATE_PATTERN), xmlDate);
             LocalDate tempDate = null;
             while (matcher.find()) {
-                 tempDate = LocalDate.of(Integer.parseInt(year),
+                tempDate = LocalDate.of(Integer.parseInt(year),
                         Integer.parseInt(matcher.group(1)),
                         Integer.parseInt(matcher.group(2)));
 

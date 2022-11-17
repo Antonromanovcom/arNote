@@ -22,9 +22,6 @@ public interface WishRepository extends JpaRepository<Wish, Integer>{ //todo: п
 			" w.priority = 1 and  w.user = :user order by w.wishName ASC ")
 	List<Wish> getPriorityWishes(@Param("user") ArNoteUser user);
 
-	/*@Query(value="select w from Wish w")
-	List<Wish> getAll();*/
-
 	/**
 	 * Найти все желания по пользаку.
 	 *

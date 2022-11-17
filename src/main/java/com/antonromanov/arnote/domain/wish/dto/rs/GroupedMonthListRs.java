@@ -7,6 +7,6 @@ import java.util.List;
 @Builder
 @Data
 public class GroupedMonthListRs {
-    private List<ListOfGroupedWishesRs> wishList;
+    private List<ListOfGroupedWishesRs> months;
 }
 

@@ -9,19 +9,11 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WishRq {
+public class WishTransferRq {
 
+    @NotNull
     private  Long id;
-
     @NotBlank
-    private  String wishName;
-    @NotNull
-    private  Integer price;
-    @NotNull
-    private  Integer priority;
-    private  String description;
-    private  String url;
-    private  Boolean archive;
-    private  Boolean realized;
+    private  String monthAndYear;
 }
 

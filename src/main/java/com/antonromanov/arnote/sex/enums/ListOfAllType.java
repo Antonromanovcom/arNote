@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.sex.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**

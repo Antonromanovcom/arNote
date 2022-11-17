@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="admin" id="5">
+        <insert tableName="salary">
+            <column name="id" valueNumeric="1"/>
+            <column name="fullslary" value="500000"/>
+            <column name="residualsalary" valueNumeric="250000"/>
+            <column name="living_expenses" valueNumeric="60000"/>
+            <column name="date" value="2020-06-23"/>
+            <column name="SALARY_TIME_STAMP" value="2022-09-12 18:09:00.698940"/>
+            <column name="USER_ID" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
+
+
+
