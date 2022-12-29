@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.domain.finplanning.loan.entity;
 
 import javax.persistence.*;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.antonromanov.arnote.old.model.ArNoteUser;
 import lombok.*;
 import java.util.Date;
 

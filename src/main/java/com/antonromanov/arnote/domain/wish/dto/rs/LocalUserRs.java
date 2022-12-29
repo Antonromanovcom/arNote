@@ -2,8 +2,8 @@ package com.antonromanov.arnote.domain.wish.dto.rs;
 
 import com.antonromanov.arnote.domain.wish.enums.FilterMode;
 import com.antonromanov.arnote.domain.wish.enums.SortMode;
-import com.antonromanov.arnote.sex.model.investing.InvestingSortMode;
-import com.antonromanov.arnote.sex.model.wish.enums.DeltaMode;
+import com.antonromanov.arnote.old.model.investing.InvestingSortMode;
+import com.antonromanov.arnote.old.model.wish.enums.DeltaMode;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Date;

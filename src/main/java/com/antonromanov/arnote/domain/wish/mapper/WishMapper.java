@@ -7,8 +7,8 @@ import com.antonromanov.arnote.domain.wish.dto.rs.GroupedWishRs;
 import com.antonromanov.arnote.domain.wish.dto.rs.LocalUserRs;
 import com.antonromanov.arnote.domain.wish.dto.rs.SalaryRs;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
-import com.antonromanov.arnote.sex.entity.common.Salary;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.antonromanov.arnote.old.entity.common.Salary;
+import com.antonromanov.arnote.old.model.ArNoteUser;
 import com.antonromanov.arnote.domain.wish.entity.Wish;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -17,7 +17,7 @@ import org.mapstruct.MappingTarget;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import static com.antonromanov.arnote.sex.utils.ArNoteUtils.computerMonthName;
+import static com.antonromanov.arnote.old.utils.ArNoteUtils.computerMonthName;
 
 @Mapper(componentModel = "spring")
 public interface WishMapper {

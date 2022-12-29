@@ -5,13 +5,12 @@ import com.antonromanov.arnote.domain.salary.service.mapper.SalaryMapper;
 import com.antonromanov.arnote.domain.user.service.UserService;
 import com.antonromanov.arnote.domain.wish.dto.rq.SalaryRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.SalaryRs;
-import com.antonromanov.arnote.sex.entity.common.Salary;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.antonromanov.arnote.old.entity.common.Salary;
+import com.antonromanov.arnote.old.model.ArNoteUser;
 import com.antonromanov.arnote.domain.salary.repository.SalaryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.Optional;
 
 @Service

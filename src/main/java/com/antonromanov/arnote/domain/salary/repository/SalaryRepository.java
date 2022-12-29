@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.domain.salary.repository;
 
-import com.antonromanov.arnote.sex.entity.common.Salary;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.antonromanov.arnote.old.entity.common.Salary;
+import com.antonromanov.arnote.old.model.ArNoteUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

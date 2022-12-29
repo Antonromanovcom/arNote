@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
-import static com.antonromanov.arnote.sex.utils.Utils.dateToLocalDate;
+import static com.antonromanov.arnote.old.utils.Utils.dateToLocalDate;
 
 
 @Service

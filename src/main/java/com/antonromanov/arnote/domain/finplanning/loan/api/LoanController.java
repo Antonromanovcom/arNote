@@ -6,7 +6,7 @@ import com.antonromanov.arnote.domain.finplanning.loan.service.LoanService;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FullLoansListRs;
 import com.antonromanov.arnote.domain.finplanning.loan.validation.ValidDate;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FreeLoanSlotsRs;
-import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.old.exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import javax.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;

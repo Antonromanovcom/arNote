@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.domain.wish.entity;
 
 import javax.persistence.*;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.antonromanov.arnote.old.model.ArNoteUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import java.util.Date;

@@ -1,8 +1,8 @@
 package com.antonromanov.arnote;
 
-import com.antonromanov.arnote.sex.security.JWTAuthenticationFilter;
-import com.antonromanov.arnote.sex.security.JWTLoginFilter;
-import com.antonromanov.arnote.sex.security.UserDetailsServiceImpl;
+import com.antonromanov.arnote.old.security.JWTAuthenticationFilter;
+import com.antonromanov.arnote.old.security.JWTLoginFilter;
+import com.antonromanov.arnote.old.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

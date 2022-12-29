@@ -4,8 +4,8 @@ import com.antonromanov.arnote.domain.finplanning.loan.dto.rq.CreditRq;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.OperateCreditRs;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FullLoansListRs;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FreeLoanSlotsRs;
-import com.antonromanov.arnote.sex.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.old.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.old.exceptions.UserNotFoundException;
 
 public interface LoanService {
 

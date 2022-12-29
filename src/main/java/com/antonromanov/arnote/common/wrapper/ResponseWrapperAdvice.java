@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.common.wrapper;
 
-import com.antonromanov.arnote.sex.exceptions.enums.ErrorCodes;
+import com.antonromanov.arnote.old.exceptions.enums.ErrorCodes;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @ControllerAdvice

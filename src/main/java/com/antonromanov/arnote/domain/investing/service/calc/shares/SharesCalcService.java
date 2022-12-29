@@ -7,7 +7,7 @@ import com.antonromanov.arnote.domain.investing.dto.response.CurrentPriceRs;
 import com.antonromanov.arnote.domain.investing.dto.response.DeltaRs;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.antonromanov.arnote.old.model.ArNoteUser;
 
 import java.time.LocalDate;
 import java.util.List;

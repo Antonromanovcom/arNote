@@ -1,16 +1,5 @@
 package com.antonromanov.arnote.user;
 
-import com.antonromanov.arnote.domain.user.service.UserService;
-import com.antonromanov.arnote.domain.wish.enums.FilterMode;
-import com.antonromanov.arnote.domain.wish.enums.UserSettingType;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import java.util.HashMap;
-import java.util.Map;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 //@RunWith(SpringRunner.class)

@@ -7,7 +7,7 @@ import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.antonromanov.arnote.old.model.ArNoteUser;
 
 import java.util.List;
 import java.util.Optional;

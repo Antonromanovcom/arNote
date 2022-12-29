@@ -12,13 +12,13 @@ import com.antonromanov.arnote.domain.wish.enums.SortMode;
 import com.antonromanov.arnote.domain.wish.enums.UserSettingType;
 import com.antonromanov.arnote.domain.wish.mapper.WishMapper;
 import com.antonromanov.arnote.domain.wish.service.WishService;
-import com.antonromanov.arnote.sex.entity.common.Salary;
-import com.antonromanov.arnote.sex.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.sex.exceptions.NoDataYetException;
-import com.antonromanov.arnote.sex.exceptions.enums.ErrorCodes;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.antonromanov.arnote.old.entity.common.Salary;
+import com.antonromanov.arnote.old.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.old.exceptions.NoDataYetException;
+import com.antonromanov.arnote.old.exceptions.enums.ErrorCodes;
+import com.antonromanov.arnote.old.model.ArNoteUser;
 import com.antonromanov.arnote.domain.wish.entity.Wish;
-import com.antonromanov.arnote.sex.repositoty.WishRepository;
+import com.antonromanov.arnote.old.repositoty.WishRepository;
 import lombok.AllArgsConstructor;
 import org.apache.commons.math3.util.ArithmeticUtils;
 import org.springframework.stereotype.Service;
@@ -29,8 +29,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.antonromanov.arnote.domain.wish.enums.SortMode.searchByUiValue;
-import static com.antonromanov.arnote.sex.utils.ArNoteUtils.*;
-import static com.antonromanov.arnote.sex.utils.Utils.wishLifeTime;
+import static com.antonromanov.arnote.old.utils.ArNoteUtils.*;
+import static com.antonromanov.arnote.old.utils.Utils.wishLifeTime;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service

@@ -2,8 +2,8 @@ package com.antonromanov.arnote.domain.salary.service.mapper;
 
 import com.antonromanov.arnote.domain.wish.dto.rq.SalaryRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.SalaryRs;
-import com.antonromanov.arnote.sex.entity.common.Salary;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.antonromanov.arnote.old.entity.common.Salary;
+import com.antonromanov.arnote.old.model.ArNoteUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import java.util.Date;

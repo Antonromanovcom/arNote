@@ -8,10 +8,10 @@ import com.antonromanov.arnote.domain.wish.dto.rs.LocalUserRs;
 import com.antonromanov.arnote.domain.wish.enums.FilterMode;
 import com.antonromanov.arnote.domain.wish.enums.SortMode;
 import com.antonromanov.arnote.domain.wish.enums.UserSettingType;
-import com.antonromanov.arnote.sex.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.sex.exceptions.enums.ErrorCodes;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
+import com.antonromanov.arnote.old.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.old.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.old.exceptions.enums.ErrorCodes;
+import com.antonromanov.arnote.old.model.ArNoteUser;
 import com.antonromanov.arnote.domain.user.repository.UsersRepo;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.Map;
 import java.util.Optional;
 

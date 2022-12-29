@@ -13,14 +13,14 @@ import com.antonromanov.arnote.domain.finplanning.goal.entity.Goal;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FreeLoanSlotsRs;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.transfer.CalculatedLoansTableTr;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.transfer.LoanListTr;
-import com.antonromanov.arnote.sex.dto.transfer.LoanTr;
-import com.antonromanov.arnote.sex.exceptions.AddNewCreditException;
-import com.antonromanov.arnote.sex.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.sex.exceptions.FinPlanningException;
-import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.sex.exceptions.enums.ErrorCodes;
-import com.antonromanov.arnote.sex.model.ArNoteUser;
-import com.antonromanov.arnote.sex.repositoty.CreditRepository;
+import com.antonromanov.arnote.old.dto.transfer.LoanTr;
+import com.antonromanov.arnote.old.exceptions.AddNewCreditException;
+import com.antonromanov.arnote.old.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.old.exceptions.FinPlanningException;
+import com.antonromanov.arnote.old.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.old.exceptions.enums.ErrorCodes;
+import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.old.repositoty.CreditRepository;
 import com.antonromanov.arnote.domain.finplanning.goal.repositoty.GoalsRepo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +32,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
-import static com.antonromanov.arnote.sex.utils.ArNoteUtils.getNearestDate;
-import static com.antonromanov.arnote.sex.utils.Utils.dateToLocalDate;
+import static com.antonromanov.arnote.old.utils.ArNoteUtils.getNearestDate;
+import static com.antonromanov.arnote.old.utils.Utils.dateToLocalDate;
 
 
 @Service
