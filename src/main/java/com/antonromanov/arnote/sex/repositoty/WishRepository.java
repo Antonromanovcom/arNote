@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.sex.repositoty;
 
 import com.antonromanov.arnote.sex.model.ArNoteUser;
-import com.antonromanov.arnote.sex.model.wish.Wish;
+import com.antonromanov.arnote.domain.wish.entity.Wish;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -9,7 +9,7 @@ import com.antonromanov.arnote.domain.wish.dto.rs.SalaryRs;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
 import com.antonromanov.arnote.sex.entity.common.Salary;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
-import com.antonromanov.arnote.sex.model.wish.Wish;
+import com.antonromanov.arnote.domain.wish.entity.Wish;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -65,7 +65,7 @@ public interface WishMapper {
 
 
     @AfterMapping
-    default void processOfferType(@MappingTarget GroupedWishRs target, Wish wish, int maxPrior) {
+    default void injectMonth(@MappingTarget GroupedWishRs target, Wish wish, int maxPrior) {
         target.setMonth(computerMonthName(wish.getPriorityGroup() == null ? maxPrior : wish.getPriorityGroup()));
     }
 }

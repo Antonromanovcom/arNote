@@ -1,14 +1,10 @@
-package com.antonromanov.arnote.exceptions;
+package com.antonromanov.arnote.sex.exceptions;
+
+import com.antonromanov.arnote.sex.exceptions.enums.ErrorCodes;
 
 public class FinPlanningException extends RuntimeException {
 
-	private String message;
-
-	public FinPlanningException() {
-		this.message = "Ошибка построения консолидированной таблицы фин-планирования!";
-	}
-
-	public String getMessage() {
-		return message;
+	public FinPlanningException(ErrorCodes code) {
+		super(code.getUiCode());
 	}
 }

@@ -1,11 +1,17 @@
 package com.antonromanov.arnote.sex.repositoty;
 
-
+import com.antonromanov.arnote.domain.finplanning.loan.entity.Credit;
+import com.antonromanov.arnote.sex.model.ArNoteUser;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface CreditRepository /*extends JpaRepository<Credit, Long>*/{
-   /* List<Credit> getCreditsByUser(@Param("user") ArNoteUser user);
+public interface CreditRepository extends JpaRepository<Credit, Long> {
+    List<Credit> getCreditsByUser(@Param("user") ArNoteUser user);
     Optional<Credit> findCreditByUserAndId(ArNoteUser user, Long id);
 
 
@@ -14,6 +20,6 @@ public interface CreditRepository /*extends JpaRepository<Credit, Long>*/{
             "EXTRACT(YEAR from c.startDate) = :year and " +
             "EXTRACT(MONTH from c.startDate) = :month")
     List<Credit> findCreditByUserAndMonthAndYear(@Param("user") ArNoteUser user, @Param("year") int year,
-                                                         @Param("month") int month);*/
+                                                         @Param("month") int month);
 
 }

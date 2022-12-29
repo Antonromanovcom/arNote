@@ -1,24 +1,29 @@
 package com.antonromanov.arnote.domain.user.service;
 
+import com.antonromanov.arnote.domain.wish.dto.rq.LocalUserRq;
+import com.antonromanov.arnote.domain.wish.dto.rq.ToggleUserModeRq;
+import com.antonromanov.arnote.domain.wish.dto.rs.LocalUserRs;
 import com.antonromanov.arnote.domain.wish.enums.UserSettingType;
 import com.antonromanov.arnote.sex.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
-import java.security.Principal;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Методы, необходимые для работы с пользователями и авторизацией.
- */
 public interface UserService {
+
+
+    LocalUserRs getCurrentUser();
+
+    LocalUserRs toggleUserMode(ToggleUserModeRq mode);
+
+    LocalUserRs addUser(LocalUserRq user);
 
     /**
      * Вытаскиваем юзера из Принципала.
      *
-     * @param principal
      * @return
      */
-    ArNoteUser getUserFromPrincipal(Principal principal) throws UserNotFoundException;
+    ArNoteUser getUserFromPrincipal() throws UserNotFoundException;
 
     /**
      * Сохраняет пользака в БД.
@@ -29,18 +34,7 @@ public interface UserService {
     ArNoteUser saveUser(ArNoteUser user);
 
     ArNoteUser checkAndSaveUserSettings(ArNoteUser user, Map<UserSettingType, String> settings);
+
     Optional<ArNoteUser> findByLogin(String login);
 
-
-
-
-    /**
-     * Вытаскиваем юзера из Принципала и обновляем его view-параметры для tree-вида.
-     *
-     * @param principal
-     * @return
-     */ //todo: нарушение singleresponsability: GET и UPDATE - это должны быть 2 разных метода.
-    /*com.antonromanov.arnote.sbdfvjbsdf.model.ArNoteUser getAndUpdateUserTreeViewSettings(Principal principal,
-                                                                              com.antonromanov.arnote.enums.SortMode sortType)
-            throws com.antonromanov.arnote.exceptions.UserNotFoundException;*/
 }

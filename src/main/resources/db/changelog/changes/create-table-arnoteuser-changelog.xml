@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="admin" id="1">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="login" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pwd" type="VARCHAR(255)"/>
+            <column name="USER_ROLE" type="VARCHAR(255)"/>
+            <column name="USER_CRYPTO_MODE" type="BOOLEAN"/>
+            <column name="CREATION_DATE" type="DATE"/>
+            <column name="EMAIL" type="VARCHAR(255)"/>
+            <column name="FULLNAME" type="VARCHAR(255)"/>
+            <column name="VIEW_MODE" type="VARCHAR(255)"/>
+            <column name="DELTA_MODE" type="VARCHAR(255)"/>
+            <column name="SORT_MODE" type="VARCHAR(255)"/>
+            <column name="FILTER_MODE" type="VARCHAR(255)"/>
+            <column name="LAST_OPERATION_TIME" type="TIMESTAMP"/>
+            <column name="LAST_OPERATION" type="VARCHAR(255)"/>
+            <column name="INVESTING_SORT_MODE" type="VARCHAR(255)"/>
+            <column name="INVESTING_FILTER_MODE" type="VARCHAR(1000)"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="users"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

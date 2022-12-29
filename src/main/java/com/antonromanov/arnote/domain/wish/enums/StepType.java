@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.domain.wish.enums;
 
 import com.antonromanov.arnote.domain.wish.service.WishService;
-import com.antonromanov.arnote.sex.model.wish.Wish;
+import com.antonromanov.arnote.domain.wish.entity.Wish;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

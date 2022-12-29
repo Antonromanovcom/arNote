@@ -530,20 +530,6 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
                 .build();
     }
 */
-    /**
-     * Перевести Дату в LocalDate.
-     *
-     * @param entityDate
-     * @return
-     */
-  /*  private LocalDate dateToLocalDate(Date entityDate) { // todo: в утилс
-        return new Date(entityDate
-                .getTime())
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-    }*/
-
 
     /**
      * Посчитать дату выплаты самого последнего кредита.

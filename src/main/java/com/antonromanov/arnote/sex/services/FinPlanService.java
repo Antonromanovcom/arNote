@@ -1,5 +1,9 @@
 package com.antonromanov.arnote.sex.services;
 
+import com.antonromanov.arnote.domain.finplanning.loan.dto.rq.CreditRq;
+import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FreeLoanSlotsRs;
+import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.OperateCreditRs;
+import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FullLoansListRs;
 import com.antonromanov.arnote.domain.wish.dto.rq.SalaryRq;
 import com.antonromanov.arnote.sex.dto.rq.*;
 import com.antonromanov.arnote.sex.dto.rs.*;
@@ -32,7 +36,7 @@ public interface FinPlanService {
      * @param request
      * @return
      */
-    AddCreditRs addCredit(Principal principal, CreditRq request) throws UserNotFoundException;
+    OperateCreditRs addCredit(Principal principal, CreditRq request) throws UserNotFoundException;
 
     /**
      * Удалить кредит.
@@ -41,7 +45,7 @@ public interface FinPlanService {
      * @param id
      * @return
      */
-    AddCreditRs deleteLoan(Principal principal, Long id) ;
+    OperateCreditRs deleteLoan(Principal principal, Long id) ;
 
     /**
      * Запросить список кредитов.
@@ -58,7 +62,7 @@ public interface FinPlanService {
      * @param principal
      * @return
      */
-    AddCreditRs editLoan(CreditRq payload, Principal principal) throws UserNotFoundException;
+    OperateCreditRs editLoan(CreditRq payload, Principal principal) throws UserNotFoundException;
 
     /**
      * Добавить доход
@@ -122,7 +126,7 @@ public interface FinPlanService {
      * @param id
      * @return
      */
-    AddCreditRs deleteGoal(Principal principal, Long id) throws UserNotFoundException;
+    OperateCreditRs deleteGoal(Principal principal, Long id) throws UserNotFoundException;
 
     /**
      * Получить список ЗП по пользаку.

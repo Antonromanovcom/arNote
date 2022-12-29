@@ -4,50 +4,53 @@ import com.antonromanov.arnote.domain.wish.dto.WishAnalyticsRs;
 import com.antonromanov.arnote.domain.wish.dto.rq.*;
 import com.antonromanov.arnote.domain.wish.dto.rs.*;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
+
 import java.security.Principal;
 
 public interface WishService {
-
-    SalaryRs addSalary(SalaryRq request, Principal principal);
 
     int getMaxPriority(ArNoteUser user);
 
     /**
      * Список желаний.
      *
-     * @param principal - пользак.
      * @return
      */
-    WishListRs getAllWishesByUserId(Principal principal, String filter, String sort);
+    WishListRs getAllWishesByUserId(String filter, String sort);
 
     /**
      * Поиск желаний по имени.
      *
      * @param name
-     * @param principal
      * @return
      */
-    WishListRs findWishesByName(String name, Principal principal);
+    WishListRs findWishesByName(String name);
 
-    WishRs addWish(WishRq requestParam, Principal principal);
+    WishRs addWish(WishRq requestParam);
 
-    WishRs updateWish(Principal principal, WishRq newWish);
+    WishRs updateWish(WishRq newWish);
 
-	WishRs deleteWish(String id);
+    WishRs deleteWish(String id);
 
-    WishAnalyticsRs getWishAnalytics(Principal principal);
-
-    LocalUserRs getCurrentUser(Principal principal);
-
-    LocalUserRs toggleUserMode(Principal principal, ToggleUserModeRq mode);
-
-    LocalUserRs addUser(LocalUserRq user);
+    WishAnalyticsRs getWishAnalytics();
 
     GroupedMonthListRs getAllWishesWithMonthGrouping(Principal principal, String sortType);
 
+    /**
+     * Изменить у желание месяц в каком планируется его реализация.
+     *
+     * @param request
+     * @return
+     */
     WishRs transferWish(WishTransferRq request);
 
     WishRs oneStepChangePriority(ChangePriorityRq payload);
 
+    /**
+     * +/- 1 месяц к реализации желания.
+     *
+     * @param payload
+     * @return
+     */
     WishRs oneStepChangeTargetMonth(ChangeTargetMonthRq payload);
 }

@@ -1,7 +1,6 @@
 package com.antonromanov.arnote.sex.utils;
 
 
-import com.antonromanov.arnote.domain.wish.enums.SortMode_SOLVE;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import java.time.format.TextStyle;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,9 +21,6 @@ import java.util.regex.Pattern;
 @Service
 public class Utils {
 
-
-
-    public enum ParseType {ADD, EDIT}
 
     public enum OperationType {
         ADD_WISH, EDIT_WISH, DELETE_WISH, ADD_SALARY, GET_SUMS, GET_ALL_WISHES, GET_GROUP_WISHES,
@@ -86,7 +81,7 @@ public class Utils {
 
         Date date = new Date();
         Time time = new Time(date.getTime());
-        Boolean result = true;
+        boolean result = true;
 
         if (lastPingTime != null) { // время должно быть не ноль, иначе все наебнется
             // TODO надо еще проверить, чтобы дата была именно сегодняшняя
@@ -133,22 +128,6 @@ public class Utils {
         return (month + (proirity - 1)) > 12 ? localDate.getYear() + 1 : localDate.getYear();
     }
 
-   /* public static WishResponse prepareWishDTO(Wish w, int maxPrior) {
-        return WishResponse.builder()
-                .id(w.getId())
-//				.wish(w.getWish().length()<50 ? w.getWish() : w.getWish().substring(0, 50) + "...")
-                .wish(w.getWish())
-                .price(w.getPrice())
-                .priority(w.getPriority())
-                .ac(w.getAc())
-                .description(w.getDescription())
-                .url(w.getUrl())
-                .priorityGroup(w.getPriorityGroup())
-                .priorityGroupOrder(w.getPriorityGroupOrder())
-                .month(computerMonth(w.getPriorityGroup() == null ? maxPrior : w.getPriorityGroup()))
-                .build();
-    }*/
-
     public static String getClassColorByMonth(int month, boolean overdraft) {
 
         colorClasses = new HashMap<>();
@@ -165,8 +144,6 @@ public class Utils {
         colorClasses.put(11, "label label-purple");
         colorClasses.put(12, "label label-blue");
         colorClasses.put(13, "label label-danger");
-
-//		LOGGER.info("MONTH (getClassColorByMonth) => " + month);
 
         if (!overdraft) {
             if (month == 0) {
@@ -243,8 +220,21 @@ public class Utils {
                 break;
         }
 
-
         return action;
+    }
+
+    /**
+     * Перевести Дату в LocalDate.
+     *
+     * @param entityDate
+     * @return
+     */
+    public static LocalDate dateToLocalDate(Date entityDate) {
+        return new Date(entityDate
+                .getTime())
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
 
     private static boolean isInteger(String value) {
@@ -308,90 +298,18 @@ public class Utils {
         return pattern.matcher(stringToMatch);
     }
 
-
-    /*private static MyPair getYearAndMonth(String monthAndYear) {
-        final Matcher matcher = getMatcher(getDigitsPattern(), monthAndYear);
-        String year = "";
-        String month = "";
-
-        while (matcher.find()) {
-            year = matcher.group(1);
-            month = monthAndYear.substring(0, matcher.start(1)).trim();
-        }
-
-        return new MyPair(year, month);
-    }*/
-
-  /*  public static int parseMonthAndCalculatePriority(String monthAndYear) throws BadIncomeParameter {
-
-        if (Pattern.compile("[А-Яа-я]+ [0-9]+").matcher(monthAndYear).find()) {
-
-            String year = getYearAndMonth(monthAndYear).getYear();
-            String month = getYearAndMonth(monthAndYear).getMonth();
-
-            log.info("Обнаружена дата в русской раскладке");
-            log.info("Год: {}", year);
-            log.info("Месяц: {}", month);
-
-            if (isBlank(year) && isInteger(year)) {
-                log.error("Ошибка парсинга даты: {}", monthAndYear);
-                throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
-            } else {
-                int minMonth = (YearMonth.now().getMonthValue()); // приоритет = 1
-                log.info("Текущий Месяц: {}", minMonth);
-                if ((Calendar.getInstance().get(Calendar.YEAR)) == Integer.parseInt(year)) {
-                    log.info("Перемещаем желание в рамках текущего года");
-                    log.info("Разница между приоритетами: {}", monthNameToNumber(month) - minMonth + 1);
-                    return monthNameToNumber(month) - minMonth + 1; // разница между приоритетами;
-                } else {
-                    log.info("Указан НЕ текущий год");
-                    log.info("Разница между приоритетами: {}", (12 - minMonth) + 1 + monthNameToNumber(month));
-                    return (12 - minMonth) + 1 + monthNameToNumber(month); // разница между приоритетами;
-                }
-            }
-        } else if (Pattern.compile("[A-Za-z]+ [0-9]+").matcher(monthAndYear).find()) {
-
-            String year = getYearAndMonth(monthAndYear).getYear();
-            String month = getYearAndMonth(monthAndYear).getMonth();
-
-            log.info("Обнаружена дата в английской раскладке");
-            log.info("Год: {}", year);
-            log.info("Месяц: {}", month);
-
-            if (isBlank(year) && isInteger(year)) {
-                log.error("Ошибка парсинга даты: {}", monthAndYear);
-                throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
-            } else {
-                int minMonth = (YearMonth.now().getMonthValue()); // приоритет = 1
-                log.info("Текущий Месяц: {}", minMonth);
-                if ((Calendar.getInstance().get(Calendar.YEAR)) == Integer.parseInt(year)) {
-                    log.info("Перемещаем желание в рамках текущего года");
-                    log.info("Разница между приоритетами: {}", monthNameToNumber(month) - minMonth + 1);
-                    return monthNameToNumber(convertEnglishNames(month)) - minMonth + 1; // разница между приоритетами;
-                } else {
-                    log.info("Указан НЕ текущий год");
-                    log.info("Разница между приоритетами: {}", (12 - minMonth) + 1 + monthNameToNumber(convertEnglishNames(month)));
-                    return (12 - minMonth) + 1 + monthNameToNumber(convertEnglishNames(month)); // разница между приоритетами;
-                }
-            }
-
-        } else {
-            throw new BadIncomeParameter(BadIncomeParameter.ParameterKind.WRONG_MONTH);
-        }
-    }*/
-
     /**
      * Поиск в enum'е сортировок подходящее по имени, переданному с UI.
      *
      * @param name
      * @return
      */
-    public static Optional<SortMode_SOLVE> lookUpSortType(String name) { // поиск в Енуме
+   /* public static Optional<SortMode_SOLVE> lookUpSortType(String name) { // поиск в Енуме
         for (SortMode_SOLVE mode : SortMode_SOLVE.values()) {
             //   if (mode.getUiValue().equals(name)) return Optional.of(mode);
         }
         return null; // если не нашли
-    }
+    }*/
 
    /* private static String convertEnglishNames(String monthAndYear) throws BadIncomeParameter {
         String returnMonth = monthAndYear;

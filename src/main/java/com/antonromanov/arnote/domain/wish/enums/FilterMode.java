@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.domain.wish.enums;
 
-import com.antonromanov.arnote.sex.model.wish.Wish;
+import com.antonromanov.arnote.domain.wish.entity.Wish;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import java.util.function.Predicate;

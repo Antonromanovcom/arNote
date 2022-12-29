@@ -33,7 +33,7 @@ public class Application {
     public FilterRegistrationBean<LoggerFilter> registerLoggerFilter() {
         FilterRegistrationBean<LoggerFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(loggerFilter);
-        registrationBean.addUrlPatterns("/rest/wishes/*");
+        registrationBean.addUrlPatterns("/wishes/*", "/users/*", "/salary/*", "/fin-planning/loan/*");
         return registrationBean;
     }
 

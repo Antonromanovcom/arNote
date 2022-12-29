@@ -1,8 +1,7 @@
 package com.antonromanov.arnote.sex.security;
 
 import com.antonromanov.arnote.sex.model.ArNoteUser;
-import com.antonromanov.arnote.sex.repositoty.UsersRepo;
-import com.antonromanov.arnote.sex.security.UserPrinciple;
+import com.antonromanov.arnote.domain.user.repository.UsersRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

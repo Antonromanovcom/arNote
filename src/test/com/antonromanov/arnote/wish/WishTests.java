@@ -1,13 +1,13 @@
 package com.antonromanov.arnote.wish;
 
+import com.antonromanov.arnote.domain.salary.repository.SalaryRepository;
 import com.antonromanov.arnote.domain.wish.dto.rs.GroupedWishRs;
+import com.antonromanov.arnote.domain.wish.entity.Wish;
 import com.antonromanov.arnote.domain.wish.enums.SortMode;
 import com.antonromanov.arnote.domain.wish.mapper.WishMapperImpl;
 import com.antonromanov.arnote.domain.wish.service.impl.WishServiceImpl;
 import com.antonromanov.arnote.sex.entity.common.Salary;
 import com.antonromanov.arnote.sex.model.ArNoteUser;
-import com.antonromanov.arnote.sex.model.wish.Wish;
-import com.antonromanov.arnote.sex.repositoty.SalaryRepository;
 import com.antonromanov.arnote.sex.repositoty.WishRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,9 +17,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
