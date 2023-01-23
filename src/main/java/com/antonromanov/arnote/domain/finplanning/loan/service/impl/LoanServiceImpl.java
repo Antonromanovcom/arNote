@@ -13,6 +13,8 @@ import com.antonromanov.arnote.domain.finplanning.goal.entity.Goal;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FreeLoanSlotsRs;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.transfer.CalculatedLoansTableTr;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.transfer.LoanListTr;
+import com.antonromanov.arnote.old.dto.rq.LoanByDateRq;
+import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.CreditRs;
 import com.antonromanov.arnote.old.dto.transfer.LoanTr;
 import com.antonromanov.arnote.old.exceptions.AddNewCreditException;
 import com.antonromanov.arnote.old.exceptions.BadIncomeParameter;
@@ -32,6 +34,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+import static com.antonromanov.arnote.old.exceptions.enums.ErrorCodes.ERR_12;
 import static com.antonromanov.arnote.old.utils.ArNoteUtils.getNearestDate;
 import static com.antonromanov.arnote.old.utils.Utils.dateToLocalDate;
 
@@ -111,18 +114,6 @@ public class LoanServiceImpl implements LoanService {
         }
     }*/
 
-    /**
-     * Подсчитать кол-во лет для циклинга по годам.
-     *
-     * @return
-     */
-  /*  private int calculateYearsCount(ArNoteUser arNoteUser) {
-        curYear = Calendar.getInstance().get(Calendar.YEAR);
-        return (startYear == null || startYear < 2000) ?
-                curYear - 2019 + 1 :
-                (getFinalYear(arNoteUser)) - startYear + 1;
-    }
-*/
     /**
      * Запросить консолидированную таблицу из БД.
      *
@@ -241,7 +232,8 @@ public class LoanServiceImpl implements LoanService {
      *
      * @return
      */
-    private List<Credit> getAllCredits(ArNoteUser user) {
+    @Override
+    public List<Credit> getAllCredits(ArNoteUser user) {
         return creditRepo.getCreditsByUser(user);
     }
 
@@ -274,109 +266,6 @@ public class LoanServiceImpl implements LoanService {
  /*   private Optional<Freeze> filterFreezeListByDate(List<Freeze> allFreezesByUser, int year, int month) {
         return allFreezesByUser.stream().filter(e -> dateToLocalDate(e.getStartDate()).withDayOfMonth(1)
                 .isEqual(LocalDate.of(year, month, 1))).findFirst();
-    }*/
-
-
-    /**
-     * Считаем остаток по счетам. Расклад по всем месяцам. Заполняем глобальную мапу приходов.
-     *
-     * @param user                - пользак.
-     * @param startMonth          - начальный месяц (из конфигов).
-     * @param yearsCount
-     * @param finalCalculatedYear
-     * @throws UserNotFoundException
-     */
-  /*  private void calculateFullRemains(ArNoteUser user, int startMonth, int yearsCount, int finalCalculatedYear,
-                                      CalculatedLoansTableTr calculatedLoansTable) {
-
-        globalBalanceMap.clear();
-        List<Income> allIncomesByUser = incomeRepo.findAllByUserOrderByIncomeDateAsc(user); // все доходы юзера
-        List<Salary> salaryListByUser = salaryRepo.getLastSalaryListByUserDesc(user);
-        List<Freeze> allFreezesByUser = freezeRepo.findAllByUser(user);
-        getYearsRange(yearsCount).forEach(y -> {
-
-            int startPoint = 1;
-            if (y == 1) {
-                startPoint = startMonth;
-            }
-
-            for (int currMonth = startPoint; currMonth <= 12; currMonth++) {
-                Optional<Salary> currentSalaryByDate = getClosestSalary(salaryListByUser, (finalCalculatedYear - yearsCount + y), currMonth);
-                int monthlySpending = (currentSalaryByDate)
-                        .map(Salary::getLivingExpenses)
-                        .orElse(0); // средние ежемесячные расходы
-
-                int finalCurrMonth = currMonth;
-                Optional<Freeze> currentFreeze = filterFreezeListByDate(allFreezesByUser, (finalCalculatedYear - yearsCount + y),
-                        currMonth);
-
-                List<Income> incomesForCurrentDate = allIncomesByUser.stream()
-                        .filter(i -> dateToLocalDate(i.getIncomeDate()).getYear() == (finalCalculatedYear - yearsCount + y)) // фильтруем по году
-                        .filter(i -> dateToLocalDate(i.getIncomeDate()).getMonthValue() == finalCurrMonth)
-                        .collect(Collectors.toList());
-                int currentIncome = incomesForCurrentDate
-                        .stream()
-                        .findFirst()
-                        .map(Income::getIncome)
-                        .orElse(0);
-
-                Integer prevIncome = getPreviousIncome(currMonth, (finalCalculatedYear - yearsCount + y));
-                Integer prevExpense = getPreviousExpense(currMonth, (finalCalculatedYear - yearsCount + y));
-                Integer loanPaymentsByDate = getLoanPaymentsByDate(calculatedLoansTable.getCalculatedLoansList(),
-                        currMonth, (finalCalculatedYear - yearsCount + y));
-
-                int calculatedRemains = prevIncome - // предыдущий доход
-                        prevExpense - // минус предыдущий расход
-                        monthlySpending - // минус среднемесячный расход
-                        loanPaymentsByDate + // минус покрытие кредитов
-                        currentIncome + // + ежемесячный доход
-                        currentSalaryByDate.map(Salary::getFullSalary).orElse(0); // + зарплата
-
-                if (globalBalanceMap.isEmpty()) {
-                    globalBalanceMap.put(LocalDate.of((finalCalculatedYear - yearsCount + y), currMonth, 1),
-                            FinalBalanceCalculationsRs.builder()
-                                    .balance(currentFreeze.map(Freeze::getAmount).orElse(calculatedRemains))
-                                    .currentIncome(currentIncome + currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
-                                    .loanPayments(loanPaymentsByDate)
-                                    .monthlySpending(monthlySpending)
-                                    .currentIncomeDetail(CurrentIncomeRs.builder()
-                                            .salary(currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
-                                            .incomeList(incomesForCurrentDate.stream().map(i -> IncomeRs.builder()
-                                                    .id(i.getId())
-                                                    .incomeDate(i.getIncomeDate())
-                                                    .incomeDescription(i.getDescription())
-                                                    .amount(i.getIncome())
-                                                    .isBonus(i.getIsBonus())
-                                                    .build())
-                                                    .collect(Collectors.toList()))
-                                            .build())
-                                    .previousExpense(prevExpense)
-                                    .previousIncome(prevIncome)
-                                    .build());
-                } else {
-                    globalBalanceMap.put(LocalDate.of((finalCalculatedYear - yearsCount + y), currMonth, 1),
-                            FinalBalanceCalculationsRs.builder()
-                                    .balance(currentFreeze.map(Freeze::getAmount).orElse(calculatedRemains))
-                                    .currentIncomeDetail(CurrentIncomeRs.builder()
-                                            .salary(currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
-                                            .incomeList(incomesForCurrentDate.stream().map(i -> IncomeRs.builder()
-                                                    .id(i.getId())
-                                                    .incomeDate(i.getIncomeDate())
-                                                    .incomeDescription(i.getDescription())
-                                                    .isBonus(i.getIsBonus())
-                                                    .amount(i.getIncome())
-                                                    .build())
-                                                    .collect(Collectors.toList()))
-                                            .build())
-                                    .currentIncome(currentIncome + currentSalaryByDate.map(Salary::getFullSalary).orElse(0))
-                                    .loanPayments(loanPaymentsByDate)
-                                    .monthlySpending(monthlySpending)
-                                    .previousExpense(prevExpense)
-                                    .previousIncome(prevIncome)
-                                    .build());
-                }
-            }
-        });
     }*/
 
     /**
@@ -583,37 +472,22 @@ public class LoanServiceImpl implements LoanService {
      * Посчитать дату выплаты самого последнего кредита.
      *
      * @param
-     * @param credits
      * @return
      */
-  /*  public Optional<LocalDate> getLastCreditDate(List<Credit> credits) {
+    @Override
+    public Optional<LocalDate> getLastCreditDate(ArNoteUser user) {
         try {
-            return getCalculatedLoansTable(credits).getCalculatedLoansList().stream()
+            return getCalculatedLoansTable(user).getCalculatedLoansList().stream()
                     .map(v -> v.entrySet().stream()
                             .max(Map.Entry.comparingByKey())
-                            // .map(r->r.getKey())).max(rr->rr.m)
-                            .orElseThrow(FinPlanningException::new)
+                            .orElseThrow(() -> new FinPlanningException(ERR_12))
                             .getKey())
                     .max(LocalDate::compareTo);
         } catch (RuntimeException e) {
             return Optional.empty();
         }
-    }*/
+    }
 
-    /**
-     * Посчитать последнюю дату запланированных покупок.
-     *
-     * @param
-     * @param goalList - список планов
-     * @return
-     */
-   /* public LocalDate getLastGoalsDate(List<Goal> goalList) {
-        return goalList.stream()
-                .max(Comparator.comparing(Goal::getStartDate))
-                .map(Goal::getStartDate)
-                .map(this::dateToLocalDate)
-                .orElse(LocalDate.now());
-    }*/
 
     /**
      * Тащим стартовую дату кредита и конвертим в LocalDate.
@@ -720,7 +594,6 @@ public class LoanServiceImpl implements LoanService {
     }
 
     private void putNewClosedLoanToCache(LocalDate paymentDate, Credit credit) {
-
         globalCache.getAllClosedLoansMap().put(credit.getId(), ClosedLoanTr.builder()
                 .startDate(dateToLocalDate(credit.getStartDate()))
                 .closeDate(paymentDate)
@@ -766,16 +639,16 @@ public class LoanServiceImpl implements LoanService {
      * таблицу закрытия кредитов и платежей.
      *
      * @param
-     * @param credits
      * @return
      */
-    public CalculatedLoansTableTr getCalculatedLoansTable(List<Credit> credits) {
+    @Override
+    public CalculatedLoansTableTr getCalculatedLoansTable(ArNoteUser user) {
 
         List<LinkedHashMap<LocalDate, LoanListTr>> resultList = new LinkedList<>(); // Конечный ответ: список мап. Каждая мапа дата + данные по кредиту
         LinkedHashMap<LocalDate, LoanListTr> payMap = new LinkedHashMap<>(); // сама мапа - дата + данные по кредиту.
 
         // Бегаем по всем переданным кредитам.
-        credits.forEach(credit -> fillPaymentsMap(credit, payMap));
+        (getAllCredits(user)).forEach(credit -> fillPaymentsMap(credit, payMap));
 
         resultList.add(payMap);
         return CalculatedLoansTableTr.builder()
@@ -945,23 +818,23 @@ public class LoanServiceImpl implements LoanService {
      * Редактировать кредит.
      *
      * @param payload
-     * @param principal
      * @return
-     * @throws UserNotFoundException
      */
-   /* @Override
-    public AddCreditRs editLoan(CreditRq payload, Principal principal) throws UserNotFoundException {
-        ArNoteUser arNoteUser = users.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+    @Override
+    public OperateCreditRs editLoan(CreditRq payload) { // todo: добавить проверку номера слота
+        ArNoteUser arNoteUser = userService.getUserFromPrincipal();
         Optional<Credit> loan = creditRepo.findCreditByUserAndId(arNoteUser, payload.getId());
-        loan.ifPresent((a) -> creditRepo.save(Credit.$toDbEntityWithCheck(payload, a, arNoteUser)));
-        return AddCreditRs.builder()
-                .creditsCount(getAllCredits(arNoteUser).size())
-                .status(ResponseStatusRs.builder()
-                        .code(200)
-                        .status("SUCCESS")
-                        .build())
-                .build();
-    }*/
+
+        if (loan.isPresent()) {
+            creditRepo.save(rqMapper.map(payload, payload.getSlotNumber(), arNoteUser));
+            return OperateCreditRs.builder()
+                    .creditsCount(getAllCredits(arNoteUser).size())
+                    .creditNumber(payload.getSlotNumber())
+                    .build();
+        } else {
+            throw new FinPlanningException(ErrorCodes.ERR_10);
+        }
+    }
 
     /**
      * Добавить доход.
@@ -1054,23 +927,22 @@ public class LoanServiceImpl implements LoanService {
      * Получить кредит по ID.
      *
      * @param id
-     * @param principal
      * @return
      */
-   /* @Override
-    public CreditRs getLoanById(Long id, Principal principal) throws UserNotFoundException {
-        ArNoteUser arNoteUser = users.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
+    @Override
+    public CreditRs getLoanById(Long id) {
+        ArNoteUser arNoteUser = userService.getUserFromPrincipal();
         return creditRepo.findCreditByUserAndId(arNoteUser, id).map(v -> CreditRs.builder()
-                .id(v.getId())
-                .description(v.getDescription())
-                .amount(v.getStartAmount())
-                .number(v.getCreditNumber())
-                .startDate(v.getStartDate())
-                .fullPayPerMonth(v.getFullPayPerMonth())
-                .realPayPerMonth(v.getRealPayPerMonth())
-                .build())
-                .orElseThrow(FinPlanningException::new);
-    }*/
+                        .id(v.getId())
+                        .description(v.getDescription())
+                        .amount(v.getStartAmount())
+                        .number(v.getCreditNumber())
+                        .startDate(v.getStartDate())
+                        .fullPayPerMonth(v.getFullPayPerMonth())
+                        .realPayPerMonth(v.getRealPayPerMonth())
+                        .build())
+                .orElseThrow(() -> new FinPlanningException(ErrorCodes.ERR_15));
+    }
 
     /**
      * Получить детализированный расчет баланса за месяц.
@@ -1153,22 +1025,31 @@ public class LoanServiceImpl implements LoanService {
         }
     }
 */
+
     /**
      * Получить кредит по дате и пользаку.
      *
      * @param payload
-     * @param principal
      * @return
      */
-   /* @Override
-    public FullLoansListRs getLoanByDate(LoanByDateRq payload, Principal principal) { // todo: еще раз - все ответы в перспективе заворачиваем в один враппер со статусом. Единая обработка хендлером по всему приложению
+    @Override
+    public FullLoansListRs getLoanByDate(LoanByDateRq payload) { //todo: к этому методу надо вернуться, обрабатывать нормально ошибк и убрать .get(). Ошибки выбрасывать в блоке "status"
         try {
+
+            List<List<CreditRs>> rs = globalCache.getGlobalConsolidatedTable().getFinPlans().stream()
+                    .filter(f -> f.getYear() == dateToLocalDate(payload.getStartDate()).getYear() &&
+                            f.getMonthNumber() == dateToLocalDate(payload.getStartDate()).getMonthValue())
+                    .map(r -> r.getCreditsList().getCredits())
+                    .collect(Collectors.toList());
+
             return FullLoansListRs.builder()
-                    .loansList((globalConsolidatedTable.getFinPlans().stream()
+                    .loansList((globalCache.getGlobalConsolidatedTable().getFinPlans().stream()
                             .filter(f -> f.getYear() == dateToLocalDate(payload.getStartDate()).getYear() &&
                                     f.getMonthNumber() == dateToLocalDate(payload.getStartDate()).getMonthValue())
-                            .map(r -> r.getCredits().getCredits()).findFirst().get()).stream()//todo: поправить потом этот гет
-                            .map(FullLoanRs::$fromCredit)
+                            .map(r -> r.getCreditsList().getCredits())
+                            .findFirst().get())
+                            .stream()//todo: поправить потом этот гет
+                            .map(rsMapper::mapCreditRsToFullLoanRs)
                             .collect(Collectors.toList()))
                     .build();
         } catch (Exception e) {
@@ -1177,8 +1058,7 @@ public class LoanServiceImpl implements LoanService {
                     .loansList(Collections.emptyList())
                     .build();
         }
-
-    }*/
+    }
 
 
     /**
@@ -1423,7 +1303,7 @@ public class LoanServiceImpl implements LoanService {
             if (loanWithMaxFreeSlot.getCreditNumber() < 5) {
                 return FreeLoanSlotsRs.builder()
                         .allLoansCount(getAllCredits(arNoteUser).size())
-                        .openSlots(Collections.singletonList(loanWithMaxFreeSlot.getCreditNumber()))
+                        .openSlots(Collections.singletonList(loanWithMaxFreeSlot.getCreditNumber() + 1))
                         .build();
             }
 

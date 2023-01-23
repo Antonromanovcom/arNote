@@ -1,16 +1,7 @@
-package com.antonromanov.arnote.old.services;
+package com.antonromanov.arnote.domain.finplanning.common.service;
 
-import com.antonromanov.arnote.domain.finplanning.loan.dto.rq.CreditRq;
-import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FreeLoanSlotsRs;
-import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.OperateCreditRs;
-import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FullLoansListRs;
-import com.antonromanov.arnote.domain.wish.dto.rq.SalaryRq;
-import com.antonromanov.arnote.old.dto.rq.*;
-import com.antonromanov.arnote.old.dto.rs.*;
-import com.antonromanov.arnote.old.dto.rs.FinalBalanceCalculationsRs;
+import com.antonromanov.arnote.domain.finplanning.common.dto.rs.FinPlanListRs;
 import com.antonromanov.arnote.old.exceptions.UserNotFoundException;
-
-import java.security.Principal;
 
 public interface FinPlanService {
     /**
@@ -19,15 +10,13 @@ public interface FinPlanService {
      * @return
      * @throws UserNotFoundException
      */
-    FinPlanListRs getFinPlanTableFromCache(Principal principal) throws UserNotFoundException;
+  //  FinPlanListRs getFinPlanTableFromCache(Principal principal) throws UserNotFoundException;
 
     /**
      * Запросить консолидированную таблицу из БД.
-     * @param principal
      * @return
-     * @throws UserNotFoundException
      */
-    FinPlanListRs getFinPlanTableFromDb(Principal principal) throws UserNotFoundException;
+    FinPlanListRs getFinPlanTableFromDb();
 
     /**
      * Добавить кредит.
@@ -36,7 +25,7 @@ public interface FinPlanService {
      * @param request
      * @return
      */
-    OperateCreditRs addCredit(Principal principal, CreditRq request) throws UserNotFoundException;
+  //  OperateCreditRs addCredit(Principal principal, CreditRq request) throws UserNotFoundException;
 
     /**
      * Удалить кредит.
@@ -45,7 +34,7 @@ public interface FinPlanService {
      * @param id
      * @return
      */
-    OperateCreditRs deleteLoan(Principal principal, Long id) ;
+  //  OperateCreditRs deleteLoan(Principal principal, Long id) ;
 
     /**
      * Запросить список кредитов.
@@ -53,7 +42,7 @@ public interface FinPlanService {
      * @param principal
      * @return
      */
-    FullLoansListRs getFullLoansList(Principal principal) throws UserNotFoundException;
+  //  FullLoansListRs getFullLoansList(Principal principal) throws UserNotFoundException;
 
     /**
      * Редактировать кредит.
@@ -62,7 +51,7 @@ public interface FinPlanService {
      * @param principal
      * @return
      */
-    OperateCreditRs editLoan(CreditRq payload, Principal principal) throws UserNotFoundException;
+ //   OperateCreditRs editLoan(CreditRq payload, Principal principal) throws UserNotFoundException;
 
     /**
      * Добавить доход
@@ -71,7 +60,7 @@ public interface FinPlanService {
      * @param principal
      * @return
      */
-    SingleOperationRs addIncome(IncomeRq payload, Principal principal) throws UserNotFoundException;
+  //  SingleOperationRs addIncome(IncomeRq payload, Principal principal) throws UserNotFoundException;
 
     /**
      * Удалить доход
@@ -79,7 +68,7 @@ public interface FinPlanService {
      * @param principal - юзер
      * @return
      */
-    SingleOperationRs deleteIncome(Principal principal, IncomesForDeleteRq req) throws UserNotFoundException;
+  //  SingleOperationRs deleteIncome(Principal principal, IncomesForDeleteRq req) throws UserNotFoundException;
 
     /**
      * Редактировать доход.
@@ -88,7 +77,7 @@ public interface FinPlanService {
      * @param principal
      * @return
      */
-    SingleOperationRs editIncome(IncomeRq payload, Principal principal) throws UserNotFoundException;
+ //   SingleOperationRs editIncome(IncomeRq payload, Principal principal) throws UserNotFoundException;
 
     /**
      * Получить данные по кредиту по ID.
@@ -96,7 +85,7 @@ public interface FinPlanService {
      * @param principal
      * @return
      */
-    CreditRs getLoanById(Long id, Principal principal) throws UserNotFoundException;
+ //   CreditRs getLoanById(Long id, Principal principal) throws UserNotFoundException;
 
     /**
      * Деталка по остаткам.
@@ -104,11 +93,11 @@ public interface FinPlanService {
      * @param principal
      * @return
      */
-    FinalBalanceCalculationsRs getRemainsDetailInfo(GetRemainsDetailInfoRq payload, Principal principal) throws UserNotFoundException;
+   /* FinalBalanceCalculationsRs getRemainsDetailInfo(GetRemainsDetailInfoRq payload, Principal principal) throws UserNotFoundException;
 
     SingleOperationRs addGoal(GoalRq payload, Principal principal) throws UserNotFoundException;
 
-    FullLoansListRs getLoanByDate(LoanByDateRq payload, Principal principal);
+    FullLoansListRs getLoanByDate(LoanByDateRq payload, Principal principal);*/
 
     /**
      * Редактировать цель.
@@ -117,7 +106,7 @@ public interface FinPlanService {
      * @param principal
      * @return
      */
-    SingleOperationRs editGoal(GoalRq payload, Principal principal) throws UserNotFoundException;
+//    SingleOperationRs editGoal(GoalRq payload, Principal principal) throws UserNotFoundException;
 
     /**
      * Удалить цель.
@@ -126,14 +115,14 @@ public interface FinPlanService {
      * @param id
      * @return
      */
-    OperateCreditRs deleteGoal(Principal principal, Long id) throws UserNotFoundException;
+ //   OperateCreditRs deleteGoal(Principal principal, Long id) throws UserNotFoundException;
 
     /**
      * Получить список ЗП по пользаку.
      * @param principal
      * @return
      */
-    SalaryListRs getSalariesList(Principal principal) throws UserNotFoundException;
+  //  SalaryListRs getSalariesList(Principal principal) throws UserNotFoundException;
 
     /**
      * Редактировать зарплату.
@@ -142,7 +131,7 @@ public interface FinPlanService {
      * @param payload
      * @return
      */
-    SingleOperationRs editSalary(Principal principal, SalaryRq payload) throws UserNotFoundException;
+ //   SingleOperationRs editSalary(Principal principal, SalaryRq payload) throws UserNotFoundException;
 
     /**
      * Добавить новую ЗП.
@@ -150,7 +139,7 @@ public interface FinPlanService {
      * @param payload
      * @return
      */
-    SingleOperationRs addSalary(Principal principal, SalaryRq payload);
+  //  SingleOperationRs addSalary(Principal principal, SalaryRq payload);
 
     /**
      * Удалить ЗП.
@@ -159,7 +148,7 @@ public interface FinPlanService {
      * @param id
      * @return
      */
-    SingleOperationRs deleteSalary(Principal principal, Long id);
+  //  SingleOperationRs deleteSalary(Principal principal, Long id);
 
     /**
      * Добавить фриз.
@@ -168,7 +157,7 @@ public interface FinPlanService {
      * @param request
      * @return
      */
-    SingleOperationRs addFreeze(Principal principal, FreezeRq request);
+ //   SingleOperationRs addFreeze(Principal principal, FreezeRq request);
 
     /**
      * Удалить фриз.
@@ -178,7 +167,7 @@ public interface FinPlanService {
      * @param month
      * @return
      */
-    SingleOperationRs deleteFreeze(Principal principal, Long year, Long month);
+ //   SingleOperationRs deleteFreeze(Principal principal, Long year, Long month);
 
     /**
      * Получить свободные слоты по кредитам.
@@ -187,7 +176,7 @@ public interface FinPlanService {
      * @param payload
      * @return
      */
-    FreeLoanSlotsRs getLoansSlots(Principal principal, LoanByDateRq payload) throws UserNotFoundException;
+ //   FreeLoanSlotsRs getLoansSlots(Principal principal, LoanByDateRq payload) throws UserNotFoundException;
 
     /**
      * Стартовать вычисления консолидированной таблицы.
@@ -195,10 +184,10 @@ public interface FinPlanService {
      * @param principal
      * @return
      */
-    void startCalculation(Principal principal);
+ //   void startCalculation(Principal principal);
 
     /**
      * Получить статус потока
      */
-    Integer getThreadStatus();
+ //   Integer getThreadStatus();
 }

@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.old.dto.rs;
+package com.antonromanov.arnote.domain.finplanning.loan.dto.rs;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-// @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CreditListRs {
     Integer credit1;
     Integer credit2;

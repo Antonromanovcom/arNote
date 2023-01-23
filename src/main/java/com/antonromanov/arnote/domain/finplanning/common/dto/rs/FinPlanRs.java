@@ -1,5 +1,6 @@
-package com.antonromanov.arnote.old.dto.rs;
+package com.antonromanov.arnote.domain.finplanning.common.dto.rs;
 
+import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.CreditListRs;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ public class FinPlanRs {
     private Integer monthNumber; // номер текущего месяца
     private Integer year; // текущий год
     @JsonUnwrapped
-    private CreditListRs credits; // расклад по кредитам - разрешено не более 5-ти
+    private CreditListRs creditsList; // расклад по кредитам - разрешено не более 5-ти
     private Integer allCredits; // сумма всех кредитов
     private ConsolidatedPurchasesRs purchasePlan; // план покупок
     private Integer remains; // доходы и остатки

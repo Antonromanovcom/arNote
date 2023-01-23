@@ -1,6 +1,10 @@
 package com.antonromanov.arnote.domain.finplanning.api;
 
+import com.antonromanov.arnote.domain.finplanning.common.dto.rs.FinPlanListRs;
+import com.antonromanov.arnote.domain.finplanning.common.service.FinPlanService;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -10,14 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin()
 @RestController
 @RequestMapping("/fin-planning")
+@AllArgsConstructor
 public class FinPlanController {
 
-   /* @Autowired
     private final FinPlanService service;
 
-    public FinPlanController(FinPlanService service) {
-        this.service = service;
-    }*/
 
     /**
      * Запросить консолидированную таблицу из кэша.
@@ -26,27 +27,23 @@ public class FinPlanController {
      * @return
      * @throws Exception
      */
-   /* @CrossOrigin(origins = "*")
+    /*@CrossOrigin(origins = "*")
     @GetMapping("/consolidated")
-    public FinPlanListRs getFinPlanTableFromCache(Principal principal) throws Exception {
-        log.info("Get Consolidated List From Cache...");
+    public FinPlanListRs getFinPlanTableFromCache(Principal principal) {
         return service.getFinPlanTableFromCache(principal);
     }*/
 
     /**
      * Запросить консолидированную таблицу из БД.
      *
-     * @param principal
      * @return
-     * @throws Exception
      */
-   /* @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @GetMapping("/consolidated/db")
-    public FinPlanListRs getFinPlanTableFromDb(Principal principal) throws Exception {
-        log.info("Get Consolidated List From DB...");
-        return service.getFinPlanTableFromDb(principal);
+    public FinPlanListRs getFinPlanTableFromDb() {
+        return service.getFinPlanTableFromDb();
     }
-*/
+
     /**
      * Пытаемся запихнуть получение консолдированной таблы в поток
      *
@@ -89,107 +86,6 @@ public class FinPlanController {
                 .build();
     }*/
 
-    /**
-     * Добавить кредит.
-     *
-     * @param principal
-     * @param request
-     * @return
-     * @throws UserNotFoundException
-     */
-   /* @CrossOrigin(origins = "*")
-    @PostMapping("/loan")
-    public AddCreditRs addLoan(Principal principal, @RequestBody CreditRq request) throws UserNotFoundException {
-        log.info("Add loan: {}", request);
-        return service.addCredit(principal, request);
-    }*/
-
-    /**
-     * Удалить кредит.
-     *
-     * @param principal - пользак
-     * @param id        - id кредита
-     * @return
-     */
-  /*  @CrossOrigin(origins = "*")
-    @DeleteMapping("/loan")
-    public AddCreditRs deleteLoan(Principal principal, @RequestParam @NotNull Long id) {
-        log.info("Delete loan: {}", id);
-        return service.deleteLoan(principal, id);
-    }*/
-
-    /**
-     * Запросить полный список кредитов.
-     *
-     * @param principal
-     * @return
-     * @throws Exception
-     */
-  /*  @CrossOrigin(origins = "*")
-    @GetMapping("/loan/list")
-    public FullLoansListRs creditList(Principal principal) throws UserNotFoundException {
-        log.info("============== Credit list ============== ");
-        return service.getFullLoansList(principal);
-    }*/
-
-    /**
-     * Запросить свободные слоты по кредитам.
-     *
-     * @param principal
-     * @return
-     * @throws Exception
-     */
-  /*  @CrossOrigin(origins = "*")
-    @PostMapping("/loan/slots")
-    public FreeLoanSlotsRs getLoansSlots(Principal principal, @RequestBody LoanByDateRq payload) throws UserNotFoundException {
-        log.info("Free Loans Slots by Date = {}", payload);
-        return service.getLoansSlots(principal, payload);
-    }*/
-
-
-    /**
-     * Запросить кредит по дате.
-     *
-     * @param principal
-     * @return
-     * @throws Exception
-     */
-   /* @CrossOrigin(origins = "*")
-    @PostMapping("/loan/bydate")
-    public FullLoansListRs loanByDate(Principal principal, @RequestBody LoanByDateRq payload) {
-        log.info("Credit by Date = {}", payload);
-        return service.getLoanByDate(payload, principal);
-    }*/
-
-    /**
-     * Запросить данные по кредиту по его ID.
-     *
-     * @param principal
-     * @param id
-     * @return
-     * @throws UserNotFoundException
-     */
-  /*  @CrossOrigin(origins = "*")
-    @GetMapping("/loan")
-    public CreditRs getLoanById(Principal principal, @RequestParam @NotNull Long id) throws UserNotFoundException { // todo: надо отдельную ДТО с респонсом или как-то научиться заворачивать их (враппить)
-        log.info("Get loan by id: {}", id);
-        return service.getLoanById(id, principal);
-    }*/
-
-    /**
-     * Редактировать кредит.
-     *
-     * @param principal
-     * @param payload
-     * @return
-     * @throws UserNotFoundException
-     */
-  /*  @CrossOrigin(origins = "*")
-    @PutMapping("/loan")
-    public AddCreditRs editLoan(Principal principal, @RequestBody CreditRq payload) throws UserNotFoundException {
-        log.info("Edit loan: {}", payload);
-        return service.editLoan(payload, principal);
-    }*/
 
     /**
      * Добавить доход.

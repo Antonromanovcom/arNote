@@ -1,12 +1,45 @@
-package com.antonromanov.arnote.old.services;
+package com.antonromanov.arnote.domain.finplanning.common.service.impl;
 
+import com.antonromanov.arnote.domain.finplanning.common.dto.rs.FinPlanListRs;
+import com.antonromanov.arnote.domain.finplanning.common.dto.rs.FinPlanRs;
+import com.antonromanov.arnote.domain.finplanning.common.service.FinPlanService;
+import com.antonromanov.arnote.domain.finplanning.common.service.globalcache.GlobalCache;
+import com.antonromanov.arnote.domain.finplanning.goal.service.GoalsService;
+import com.antonromanov.arnote.domain.finplanning.loan.dto.transfer.CalculatedLoansTableTr;
+import com.antonromanov.arnote.domain.finplanning.loan.service.LoanService;
+import com.antonromanov.arnote.domain.user.service.UserService;
 import com.antonromanov.arnote.old.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.old.model.ArNoteUser;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
-
-/*@Service
+@Service
 @Slf4j
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)*/
-public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: класс больше 1000 строк! Разделить!
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@AllArgsConstructor
+public class FinPlanServiceImp implements FinPlanService { //todo: класс больше 1000 строк! Разделить!
+
+    private final UserService userService;
+    private final GlobalCache globalCache;
+    private final LoanService loanService;
+    private final GoalsService goalsService;
+
+    @Value("${finplan.final.year}")
+    private Integer finalYear; // + кол-во лет по которым считаем верхнюю границу диапазона отображаемого в консолидированной таблице
+
+    @Value("${finplan.start.month}")
+    private Integer startMonth; // месяц с которого начинаем отсчет
+
+    @Value("${finplan.start.year}")
+    private Integer startYear; // год с которого начинаем отсчет
 
     /*@Autowired
     private CreditRepository creditRepo;
@@ -27,14 +60,6 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
     private FreezeRepo freezeRepo;
 
 
-    @Value("${finplan.start.month}")
-    private Integer startMonth; // месяц с которого начинаем отсчет
-
-    @Value("${finplan.start.year}")
-    private Integer startYear; // год с которого начинаем отсчет
-
-    @Value("${finplan.final.year}")
-    private Integer finalYear; // + кол-во лет по которым считаем верхнюю границу диапазона отображаемого в консолидированной таблице
 
     AtomicInteger atomicInt = new AtomicInteger(0);
 
@@ -82,31 +107,30 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
      *
      * @return
      */
-  /*  private int calculateYearsCount(ArNoteUser arNoteUser) {
-        curYear = Calendar.getInstance().get(Calendar.YEAR);
+    private int calculateYearsCount(ArNoteUser arNoteUser) {
+        int curYear = globalCache.getCurrentYear();
         return (startYear == null || startYear < 2000) ?
                 curYear - 2019 + 1 :
                 (getFinalYear(arNoteUser)) - startYear + 1;
     }
-*/
+
+
     /**
      * Запросить консолидированную таблицу из БД.
      *
-     * @param principal - юзер.
      * @return
-     * @throws UserNotFoundException
      */
-  /*  @Override
-    public FinPlanListRs getFinPlanTableFromDb(Principal principal) throws UserNotFoundException {
+    @Override
+    public FinPlanListRs getFinPlanTableFromDb() {
         log.info("[SRV] Gettin Consolidated Table From DB...");
-        curYear = Calendar.getInstance().get(Calendar.YEAR);
-        ArNoteUser arNoteUser = users.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-        globalGoalList = purchaseRepo.findAllByUser(arNoteUser);
+        ArNoteUser arNoteUser = userService.getUserFromPrincipal();
+        globalCache.fillGoals(goalsService.getAllPurchases(arNoteUser));
         int finalCalculatedYear = getFinalYear(arNoteUser);
         log.info("[SRV] Calculate Loans Table...");
-        CalculatedLoansTableTr calculatedLoansTable = getCalculatedLoansTable(getAllCredits(arNoteUser)); // todo: ** 1 **
+        CalculatedLoansTableTr calculatedLoansTable = loanService.getCalculatedLoansTable(arNoteUser); // todo: ** 1 **
         log.info("[SRV] Calculate Loans Table - DONE");
         int yearsCount = calculateYearsCount(arNoteUser);
+
         if (startMonth == null || startMonth < 1 || startMonth > 12 || yearsCount == 1) {
             startMonth = 1;
         }
@@ -137,14 +161,14 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
                                 .getPurchasePlan()
                                 .stream()
                                 .anyMatch(p -> p.getLoanId() != null)))
-                        .borderWidth(currMonth==12? "3px double #8B0000" : "1px solid grey")
+                        .borderWidth(currMonth == 12 ? "3px double #8B0000" : "1px solid grey")
                         .build());
             }
             log.info("Year {} ", (finalCalculatedYear) - yearsCount + y);
         });
         globalConsolidatedTable = FinPlanListRs.builder().finPlans(finalList).build();
         return globalConsolidatedTable;
-    }*/
+    }
 
     /**
      * Рассчитать цвет шрифта.
@@ -216,18 +240,19 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
      *
      * @return
      */
-   /* private Integer getFinalYear(ArNoteUser user) {
-        Integer yearFromApplicationProperties = curYear + finalYear;
-        if (getLastCreditDate(getAllCredits(user)).isPresent()) {
-            LocalDate creditDate = getLastCreditDate(getAllCredits(user)).get();
-            LocalDate lastGoalsDate = getLastGoalsDate(globalGoalList);
+    private Integer getFinalYear(ArNoteUser user) {
+        Integer yearFromApplicationProperties = globalCache.getCurrentYear() + finalYear;
+
+        if (loanService.getLastCreditDate(user).isPresent()) {
+            LocalDate creditDate = loanService.getLastCreditDate(user).get();
+            LocalDate lastGoalsDate = goalsService.getLastGoalsDate(globalCache.getGlobalGoalList());
             return Stream.of(creditDate.getYear(), lastGoalsDate.getYear(), yearFromApplicationProperties)
                     .max(Integer::compareTo)
                     .orElse(yearFromApplicationProperties);
         } else {
             return yearFromApplicationProperties;
         }
-    }*/
+    }
 
 
     /**
@@ -252,13 +277,14 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
      * @param finalCalculatedYear
      * @throws UserNotFoundException
      */
-  /*  private void calculateFullRemains(ArNoteUser user, int startMonth, int yearsCount, int finalCalculatedYear,
+    private void calculateFullRemains(ArNoteUser user, int startMonth, int yearsCount, int finalCalculatedYear,
                                       CalculatedLoansTableTr calculatedLoansTable) {
 
         globalBalanceMap.clear();
         List<Income> allIncomesByUser = incomeRepo.findAllByUserOrderByIncomeDateAsc(user); // все доходы юзера
         List<Salary> salaryListByUser = salaryRepo.getLastSalaryListByUserDesc(user);
         List<Freeze> allFreezesByUser = freezeRepo.findAllByUser(user);
+
         getYearsRange(yearsCount).forEach(y -> {
 
             int startPoint = 1;
@@ -343,7 +369,7 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
                 }
             }
         });
-    }*/
+    }
 
     /**
      * Платежи по кредитам по состоянию на конкретную дату.
@@ -552,21 +578,6 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
         }
     }*/
 
-    /**
-     * Посчитать последнюю дату запланированных покупок.
-     *
-     * @param
-     * @param goalList - список планов
-     * @return
-     */
-   /* public LocalDate getLastGoalsDate(List<Goal> goalList) {
-        return goalList.stream()
-                .max(Comparator.comparing(Goal::getStartDate))
-                .map(Goal::getStartDate)
-                .map(this::dateToLocalDate)
-                .orElse(LocalDate.now());
-    }*/
-
 
     /**
      * Получить и рассчитать текущие кредиты.
@@ -581,8 +592,8 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
         LinkedHashMap<LocalDate, LoanListTr> payMap = new LinkedHashMap<>(); // сама мапа - дата + данные по кредиту.
 
         *//**
-         * Бегаем по всем переданным кредитам.
-         *//*
+     * Бегаем по всем переданным кредитам.
+     *//*
         credits.forEach(credit -> {
             LocalDate creditDate = new Date(credit.getStartDate()
                     .getTime())
@@ -597,9 +608,9 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
                 paySum = paySum - credit.getRealPayPerMonth();
                 LocalDate paymentDate = creditDate.withDayOfMonth(1).plusMonths(currentMonth);*/
 
-                /**
-                 * Ищем досрочные "погашалки" кредита
-                 */
+    /**
+     * Ищем досрочные "погашалки" кредита
+     */
          /*       Map<Long, Map<LocalDate, Integer>> creditWithRepaymentMap =
                         globalGoalList
                                 .stream()
@@ -680,9 +691,9 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
 
                 currentMonth++;*/
 
-                /*
-                 * Проверка, если кто-то запихнул какие-то запредельные значения, чтобы не попали в вечный цикл.
-                 */
+    /*
+     * Проверка, если кто-то запихнул какие-то запредельные значения, чтобы не попали в вечный цикл.
+     */
           /*      if (currentMonth > 120) {
                     paySum = 0;
                 }
@@ -1393,22 +1404,22 @@ public class FinPlanServiceImp /*implements FinPlanService*/ { //todo: клас�
                         .build();
             }*/
 
-            /**
-             * Тут мы собрали просто все закрытые относительно заданной даты кредиты. Но может быть кейс, что до
-             * заданной даты кредит закончился и сразу после него стартанул другой. Поэтому сначала нам надо откинуть кредиты,
-             * которые закончились раньше заданной даты и сразу после них, опять же раньше заданной даты стартанули
-             * другие кредиты.
-             */
+    /**
+     * Тут мы собрали просто все закрытые относительно заданной даты кредиты. Но может быть кейс, что до
+     * заданной даты кредит закончился и сразу после него стартанул другой. Поэтому сначала нам надо откинуть кредиты,
+     * которые закончились раньше заданной даты и сразу после них, опять же раньше заданной даты стартанули
+     * другие кредиты.
+     */
 
          /*   Map<Long, ClosedLoanTr> filteredMap = new HashMap<>();
 
             for (Map.Entry<Long, ClosedLoanTr> item : globalMapOfClosedLoans.entrySet()) {
                 if (item.getValue().getCloseDate().withDayOfMonth(1).isBefore(
                         dateToLocalDate(payload.getStartDate()).withDayOfMonth(1))) {*/
-                    /**
-                     * Если кредит закончился (выплачен) ранее запрашиваемой даты, ищем, нет ли другого кредита
-                     * начавшегося ранее запрашиваемой даты в этом же слоте.
-                     */
+    /**
+     * Если кредит закончился (выплачен) ранее запрашиваемой даты, ищем, нет ли другого кредита
+     * начавшегося ранее запрашиваемой даты в этом же слоте.
+     */
             /*        List<Credit> creditsStartedAfterClosedForUserDate = allCreditList.stream()
                             .filter(s -> s.getCreditNumber().equals(item.getValue().getLoanNumber())) // ищем в данном слоте
                             .filter(l -> !l.getId().equals(item.getKey())) // откидываем данный кредит

@@ -4,8 +4,16 @@ import com.antonromanov.arnote.domain.finplanning.loan.dto.rq.CreditRq;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.OperateCreditRs;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FullLoansListRs;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FreeLoanSlotsRs;
+import com.antonromanov.arnote.domain.finplanning.loan.dto.transfer.CalculatedLoansTableTr;
+import com.antonromanov.arnote.domain.finplanning.loan.entity.Credit;
+import com.antonromanov.arnote.old.dto.rq.LoanByDateRq;
+import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.CreditRs;
 import com.antonromanov.arnote.old.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.old.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.old.model.ArNoteUser;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 public interface LoanService {
 
@@ -17,6 +25,14 @@ public interface LoanService {
      * @return
      */
     OperateCreditRs addLoan(CreditRq request) throws UserNotFoundException, BadIncomeParameter;
+
+    /**
+     * Подсчитать консолидированную таблицу по кредитам.
+     *
+     * @param user
+     * @return
+     */
+    CalculatedLoansTableTr getCalculatedLoansTable(ArNoteUser user);
 
     /**
      * Удалить кредит.
@@ -34,79 +50,32 @@ public interface LoanService {
     FullLoansListRs getFullLoansList() throws UserNotFoundException;
 
     /**
+     * Вернуть все кредиты по пользаку.
+     *
+     * @param user
+     * @return
+     */
+    List<Credit> getAllCredits(ArNoteUser user);
+
+    /**
      * Редактировать кредит.
      *
      * @param payload
-     * @param principal
      * @return
      */
-  //  AddCreditRs editLoan(CreditRq payload, Principal principal) throws UserNotFoundException;
+    OperateCreditRs editLoan(CreditRq payload);
 
-    /**
-     * Добавить доход
-     *
-     * @param payload
-     * @param principal
-     * @return
-     */
-   // SingleOperationRs addIncome(IncomeRq payload, Principal principal) throws UserNotFoundException;
-
-    /**
-     * Удалить доход
-     *
-     * @param principal - юзер
-     * @return
-     */
-  //  SingleOperationRs deleteIncome(Principal principal, IncomesForDeleteRq req) throws UserNotFoundException;
-
-    /**
-     * Редактировать доход.
-     *
-     * @param payload
-     * @param principal
-     * @return
-     */
-  //  SingleOperationRs editIncome(IncomeRq payload, Principal principal) throws UserNotFoundException;
 
     /**
      * Получить данные по кредиту по ID.
      *
      * @param id
-     * @param principal
      * @return
      */
-  //  CreditRs getLoanById(Long id, Principal principal) throws UserNotFoundException;
+    CreditRs getLoanById(Long id);
 
-    /**
-     * Деталка по остаткам.
-     *
-     * @param payload
-     * @param principal
-     * @return
-     */
-   /* FinalBalanceCalculationsRs getRemainsDetailInfo(GetRemainsDetailInfoRq payload, Principal principal) throws UserNotFoundException;
 
-    SingleOperationRs addGoal(GoalRq payload, Principal principal) throws UserNotFoundException;
-
-    FullLoansListRs getLoanByDate(LoanByDateRq payload, Principal principal);*/
-
-    /**
-     * Редактировать цель.
-     *
-     * @param payload
-     * @param principal
-     * @return
-     */
-  //  SingleOperationRs editGoal(GoalRq payload, Principal principal) throws UserNotFoundException;
-
-    /**
-     * Удалить цель.
-     *
-     * @param principal
-     * @param id
-     * @return
-     */
- //   AddCreditRs deleteGoal(Principal principal, Long id) throws UserNotFoundException;
+    FullLoansListRs getLoanByDate(LoanByDateRq payload);
 
     /**
      * Получить список ЗП по пользаку.
@@ -114,7 +83,7 @@ public interface LoanService {
      * @param principal
      * @return
      */
-  //  SalaryListRs getSalariesList(Principal principal) throws UserNotFoundException;
+    //  SalaryListRs getSalariesList(Principal principal) throws UserNotFoundException;
 
     /**
      * Редактировать зарплату.
@@ -123,7 +92,7 @@ public interface LoanService {
      * @param payload
      * @return
      */
-  //  SingleOperationRs editSalary(Principal principal, SalaryRq payload) throws UserNotFoundException;
+    //  SingleOperationRs editSalary(Principal principal, SalaryRq payload) throws UserNotFoundException;
 
     /**
      * Добавить новую ЗП.
@@ -132,7 +101,7 @@ public interface LoanService {
      * @param payload
      * @return
      */
-  //  SingleOperationRs addSalary(Principal principal, SalaryRq payload);
+    //  SingleOperationRs addSalary(Principal principal, SalaryRq payload);
 
     /**
      * Удалить ЗП.
@@ -141,8 +110,7 @@ public interface LoanService {
      * @param id
      * @return
      */
-  //  SingleOperationRs deleteSalary(Principal principal, Long id);
-
+    //  SingleOperationRs deleteSalary(Principal principal, Long id);
 
 
     /**
@@ -152,6 +120,14 @@ public interface LoanService {
      * @return
      */
     FreeLoanSlotsRs getLoansSlots(String payload) throws UserNotFoundException;
+
+    /**
+     * Посчитать дату выплаты самого последнего кредита.
+     *
+     * @param credits
+     * @return
+     */
+    Optional<LocalDate> getLastCreditDate(ArNoteUser user);
 
 
 }
