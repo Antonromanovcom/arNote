@@ -1,11 +1,11 @@
 package com.antonromanov.arnote.domain.wish.mapper;
 
 import com.antonromanov.arnote.domain.wish.dto.rq.LocalUserRq;
-import com.antonromanov.arnote.domain.wish.dto.rq.SalaryRq;
+import com.antonromanov.arnote.domain.salary.dto.rq.SalaryRq;
 import com.antonromanov.arnote.domain.wish.dto.rq.WishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.GroupedWishRs;
 import com.antonromanov.arnote.domain.wish.dto.rs.LocalUserRs;
-import com.antonromanov.arnote.domain.wish.dto.rs.SalaryRs;
+import com.antonromanov.arnote.domain.salary.dto.rs.SalaryRs;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
 import com.antonromanov.arnote.old.entity.common.Salary;
 import com.antonromanov.arnote.old.model.ArNoteUser;

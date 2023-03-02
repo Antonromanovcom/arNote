@@ -6,10 +6,10 @@ import lombok.Getter;
 /**
  * Тип бумаги - фонд, акция, облигация
  */
-/*@AllArgsConstructor
-@Getter*/
+@AllArgsConstructor
+@Getter
 public enum BondType {
-   /* SHARE("Акция"), BOND("Облигация"), INDEX("Фонд");
+    SHARE("Акция"), BOND("Облигация"), INDEX("Фонд");
 
-    private final String description;*/
+    private final String description;
 }

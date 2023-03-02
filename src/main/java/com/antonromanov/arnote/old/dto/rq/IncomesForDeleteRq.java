@@ -15,5 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IncomesForDeleteRq {
+    // todo: тут надо проверить - а нам точно нужен список? Мы же вроде как по одной удаляем? И валидацию бы еще прикрутить по хорошему
     private List<IdListRq> idList; // Список айдюков для удаления.
 }

@@ -11,6 +11,8 @@
     <include file="db/changelog/changes/create-table-salary-changelog.xml"/>
     <include file="db/changelog/changes/create-table-loan-changelog.xml"/>
     <include file="db/changelog/changes/create-table-goal-changelog.xml"/>
+    <include file="db/changelog/changes/create-table-income-changelog.xml"/>
+    <include file="db/changelog/changes/create-table-freeze-changelog.xml"/>
     <include file="db/changelog/changes/insert-table-user-changelog.xml"/>
     <include file="db/changelog/changes/insert-table-wish-changelog.xml"/>
     <include file="db/changelog/changes/insert-table-salary-changelog.xml"/>

@@ -1,100 +1,39 @@
 package com.antonromanov.arnote.domain.investing.api;
 
-
+import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedInvestmentDataRs;
+import com.antonromanov.arnote.domain.investing.service.consolidated.ConsolidatedDataService;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * API для управления инвестициями.
  */
-/*@CrossOrigin()
+@CrossOrigin()
 @RestController
 @RequestMapping("/investing")
-@Slf4j*/
+@AllArgsConstructor
 public class InvestController {
 
-   /* private final UsersRepo usersRepo;
+    /*private final UsersRepo usersRepo;
     private final BondsRepo bondsRepo;
     private final CalendarService calendarService;
     private final ReturnsService returnsService;
-    private final CommonService commonService;
+    private final CommonService commonService;*/
+    private final ConsolidatedDataService service;
 
-
-    public InvestController(UsersRepo usersRepo, BondsRepo bondsRepo, ReturnsService returnsService,
-                            CalendarService calendarService, CommonService commonService) {
-        this.usersRepo = usersRepo;
-        this.bondsRepo = bondsRepo;
-        this.returnsService = returnsService;
-        this.calendarService = calendarService;
-        this.commonService = commonService;
-    }*/
 
     /**
      * Консолидированные данные по бумагам.
      *
-     * @param principal - пользователь.
      * @return ConsolidatedInvestmentDataRs.
      */
-   /* @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @GetMapping("/consolidated")
-    public ConsolidatedInvestmentDataRs consolidatedBondsInfo(Principal principal,
-                                                              @RequestParam(required = false) String filter,
-                                                              @RequestParam(required = false) String sort)
-            throws UserNotFoundException {
+    public ConsolidatedInvestmentDataRs consolidatedBondsInfo(@RequestParam(required = false) String filter,
+                                                              @RequestParam(required = false) String sort) {
 
-        log.info("============== CONSOLIDATED INVESTMENT TABLE ============== ");
-        log.info("PRINCIPAL: " + principal.getName());
-        log.info("FILTER: " + filter);
-        log.info("SORT: " + sort);
-
-        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-*/
-        /*
-         * Логика такая:
-         *
-         * - если фильтр приходит не пустой - задаем и сохраняем новый фильтр.
-         * - если фильтр приходит не пустой, но он NONE, просто удаляем мапу с фильтрами из записи пользака.
-         * - если filter пришел пустой - выдаем то, что есть с той фильтрацией, что сохранена.
-         *
-         */
-     /*   if (filter != null) {
-            if (InvestingFilterMode.valueOf(filter) == InvestingFilterMode.NONE) {
-                user.setInvestingFilterMode(null);
-            } else {
-                if (user.getInvestingFilterMode() != null && user.getInvestingFilterMode().size() > 0) {
-                    user.getInvestingFilterMode().put(InvestingFilterMode.valueOf(filter).getKey(), filter);
-                } else {
-                    Map<String, String> filterMap = new HashMap<>();
-                    filterMap.put(InvestingFilterMode.valueOf(filter).getKey(), filter);
-                    user.setInvestingFilterMode(filterMap);
-                }
-            }
-            user = usersRepo.saveAndFlush(user);
-        }
-
-        if (sort != null) {
-            if (InvestingSortMode.valueOf(sort) == InvestingSortMode.NONE) {
-                user.setInvestingSortMode(null);
-            } else {
-                user.setInvestingSortMode(InvestingSortMode.valueOf(sort));
-            }
-            user = usersRepo.saveAndFlush(user);
-        }
-
-
-        ArNoteUser finalUser = user;
-        log.info("USER FILTER MAP: " + user.getInvestingFilterMode());
-        log.info("USER SORT MODE: " + user.getInvestingSortMode());
-
-        return ConsolidatedInvestmentDataRs.builder()
-                .bonds(bondsRepo.findAllByUser(user)
-                        .stream()
-                        .map(bond -> prepareBondRs(bond, finalUser))
-                        .filter(user.getInvestingFilterMode() != null ? complexPredicate(user.getInvestingFilterMode()) :
-                                s -> s.getTicker() != null)
-                        .sorted(user.getInvestingSortMode() == null ? InvestingSortMode.NONE.getComparator() :
-                                user.getInvestingSortMode().getComparator())
-                        .collect(Collectors.toList()))
-                .build();
-    }*/
+        return service.getConsolidatedData(filter, sort);
+    }
 
     /**
      * Консолидированные данные по доходности.
@@ -281,9 +220,9 @@ public class InvestController {
         log.info("ticker: " + request.getTicker());
         Bond newOrUpdatedBond;*/
 
-        /**
-         * Проверяем что хотя бы один такой инструмент нашелся, иначе кидаем эксепшн.
-         */
+    /**
+     * Проверяем что хотя бы один такой инструмент нашелся, иначе кидаем эксепшн.
+     */
       /*  FoundInstrumentRs foundInstrument = commonService.findInstrument(request.getTicker())
                 .getInstruments().stream()
                 .filter(fi -> request.getTicker().equals(fi.getTicker()))

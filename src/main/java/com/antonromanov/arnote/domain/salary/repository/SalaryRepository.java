@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SalaryRepository extends JpaRepository<Salary, Long> {
@@ -20,5 +21,5 @@ public interface SalaryRepository extends JpaRepository<Salary, Long> {
 	List<Salary> findAllByUserAndMonthAndYear(@Param("user") ArNoteUser user, @Param("year") int year,
 											  @Param("month") int month);
 
-	/*Optional<Salary> findSalaryById(Long id);*/
+	Optional<Salary> findSalaryById(Long id);
 }

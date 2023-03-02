@@ -2,7 +2,6 @@ package com.antonromanov.arnote.old.dto.rs;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import java.util.Date;
 
@@ -13,7 +12,6 @@ import java.util.Date;
  *
  */
 @Data
-@Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class IncomeRs {

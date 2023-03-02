@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="admin" id="6">
+        <createTable tableName="income">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="income_pkey"/>
+            </column>
+            <column name="income" type="INT"/>
+            <column name="income_date" type="DATE"/>
+            <column name="is_bonus" type="BOOLEAN"/>
+            <column name="description" type="VARCHAR(6000)"/>
+            <column name="USER_ID" type="BIGINT"/>
+            <column name="full_month_pay" type="INT"/>
+            <column name="real_month_pay" type="INT"/>
+            <column name="credit_number" type="INT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

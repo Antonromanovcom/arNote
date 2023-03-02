@@ -9,10 +9,10 @@ import java.util.function.Predicate;
 /**
  * Режим фильтрации для инвест-части.
  */
-/*@AllArgsConstructor
-@Getter*/
+@AllArgsConstructor
+@Getter
 public enum InvestingFilterMode {
-  /*  TYPE_SHARE("Акции", s->BondType.valueOf(s.getType())==BondType.SHARE, "type"),
+    TYPE_SHARE("Акции", s->BondType.valueOf(s.getType())==BondType.SHARE, "type"),
     TYPE_BOND("Облигации", s->BondType.valueOf(s.getType())==BondType.BOND, "type"),
     TYPE_ETF("ETF", s->BondType.valueOf(s.getType())==BondType.INDEX, "type"),
     STATUS_PLAN("План", s->!s.getIsBought(), "status"),

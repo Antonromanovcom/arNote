@@ -1,14 +1,10 @@
 package com.antonromanov.arnote.domain.finplanning.loan.service;
 
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rq.CreditRq;
-import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.OperateCreditRs;
-import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FullLoansListRs;
-import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FreeLoanSlotsRs;
+import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.*;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.transfer.CalculatedLoansTableTr;
 import com.antonromanov.arnote.domain.finplanning.loan.entity.Credit;
 import com.antonromanov.arnote.old.dto.rq.LoanByDateRq;
-import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.CreditRs;
-import com.antonromanov.arnote.old.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.old.exceptions.UserNotFoundException;
 import com.antonromanov.arnote.old.model.ArNoteUser;
 import java.time.LocalDate;
@@ -24,7 +20,7 @@ public interface LoanService {
      * @param request
      * @return
      */
-    OperateCreditRs addLoan(CreditRq request) throws UserNotFoundException, BadIncomeParameter;
+    OperateCreditRs addLoan(CreditRq request);
 
     /**
      * Подсчитать консолидированную таблицу по кредитам.
@@ -47,7 +43,7 @@ public interface LoanService {
      *
      * @return
      */
-    FullLoansListRs getFullLoansList() throws UserNotFoundException;
+    FullLoansListRs getFullLoansList();
 
     /**
      * Вернуть все кредиты по пользаку.
@@ -124,10 +120,28 @@ public interface LoanService {
     /**
      * Посчитать дату выплаты самого последнего кредита.
      *
-     * @param credits
      * @return
      */
     Optional<LocalDate> getLastCreditDate(ArNoteUser user);
+
+    /**
+     * Платежи по кредитам по состоянию на конкретную дату.
+     *
+     * @param curMonth
+     * @param curYear
+     * @return
+     */
+    Integer getLoanPaymentsByDate(int curYear, int curMonth);
+
+
+    /**
+     * Получить и рассчитать текущие кредиты отфильтрованные по текущей дате.
+     *
+     * @param year
+     * @param month
+     * @return
+     */
+    CreditListRs getCreditsFiltered(Integer year, Integer month);
 
 
 }

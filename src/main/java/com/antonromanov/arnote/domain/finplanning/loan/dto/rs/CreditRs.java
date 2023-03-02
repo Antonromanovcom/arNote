@@ -3,7 +3,6 @@ package com.antonromanov.arnote.domain.finplanning.loan.dto.rs;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
 import java.util.Date;
 
 /**

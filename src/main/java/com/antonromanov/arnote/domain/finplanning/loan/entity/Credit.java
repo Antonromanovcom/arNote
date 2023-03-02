@@ -44,21 +44,4 @@ public class Credit {
 
     @Column(name = "credit_desc")
     private String description;
-
-
-    //todo: убрать
-   /*
-
-    public static Credit $toDbEntityWithCheck(CreditRq newLoan, Credit oldLoan, ArNoteUser user) {
-        return Credit.builder()
-                .startAmount(newLoan.getStartAmount() == null ? oldLoan.getStartAmount() : newLoan.getStartAmount())
-                .fullPayPerMonth(newLoan.getFullPayPerMonth() == null ? oldLoan.getFullPayPerMonth() : newLoan.getFullPayPerMonth())
-                .realPayPerMonth(newLoan.getRealPayPerMonth() == null ? oldLoan.getRealPayPerMonth() : newLoan.getRealPayPerMonth())
-                .creditNumber(newLoan.getSlotNumber() == null ? oldLoan.getCreditNumber() : newLoan.getSlotNumber())
-                .startDate(newLoan.getStartDate() == null ? oldLoan.getStartDate() : newLoan.getStartDate())
-                .user(user)
-                .description(newLoan.getDesc() == null ? oldLoan.getDescription() : newLoan.getDesc())
-                .id(oldLoan.getId())
-                .build();
-    }*/
 }

@@ -1,7 +1,10 @@
 package com.antonromanov.arnote.wish;
 
 import com.antonromanov.arnote.domain.salary.repository.SalaryRepository;
+import com.antonromanov.arnote.domain.user.service.UserService;
+import com.antonromanov.arnote.domain.wish.dto.rq.WishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.GroupedWishRs;
+import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
 import com.antonromanov.arnote.domain.wish.entity.Wish;
 import com.antonromanov.arnote.domain.wish.enums.SortMode;
 import com.antonromanov.arnote.domain.wish.mapper.WishMapperImpl;
@@ -12,21 +15,29 @@ import com.antonromanov.arnote.old.repositoty.WishRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import static com.antonromanov.arnote.old.utils.ArNoteUtils.getCurrentMonth;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class WishTests {
+
 
     @Spy
     private WishRepository wishRepository;
@@ -37,9 +48,15 @@ public class WishTests {
     @Spy
     private WishMapperImpl mapper;
 
+@Mock
+   UserService userService;
 
-    @InjectMocks
-    private WishServiceImpl service;
+    @Mock
+    WishServiceImpl service;
+
+
+  /*  @InjectMocks
+    private WishServiceImpl service;*/
 
 
     @Before
@@ -48,13 +65,12 @@ public class WishTests {
     }
 
 
-
     /**
      * Тестовый юзер.
      *
      * @return
      */
-    private ArNoteUser prepareUser(){
+    private ArNoteUser prepareUser() {
         ArNoteUser user = new ArNoteUser();
         user.setId(1);
         user.setSortMode(SortMode.ALL);
@@ -66,7 +82,7 @@ public class WishTests {
      *
      * @return
      */
-    private Salary prepareTestSalary(ArNoteUser user){
+    private Salary prepareTestSalary(ArNoteUser user) {
         Salary salary = new Salary();
         salary.setId(1);
         salary.setUser(user);
@@ -75,6 +91,22 @@ public class WishTests {
         return salary;
     }
 
+   /* @Test
+    public void learnVerifyMethod() {
+        WishRq newWish = new WishRq();
+        newWish.setId(1L);
+        newWish.setWishName("777");
+
+        ArgumentCaptor<WishRq> requestCaptor = ArgumentCaptor.forClass(WishRq.class);
+
+        when(userService.getUserFromPrincipal()).thenReturn(prepareUser());
+        //when(service.updateWish(newWish)).thenReturn(WishRs.builder().id(1).build());
+        given(service.updateWish(newWish))
+                .willReturn(WishRs.builder().id(1).build());
+
+        service.updateWish(any());
+        verify(service, times(1)).updateWish(requestCaptor.capture());
+    }*/
 
 
     /**
@@ -113,7 +145,7 @@ public class WishTests {
 
         ArNoteUser user = prepareUser();
 
-        Salary salary  = prepareTestSalary(user);
+        Salary salary = prepareTestSalary(user);
 
         List<Wish> wishList = new ArrayList<>();
 
@@ -170,7 +202,7 @@ public class WishTests {
         for (int i = 6; i < 9; i++) { // Добавляем желания для проверки сортировки
             Wish w = new Wish();
             w.setId(i);
-            w.setPrice(100+i);
+            w.setPrice(100 + i);
             w.setWishName("Wish " + i);
             w.setUser(user);
             w.setArchive(false);

@@ -22,8 +22,11 @@ public class Goal {
 
 	@Id
 	@Column(name="id", nullable = false)
+	/*@Id
+	@Column(name="id", nullable = false)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "goal_seq_gen")
-	@SequenceGenerator(name = "goal_seq_gen", sequenceName ="goal_id_seq", allocationSize = 1)
+	@SequenceGenerator(name = "goal_seq_gen", sequenceName ="goal_id_seq", allocationSize = 1)*/
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name = "description", nullable = true)
@@ -41,26 +44,4 @@ public class Goal {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	private ArNoteUser user;
-
-	/*public static Goal $toDbEntity(GoalRq rq, ArNoteUser user){
-		return Goal.builder()
-				.id(rq.getId())
-				.description(rq.getDescription())
-				.price(rq.getPrice())
-				.startDate(rq.getStartDate())
-				.repayment(rq.getRepayment())
-				.user(user)
-				.build();
-	}
-
-	public static Goal $toDbEntityWithCheck(GoalRq rq, Goal existGoal, ArNoteUser user){
-		return Goal.builder()
-				.id(rq.getId())
-				.description(rq.getDescription() == null ? existGoal.description : rq.getDescription())
-				.price(rq.getPrice() == null ? existGoal.price : rq.getPrice())
-				.startDate(rq.getStartDate() == null ? existGoal.startDate : rq.getStartDate())
-				.repayment(existGoal.repayment)
-				.user(user)
-				.build();
-	}*/
 }

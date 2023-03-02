@@ -1,14 +1,25 @@
 package com.antonromanov.arnote.domain.investing.dto.common;
 
-/*@Entity
+import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
+import com.antonromanov.arnote.old.model.ArNoteUser;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "bond")*/
+@Table(name = "bond")
 public class Bond {
 
-    /*@Id
+    @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bonds_seq_gen")
     @SequenceGenerator(name = "bonds_seq_gen", sequenceName = "bonds_id_seq", allocationSize = 1)
@@ -33,6 +44,6 @@ public class Bond {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "post_id")
-    private List<Purchase> purchaseList = new ArrayList<>();*/
+    private List<Purchase> purchaseList = new ArrayList<>();
 }
 

@@ -1,11 +1,14 @@
 package com.antonromanov.arnote.domain.salary.api;
 
+import com.antonromanov.arnote.domain.finplanning.common.dto.rs.SingleOperationRs;
+import com.antonromanov.arnote.domain.salary.dto.rq.SalaryRq;
+import com.antonromanov.arnote.domain.salary.dto.rs.SalaryListRs;
+import com.antonromanov.arnote.domain.salary.dto.rs.SalaryRs;
 import com.antonromanov.arnote.domain.salary.service.SalaryService;
-import com.antonromanov.arnote.domain.wish.dto.rq.SalaryRq;
-import com.antonromanov.arnote.domain.wish.dto.rs.SalaryRs;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin()
 @RestController
 @RequestMapping("/salary")
-@Slf4j
 @AllArgsConstructor
 public class SalaryController {
 
@@ -24,5 +26,34 @@ public class SalaryController {
     @PostMapping()
     public SalaryRs addSalary(@RequestBody SalaryRq request) {
         return salaryService.addSalary(request);
+    }
+
+    /**
+     * Запросить все зарплаты.
+     *
+     * @return
+     */
+    @CrossOrigin(origins = "*")
+    @GetMapping()
+    public SalaryListRs getAllSalaries() {
+        return salaryService.getSalariesList();
+    }
+
+    @CrossOrigin(origins = "*")
+    @PutMapping() //todo: а не надо ли нам PUT переделать на PATCH? Надо почитать как там по рестфулу на самом деле
+    public SingleOperationRs editSalary(@RequestBody SalaryRq payload) {
+        return salaryService.editSalary(payload);
+    }
+
+    /**
+     * Удалить ЗП.
+     *
+     * @param id
+     * @return
+     */
+    @CrossOrigin(origins = "*")
+    @DeleteMapping()
+    public SingleOperationRs deleteSalary(@RequestParam @NotNull Long id) {
+        return salaryService.deleteSalary(id);
     }
 }
