@@ -1,11 +1,21 @@
 package com.antonromanov.arnote.domain.investing.dto.external.requests;
 
-/*
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.boardid.MoexDocumentForBoardIdRs;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.enums.BoardsColumns;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.enums.DataBlock;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.enums.MarketData;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.enums.SecuritiesColumns;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import java.util.EnumSet;
+
 @Getter
-@AllArgsConstructor*/
+@AllArgsConstructor
 public enum MoexRestTemplateOperation {
 
-/*
+
     GET_DIVS_MOEX("/securities/{p1:[a-z]{1,5}}/dividends.xml", UrlRequestParams.builder().issMeta(false).build(), null),
     GET_LAST_QUOTE_MOEX("/engines/stock/markets/shares/boards/{p2:[a-z]{1,5}}/securities.xml",
             UrlRequestParams.builder()
@@ -83,6 +93,6 @@ public enum MoexRestTemplateOperation {
 
     private final String url;
     private final UrlRequestParams requestParams;
-    private final Class<?> className;*/
+    private final Class<?> className;
 
 }

@@ -36,7 +36,7 @@ public interface BondCalcService {
      *
      * @return
      */
-    Integer getBondLot(Bond bond, ArNoteUser user, List<Purchase> purchaseList);
+    Integer getBondLot(Bond bond,  List<Purchase> purchaseList);
 
     /**
      * Получить купоны по облигации.
@@ -90,5 +90,5 @@ public interface BondCalcService {
      * @param user
      * @return
      */
-    Integer calculateFinalPrice(Bond bond, ArNoteUser user);
+    Integer calculateFinalPrice(Bond bond);
 }

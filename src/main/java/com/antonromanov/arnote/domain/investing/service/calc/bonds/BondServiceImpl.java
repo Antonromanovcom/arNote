@@ -1,32 +1,48 @@
 package com.antonromanov.arnote.domain.investing.service.calc.bonds;
 
+import com.antonromanov.arnote.domain.investing.dto.cache.enums.CacheDictType;
+import com.antonromanov.arnote.domain.investing.dto.common.Bond;
+import com.antonromanov.arnote.domain.investing.dto.common.Purchase;
+import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTemplateOperation;
+import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
+import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
+import com.antonromanov.arnote.domain.investing.service.cache.CacheService;
+import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
+import com.antonromanov.arnote.domain.investing.service.requestservice.RequestService;
+import com.antonromanov.arnote.old.model.ArNoteUser;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+import static com.antonromanov.arnote.old.utils.ArNoteUtils.isInteger;
 
 /**
  * Расчет расчета различных данных по облигациям.
  */
 @Service
 @Slf4j
-public class BondServiceImpl /*implements BondCalcService */{
+@AllArgsConstructor
+public class BondServiceImpl implements BondCalcService {
 
-   /* private final List<String> BOARD_GROUP_LIST = Arrays.asList("58", "193", "7", "67", "207");
+    private final List<String> BOARD_GROUP_LIST = Arrays.asList("58", "193", "7", "67", "207");
     private final RequestService httpClient;
     private final CacheService cacheService;
-  //  private final SharesCalcService sharesCalcService;
+    private final SharesCalcService sharesCalcService;
 
-    public BondServiceImpl(RequestService httpClient, CacheService cacheService*//*, SharesCalcService sharesCalcService*//*) {
-        this.httpClient = httpClient;
-        this.cacheService = cacheService;
-    //    this.sharesCalcService = sharesCalcService;
-    }*/
 
     /**
      * Подготовить список купонов в формате списка дивидендов.
      *
      * @return
      */
-    /*@Override
+    @Override
     public List<DividendRs> prepareCouponList(MoexRowsRs bondData) {
 
         List<DividendRs> resultList = new ArrayList<>();
@@ -52,14 +68,14 @@ public class BondServiceImpl /*implements BondCalcService */{
         } else {
             return null;
         }
-    }*/
+    }
 
     /**
      * Получить купоны по облигации.
      *
      * @return
      */
-   /* @Override
+    @Override
     public ConsolidatedDividendsRs getCoupons(Bond bond, ArNoteUser user) {
 
         return ConsolidatedDividendsRs.builder()
@@ -76,29 +92,28 @@ public class BondServiceImpl /*implements BondCalcService */{
                         .map(Double::parseDouble)
                         .orElse(0D))
                 .build();
-    }*/
+    }
 
     /**
      * Получить минимальный лот облигации или сколько куплено уже.
      *
      * @return
      */
-   /* @Override
-    public Integer getBondLot(Bond bond, ArNoteUser user, List<Purchase> purchaseList) {
+    @Override
+    public Integer getBondLot(Bond bond, List<Purchase> purchaseList) {
 
         if (!bond.getIsBought()) { // если это план по облигации
             return getBondDataByTicker(bond.getTicker())
                     .map(MoexRowsRs::getLotSize)
                     .map(Integer::parseInt).orElse(0);
         } else { // а если есть реальные покупки по облигации
-            *//*
-             * Считаем сумму покупок (сколько всего купили бумаг то)
-             *//*
+
+            //Считаем сумму покупок (сколько всего купили бумаг то)
             return purchaseList.stream()
                     .map(Purchase::getLot)
                     .reduce(0, Integer::sum);
         }
-    }*/
+    }
 
     /**
      * Получить текущую валюту облигации
@@ -106,7 +121,7 @@ public class BondServiceImpl /*implements BondCalcService */{
      * @param ticker - тикер бумаги.
      * @return
      */
-   /* @Override
+    @Override
     public Currencies getBondCurrency(String ticker) {
         return getBondDataByTicker(ticker)
                 .map(MoexRowsRs::getCurrencyId)
@@ -114,17 +129,17 @@ public class BondServiceImpl /*implements BondCalcService */{
                 .orElse(Currencies.RUB);
 
     }
-*/
+
     /**
      * Получить имя облигации.
      *
      * @param ticker
      * @return
      */
-  /*  @Override
+    @Override
     public Optional<String> getBondName(String ticker) {
         return getBondDataByTicker(ticker).map(MoexRowsRs::getSecName);
-    }*/
+    }
 
     /**
      * Получить текущую цену облигации
@@ -132,16 +147,13 @@ public class BondServiceImpl /*implements BondCalcService */{
      * @param ticker - тикер бумаги.
      * @return
      */
-   /* @Override
+    @Override
     public Double getCurrentBondPrice(String ticker) {
-        *//*return getBondDataByTicker(ticker)
+        return getBondDataByTicker(ticker)
                 .map(p -> (
                         (Double.parseDouble(p.getLotValue()) * Double.parseDouble(p.getPrevLegalClosePrice())) / 100)
-                        * sharesCalcService.getCurrencyMultiplier(p.getCurrencyId())).orElse(0D);*//*
-
-        return null;
-
-    }*/
+                        * sharesCalcService.getCurrencyMultiplier(p.getCurrencyId())).orElse(0D);
+    }
 
     /**
      * Запросить Облигацию по тикеру.
@@ -149,7 +161,7 @@ public class BondServiceImpl /*implements BondCalcService */{
      * @param ticker - тикер
      * @return
      */
-  /*  @Override
+    @Override
     public Optional<MoexRowsRs> getBondDataByTicker(String ticker) {
 
         return getBonds()
@@ -158,35 +170,34 @@ public class BondServiceImpl /*implements BondCalcService */{
                 .stream()
                 .filter(b -> ticker.equals(b.getSecid()))
                 .findFirst();
-    }*/
+    }
 
     /**
      * Подготовить финальную цену (цена * лот).
      *
      * @param bond
-     * @param user
      * @return
      */
-   /* @Override
-    public Integer calculateFinalPrice(Bond bond, ArNoteUser user) {
+    @Override
+    public Integer calculateFinalPrice(Bond bond) {
             if (bond.getIsBought()) { // если это ФАКТ
                 return bond.getPurchaseList().stream()
                         .map(p -> p.getLot() * p.getPrice())
                         .reduce((double) 0, Double::sum).intValue();
             } else { // если ПЛАН
-                return (getBondLot(bond, user, bond.getPurchaseList()))
+                return (getBondLot(bond,  bond.getPurchaseList()))
                         * (getCurrentBondPrice(bond.getTicker()).intValue());
             }
 
 
-    }*/
+    }
 
     /**
      * Запросить Облигации по всем доскам сразу.
      *
      * @return
      */
-   /* @Override
+    @Override
     public MoexDocumentRs getBonds() {
 
         Iterator<String> it = BOARD_GROUP_LIST.iterator();
@@ -199,14 +210,14 @@ public class BondServiceImpl /*implements BondCalcService */{
             }
         }
         return result;
-    }*/
+    }
 
     /**
      * Запросить Облигации.
      *
      * @return
      */
-  /*  @Override
+    @Override
     public MoexDocumentRs getBondsByBoardGroup(String boardGroup) {
         if (cacheService.checkDict(CacheDictType.BONDS_BY_BOARD_ID, boardGroup)) { //todo: посмотреть можно ли все-таки написать аннотацию под это дело самому
             return cacheService.getDict(CacheDictType.BONDS_BY_BOARD_ID, boardGroup);
@@ -216,5 +227,5 @@ public class BondServiceImpl /*implements BondCalcService */{
             cacheService.putToCache(CacheDictType.BONDS_BY_BOARD_ID, boardGroup, doc, MoexDocumentRs.class);
             return doc;
         }
-    }*/
+    }
 }

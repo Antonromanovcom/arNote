@@ -1,4 +1,4 @@
-package com.antonromanov.arnote;
+package com;
 
 //todo: Почему в пакете com, а не в пакете com.antonromanov.arnote ??? Исправить !!!!!!
 import com.antonromanov.arnote.common.logging.LoggerFilter;
