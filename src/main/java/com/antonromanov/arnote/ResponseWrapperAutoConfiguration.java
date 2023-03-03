@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @AutoConfigureAfter(WebMvcAutoConfiguration.class)
 @AllArgsConstructor
-public class ResponseWrapperAutoConfiguration {
+public class ResponseWrapperAutoConfiguration { // todo: в пекедж конфигов
 
     @Bean
     @ConditionalOnMissingBean

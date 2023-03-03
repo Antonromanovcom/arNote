@@ -31,7 +31,6 @@ public class InvestController {
     @GetMapping("/consolidated")
     public ConsolidatedInvestmentDataRs consolidatedBondsInfo(@RequestParam(required = false) String filter,
                                                               @RequestParam(required = false) String sort) {
-
         return service.getConsolidatedData(filter, sort);
     }
 

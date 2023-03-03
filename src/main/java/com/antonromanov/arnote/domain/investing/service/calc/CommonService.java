@@ -1,20 +1,30 @@
 package com.antonromanov.arnote.domain.investing.service.calc;
 
 
+import com.antonromanov.arnote.domain.investing.dto.common.Bond;
+import com.antonromanov.arnote.domain.investing.dto.common.BondType;
+import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
+import com.antonromanov.arnote.domain.investing.dto.response.DeltaRs;
+import com.antonromanov.arnote.domain.investing.service.calc.bonds.BondCalcService;
+import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
+import com.antonromanov.arnote.domain.investing.service.calc.shares.common.CalculateFactory;
+import com.antonromanov.arnote.domain.user.service.UserService;
+import com.antonromanov.arnote.old.model.ArNoteUser;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
 /**
  * Сервис обрабатывающий операции, например, выдачи текущей цены бумаги, общие для разных типов (акция / облигация)
  * и работающий как фабрика.
  */
-// @Service
+@Service
+@AllArgsConstructor
 public class CommonService {
 
-   /* private final BondCalcService bondCalcService;
+    private final BondCalcService bondCalcService;
     private final CalculateFactory calcFactory;
+    private final UserService userService;
 
-    public CommonService(CalculateFactory calcFactory, BondCalcService bondCalcService) {
-        this.calcFactory = calcFactory;
-        this.bondCalcService = bondCalcService;
-    }*/
 
     /**
      * Посчитать текущую стоимость бумаги.
@@ -22,13 +32,13 @@ public class CommonService {
      * @param bond
      * @return
      */
-  /*  public Double prepareCurrentPrice(Bond bond) {
+    public Double prepareCurrentPrice(Bond bond) {
         return bond.getType() == BondType.SHARE ?
                 ((calcFactory.getCalculator(bond.getStockExchange()))
                         .getRealTimeQuote(bond.getTicker())
                         .getCurrentPrice()) :
                 bondCalcService.getCurrentBondPrice(bond.getTicker());
-    }*/
+    }
 
     /**
      * Получить валюту бумаги.
@@ -36,11 +46,11 @@ public class CommonService {
      * @param bond
      * @return
      */
-  /*  public String getCurrency(Bond bond, ArNoteUser user) {
+    public String getCurrency(Bond bond) {
         return bond.getType() == BondType.SHARE ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).getCurrencyOfShare(bond.getTicker())) :
                 bondCalcService.getBondCurrency(bond.getTicker()).name();
-    }*/
+    }
 
     /**
      * Получить дивы или купоны в формате дивов.
@@ -48,11 +58,12 @@ public class CommonService {
      * @param bond
      * @return
      */
-    /*public ConsolidatedDividendsRs getDivsOrCoupons(Bond bond, ArNoteUser user) {
+    public ConsolidatedDividendsRs getDivsOrCoupons(Bond bond) {
+        ArNoteUser user = userService.getUserFromPrincipal();
         return bond.getType() == BondType.SHARE ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).getDividends(bond, user)) :
                 bondCalcService.getCoupons(bond, user);
-    }*/
+    }
 
 
     /**
@@ -61,11 +72,12 @@ public class CommonService {
      * @param bond
      * @return
      */
-   /* public Integer getLot(Bond bond, ArNoteUser user) {
+    public Integer getLot(Bond bond) {
+        ArNoteUser user = userService.getUserFromPrincipal();
         return bond.getType() == BondType.SHARE ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).getMinimalLot(bond.getTicker(), user)) :
                 bondCalcService.getBondLot(bond, user, bond.getPurchaseList());
-    }*/
+    }
 
 
     /**
@@ -74,11 +86,12 @@ public class CommonService {
      * @param bond
      * @return
      */
-   /* public Integer getFinalPrice(Bond bond, ArNoteUser user) {
+    public Integer getFinalPrice(Bond bond) {
+        ArNoteUser user = userService.getUserFromPrincipal();
         return bond.getType() == BondType.SHARE ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).calculateFinalPrice(bond, user)) :
                 bondCalcService.calculateFinalPrice(bond, user);
-    }*/
+    }
 
 
     /**
@@ -87,14 +100,14 @@ public class CommonService {
      * @param bond
      * @return
      */
-   /* public String getDescription(Bond bond) {
+    public String getDescription(Bond bond) {
 
         SharesCalcService service = calcFactory.getCalculator(bond.getStockExchange());
 
         return bond.getType() == BondType.SHARE ?
                 (service.getInstrumentName(service.getBoardId(bond.getTicker()), bond.getTicker())) :
                 (bondCalcService.getBondName(bond.getTicker()).orElse("-"));
-    }*/
+    }
 
 
     /**
@@ -103,7 +116,7 @@ public class CommonService {
      * @param bond
      * @return
      */
-   /* public DeltaRs prepareDelta(Bond bond) {
+    public DeltaRs prepareDelta(Bond bond) {
         SharesCalcService service = calcFactory.getCalculator(bond.getStockExchange());
 
         DeltaRs localDelta =  bond.getType() == BondType.SHARE ?
@@ -123,7 +136,7 @@ public class CommonService {
                 .deltaPeriod(0L)
                 .tinkoffDelta(0D)
                 .build();
-    }*/
+    }
 
 
     /**
@@ -139,8 +152,8 @@ public class CommonService {
         MoexDocumentRs allShares = new MoexDocumentRs();
 
         *//*
-         * ============= Московская биржа: только российские акции и облигации ====================
-         *//*
+     * ============= Московская биржа: только российские акции и облигации ====================
+     *//*
         while (it.hasNext()) {
             String boardId = it.next();
             MoexDocumentRs halfWayResult = moexService.findSharesByBoardId(boardId);
@@ -162,8 +175,8 @@ public class CommonService {
                 .collect(Collectors.toList());
 
         *//*
-         * ============= Иностранные акции ====================
-         *//*
+     * ============= Иностранные акции ====================
+     *//*
         List<MoexRowsRs> foreignShares = (foreignService.findInstrumentsByName(keyword)).getData().getRow();
 
         SearchResultsRs searchResults = new SearchResultsRs();

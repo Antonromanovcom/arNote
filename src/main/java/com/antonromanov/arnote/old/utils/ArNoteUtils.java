@@ -1,5 +1,7 @@
 package com.antonromanov.arnote.old.utils;
 
+import com.antonromanov.arnote.domain.investing.dto.common.InvestingFilterMode;
+import com.antonromanov.arnote.domain.investing.dto.response.BondRs;
 import com.antonromanov.arnote.model.investing.Purchase;
 import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
 import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
@@ -18,6 +20,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -499,7 +502,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      *
      * @return
      */
-  /*  public static Predicate<BondRs> complexPredicate(Map<String, String> investingFilterMode) {
+    public static Predicate<BondRs> complexPredicate(Map<String, String> investingFilterMode) { // todo: может в отдельный утильный класс чисто для инвестиций?
 
         List<Predicate<BondRs>> arr = investingFilterMode.values().stream()
                 .map(s -> InvestingFilterMode.valueOf(s).getFilter())
@@ -510,7 +513,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         } else {
             return arr.stream().reduce(t -> true, Predicate::and);
         }
-    }*/
+    }
 
 
     /**
