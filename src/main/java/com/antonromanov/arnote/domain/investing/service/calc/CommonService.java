@@ -1,14 +1,13 @@
 package com.antonromanov.arnote.domain.investing.service.calc;
 
 
-import com.antonromanov.arnote.domain.investing.dto.response.SearchResultsRs;
+import com.antonromanov.arnote.domain.investing.dto.response.*;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.domain.investing.entity.Bond;
 import com.antonromanov.arnote.domain.investing.dto.common.BondType;
-import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
-import com.antonromanov.arnote.domain.investing.dto.response.DeltaRs;
 import com.antonromanov.arnote.domain.investing.service.calc.bonds.BondCalcService;
 import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.domain.investing.service.calc.shares.common.CalculateFactory;
@@ -16,11 +15,11 @@ import com.antonromanov.arnote.domain.user.service.UserService;
 import com.antonromanov.arnote.old.model.ArNoteUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import static com.antonromanov.arnote.old.utils.ArNoteUtils.*;
 
 /**
@@ -201,15 +200,15 @@ public class CommonService {
      * Получить текущую цену бумаги.
      *
      * @param ticker - тикер бумаги.
-     * @param user - текущий пользак.
      * @return - CurrentPriceRs.
      */
-   /* public CurrentPriceRs getCurrentPriceByTicker(String ticker, StockExchange se, ArNoteUser user) {
+    public CurrentPriceRs getCurrentPriceByTicker(String ticker, StockExchange se) {
+        ArNoteUser user = userService.getUserFromPrincipal();
         SharesCalcService calculator = calcFactory.getCalculator(se);
         CurrentPriceRs resp = calculator.getRealTimeQuote(ticker);
         resp.setMinLot(calculator.getMinimalLot(ticker, user));
         return resp;
-    }*/
+    }
 
     /**
      * Получить ставку по тикеру и дате.
@@ -219,7 +218,7 @@ public class CommonService {
      * @param purchaseDate
      * @return
      */
-   /* public CurrentPriceRs getCurrentPriceByTickerAndDate(FoundInstrumentRs foundBond, String purchaseDate) {
+    public CurrentPriceRs getCurrentPriceByTickerAndDate(FoundInstrumentRs foundBond, String purchaseDate) {
 
         SharesCalcService calculator = calcFactory.getCalculator(foundBond.getStockExchange());
 
@@ -241,19 +240,5 @@ public class CommonService {
                         .ticker(data.getSecid())
                         .build())
                 .orElse(calculator.getRealTimeQuote(foundBond.getTicker()));
-    }*/
-
-    /**
-     * Достаем Биржу по тикеру.
-     *
-     * @param ticker
-     * @return
-     */
-  /*  public StockExchange getInstrumentStockExchange(String ticker) {
-        return findInstrument(ticker).getInstruments().stream()
-                .filter(i->ticker.equals(i.getTicker()))
-                .findFirst()
-                .map(FoundInstrumentRs::getStockExchange)
-                .orElse(StockExchange.MOEX); //todo: спорный момент. Тут по хорошему надо эксепшн бросать.
-    }*/
+    }
 }

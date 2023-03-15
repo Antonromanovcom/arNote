@@ -1,13 +1,19 @@
 package com.antonromanov.arnote.domain.investing.api;
 
-import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedInvestmentDataRs;
-import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedReturnsRs;
-import com.antonromanov.arnote.domain.investing.dto.response.SearchResultsRs;
+import com.antonromanov.arnote.domain.investing.dto.response.*;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
 import com.antonromanov.arnote.domain.investing.service.calc.CommonService;
 import com.antonromanov.arnote.domain.investing.service.consolidated.ConsolidatedDataService;
+import com.antonromanov.arnote.old.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.old.exceptions.BadTickerException;
+import com.antonromanov.arnote.old.exceptions.enums.ErrorCodes;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * API для управления инвестициями.
@@ -51,67 +57,49 @@ public class InvestController {
     /**
      * Найти инструменты по имени / тикеру или их куску.
      *
-     * @param keyword   - искомое слово или часть его
+     * @param keyword - искомое слово или часть его
      * @return
      */
     @CrossOrigin(origins = "*")
     @GetMapping("/search")
-    public SearchResultsRs findInstrumentByName(@RequestParam @NotNull String keyword)  {
+    public SearchResultsRs findInstrumentByName(@RequestParam @NotNull String keyword) {
         return commonService.findInstrument(keyword);
     }
 
     /**
      * Получить текущую цену по тикеру
      *
-     * @param principal - пользак
-     * @param ticker    - тикер.
+     * @param ticker - тикер.
      * @return
      */
-   /* @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @GetMapping("/price")
-    public CurrentPriceRs getCurrentPriceByTickerAndStockExchange(Principal principal,
-                                                                  @RequestParam @NotNull String ticker,
-                                                                  @RequestParam @NotNull String stockExchange)
-            throws UserNotFoundException {
+    public CurrentPriceRs getCurrentPriceByTickerAndStockExchange(@RequestParam @NotNull String ticker,
+                                                                  @RequestParam @NotNull String stockExchange) {
 
-        log.info("============== GET CURRENT PRICE BY TICKER ============== ");
-        ArNoteUser user = getLocalUserFromPrincipal(principal);
-        log.info("USER ID: " + user.getId());
-        log.info("ticker: " + ticker);
-
-
-        return commonService.getCurrentPriceByTicker(ticker, StockExchange.valueOf(stockExchange), user);
-    }*/
+        return commonService.getCurrentPriceByTicker(ticker, StockExchange.valueOf(stockExchange));
+    }
 
     /**
      * Получить текущую цену по тикеру на конкретную дату
      *
-     * @param principal    - пользак
      * @param ticker       - тикер.
      * @param purchaseDate - дата покупки.
      * @return
      */
-  /*  @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @GetMapping("/price-by-date")
-    public CurrentPriceRs getCurrentPriceByTicker(Principal principal,
-                                                  @RequestParam @NotNull String ticker,
-                                                  @RequestParam @NotNull String purchaseDate)
-            throws UserNotFoundException {
+    public CurrentPriceRs getCurrentPriceByTicker(@RequestParam String ticker,
+                                                  @RequestParam String purchaseDate) {
 
-        log.info("============== GET CURRENT PRICE BY TICKER AND PURCHASE DATE ============== ");
-        ArNoteUser user = getLocalUserFromPrincipal(principal);
-        log.info("USER ID: " + user.getId());
-        log.info("ticker: " + ticker);
-        log.info("purchase date: " + purchaseDate);
-
+        if (isBlank(ticker) || isBlank(purchaseDate)) throw new  BadIncomeParameter(ErrorCodes.ERR_10);
         FoundInstrumentRs foundBond = commonService.findInstrument(ticker).getInstruments().stream()
                 .filter(fi -> ticker.equals(fi.getTicker()))
                 .findFirst().orElseThrow(() -> new BadTickerException(ticker));
 
-
         return commonService.getCurrentPriceByTickerAndDate(foundBond, purchaseDate);
 
-    }*/
+    }
 
     /**
      * Удалить бумагу

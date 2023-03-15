@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.exceptions;
+package com.antonromanov.arnote.old.exceptions;
 
 public class BadTickerException extends RuntimeException {
 
