@@ -1,16 +1,28 @@
 package com.antonromanov.arnote.domain.investing.service.cache;
 
+import com.antonromanov.arnote.domain.investing.dto.cache.enums.CacheDictType;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Сервис кеширования.
  * TYPESAFE HETEROGENEOUS CONTAINERS PATTERN.
  */
-/*@Service
+@Service
 @AllArgsConstructor
 @Data
-@Slf4j*/
-public class CacheServiceImpl /*implements CacheService*/ {
+@Slf4j
+public class CacheServiceImpl implements CacheService {
 
-  /*  private final Integer RETENTION_TIMEOUT = 60;
+   private final Integer RETENTION_TIMEOUT = 60;
     private Map<String, MoexDocumentRs> history;
     private List<String> tradeModesStorage;
     private Map<CacheDictType, HashMap<String, Object>> cache;
@@ -26,7 +38,7 @@ public class CacheServiceImpl /*implements CacheService*/ {
     @Override
     public List<String> getTradeModes() {
         return tradeModesStorage;
-    }*/
+    }
 
     /**
      * Добавить объект в кэш.
@@ -36,7 +48,7 @@ public class CacheServiceImpl /*implements CacheService*/ {
      * @param aClass
      * @param <T>
      */
-   /* @Override
+    @Override
     public <T> void putToCache(CacheDictType dictionaryType, String key, T obj, Class<T> aClass) {
         CacheObject<T> cachedObject = new CacheObject<>(obj, aClass);
         HashMap<String, Object> cachedElement = new HashMap<>();
@@ -55,7 +67,7 @@ public class CacheServiceImpl /*implements CacheService*/ {
         CacheObject<T> o = ((CacheObject<T>) cache.get(dictionaryType).get(key));
         o.getClazz().cast(o.getT());
         return o.getClazz().cast(o.getT());
-    }*/
+    }
 
     /**
      * Проверка, что кэш не пустой по ключу и словарю.
@@ -64,7 +76,7 @@ public class CacheServiceImpl /*implements CacheService*/ {
      * @param key
      * @return
      */
-  /*  @Override
+    @Override
     public Boolean checkDict(CacheDictType dictionaryType, String key) {
         return dictionaryType != null &&
                 key != null &&
@@ -117,5 +129,5 @@ public class CacheServiceImpl /*implements CacheService*/ {
     private static class ObjectCachedWithTimestamp {
         private LocalDateTime timestamp;
         private Object obj;
-    }*/
+    }
 }

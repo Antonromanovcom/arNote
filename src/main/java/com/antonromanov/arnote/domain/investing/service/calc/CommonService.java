@@ -1,7 +1,11 @@
 package com.antonromanov.arnote.domain.investing.service.calc;
 
 
-import com.antonromanov.arnote.domain.investing.dto.common.Bond;
+import com.antonromanov.arnote.domain.investing.dto.response.SearchResultsRs;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
+import com.antonromanov.arnote.domain.investing.entity.Bond;
 import com.antonromanov.arnote.domain.investing.dto.common.BondType;
 import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.domain.investing.dto.response.DeltaRs;
@@ -12,6 +16,12 @@ import com.antonromanov.arnote.domain.user.service.UserService;
 import com.antonromanov.arnote.old.model.ArNoteUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.antonromanov.arnote.old.utils.ArNoteUtils.*;
 
 /**
  * Сервис обрабатывающий операции, например, выдачи текущей цены бумаги, общие для разных типов (акция / облигация)
@@ -61,7 +71,7 @@ public class CommonService {
     public ConsolidatedDividendsRs getDivsOrCoupons(Bond bond) {
         ArNoteUser user = userService.getUserFromPrincipal();
         return bond.getType() == BondType.SHARE ?
-                ((calcFactory.getCalculator(bond.getStockExchange())).getDividends(bond, user)) :
+                ((calcFactory.getCalculator(bond.getStockExchange())).getDividends(bond)) :
                 bondCalcService.getCoupons(bond, user);
     }
 
@@ -76,7 +86,7 @@ public class CommonService {
         ArNoteUser user = userService.getUserFromPrincipal();
         return bond.getType() == BondType.SHARE ?
                 ((calcFactory.getCalculator(bond.getStockExchange())).getMinimalLot(bond.getTicker(), user)) :
-                bondCalcService.getBondLot(bond, user, bond.getPurchaseList());
+                bondCalcService.getBondLot(bond,  bond.getPurchaseList());
     }
 
 
@@ -87,10 +97,10 @@ public class CommonService {
      * @return
      */
     public Integer getFinalPrice(Bond bond) {
-        ArNoteUser user = userService.getUserFromPrincipal();
-        return bond.getType() == BondType.SHARE ?
-                ((calcFactory.getCalculator(bond.getStockExchange())).calculateFinalPrice(bond, user)) :
-                bondCalcService.calculateFinalPrice(bond, user);
+
+        var curPrice = prepareCurrentPrice(bond);
+        var minLot = getLot(bond);
+        return calculateFinalPrice(bond, curPrice, minLot);
     }
 
 
@@ -145,15 +155,15 @@ public class CommonService {
      * @param keyword - ключ, по которому ищем.
      * @return
      */
-  /*  public SearchResultsRs findInstrument(String keyword) {
+    public SearchResultsRs findInstrument(String keyword) {
         SharesCalcService moexService = calcFactory.getCalculator(StockExchange.MOEX);
         SharesCalcService foreignService = calcFactory.getCalculator(StockExchange.SPB);
         Iterator<String> it = moexService.getTradeModes().iterator();
         MoexDocumentRs allShares = new MoexDocumentRs();
 
-        *//*
+     /*
      * ============= Московская биржа: только российские акции и облигации ====================
-     *//*
+     */
         while (it.hasNext()) {
             String boardId = it.next();
             MoexDocumentRs halfWayResult = moexService.findSharesByBoardId(boardId);
@@ -174,9 +184,9 @@ public class CommonService {
                 .filter(filterByKeyword(keyword))
                 .collect(Collectors.toList());
 
-        *//*
-     * ============= Иностранные акции ====================
-     *//*
+    /*
+    * ============= Иностранные акции ====================
+    */
         List<MoexRowsRs> foreignShares = (foreignService.findInstrumentsByName(keyword)).getData().getRow();
 
         SearchResultsRs searchResults = new SearchResultsRs();
@@ -185,7 +195,7 @@ public class CommonService {
         searchResults.getInstruments().addAll(prepareInstruments(foreignShares, BondType.SHARE, StockExchange.SPB));
 
         return searchResults;
-    }*/
+    }
 
     /**
      * Получить текущую цену бумаги.

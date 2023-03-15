@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Имплементация расчетного сервиса для работы с иностранными бумагами.
  */
-@Slf4j
+// @Slf4j
 public class ForeignCalcServiceImpl /*implements SharesCalcService */{
 
   /*  @Autowired

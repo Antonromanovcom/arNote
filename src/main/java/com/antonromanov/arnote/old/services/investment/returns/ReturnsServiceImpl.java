@@ -3,7 +3,7 @@ package com.antonromanov.arnote.old.services.investment.returns;
 import org.springframework.stereotype.Service;
 
 
-@Service
+//@Service
 public class ReturnsServiceImpl /*implements ReturnsService*/ {
 
     /*private final BondCalcService bondCalcService;

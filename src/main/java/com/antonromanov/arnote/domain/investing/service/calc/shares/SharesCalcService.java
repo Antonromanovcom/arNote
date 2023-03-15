@@ -1,14 +1,13 @@
 package com.antonromanov.arnote.domain.investing.service.calc.shares;
 
-import com.antonromanov.arnote.domain.investing.dto.common.Bond;
-import com.antonromanov.arnote.domain.investing.dto.common.Purchase;
+import com.antonromanov.arnote.domain.investing.entity.Bond;
+import com.antonromanov.arnote.domain.investing.entity.Purchase;
 import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.domain.investing.dto.response.CurrentPriceRs;
 import com.antonromanov.arnote.domain.investing.dto.response.DeltaRs;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.instrumentinfo.MoexDetailInfoRs;
 import com.antonromanov.arnote.old.model.ArNoteUser;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -79,20 +78,11 @@ public interface SharesCalcService {
     DeltaRs calculateDelta(String boardId, String ticker, Double currentStockPrice, List<Purchase> purchaseList);
 
     /**
-     * Подготовить финальную цену (цена * лот).
-     *
-     * @param bond
-     * @param user
-     * @return
-     */
-    Integer calculateFinalPrice(Bond bond, ArNoteUser user);
-
-    /**
      * Подготовить дивиденды.
      *
      * @return
      */
-    ConsolidatedDividendsRs getDividends(Bond bond, ArNoteUser user);
+    ConsolidatedDividendsRs getDividends(Bond bond);
 
 
     /**

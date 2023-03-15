@@ -5,7 +5,6 @@ import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividen
 import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.common.CommonMoexDoc;
 import org.springframework.util.MultiValueMap;
-
 import java.util.LinkedList;
 import java.util.Optional;
 

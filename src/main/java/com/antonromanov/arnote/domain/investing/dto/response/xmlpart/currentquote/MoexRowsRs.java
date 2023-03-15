@@ -118,7 +118,4 @@ public class MoexRowsRs {
         @XmlAttribute(name = "end")
         private String end; // время/дата завершения торгов
 
-
-
-
 }

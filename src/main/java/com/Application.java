@@ -2,8 +2,14 @@ package com;
 
 //todo: Почему в пакете com, а не в пакете com.antonromanov.arnote ??? Исправить !!!!!!
 import com.antonromanov.arnote.common.logging.LoggerFilter;
+import com.antonromanov.arnote.domain.investing.service.calc.shares.common.CalculateFactory;
+import com.antonromanov.arnote.domain.investing.service.calc.shares.foreign.ForeignCalcServiceImpl;
+import com.antonromanov.arnote.domain.investing.service.calc.shares.moex.MoexCalculateServiceImpl;
 import com.google.common.cache.CacheBuilder;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -15,6 +21,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.TimeUnit;
@@ -47,14 +54,14 @@ public class Application {
         return new RestTemplate();
     }
 
-    /*@Bean("calcFactory")
+    @Bean("calcFactory")
     public FactoryBean serviceLocatorFactoryBean() {
         ServiceLocatorFactoryBean factoryBean = new ServiceLocatorFactoryBean();
         factoryBean.setServiceLocatorInterface(CalculateFactory.class);
         return factoryBean;
-    }*/
+    }
 
-    /*@Bean(name = "MOEX")
+    @Bean(name = "MOEX")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public MoexCalculateServiceImpl moexCalculator() {
         return new MoexCalculateServiceImpl();
@@ -64,7 +71,7 @@ public class Application {
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ForeignCalcServiceImpl foreignCalculator() {
         return new ForeignCalcServiceImpl();
-    }*/
+    }
 
 
     @Bean("habrCacheManager")

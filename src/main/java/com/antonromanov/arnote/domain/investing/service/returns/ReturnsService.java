@@ -1,33 +1,37 @@
 package com.antonromanov.arnote.domain.investing.service.returns;
 
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Targets;
+import java.util.Optional;
+
 public interface ReturnsService {
+
     /**
      * Запросить общую сумму инвестированного.
-     * @param user - текущий авторизовавшийся пользователь
+     *
      * @return
      */
-//    Optional<Long> getTotalInvestment(ArNoteUser user);
+    Optional<Long> getTotalInvestment();
 
     /**
      * Получить дельту по акциям пользователя.
      * @param user
      * @return
      */
-//    Optional<Double> getSharesDelta(ArNoteUser user);
+    Optional<Double> getSharesDelta();
 
     /**
      * Получить дельту только по КУПЛЕННЫМ акциям пользователя.
-     * @param user
+     *
      * @return
      */
-//    Optional<Double> getSharesDeltaForBought(ArNoteUser user);
+    Optional<Double> getSharesDeltaForBought();
 
     /**
      * Получить общую доходность по дивидендам.
-     * @param user
+     *
      * @return
      */
-//    Optional<Long> getTotalDivsReturn(ArNoteUser user);
+    Optional<Long> getTotalDivsReturn();
 
     /**
      * Получаем детальную инфу по Дивам.
@@ -38,22 +42,22 @@ public interface ReturnsService {
 
     /**
      * Посчитать сколько надо вложить для получения заданной ежемесячной прибыли.
-     * @param user
+     *
      * @return
      */
-//    Long calculateRequiredInvestments(ArNoteUser user, Targets target);
+    Long calculateRequiredInvestments(Targets target);
 
     /**
      * Посчитать общую сумму прибыли.
-     * @param user
+     *
      * @return
      */
-//    Long calculateTotalReturns(ArNoteUser user);
+    Long calculateTotalReturns();
 
     /**
-     * Получить общий купонный доход по всем облигациям пользователя.
-     * @param user
+     * Получить общий купонный доход по всем облигациям пользователя
+     *
      * @return
      */
-//    Optional<Long> getTotalBondsReturns(ArNoteUser user);
+    Optional<Long> getTotalBondsReturns();
 }

@@ -12,5 +12,5 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Data
 public class MoexDocumentRs implements CommonMoexDoc {
     @XmlElement(name = "data")
-    MoexDataRs data;
+    com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDataRs data;
 }

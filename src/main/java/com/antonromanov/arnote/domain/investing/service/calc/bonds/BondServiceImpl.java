@@ -1,8 +1,8 @@
 package com.antonromanov.arnote.domain.investing.service.calc.bonds;
 
 import com.antonromanov.arnote.domain.investing.dto.cache.enums.CacheDictType;
-import com.antonromanov.arnote.domain.investing.dto.common.Bond;
-import com.antonromanov.arnote.domain.investing.dto.common.Purchase;
+import com.antonromanov.arnote.domain.investing.entity.Bond;
+import com.antonromanov.arnote.domain.investing.entity.Purchase;
 import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
@@ -10,10 +10,8 @@ import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.domain.investing.service.cache.CacheService;
-import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.domain.investing.service.requestservice.RequestService;
 import com.antonromanov.arnote.old.model.ArNoteUser;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +26,18 @@ import static com.antonromanov.arnote.old.utils.ArNoteUtils.isInteger;
  */
 @Service
 @Slf4j
-@AllArgsConstructor
 public class BondServiceImpl implements BondCalcService {
 
     private final List<String> BOARD_GROUP_LIST = Arrays.asList("58", "193", "7", "67", "207");
     private final RequestService httpClient;
     private final CacheService cacheService;
-    private final SharesCalcService sharesCalcService;
+ //   private final SharesCalcService sharesCalcService;
+
+    public BondServiceImpl(RequestService httpClient, CacheService cacheService/*, SharesCalcService sharesCalcService*/) {
+        this.httpClient = httpClient;
+        this.cacheService = cacheService;
+      //  this.sharesCalcService = sharesCalcService;
+    }
 
 
     /**
@@ -152,7 +155,8 @@ public class BondServiceImpl implements BondCalcService {
         return getBondDataByTicker(ticker)
                 .map(p -> (
                         (Double.parseDouble(p.getLotValue()) * Double.parseDouble(p.getPrevLegalClosePrice())) / 100)
-                        * sharesCalcService.getCurrencyMultiplier(p.getCurrencyId())).orElse(0D);
+                    //    * sharesCalcService.getCurrencyMultiplier(p.getCurrencyId())).orElse(0D);
+                        * 1).orElse(0D); //todo: исправить назад. Пока закаментили временно
     }
 
     /**

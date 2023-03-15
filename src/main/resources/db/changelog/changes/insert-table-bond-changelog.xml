@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="admin" id="4">
+        <insert tableName="bond">
+            <column name="id" valueNumeric="1"/>
+            <column name="TICKER" value="SBER"/>
+            <column name="TYPE" value="SHARE"/>
+            <column name="STOCK_EXCHANGE" value="MOEX"/>
+            <column name="IS_BOUGHT" value="FALSE"/>
+            <column name="USER_ID" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
+
+
+
+
+

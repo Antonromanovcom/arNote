@@ -1,4 +1,4 @@
-package com.antonromanov.arnote.domain.investing.dto.common;
+package com.antonromanov.arnote.domain.investing.entity;
 
 import lombok.*;
 import javax.persistence.*;

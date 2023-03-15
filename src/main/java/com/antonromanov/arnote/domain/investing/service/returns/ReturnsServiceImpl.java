@@ -1,27 +1,45 @@
 package com.antonromanov.arnote.domain.investing.service.returns;
 
+import com.antonromanov.arnote.domain.investing.dto.common.BondType;
+import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
+import com.antonromanov.arnote.domain.investing.dto.response.DeltaRs;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Targets;
+import com.antonromanov.arnote.domain.investing.entity.Bond;
+import com.antonromanov.arnote.domain.investing.repository.BondsRepo;
+import com.antonromanov.arnote.domain.investing.service.calc.CommonService;
+import com.antonromanov.arnote.domain.investing.service.calc.bonds.BondCalcService;
+import com.antonromanov.arnote.domain.user.service.UserService;
+import com.antonromanov.arnote.old.model.ArNoteUser;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
-// @Service
-public class ReturnsServiceImpl /*implements ReturnsService*/ {
+@Service
+@AllArgsConstructor
+public class ReturnsServiceImpl implements ReturnsService {
 
-   /* private final BondCalcService bondCalcService;
+    /*private final BondCalcService bondCalcService;
+    private final BondsRepo repo;
+    private final CommonService commonService;*/
+    private final UserService userService;
     private final BondsRepo repo;
     private final CommonService commonService;
+    private final BondCalcService bondCalcService;
 
-    public ReturnsServiceImpl(BondsRepo repo, BondCalcService bondCalcService, CommonService commonService) {
+    /*public ReturnsServiceImpl(BondsRepo repo, BondCalcService bondCalcService, CommonService commonService) {
         this.repo = repo;
         this.bondCalcService = bondCalcService;
         this.commonService = commonService;
-    }
-*/
+    }*/
+
     /**
      * Запросить общую сумму инвестированного.
-     * @param user - текущий авторизовавшийся пользователь
+     *
      * @return
      */
-    /*@Override
-    public Optional<Long> getTotalInvestment(ArNoteUser user) {
+    @Override
+    public Optional<Long> getTotalInvestment() {
+        ArNoteUser user = userService.getUserFromPrincipal();
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(Bond::getIsBought)
                 .map(b -> b.getPurchaseList().stream()
@@ -29,16 +47,16 @@ public class ReturnsServiceImpl /*implements ReturnsService*/ {
                         .reduce((double) 0, Double::sum))
                 .reduce((double) 0, Double::sum)
                 .longValue());
-    }*/
+    }
 
     /**
      * Получить дельту по всем бумагам пользователя.
      *
-     * @param user
      * @return
      */
-  /*  @Override
-    public Optional<Double> getSharesDelta(ArNoteUser user) {
+    @Override
+    public Optional<Double> getSharesDelta() {
+        ArNoteUser user = userService.getUserFromPrincipal();
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond->bond.getType()== BondType.SHARE)
                 .map(b -> {
@@ -48,7 +66,8 @@ public class ReturnsServiceImpl /*implements ReturnsService*/ {
     }
 
     @Override
-    public Optional<Double> getSharesDeltaForBought(ArNoteUser user) {
+    public Optional<Double> getSharesDeltaForBought() {
+        ArNoteUser user = userService.getUserFromPrincipal();
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond->bond.getType()== BondType.SHARE)
                 .filter(Bond::getIsBought)
@@ -56,26 +75,26 @@ public class ReturnsServiceImpl /*implements ReturnsService*/ {
                     DeltaRs deltaRs = commonService.prepareDelta(b);
                     return deltaRs==null ? 0 : deltaRs.getTinkoffDelta();
                 }).reduce((double) 0, Double::sum));
-    }*/
+    }
 
     /**
      * Получить общую доходность по дивидендам.
      *
-     * @param user
      * @return
      */
-   /* @Override
-    public Optional<Long> getTotalDivsReturn(ArNoteUser user) {
+    @Override
+    public Optional<Long> getTotalDivsReturn() {
+        ArNoteUser user = userService.getUserFromPrincipal();
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond -> bond.getType()==BondType.SHARE)
                 .filter(Bond::getIsBought)
                 .map(b -> {
-                    ConsolidatedDividendsRs divs = commonService.getDivsOrCoupons(b, user);
+                    ConsolidatedDividendsRs divs = commonService.getDivsOrCoupons(b);
                     return divs.getDivSum();
                 })
                 .reduce((double) 0, Double::sum))
                 .map(Math::round);
-    }*/
+    }
 
   /*  @Override
     public List<DivsDebug> getDivsDebug(ArNoteUser user) {
@@ -108,38 +127,37 @@ public class ReturnsServiceImpl /*implements ReturnsService*/ {
     /**
      * Посчитать сколько надо вложить для получения заданной ежемесячной прибыли.
      *
-     * @param user
      * @return
      */
-   /* @Override
-    public Long calculateRequiredInvestments(ArNoteUser user, Targets target) {
+    @Override
+    public Long calculateRequiredInvestments(Targets target) {
         try {
-            return (getTotalInvestment(user).orElse(0L) * (target.getValue() * 12)) / calculateTotalReturns(user);
+            return (getTotalInvestment().orElse(0L) * (target.getValue() * 12)) / calculateTotalReturns();
         } catch (Exception e){
             return 0L;
         }
-    }*/
+    }
 
     /**
      * Посчитать общую сумму прибыли: рост по акциям + купоны облигаций + дивиденды.
      *
-     * @param user
      * @return
      */
-   /* @Override
-    public Long calculateTotalReturns(ArNoteUser user) {
-        return (getSharesDeltaForBought(user).map(Double::longValue).orElse(0L)) +
-                getTotalBondsReturns(user).orElse(0L) +
-                getTotalDivsReturn(user).orElse(0L);
-    }*/
+    @Override
+    public Long calculateTotalReturns() {
+        return (getSharesDeltaForBought().map(Double::longValue).orElse(0L)) +
+                getTotalBondsReturns().orElse(0L) +
+                getTotalDivsReturn().orElse(0L);
+    }
 
     /**
      * Получить общий купонный доход по всем облигациям пользователя.
-     * @param user
+     *
      * @return
      */
-   /* @Override
-    public Optional<Long> getTotalBondsReturns(ArNoteUser user) {
+    @Override
+    public Optional<Long> getTotalBondsReturns() {
+        ArNoteUser user = userService.getUserFromPrincipal();
         return Optional.of(repo.findAllByUser(user).stream()
                 .filter(bond -> bond.getType()==BondType.BOND)
                 .filter(Bond::getIsBought)
@@ -149,5 +167,5 @@ public class ReturnsServiceImpl /*implements ReturnsService*/ {
                 })
                 .reduce((double) 0, Double::sum))
                 .map(Math::round);
-    }*/
+    }
 }

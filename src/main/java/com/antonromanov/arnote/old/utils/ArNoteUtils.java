@@ -1,16 +1,28 @@
 package com.antonromanov.arnote.old.utils;
 
+import com.antonromanov.arnote.domain.investing.dto.common.BondType;
 import com.antonromanov.arnote.domain.investing.dto.common.InvestingFilterMode;
+import com.antonromanov.arnote.domain.investing.dto.external.requests.ForeignRequests;
+import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTemplateOperation;
 import com.antonromanov.arnote.domain.investing.dto.response.BondRs;
-import com.antonromanov.arnote.model.investing.Purchase;
-import com.antonromanov.arnote.model.investing.response.xmlpart.common.CommonMoexDoc;
-import com.antonromanov.arnote.model.investing.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.domain.investing.dto.response.FoundInstrumentRs;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
+import com.antonromanov.arnote.domain.investing.dto.response.enums.TinkoffDeltaFinalValuesType;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.common.CommonMoexDoc;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexDocumentRs;
+import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
+import com.antonromanov.arnote.domain.investing.entity.Bond;
+import com.antonromanov.arnote.domain.investing.entity.Purchase;
 import com.antonromanov.arnote.old.exceptions.BadIncomeParameter;
 import com.antonromanov.arnote.old.exceptions.enums.ErrorCodes;
+import com.antonromanov.arnote.old.model.ArNoteUser;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
 import org.joda.time.DateTime;
-
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import java.time.*;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
@@ -21,7 +33,6 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -374,7 +385,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         } else {
 
             return Math.toIntExact((ChronoUnit.MONTHS.between(LocalDate.now(), LocalDate.of(Integer.parseInt(year),
-                    monthNameToNumber(checkMonthEncoding(monthAndYear)? month : convertEnglishNames(month)), 1)))) + 1;
+                    monthNameToNumber(checkMonthEncoding(monthAndYear) ? month : convertEnglishNames(month)), 1)))) + 1;
         }
     }
 
@@ -428,7 +439,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      *
      * @return
      */
-   /* public static String prepareUrlForHistory(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+    public static String prepareUrlForHistory(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
                                               Map<String, String> pathParams, String dateFrom, String dateTill, int start) { //todo: почему тут пустой dateFrom ???? Зачем он тогда?
 
 
@@ -446,14 +457,14 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
 
         return uriComponents.toString();
-    }*/
+    }
 
     /**
      * Сформировать специальный URL для запроса истории.
      *
      * @return
      */
-   /* public static String prepareUrlForCandles(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+    public static String prepareUrlForCandles(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
                                               Map<String, String> pathParams, String dateFrom, String dateTill, int start) { //todo: объединить с prepareUrlForHistory
 
 
@@ -471,7 +482,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
 
 
         return uriComponents.toString();
-    }*/
+    }
 
 
     /**
@@ -492,10 +503,10 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      *
      * @return
      */
-    /*public static Predicate<MoexRowsRs> filterByKeyword(String keyword) {
+    public static Predicate<MoexRowsRs> filterByKeyword(String keyword) {
         return s -> (s.getSecName().toLowerCase().contains(keyword.toLowerCase()) ||
                 s.getSecid().toLowerCase().contains(keyword.toLowerCase()));
-    }*/
+    }
 
     /**
      * Предикат для универсального фильтра.
@@ -520,8 +531,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      * Подготовить список инструментов
      *
      * @return
-     */
-   /* public static List<FoundInstrumentRs> prepareInstruments(List<MoexRowsRs> list, BondType type, StockExchange stockExchange) {
+     */ // todo: однозначно рефакторить. Например, все инвестиционные методы утильные выносить в отдельный класс
+    public static List<FoundInstrumentRs> prepareInstruments(List<MoexRowsRs> list, BondType type, StockExchange stockExchange) {
         return list.stream()
                 .map(r -> FoundInstrumentRs.builder()
                         .ticker(r.getSecid())
@@ -533,17 +544,17 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 .filter(distinctByKey(FoundInstrumentRs::getTicker))
                 .limit(5)
                 .collect(Collectors.toList());
-    }*/
+    }
 
     /**
      * Подготовить URL для буржуйских API.
      *
      * @return
      */
-   /* public static String prepareForeignUrl(ForeignRequests req, MultiValueMap<String, String> queryParameters,
-                                           Map<String, String> pathParams) {*/
+    public static String prepareForeignUrl(ForeignRequests req, MultiValueMap<String, String> queryParameters,
+                                           Map<String, String> pathParams) {
 
-       /* UriComponents uriComponents = UriComponentsBuilder
+        UriComponents uriComponents = UriComponentsBuilder
                 .newInstance()
                 .scheme(req.getSchema().getSchema())
                 .host(req.getHost().getUrl())
@@ -551,9 +562,8 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 .queryParams(queryParameters)
                 .buildAndExpand(pathParams);
 
-        return uriComponents.toString();*/
-  /*      return null;
-    }*/
+        return uriComponents.toString();
+    }
 
 
     /**
@@ -561,7 +571,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      *
      * @return
      */
-   /* public static String prepareUrl(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
+    public static String prepareUrl(String urlBase, MoexRestTemplateOperation operation, MultiValueMap<String, String> queryParameters,
                                     Map<String, String> pathParams) {
 
         UriComponents uriComponents = UriComponentsBuilder
@@ -573,7 +583,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                 .buildAndExpand(pathParams);
 
         return uriComponents.toString();
-    }*/
+    }
 
     /**
      * Преобразовать строковой epoch-mil в LocalDate.
@@ -599,13 +609,13 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      *
      * @return
      */
-   /* public static Map<TinkoffDeltaFinalValuesType, Double> getTcsDeltaValues(List<Purchase> purchaseList,
+    public static Map<TinkoffDeltaFinalValuesType, Double> getTcsDeltaValues(List<Purchase> purchaseList,
                                                                              Double currentStockPrice) {
         Map<TinkoffDeltaFinalValuesType, Double> resultMap = new HashMap<>();
         if (purchaseList != null && purchaseList.size() > 0) {
-            *//*
-     * Считаем среднюю цену покупки (сумма цена * лот)
-     *//*
+
+            // Считаем среднюю цену покупки (сумма цена * лот)
+
             Double tkcAveragePurchasePrice = purchaseList.stream()
                     .map(p -> p.getPrice() * p.getLot())
                     .reduce((double) 0, Double::sum);
@@ -622,7 +632,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
             resultMap.put(TinkoffDeltaFinalValuesType.DELTA_PERCENT, 0.0D);
         }
         return resultMap;
-    }*/
+    }
 
     /**
      * Вытаскиваем позицию (цену) закрытия бумаги за вчерашний день.
@@ -795,12 +805,12 @@ public class ArNoteUtils { //todo: надо будет разнести отде
      */
     public static double calculateCurrencyMultiplier(CommonMoexDoc doc, String currency) {
 
-        /*if (Currencies.getTransferByCodes(currency) == null) {*/
-        return (1d);
-    /*    } else {
+        if (Currencies.getTransferByCodes(currency) == null) {
+            return (1d);
+        } else {
             return Optional.ofNullable(doc)
                     .map(MoexDocumentRs.class::cast)
-                    .orElseThrow(() -> new MoexXmlResponseMappingException("курсы валют"))
+                    .orElseThrow(() -> new com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException("курсы валют"))
                     .getData()
                     .getRow()
                     .stream()
@@ -809,7 +819,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                     .map(MoexRowsRs::getRate)
                     .map(Double::valueOf)
                     .orElse(Double.valueOf("1"));
-        }*/
+        }
     }
 
     /**
@@ -848,9 +858,19 @@ public class ArNoteUtils { //todo: надо будет разнести отде
                         Integer.parseInt(matcher.group(2)));
 
             }
-
             return localDateToSqlDate(tempDate);
         }
+    }
+
+    public static Integer calculateFinalPrice(Bond bond, Double curPrice, Integer minlot) {
+        if (bond.getIsBought()) { // если это ФАКТ
+            return bond.getPurchaseList().stream()
+                    .map(p -> p.getLot() * p.getPrice())
+                    .reduce((double) 0, Double::sum).intValue();
+        } else { // если ПЛАН
+            return (int) Math.round((curPrice) * minlot);
+        }
+
     }
 
    /* public static com.antonromanov.arnote.model.common.Calendar unmarshall(InputStream response) {

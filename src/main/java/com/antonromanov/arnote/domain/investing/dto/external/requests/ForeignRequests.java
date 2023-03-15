@@ -1,12 +1,15 @@
 package com.antonromanov.arnote.domain.investing.dto.external.requests;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * Запросы к буржуйским API.
  */
-/*@Getter
-@AllArgsConstructor*/
+@Getter
+@AllArgsConstructor
 public enum ForeignRequests {
-   /* GET_REALTIME_QUOTE("Получить последнюю ставку в реальном времени",  Schemas.HTTPS,
+    GET_REALTIME_QUOTE("Получить последнюю ставку в реальном времени",  Schemas.HTTPS,
             ForeignRequestsApiType.YAHOO_FINANCE, "/v10/finance/quoteSummary/{p1:[a-z]{1,5}}",
             ForeignUrlRequestParams.builder().modules("price").build()),
     GET_DIVS("Получить дивиденды", Schemas.HTTPS, ForeignRequestsApiType.YAHOO_FINANCE,
@@ -46,5 +49,5 @@ public enum ForeignRequests {
     private final Schemas schema;
     private final ForeignRequestsApiType host;
     private final String constantPart;
-    private final ForeignUrlRequestParams requestParams;*/
+    private final ForeignUrlRequestParams requestParams;
 }

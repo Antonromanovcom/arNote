@@ -1,6 +1,8 @@
-package com.antonromanov.arnote.domain.investing.dto.common;
+package com.antonromanov.arnote.domain.investing.entity;
 
+import com.antonromanov.arnote.domain.investing.dto.common.BondType;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
+import com.antonromanov.arnote.domain.investing.entity.Purchase;
 import com.antonromanov.arnote.old.model.ArNoteUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,7 +45,7 @@ public class Bond {
     private ArNoteUser user;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "id")
     private List<Purchase> purchaseList = new ArrayList<>();
 }
 

@@ -1,14 +1,17 @@
 package com.antonromanov.arnote.domain.investing.dto.external.requests;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * Типы схем у API
  */
-/*
+
 @Getter
-@AllArgsConstructor*/
+@AllArgsConstructor
 public enum Schemas {
-   /* HTTP("http"),
+    HTTP("http"),
     HTTPS("https");
 
-    private final String schema;*/
+    private final String schema;
 }

@@ -1,9 +1,12 @@
 package com.antonromanov.arnote.domain.investing.dto.response.enums;
 
-/*@Getter
-@AllArgsConstructor*/
-public enum StockExchange {
-   /* MOEX("moexCalculator"), SPB("foreignCalculator");
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-    private final String value;*/
+@Getter
+@AllArgsConstructor
+public enum StockExchange {
+    MOEX("moexCalculator"), SPB("foreignCalculator");
+
+    private final String value;
 }

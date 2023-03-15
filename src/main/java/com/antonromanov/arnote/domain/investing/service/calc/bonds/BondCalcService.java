@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.domain.investing.service.calc.bonds;
 
-import com.antonromanov.arnote.domain.investing.dto.common.Bond;
-import com.antonromanov.arnote.domain.investing.dto.common.Purchase;
+import com.antonromanov.arnote.domain.investing.entity.Bond;
+import com.antonromanov.arnote.domain.investing.entity.Purchase;
 import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;

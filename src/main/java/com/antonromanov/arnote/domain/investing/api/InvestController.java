@@ -1,9 +1,13 @@
 package com.antonromanov.arnote.domain.investing.api;
 
 import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedInvestmentDataRs;
+import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedReturnsRs;
+import com.antonromanov.arnote.domain.investing.dto.response.SearchResultsRs;
+import com.antonromanov.arnote.domain.investing.service.calc.CommonService;
 import com.antonromanov.arnote.domain.investing.service.consolidated.ConsolidatedDataService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * API для управления инвестициями.
@@ -16,9 +20,8 @@ public class InvestController {
 
     /*private final UsersRepo usersRepo;
     private final BondsRepo bondsRepo;
-    private final CalendarService calendarService;
-    private final ReturnsService returnsService;
-    private final CommonService commonService;*/
+    private final CalendarService calendarService;*/
+    private final CommonService commonService;
     private final ConsolidatedDataService service;
 
 
@@ -37,78 +40,25 @@ public class InvestController {
     /**
      * Консолидированные данные по доходности.
      *
-     * @param principal - пользователь.
      * @return - ConsolidatedReturnsRs
      */
-  /*  @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @GetMapping("/returns")
-    public ConsolidatedReturnsRs returnsConsolidated(Principal principal) throws UserNotFoundException {
-
-        log.info("============== CONSOLIDATED RETURNS TABLE ============== ");
-        log.info("PRINCIPAL: " + principal.getName());
-
-        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-
-        return ConsolidatedReturnsRs.builder()
-                .invested(returnsService.getTotalInvestment(user).orElse(0L))
-                .bondsReturns(returnsService.getTotalBondsReturns(user).orElse(0L))
-                .sharesDelta(returnsService.getSharesDelta(user).map(Double::longValue).orElse(0L))
-                .sharesReturns(returnsService.getTotalDivsReturn(user).orElse(0L))
-                .sum((returnsService.calculateTotalReturns(user)))
-                .targets(Stream.of(new Object[][]{
-                        {Targets.ONE_THOUSAND_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.ONE_THOUSAND_ROUBLES)},
-                        {Targets.FIVE_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.FIVE_THOUSANDS_ROUBLES)},
-                        {Targets.TEN_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.TEN_THOUSANDS_ROUBLES)},
-                        {Targets.THIRTY_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.THIRTY_THOUSANDS_ROUBLES)},
-                        {Targets.SIXTY_THOUSANDS_ROUBLES, returnsService.calculateRequiredInvestments(user, Targets.SIXTY_THOUSANDS_ROUBLES)},
-                }).collect(Collectors.toMap(data -> (Targets) data[0], data -> (Long) data[1])))
-                .build();
-    }*/
-
-    /**
-     * Тестовый контроллер для отладки дивов. А то какие-то странные цифры стали приходить.
-     *
-     * @param principal - пользователь.
-     * @return - ConsolidatedReturnsRs
-     */
-  /*  @CrossOrigin(origins = "*")
-    @GetMapping("/divs")
-    public DivsDetailsRs getDivsDetails(Principal principal) throws UserNotFoundException {
-
-        log.info("============== DIVS DETAILS ============== ");
-        log.info("PRINCIPAL: " + principal.getName());
-
-        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-        List<DivsDebug> res = returnsService.getDivsDebug(user);
-
-
-        return DivsDetailsRs.builder()
-                .divs(res)
-                .sum(res.stream()
-                        .map(DivsDebug::getDivs)
-                        .map(t -> t.stream()
-                                .map(DividendRs::getValue)
-                                .reduce((double) 0, Double::sum))
-                        .reduce((double) 0, Double::sum))
-                .build();
-    }*/
+    public ConsolidatedReturnsRs returnsConsolidated() {
+        return service.getSummaryIncomeData();
+    }
 
     /**
      * Найти инструменты по имени / тикеру или их куску.
      *
-     * @param principal - пользак
      * @param keyword   - искомое слово или часть его
      * @return
      */
-  /*  @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @GetMapping("/search")
-    public SearchResultsRs findInstrumentByName(Principal principal, @RequestParam @NotNull String keyword) throws UserNotFoundException {
-        log.info("============== FIND INSTRUMENT ============== ");
-        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-        log.info("USER ID: " + user.getId());
-        log.info("keyword: " + keyword);
+    public SearchResultsRs findInstrumentByName(@RequestParam @NotNull String keyword)  {
         return commonService.findInstrument(keyword);
-    }*/
+    }
 
     /**
      * Получить текущую цену по тикеру
