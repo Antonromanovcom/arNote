@@ -20,13 +20,10 @@ import java.util.List;
 @Table(name = "bond")
 public class Bond {
 
-   /* @Id
+    @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bonds_seq_gen")
-    @SequenceGenerator(name = "bonds_seq_gen", sequenceName = "bonds_id_seq", allocationSize = 1)*/
-   @Id
-   @Column(name = "id", nullable = false)
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "bonds_seq_gen", sequenceName = "bonds_id_seq", allocationSize = 1)
     private long id;
 
     @Column
