@@ -21,12 +21,11 @@ import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import static com.antonromanov.arnote.old.utils.ArNoteUtils.*;
 
@@ -282,11 +281,13 @@ public class CommonService {
             purchase.setPrice(request.getPrice());
             purchase.setLot(request.getLot());
             purchase.setPurchaseDate(request.getPurchaseDate());
-           // var savedPurchase = purchasesRepo.saveAndFlush(purchase);
-            var savedPurchase = purchase;
 
-            newOrUpdatedBond = existingBond.map(v -> addPurchaseToExistingBond(v, savedPurchase))
-                    .orElse(addNewInstrument(request, savedPurchase, user));
+            if (existingBond.isPresent()){
+                newOrUpdatedBond = addPurchaseToExistingBond(existingBond.get(), purchase);
+            } else{
+                newOrUpdatedBond = addNewInstrument(request, purchase, user);
+            }
+
 
         } else {
             Bond b = new Bond();
@@ -310,7 +311,7 @@ public class CommonService {
         Bond b = new Bond();
         b.setTicker(request.getTicker());
         b.setIsBought(true);
-        b.setPurchaseList(Collections.singletonList(purchase));
+        b.setPurchaseList(Arrays.asList(purchase));
         b.setType(BondType.valueOf(request.getBondType()));
         b.setUser(user);
         b.setStockExchange(getInstrumentStockExchange(request.getTicker()));
@@ -329,6 +330,7 @@ public class CommonService {
         bond.setIsBought(!bond.getIsBought());
         bond.getPurchaseList().add(purchase);
         return bondsRepo.saveAndFlush(bond);
+     //   return bond;
     }
 
 

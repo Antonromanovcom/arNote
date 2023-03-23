@@ -1,6 +1,10 @@
 package com.antonromanov.arnote.domain.investing.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -19,4 +23,5 @@ public class Purchase {
     private Integer lot;
     @Column
     private LocalDate purchaseDate;
+
 }
