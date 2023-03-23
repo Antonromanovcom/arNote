@@ -25,10 +25,12 @@ import com.antonromanov.arnote.domain.investing.service.cache.CacheService;
 import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.domain.investing.service.requestservice.RequestService;
 import com.antonromanov.arnote.domain.user.service.UserService;
-import com.antonromanov.arnote.old.exceptions.MoexRequestException;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.investing.exceptions.MoexRequestException;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
@@ -44,6 +46,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 /**
  * Имплементация расчетного сервиса для работы с иностранными бумагами.
  */
+@Slf4j
 public class ForeignCalcServiceImpl implements SharesCalcService {
 
     @Autowired
@@ -223,7 +226,6 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
     @Override
     public ConsolidatedDividendsRs getDividends(Bond bond) {
 
-        ArNoteUser user = userService.getUserFromPrincipal();
         if (cacheService.checkDict(CacheDictType.DIVS_BY_TICKER, bond.getTicker())) {
             return cacheService.getDict(CacheDictType.DIVS_BY_TICKER, bond.getTicker());
         } else {
@@ -239,10 +241,15 @@ public class ForeignCalcServiceImpl implements SharesCalcService {
                             String.valueOf(nowDateInEpochMili), "1mo", "true", "div%7Csplit")));
 
             Map<String, Object> divList = response.map(r -> {
-                JSONObject obj = new JSONObject(response.get()).getJSONObject("chart");
-                JSONArray result = obj.getJSONArray("result");
-                return result.getJSONObject(0).getJSONObject("events").getJSONObject("dividends").toMap();
-            }).orElseThrow(MoexRequestException::new);
+               try {
+                   JSONObject obj = new JSONObject(response.get()).getJSONObject("chart");
+                   JSONArray result = obj.getJSONArray("result");
+                   return result.getJSONObject(0).getJSONObject("events").getJSONObject("dividends").toMap();
+               } catch (JSONException e){
+                   log.warn("У бумаги {} нет дивидентов!", bond.getTicker());
+                   return null;
+               }
+            }).orElseGet(HashMap::new);
 
             String currencyInfo = response.map(r -> {
                 JSONObject obj = new JSONObject(response.get()).getJSONObject("chart");

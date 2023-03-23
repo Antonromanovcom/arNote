@@ -14,9 +14,9 @@ import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquot
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.domain.investing.entity.Bond;
 import com.antonromanov.arnote.domain.investing.entity.Purchase;
-import com.antonromanov.arnote.old.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.old.exceptions.enums.ErrorCodes;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.common.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.common.exceptions.enums.ErrorCodes;
+import com.antonromanov.arnote.domain.investing.exceptions.MoexXmlResponseMappingException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.Signature;
 import org.joda.time.DateTime;
@@ -810,7 +810,7 @@ public class ArNoteUtils { //todo: надо будет разнести отде
         } else {
             return Optional.ofNullable(doc)
                     .map(MoexDocumentRs.class::cast)
-                    .orElseThrow(() -> new com.antonromanov.arnote.exceptions.MoexXmlResponseMappingException("курсы валют"))
+                    .orElseThrow(() -> new MoexXmlResponseMappingException("курсы валют"))
                     .getData()
                     .getRow()
                     .stream()

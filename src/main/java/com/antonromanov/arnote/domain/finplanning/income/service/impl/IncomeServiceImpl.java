@@ -1,16 +1,16 @@
 package com.antonromanov.arnote.domain.finplanning.income.service.impl;
 
-import com.antonromanov.arnote.domain.finplanning.income.dto.IncomeRq;
+import com.antonromanov.arnote.domain.finplanning.income.dto.rq.IncomeRq;
 import com.antonromanov.arnote.domain.finplanning.income.entity.Income;
 import com.antonromanov.arnote.domain.finplanning.income.mapper.IncomeMapperRq;
 import com.antonromanov.arnote.domain.finplanning.income.repo.IncomeRepo;
 import com.antonromanov.arnote.domain.finplanning.income.service.IncomeService;
 import com.antonromanov.arnote.domain.user.service.UserService;
 import com.antonromanov.arnote.domain.finplanning.common.dto.rs.FinalBalanceCalculationsRs;
-import com.antonromanov.arnote.old.dto.rq.IdListRq;
-import com.antonromanov.arnote.old.dto.rq.IncomesForDeleteRq;
+import com.antonromanov.arnote.domain.finplanning.income.dto.rq.IdListRq;
+import com.antonromanov.arnote.domain.finplanning.income.dto.rq.IncomesForDeleteRq;
 import com.antonromanov.arnote.domain.finplanning.common.dto.rs.SingleOperationRs;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;

@@ -2,7 +2,7 @@ package com.antonromanov.arnote.domain.finplanning.goal.mapper.rq;
 
 import com.antonromanov.arnote.domain.finplanning.goal.dto.rq.GoalRq;
 import com.antonromanov.arnote.domain.finplanning.goal.entity.Goal;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

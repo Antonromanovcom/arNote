@@ -2,7 +2,7 @@ package com.antonromanov.arnote.domain.finplanning.loan.mapper;
 
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rq.CreditRq;
 import com.antonromanov.arnote.domain.finplanning.loan.entity.Credit;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

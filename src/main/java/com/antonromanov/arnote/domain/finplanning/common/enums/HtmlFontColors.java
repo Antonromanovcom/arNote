@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.domain.finplanning.common.enums;
 
-import com.antonromanov.arnote.old.exceptions.FinPlanningException;
-import com.antonromanov.arnote.old.exceptions.enums.ErrorCodes;
+import com.antonromanov.arnote.domain.finplanning.exceptions.FinPlanningException;
+import com.antonromanov.arnote.common.exceptions.enums.ErrorCodes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import java.util.Arrays;

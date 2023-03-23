@@ -2,8 +2,7 @@ package com.antonromanov.arnote.domain.investing.entity;
 
 import com.antonromanov.arnote.domain.investing.dto.common.BondType;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
-import com.antonromanov.arnote.domain.investing.entity.Purchase;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,10 +20,13 @@ import java.util.List;
 @Table(name = "bond")
 public class Bond {
 
-    @Id
+   /* @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bonds_seq_gen")
-    @SequenceGenerator(name = "bonds_seq_gen", sequenceName = "bonds_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "bonds_seq_gen", sequenceName = "bonds_id_seq", allocationSize = 1)*/
+   @Id
+   @Column(name = "id", nullable = false)
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column

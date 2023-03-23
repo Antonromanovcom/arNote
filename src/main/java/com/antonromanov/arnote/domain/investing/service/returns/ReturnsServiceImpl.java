@@ -9,7 +9,7 @@ import com.antonromanov.arnote.domain.investing.repository.BondsRepo;
 import com.antonromanov.arnote.domain.investing.service.calc.CommonService;
 import com.antonromanov.arnote.domain.investing.service.calc.bonds.BondCalcService;
 import com.antonromanov.arnote.domain.user.service.UserService;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Optional;

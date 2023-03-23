@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.common.wrapper;
 
-import com.antonromanov.arnote.old.exceptions.enums.ErrorCodes;
+import com.antonromanov.arnote.common.exceptions.enums.ErrorCodes;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;

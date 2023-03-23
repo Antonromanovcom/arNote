@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.old.service;
 
 
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import com.antonromanov.arnote.domain.wish.entity.Wish;
 
 import java.util.List;
@@ -60,7 +61,7 @@ public interface MainService {
 
 	List<Wish> getAllWishesByUser(LocalUser user);*/
 
-	Optional<List<Wish>> findWishesByName(Wish wish, com.antonromanov.arnote.old.model.ArNoteUser user);
+	Optional<List<Wish>> findWishesByName(Wish wish, ArNoteUser user);
 
 	/*List<Wish> getAllRealizedWishes(LocalUser user);
 

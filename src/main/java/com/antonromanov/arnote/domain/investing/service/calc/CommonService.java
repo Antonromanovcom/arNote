@@ -1,6 +1,7 @@
 package com.antonromanov.arnote.domain.investing.service.calc;
 
 
+import com.antonromanov.arnote.domain.investing.dto.request.AddInstrumentRq;
 import com.antonromanov.arnote.domain.investing.dto.response.*;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
@@ -8,17 +9,24 @@ import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquot
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.domain.investing.entity.Bond;
 import com.antonromanov.arnote.domain.investing.dto.common.BondType;
+import com.antonromanov.arnote.domain.investing.entity.Purchase;
+import com.antonromanov.arnote.domain.investing.exceptions.BadTickerException;
+import com.antonromanov.arnote.domain.investing.repository.BondsRepo;
+import com.antonromanov.arnote.domain.investing.repository.PurchasesRepo;
 import com.antonromanov.arnote.domain.investing.service.calc.bonds.BondCalcService;
 import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.domain.investing.service.calc.shares.common.CalculateFactory;
 import com.antonromanov.arnote.domain.user.service.UserService;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import static com.antonromanov.arnote.old.utils.ArNoteUtils.*;
 
@@ -28,11 +36,14 @@ import static com.antonromanov.arnote.old.utils.ArNoteUtils.*;
  */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class CommonService {
 
     private final BondCalcService bondCalcService;
     private final CalculateFactory calcFactory;
     private final UserService userService;
+    private final BondsRepo bondsRepo;
+    private final PurchasesRepo purchasesRepo;
 
 
     /**
@@ -241,4 +252,98 @@ public class CommonService {
                         .build())
                 .orElse(calculator.getRealTimeQuote(foundBond.getTicker()));
     }
+
+
+    /**
+     * Добавить инструмент.
+     *
+     * @param request
+     * @return
+     */
+    public BondRs addInstrument(AddInstrumentRq request) {
+
+        Bond newOrUpdatedBond;
+        ArNoteUser user = userService.getUserFromPrincipal();
+
+        /**
+         * Проверяем что хотя бы один такой инструмент нашелся, иначе кидаем эксепшн.
+         */
+        FoundInstrumentRs foundInstrument = findInstrument(request.getTicker())
+                .getInstruments().stream()
+                .filter(fi -> request.getTicker().equals(fi.getTicker()))
+                .findFirst().orElseThrow(() -> new BadTickerException(request.getTicker()));
+
+        log.info("Нашли хотя бы 1 инструмент по тикеру: {}", foundInstrument.getTicker());
+
+        if (!request.getIsPlan() && (request.getLot() != 0 && request.getPrice() != null && request.getPurchaseDate() != null)) {
+
+            Optional<Bond> existingBond = bondsRepo.findBondByUserAndTicker(user, request.getTicker());
+            Purchase purchase = new Purchase();
+            purchase.setPrice(request.getPrice());
+            purchase.setLot(request.getLot());
+            purchase.setPurchaseDate(request.getPurchaseDate());
+           // var savedPurchase = purchasesRepo.saveAndFlush(purchase);
+            var savedPurchase = purchase;
+
+            newOrUpdatedBond = existingBond.map(v -> addPurchaseToExistingBond(v, savedPurchase))
+                    .orElse(addNewInstrument(request, savedPurchase, user));
+
+        } else {
+            Bond b = new Bond();
+            b.setTicker(request.getTicker());
+            b.setIsBought(false);
+            b.setType(BondType.valueOf(request.getBondType()));
+            b.setUser(user);
+            b.setStockExchange(getInstrumentStockExchange(request.getTicker()));
+            newOrUpdatedBond = bondsRepo.saveAndFlush(b);
+        }
+
+        return BondRs.builder()
+                .ticker(newOrUpdatedBond.getTicker())
+                .isBought(newOrUpdatedBond.getIsBought())
+                .type(newOrUpdatedBond.getType().name())
+                .stockExchange(newOrUpdatedBond.getStockExchange().name())
+                .build();
+    }
+
+    private Bond addNewInstrument(AddInstrumentRq request, Purchase purchase, ArNoteUser user) {
+        Bond b = new Bond();
+        b.setTicker(request.getTicker());
+        b.setIsBought(true);
+        b.setPurchaseList(Collections.singletonList(purchase));
+        b.setType(BondType.valueOf(request.getBondType()));
+        b.setUser(user);
+        b.setStockExchange(getInstrumentStockExchange(request.getTicker()));
+        return bondsRepo.saveAndFlush(b);
+    }
+
+
+    /**
+     * Добавить продажу к уже имеющемуся в БД инструменту.
+     *
+     * @param bond
+     * @param purchase
+     * @return
+     */
+    private Bond addPurchaseToExistingBond(Bond bond, Purchase purchase) {
+        bond.setIsBought(!bond.getIsBought());
+        bond.getPurchaseList().add(purchase);
+        return bondsRepo.saveAndFlush(bond);
+    }
+
+
+    /**
+     * Достаем Биржу по тикеру.
+     *
+     * @param ticker
+     * @return
+     */
+    public StockExchange getInstrumentStockExchange(String ticker) {
+        return findInstrument(ticker).getInstruments().stream()
+                .filter(i -> ticker.equals(i.getTicker()))
+                .findFirst()
+                .map(FoundInstrumentRs::getStockExchange)
+                .orElse(StockExchange.MOEX); //todo: спорный момент. Тут по хорошему надо эксепшн бросать.
+    }
+
 }

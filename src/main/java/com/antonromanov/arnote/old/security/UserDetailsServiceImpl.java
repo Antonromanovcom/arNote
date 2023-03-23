@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.old.security;
 
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import com.antonromanov.arnote.domain.user.repository.UsersRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

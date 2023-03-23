@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.domain.user.repository;
 
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

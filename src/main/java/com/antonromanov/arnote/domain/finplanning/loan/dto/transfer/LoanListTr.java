@@ -1,6 +1,5 @@
 package com.antonromanov.arnote.domain.finplanning.loan.dto.transfer;
 
-import com.antonromanov.arnote.old.dto.transfer.LoanTr;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

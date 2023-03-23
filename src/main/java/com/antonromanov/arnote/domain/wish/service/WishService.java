@@ -3,7 +3,7 @@ package com.antonromanov.arnote.domain.wish.service;
 import com.antonromanov.arnote.domain.wish.dto.WishAnalyticsRs;
 import com.antonromanov.arnote.domain.wish.dto.rq.*;
 import com.antonromanov.arnote.domain.wish.dto.rs.*;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 
 import java.security.Principal;
 

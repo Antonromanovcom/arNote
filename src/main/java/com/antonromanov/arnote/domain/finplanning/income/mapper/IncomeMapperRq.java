@@ -1,8 +1,8 @@
 package com.antonromanov.arnote.domain.finplanning.income.mapper;
 
-import com.antonromanov.arnote.domain.finplanning.income.dto.IncomeRq;
+import com.antonromanov.arnote.domain.finplanning.income.dto.rq.IncomeRq;
 import com.antonromanov.arnote.domain.finplanning.income.entity.Income;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

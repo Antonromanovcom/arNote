@@ -7,7 +7,7 @@ import com.antonromanov.arnote.domain.wish.dto.rq.WishRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishListRs;
 import com.antonromanov.arnote.domain.wish.dto.rs.WishRs;
 import com.antonromanov.arnote.domain.wish.service.WishService;
-import com.antonromanov.arnote.old.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.common.exceptions.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;

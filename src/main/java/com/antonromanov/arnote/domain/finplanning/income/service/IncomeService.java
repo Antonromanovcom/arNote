@@ -1,9 +1,9 @@
 package com.antonromanov.arnote.domain.finplanning.income.service;
 
-import com.antonromanov.arnote.domain.finplanning.income.dto.IncomeRq;
+import com.antonromanov.arnote.domain.finplanning.income.dto.rq.IncomeRq;
 import com.antonromanov.arnote.domain.finplanning.income.entity.Income;
 import com.antonromanov.arnote.domain.finplanning.common.dto.rs.FinalBalanceCalculationsRs;
-import com.antonromanov.arnote.old.dto.rq.IncomesForDeleteRq;
+import com.antonromanov.arnote.domain.finplanning.income.dto.rq.IncomesForDeleteRq;
 import com.antonromanov.arnote.domain.finplanning.common.dto.rs.SingleOperationRs;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;

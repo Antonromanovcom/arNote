@@ -296,17 +296,5 @@ public class CommonService {
         }
     }
 */
-    /**
-     * Достаем Биржу по тикеру.
-     *
-     * @param ticker
-     * @return
-     */
- /*   public StockExchange getInstrumentStockExchange(String ticker) {
-        return findInstrument(ticker).getInstruments().stream()
-                .filter(i -> ticker.equals(i.getTicker()))
-                .findFirst()
-                .map(FoundInstrumentRs::getStockExchange)
-                .orElse(StockExchange.MOEX); //todo: спорный момент. Тут по хорошему надо эксепшн бросать.
-    }*/
+
 }

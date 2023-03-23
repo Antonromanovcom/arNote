@@ -11,7 +11,7 @@ import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquot
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.currentquote.MoexRowsRs;
 import com.antonromanov.arnote.domain.investing.service.cache.CacheService;
 import com.antonromanov.arnote.domain.investing.service.requestservice.RequestService;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

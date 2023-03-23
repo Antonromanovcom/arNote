@@ -22,7 +22,7 @@ import com.antonromanov.arnote.domain.investing.service.cache.CacheService;
 import com.antonromanov.arnote.domain.investing.service.calc.shares.SharesCalcService;
 import com.antonromanov.arnote.domain.investing.service.requestservice.RequestService;
 import com.antonromanov.arnote.domain.user.service.UserService;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;

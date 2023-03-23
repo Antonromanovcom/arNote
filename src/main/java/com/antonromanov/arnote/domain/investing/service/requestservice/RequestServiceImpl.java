@@ -5,7 +5,7 @@ import com.antonromanov.arnote.domain.investing.dto.external.requests.MoexRestTe
 import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividendsRs;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.common.CommonMoexDoc;
 import com.antonromanov.arnote.domain.investing.service.xmlparse.XmlHandler;
-import com.antonromanov.arnote.old.exceptions.MoexRequestException;
+import com.antonromanov.arnote.domain.investing.exceptions.MoexRequestException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

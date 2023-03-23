@@ -4,6 +4,7 @@ import com.antonromanov.arnote.domain.investing.dto.response.ConsolidatedDividen
 import com.antonromanov.arnote.domain.investing.dto.response.DividendRs;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.Currencies;
 import com.antonromanov.arnote.domain.investing.dto.response.xmlpart.common.CommonMoexDoc;
+import com.antonromanov.arnote.domain.investing.exceptions.MoexXmlResponseMarshalingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -68,7 +69,7 @@ public class XmlHandlerImpl implements XmlHandler {
     public CommonMoexDoc marshall(ResponseEntity<String> response, Class<?> moexClass) {
         if (response.getBody() == null) {
             log.error("Ошибка маршелинга - ответ пришел, но бади пустое!");
-            throw new com.antonromanov.arnote.exceptions.MoexXmlResponseMarshalingException();
+            throw new MoexXmlResponseMarshalingException();
         } else {
             try {
                 JAXBContext jaxbContext = JAXBContext.newInstance(moexClass);
@@ -76,7 +77,7 @@ public class XmlHandlerImpl implements XmlHandler {
                 return (CommonMoexDoc) un.unmarshal(new InputSource(new StringReader(response.getBody())));
             } catch (JAXBException e) {
                 log.error("Ошибка маршелинга: {}", e.getMessage());
-                throw new com.antonromanov.arnote.exceptions.MoexXmlResponseMarshalingException();
+                throw new MoexXmlResponseMarshalingException();
             }
         }
     }

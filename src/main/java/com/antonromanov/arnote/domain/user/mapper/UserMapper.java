@@ -2,7 +2,7 @@ package com.antonromanov.arnote.domain.user.mapper;
 
 import com.antonromanov.arnote.domain.wish.dto.rq.LocalUserRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.LocalUserRs;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import java.util.Date;

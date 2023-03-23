@@ -4,8 +4,8 @@ import com.antonromanov.arnote.domain.finplanning.common.dto.rs.SingleOperationR
 import com.antonromanov.arnote.domain.salary.dto.rq.SalaryRq;
 import com.antonromanov.arnote.domain.salary.dto.rs.SalaryListRs;
 import com.antonromanov.arnote.domain.salary.dto.rs.SalaryRs;
-import com.antonromanov.arnote.old.entity.common.Salary;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.salary.entity.Salary;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import java.util.Optional;
 
 public interface SalaryService {

@@ -6,7 +6,7 @@ import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.FullLoansListRs;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.OperateCreditRs;
 import com.antonromanov.arnote.domain.finplanning.loan.service.LoanService;
 import com.antonromanov.arnote.domain.finplanning.loan.validation.ValidDate;
-import com.antonromanov.arnote.old.dto.rq.LoanByDateRq;
+import com.antonromanov.arnote.domain.finplanning.loan.dto.rq.LoanByDateRq;
 import com.antonromanov.arnote.domain.finplanning.loan.dto.rs.CreditRs;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;

@@ -16,8 +16,8 @@ import com.antonromanov.arnote.domain.investing.service.returns.ReturnsService;
 import com.antonromanov.arnote.domain.user.repository.UsersRepo;
 import com.antonromanov.arnote.domain.user.service.UserService;
 import com.antonromanov.arnote.domain.wish.enums.UserSettingType;
-import com.antonromanov.arnote.old.exceptions.InvestingException;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.investing.exceptions.InvestingException;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import com.antonromanov.arnote.old.model.investing.InvestingSortMode;
 import com.antonromanov.arnote.old.repositoty.CreditRepository;
 import lombok.AllArgsConstructor;
@@ -25,8 +25,9 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import static com.antonromanov.arnote.old.exceptions.enums.ErrorCodes.ERR_O3;
+import static com.antonromanov.arnote.common.exceptions.enums.ErrorCodes.ERR_O3;
 import static com.antonromanov.arnote.old.utils.ArNoteUtils.complexPredicate;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @AllArgsConstructor

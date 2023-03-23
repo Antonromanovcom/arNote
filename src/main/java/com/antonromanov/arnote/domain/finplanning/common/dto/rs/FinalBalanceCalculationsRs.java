@@ -1,6 +1,6 @@
 package com.antonromanov.arnote.domain.finplanning.common.dto.rs;
 
-import com.antonromanov.arnote.old.dto.rs.CurrentIncomeRs;
+import com.antonromanov.arnote.domain.finplanning.income.dto.rs.CurrentIncomeRs;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.util.Date;

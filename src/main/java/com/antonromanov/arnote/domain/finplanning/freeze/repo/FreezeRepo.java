@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.domain.finplanning.freeze.repo;
 
 import com.antonromanov.arnote.domain.finplanning.freeze.entity.Freeze;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

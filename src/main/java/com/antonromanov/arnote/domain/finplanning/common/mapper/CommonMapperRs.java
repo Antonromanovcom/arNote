@@ -2,9 +2,9 @@ package com.antonromanov.arnote.domain.finplanning.common.mapper;
 
 import com.antonromanov.arnote.domain.finplanning.common.enums.CalcValues;
 import com.antonromanov.arnote.domain.finplanning.income.entity.Income;
-import com.antonromanov.arnote.old.dto.rs.CurrentIncomeRs;
+import com.antonromanov.arnote.domain.finplanning.income.dto.rs.CurrentIncomeRs;
 import com.antonromanov.arnote.domain.finplanning.common.dto.rs.FinalBalanceCalculationsRs;
-import com.antonromanov.arnote.old.dto.rs.IncomeRs;
+import com.antonromanov.arnote.domain.finplanning.income.dto.rs.IncomeRs;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

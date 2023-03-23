@@ -1,18 +1,16 @@
 package com.antonromanov.arnote.domain.investing.api;
 
+import com.antonromanov.arnote.domain.investing.dto.request.AddInstrumentRq;
 import com.antonromanov.arnote.domain.investing.dto.response.*;
 import com.antonromanov.arnote.domain.investing.dto.response.enums.StockExchange;
 import com.antonromanov.arnote.domain.investing.service.calc.CommonService;
 import com.antonromanov.arnote.domain.investing.service.consolidated.ConsolidatedDataService;
-import com.antonromanov.arnote.old.exceptions.BadIncomeParameter;
-import com.antonromanov.arnote.old.exceptions.BadTickerException;
-import com.antonromanov.arnote.old.exceptions.enums.ErrorCodes;
+import com.antonromanov.arnote.common.exceptions.BadIncomeParameter;
+import com.antonromanov.arnote.domain.investing.exceptions.BadTickerException;
+import com.antonromanov.arnote.common.exceptions.enums.ErrorCodes;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -143,73 +141,14 @@ public class InvestController {
     /**
      * Добавить бумагу (с покупкой или в качестве плана).
      *
-     * @param principal - пользак
      * @param request   - реквест, содержащий даты и тикер.
      * @return
      */
- /*   @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*")
     @PostMapping()
-    public BondRs addInstrument(Principal principal, @RequestBody AddInstrumentRq request) throws UserNotFoundException {
-
-        log.info("============== ADD INSTRUMENT ============== ");
-        ArNoteUser user = usersRepo.findByLogin(principal.getName()).orElseThrow(UserNotFoundException::new);
-        log.info("USER ID: " + user.getId());
-        log.info("ticker: " + request.getTicker());
-        Bond newOrUpdatedBond;*/
-
-    /**
-     * Проверяем что хотя бы один такой инструмент нашелся, иначе кидаем эксепшн.
-     */
-      /*  FoundInstrumentRs foundInstrument = commonService.findInstrument(request.getTicker())
-                .getInstruments().stream()
-                .filter(fi -> request.getTicker().equals(fi.getTicker()))
-                .findFirst().orElseThrow(() -> new BadTickerException(request.getTicker()));
-
-        log.info("Нашли хотя бы 1 инструмент по тикеру: {}", foundInstrument.getTicker());
-
-
-
-        if (!request.isPlan() && (request.getLot() != 0 && request.getPrice() != null && request.getPurchaseDate() != null)) {
-
-            Optional<Bond> existingBond = bondsRepo.findBondByUserAndTicker(user, request.getTicker());
-            Purchase purchase = new Purchase();
-            purchase.setPrice(request.getPrice());
-            purchase.setLot(request.getLot());
-            purchase.setPurchaseDate(request.getPurchaseDate());
-
-            if (existingBond.isPresent()) {
-                if (!existingBond.get().getIsBought()) {
-                    existingBond.get().setIsBought(true);
-                }
-                existingBond.get().getPurchaseList().add(purchase);
-                newOrUpdatedBond = bondsRepo.saveAndFlush(existingBond.get());
-            } else {
-                Bond b = new Bond();
-                b.setTicker(request.getTicker());
-                b.setIsBought(true);
-                b.setPurchaseList(Collections.singletonList(purchase));
-                b.setType(BondType.valueOf(request.getBondType()));
-                b.setUser(user);
-                b.setStockExchange(commonService.getInstrumentStockExchange(request.getTicker()));
-                newOrUpdatedBond = bondsRepo.saveAndFlush(b);
-            }
-        } else {
-            Bond b = new Bond();
-            b.setTicker(request.getTicker());
-            b.setIsBought(false);
-            b.setType(BondType.valueOf(request.getBondType()));
-            b.setUser(user);
-            b.setStockExchange(commonService.getInstrumentStockExchange(request.getTicker()));
-            newOrUpdatedBond = bondsRepo.saveAndFlush(b);
-        }
-
-        return BondRs.builder()
-                .ticker(newOrUpdatedBond.getTicker())
-                .isBought(newOrUpdatedBond.getIsBought())
-                .type(newOrUpdatedBond.getType().name())
-                .stockExchange(newOrUpdatedBond.getStockExchange().name())
-                .build();
-    }*/
+    public BondRs addInstrument(@RequestBody AddInstrumentRq request) {
+        return commonService.addInstrument(request);
+    }
 
     /**
      * Подготовить респонс бумаги.

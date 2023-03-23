@@ -11,7 +11,8 @@ import java.time.LocalDate;
 @Table
 public class Purchase {
     @Id
-    @GeneratedValue
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     private Double price;

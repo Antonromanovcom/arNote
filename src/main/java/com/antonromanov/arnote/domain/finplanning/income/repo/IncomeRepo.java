@@ -1,7 +1,7 @@
 package com.antonromanov.arnote.domain.finplanning.income.repo;
 
 import com.antonromanov.arnote.domain.finplanning.income.entity.Income;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

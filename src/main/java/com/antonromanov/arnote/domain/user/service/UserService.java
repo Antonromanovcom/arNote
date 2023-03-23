@@ -4,8 +4,8 @@ import com.antonromanov.arnote.domain.wish.dto.rq.LocalUserRq;
 import com.antonromanov.arnote.domain.wish.dto.rq.ToggleUserModeRq;
 import com.antonromanov.arnote.domain.wish.dto.rs.LocalUserRs;
 import com.antonromanov.arnote.domain.wish.enums.UserSettingType;
-import com.antonromanov.arnote.old.exceptions.UserNotFoundException;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.common.exceptions.UserNotFoundException;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import java.util.Map;
 import java.util.Optional;
 

@@ -2,10 +2,8 @@ package com.antonromanov.arnote.domain.salary.mapper;
 
 import com.antonromanov.arnote.domain.salary.dto.rq.SalaryRq;
 import com.antonromanov.arnote.domain.salary.dto.rs.SalaryRs;
-import com.antonromanov.arnote.domain.wish.dto.rs.GroupedWishRs;
-import com.antonromanov.arnote.domain.wish.entity.Wish;
-import com.antonromanov.arnote.old.entity.common.Salary;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.salary.entity.Salary;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,8 +12,6 @@ import org.mapstruct.MappingTarget;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-
-import static com.antonromanov.arnote.old.utils.ArNoteUtils.computerMonthName;
 
 @Mapper(componentModel = "spring")
 public interface SalaryMapper {

@@ -2,7 +2,7 @@ package com.antonromanov.arnote.domain.finplanning.freeze.mapper;
 
 import com.antonromanov.arnote.domain.finplanning.freeze.dto.rq.FreezeRq;
 import com.antonromanov.arnote.domain.finplanning.freeze.entity.Freeze;
-import com.antonromanov.arnote.old.model.ArNoteUser;
+import com.antonromanov.arnote.domain.user.entity.ArNoteUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
