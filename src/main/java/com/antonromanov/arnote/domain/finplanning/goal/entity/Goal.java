@@ -22,11 +22,8 @@ public class Goal {
 
 	@Id
 	@Column(name="id", nullable = false)
-	/*@Id
-	@Column(name="id", nullable = false)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "goal_seq_gen")
-	@SequenceGenerator(name = "goal_seq_gen", sequenceName ="goal_id_seq", allocationSize = 1)*/
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name = "goal_seq_gen", sequenceName ="goal_id_seq", allocationSize = 1)
 	private Long id;
 
 	@Column(name = "description", nullable = true)

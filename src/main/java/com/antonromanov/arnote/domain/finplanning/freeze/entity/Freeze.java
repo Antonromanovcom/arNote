@@ -21,9 +21,8 @@ public class Freeze {
 
 	@Id
 	@Column(name="id", nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	/*@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "freeze_seq_gen")
-	@SequenceGenerator(name = "freeze_seq_gen", sequenceName ="freeze_id_seq", allocationSize = 1)*/
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "freeze_seq_gen")
+	@SequenceGenerator(name = "freeze_seq_gen", sequenceName ="freeze_id_seq", allocationSize = 1)
 	private Long id;
 
 	@Column(name = "amount", nullable = true)

@@ -51,7 +51,7 @@ public class ArNoteUser {
 	/**
 	 * Режим шифрования на фронте.
 	 */
-	@Column(nullable = false, columnDefinition = "boolean default false")
+	@Column(nullable = true, columnDefinition = "boolean default false")
 	private Boolean userCryptoMode; //todo: удалить
 
 	/**

@@ -18,9 +18,8 @@ public class Credit {
 
     @Id
     @Column(name = "id", nullable = false)
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "credit_seq_gen")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // @SequenceGenerator(name = "credit_seq_gen", sequenceName = "credit_pkey", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "credit_seq_gen")
+    @SequenceGenerator(name = "credit_seq_gen", sequenceName = "credit_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "start_amount")

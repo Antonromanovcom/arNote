@@ -16,10 +16,9 @@ import java.util.Date;
 public class Salary {
 
 	@Id
-	@Column(name = "id", nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Getter
-	@Setter
+	@Column(name="id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "salary_seq_gen")
+	@SequenceGenerator(name = "salary_seq_gen", sequenceName ="salary_id_seq", allocationSize = 1)
 	private long id;
 
 	@Column(name = "fullslary", nullable = true)

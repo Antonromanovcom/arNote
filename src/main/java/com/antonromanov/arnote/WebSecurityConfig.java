@@ -34,8 +34,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter { // todo: Ð
 				// No need authentication.
 				.antMatchers("/").permitAll()
 				.antMatchers("/*.js").permitAll()
-				.antMatchers(HttpMethod.POST, "/login", "/rest/wishes/users").permitAll()
-				.antMatchers(HttpMethod.GET, "/h2-console", "/login", "/favicon.ico",
+				.antMatchers(HttpMethod.POST, "/login", "/users").permitAll()
+				.antMatchers(HttpMethod.GET,  "/login", "/favicon.ico",
 						"/401").permitAll()
 				// Need authentication.
 				.anyRequest().authenticated()

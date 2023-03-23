@@ -11,6 +11,7 @@ import java.util.Date;
 public interface UserMapper {
 
     String DEFAULT_USER_VIEW_MODE = "TABLE";
+    String USER_CRYPTO_MODE = "false";
 
     default Date setDateNow() {
         return new Date();
@@ -27,5 +28,6 @@ public interface UserMapper {
     @Mapping(target = "viewMode", constant = DEFAULT_USER_VIEW_MODE)
     @Mapping(target = "creationDate", expression = "java(setDateNow())")
     @Mapping(target = "userRole", expression = "java(getDefaultUserRole())")
+    @Mapping(target = "userCryptoMode", constant = USER_CRYPTO_MODE)
     ArNoteUser mapLocalUserRq(LocalUserRq request, String pwd);
 }
