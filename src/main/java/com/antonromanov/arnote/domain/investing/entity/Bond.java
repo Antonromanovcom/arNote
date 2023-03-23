@@ -44,7 +44,7 @@ public class Bond {
     private ArNoteUser user;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "post_id")
     private List<Purchase> purchaseList = new ArrayList<>();
 }
 
